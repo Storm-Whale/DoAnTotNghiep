@@ -33,13 +33,12 @@ public class KhachHangController {
 
     @GetMapping("")
     public String getAll(Model model) {
-
         return phanTrang(1,model);
     }
 
     @GetMapping("{pageNo}")
     public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
-        int pageSize = 5;
+        int pageSize = 3;
         Page<KhachHang> page = khachHangService.phanTrang(pageNo,pageSize);
         List<KhachHang> listKH = page.getContent();
         model.addAttribute("khachHang",new KhachHang());
