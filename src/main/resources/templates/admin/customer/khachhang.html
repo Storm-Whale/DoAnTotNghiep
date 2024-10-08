@@ -13,7 +13,75 @@
 
 <section class="page-content">
     <!--    <section class="search-and-user">-->
-    <table class="table" border="1">
+    <form th:action="@{/admin/khachhang/add}" th:object="${khachHang}" method="post">
+        <div class="row">
+    <div class="col-sm-6">
+        <label for="anh" class="form-label">Ảnh Đại Diện</label>
+        <input type="text" class="form-control" id="anh" th:field="*{anhUrl}">
+    </div>
+
+    <div class="col-sm-6">
+            <label for="ten" class="form-label">Tên Khách Hàng</label>
+            <input type="text" class="form-control" id="ten" th:field="*{ten}">
+        </div>
+
+        <div class="col-sm-6">
+            <label for="ngaySinh" class="form-label">Ngày Sinh</label>
+            <input type="date" class="form-control" id="ngaySinh" th:field="*{ngaySinh}">
+        </div>
+
+        <div class="col-sm-6">
+        <label class="form-label">Giới Tính</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name=""  value="1" th:checked="${khachHang.gioiTinh == 1}">
+            <label class="form-check-label">
+                Nam
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name=""  value="0" th:checked="${khachHang.gioiTinh == 0}">
+            <label class="form-check-label">
+                Nu
+            </label>
+        </div>
+        </div>
+
+    <div class="col-sm-6">
+        <label for="number" class="form-label">SDT</label>
+        <input type="number" class="form-control" id="number" th:field="*{soDienThoai}">
+    </div>
+
+        <div class="col-sm-6">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" th:field="*{email}">
+        </div>
+
+    <div class="col-sm-6">
+        <label class="form-label">Tài Khoản</label>
+        <select class="form-select" aria-label="Default select example" th:field="*{taiKhoan}">
+            <option th:each="taiKhoan : ${listTK}" th:value="${taiKhoan.id}"  th:text="${taiKhoan.id}"></option>
+        </select>
+    </div>
+
+    <div class="col-sm-6">
+        <label class="form-label">Trạng Thái</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="" value="0" th:checked="${khachHang.trangThai == 0}">
+            <label class="form-check-label">
+                Khong Hoat Dong
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name=""  value="1" th:checked="${khachHang.trangThai == 1}">
+            <label class="form-check-label">
+                Hoat Dong
+            </label>
+        </div>
+    </div>
+        <button class="btn btn-danger">Submit</button>
+    </div>
+    </form>
+    <table class="table">
         <thead>
         <tr>
             <th scope="col">id</th>
@@ -70,7 +138,7 @@
             </div>
         </div>
     </div>
- <!--</section>-->
+    <!--</section>-->
 </section>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
