@@ -24,13 +24,13 @@ public class HoaDonChiTietController {
     @Autowired
     HoaDonChiTietRepository hoaDonChiTietRepository;
 
-    @GetMapping("/hoadon")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(hoaDonChiTietService.getAll());
+    @GetMapping("/hoadonct")
+    public List<HoaDonChiTiet> getAllhdct() {
+        return hoaDonChiTietService.getAll();
     }
 
-    @GetMapping("/phan-trang/{page}")
-    public ResponseEntity<?> phanTrang(@PathVariable(value = "page") int pagee) {
+    @GetMapping("/phan-trangct/{page}")
+    public ResponseEntity<?> phanTranghdct(@PathVariable(value = "page") int pagee) {
         int pageSize = 3;
         Page<HoaDonChiTiet> page = hoaDonChiTietService.phanTrang(pagee,pageSize);
         List<HoaDonChiTiet> listHDCT = page.getContent();
@@ -39,21 +39,21 @@ public class HoaDonChiTietController {
 
 
     @PostMapping("/addHoaDonct")
-    public ResponseEntity<?> addHD(@RequestBody HoaDonChiTiet hoaDon) {
+    public ResponseEntity<?> addHDct(@RequestBody HoaDonChiTiet hoaDon) {
         hoaDonChiTietService.addHoaDon(hoaDon);
         return ResponseEntity.ok(hoaDon);
     }
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
+    @DeleteMapping("/deletect/{id}")
+    public ResponseEntity<?> deletehdct(@PathVariable("id") Integer id) {
         hoaDonChiTietService.deleteHoaDon(id);
         return ResponseEntity.ok("delete thanh cong");
     }
-    @GetMapping("/detail/{id}")
-    public ResponseEntity<?> detail(@PathVariable("id") Integer id) {
+    @GetMapping("/detailct/{id}")
+    public ResponseEntity<?> detailHDct(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(hoaDonChiTietService.detail(id));
     }
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Integer id, @RequestBody HoaDonChiTiet hoaDon) {
+    @PutMapping("/updatehdct/{id}")
+    public ResponseEntity<?> updateHDct(@PathVariable("id") Integer id, @RequestBody HoaDonChiTiet hoaDon) {
         hoaDonChiTietService.updateHoaDon(id, hoaDon);
         return ResponseEntity.ok("update thanh cong");
     }

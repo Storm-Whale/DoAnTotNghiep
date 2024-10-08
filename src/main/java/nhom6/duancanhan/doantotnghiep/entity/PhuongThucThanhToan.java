@@ -17,8 +17,10 @@ public class PhuongThucThanhToan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Column(name = "phuong_thuc")
-    private String phuongThuc;
+//    @Column(name = "phuong_thuc")
+//    private String phuongThuc;
     @Column(name = "trang_thai")
     private int trangThai;
+    @Column(name = "phuong_thuc_thanh_toan")
+    private String tenPhuongThuc;
 }

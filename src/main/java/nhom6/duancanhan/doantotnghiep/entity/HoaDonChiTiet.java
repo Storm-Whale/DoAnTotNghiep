@@ -16,13 +16,6 @@ public class HoaDonChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(name = "id_hoa_don")
-    private int idHoaDon;
-
-    @Column(name = "id_san_pham_chi_tiet")
-    private int idSanPhamChiTiet;
-
     @Column(name = "so_luong")
     private int soLuong;
 

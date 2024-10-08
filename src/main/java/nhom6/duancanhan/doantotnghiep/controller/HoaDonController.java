@@ -32,7 +32,7 @@ public class HoaDonController {
         return repo.getAll();
     }
 
-    @GetMapping("/phantrang/{page}")
+    @GetMapping("/phantrangHD/{page}")
     public ResponseEntity<?> phanTrang(@PathVariable(value = "page") int pagee) {
         int pageSize = 3;  // Kích thước trang là 3
         Pageable pageable = PageRequest.of(pagee - 1, pageSize); // Tạo Pageable (Spring sử dụng trang 0-based)
@@ -45,16 +45,16 @@ public class HoaDonController {
         hoaDonService.addHoaDon(hoaDon);
         return ResponseEntity.ok(hoaDon);
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/deleteHD/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
         hoaDonService.deleteHoaDon(id);
         return ResponseEntity.ok("delete thanh cong");
     }
-    @GetMapping("/detail/{id}")
+    @GetMapping("/detailHD/{id}")
     public ResponseEntity<?> detail(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(hoaDonService.detail(id));
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("/updateHD/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Integer id, @RequestBody HoaDon hoaDon) {
         hoaDonService.updateHoaDon(id, hoaDon);
         return ResponseEntity.ok("update thanh cong");
