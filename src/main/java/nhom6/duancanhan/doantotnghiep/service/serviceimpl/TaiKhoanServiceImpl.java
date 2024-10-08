@@ -17,6 +17,7 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
 
     @Autowired
     private TaiKhoanRepository taiKhoanRepository;
+
     @Override
     public List<TaiKhoan> getAll() {
         return taiKhoanRepository.findAll();
