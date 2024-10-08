@@ -9,31 +9,37 @@
 <body class="container-fluid">
 <article th:replace="~{admin/fragments/article :: article}"></article>
 <header th:replace="~{admin/fragments/header :: header}"></header>
-<!--<nav th:replace="~{admin/fragments/nav :: nav}"></nav>-->
+<nav th:replace="~{admin/fragments/nav :: nav}"></nav>
 
 <section class="page-content">
     <!--    <section class="search-and-user">-->
     <table class="table" border="1">
         <thead>
         <tr>
-            <th scope="col">Country</th>
+            <th scope="col">id</th>
+            <th scope="col">ImG</th>
+            <th scope="col">Tên Khách Hàng</th>
+            <th scope="col">Ngày Sinh</th>
+            <th scope="col">Giới Tính</th>
+            <th scope="col">SDT</th>
             <th scope="col">Email</th>
-            <th scope="col">Name</th>
-            <th scope="col">Gerder</th>
-            <th scope="col">Mark</th>
+            <th scope="col">Tài Khoản</th>
+            <th scope="col">Trạng Thái</th>
             <th scope="col">Action</th>
         </tr>
         </thead>
         <tbody>
-<!--        <tr th:each="entry: ${list}">-->
-<!--            <td th:text="${entry.id}"></td>-->
-<!--            <td th:text="${entry.ma}"></td>-->
-<!--            <td th:text="${entry.name}"></td>-->
-<!--            <td th:text="${entry.middleName}"></td>-->
-<!--            <td th:text="${entry.lastName}"></td>-->
-<!--            <td>-->
-<!--            </td>-->
-<!--        </tr>-->
+        <tr th:each="entry: ${listKH}">
+            <td th:text="${entry.id}"></td>
+            <td th:text="${entry.anhUrl}"></td>
+            <td th:text="${entry.ten}"></td>
+            <td th:text="${entry.ngaySinh}"></td>
+            <td th:text="${entry.gioiTinh}"></td>
+            <td th:text="${entry.soDienThoai}"></td>
+            <td th:text="${entry.email}"></td>
+            <td th:text="${entry.taiKhoan.id}"></td>
+            <td th:text="${entry.trangThai}"></td>
+        </tr>
         </tbody>
     </table>
 
