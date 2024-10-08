@@ -44,34 +44,33 @@
     </table>
 
 
-<!--    <div th:if="${totalPages > 1}">-->
-<!--        <div class="row col-sm-10">-->
+    <div th:if="${totalPages > 1}">
+        <div class="row col-sm-10">
 
-<!--            <div class="col-sm-2">-->
-<!--                Total Rows: [[${totalItems}]]-->
-<!--            </div>-->
+            <div class="col-sm-2">
+                Total Rows: [[${totalItems}]]
+            </div>
 
-<!--            <div class="col-sm-1">-->
-<!--            <span th:each="i : ${#numbers.sequence(1, totalPages)}">-->
-<!--                <a th:if="${currentPage != i}" th:href="@{'/admin/khachhang/' + ${i}}">[[${i}]]</a>-->
-<!--                <span th:unless="${currentPage != i}">[[${i}]]</span>&nbsp;&nbsp;-->
-<!--            </span>-->
-<!--            </div>-->
+            <div class="col-sm-1">
+            <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+                <a th:if="${currentPage != i}" th:href="@{'/admin/khachhang/' + ${i}}">[[${i}]]</a>
+                <span th:unless="${currentPage != i}">[[${i}]]</span>&nbsp;&nbsp;
+            </span>
+            </div>
 
-<!--            <div class="col-sm-1">-->
-<!--                <a th:if="${currentPage < totalPages}"-->
-<!--                   th:href="@{'/admin/khachhang/' + ${currentPage != null ? currentPage + 1 : 1}}">Next</a>-->
-<!--                <span th:unless="${currentPage < totalPages}">Next</span>-->
-<!--            </div>-->
+            <div class="col-sm-1">
+                <a th:if="${currentPage < totalPages}"
+                   th:href="@{'/admin/khachhang/' + ${currentPage != null ? currentPage + 1 : 1}}">Next</a>
+                <span th:unless="${currentPage < totalPages}">Next</span>
+            </div>
 
-<!--            <div class="col-sm-1">-->
-<!--                <a th:if="${currentPage < totalPages}" th:href="@{'/admin/khachhang/' + ${totalPages}}">Last</a>-->
-<!--                <span th:unless="${currentPage < totalPages}">Last</span>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-
-    <!--</section>-->
+            <div class="col-sm-1">
+                <a th:if="${currentPage < totalPages}" th:href="@{'/admin/khachhang/' + ${totalPages}}">Last</a>
+                <span th:unless="${currentPage < totalPages}">Last</span>
+            </div>
+        </div>
+    </div>
+ <!--</section>-->
 </section>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

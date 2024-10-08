@@ -28,16 +28,18 @@ public class KhachHangController {
 
     @GetMapping("")
     public String getAll(Model model) {
-        model.addAttribute("listKH",khachHangService.getAll());
-        return "/admin/customer/khachhang";
+        return phanTrang(1,model);
     }
 
-    @GetMapping("/phan-trang/{pageNo}")
+    @GetMapping("{pageNo}")
     public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
-        int pageSize = 3;
+        int pageSize = 5;
         Page<KhachHang> page = khachHangService.phanTrang(pageNo,pageSize);
         List<KhachHang> listKH = page.getContent();
         model.addAttribute("listKH",listKH);
+        model.addAttribute("currentPage ", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems",page.getTotalElements());
         return "/admin/customer/khachhang";
     }
 
