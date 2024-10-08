@@ -1,0 +1,179 @@
+<header class="page-header" th:fragments="header">
+    <nav>
+
+        <div class="logo">
+            <a href="/admin"><img th:src="@{/img/logoYaGiShop.png}" width="150px" height="140px"></a>
+        </div>
+
+
+        <button class="toggle-mob-menu" aria-expanded="false" aria-label="open menu">
+            <svg width="20" height="20" aria-hidden="true">
+                <use xlink:href="#down"></use>
+            </svg>
+        </button>
+
+        <!-- Chứa ICON KHÔNG QUAN TRỌNG LẮM -->
+
+        <ul class="admin-menu">
+            <li class="menu-heading">
+                <h3>Admin And User</h3>
+            </li>
+
+            <li>
+                <a href="">
+                    <svg>
+                        <use xlink:href="#pages"></use>
+                    </svg>
+                    <span>Trang Chu</span>
+                </a>
+            </li>
+
+
+            <li>
+                <a href="">
+                    <svg>
+                        <use xlink:href="#users"></use>
+                    </svg>
+                    <span>Ban Hang</span>
+                </a>
+            </li>
+
+
+            <li>
+                <a href="#!/hoa-don">
+                    <svg>
+                        <use xlink:href="#trends"></use>
+                    </svg>
+                    <span>Hoa Don</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="#" class="nav-link nav-toggle"><i data-feather="users"></i>
+                    <svg>
+                        <use xlink:href="#collection"></use>
+                    </svg>
+                    <span class="title">QL San Pham</span>
+                    <span class="arrow"></span>
+                </a>
+
+
+                <ul class="sub-menu">
+                    <li class="nav-item">
+                        <a href="#0" class="nav-link ">
+                            <svg>
+                                <use xlink:href="#option1"></use>
+                            </svg>
+                            <span class="title">Mau Sac</span>
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a href="#0" class="nav-link ">
+                            <svg>
+                                <use xlink:href="#option1"></use>
+                            </svg>
+                            <span class="title">Chat Lieu</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#0" class="nav-link ">
+                            <svg>
+                                <use xlink:href="#option1"></use>
+                            </svg>
+                            <span class="title">Kich Thuoc</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#0" class="nav-link ">
+                            <svg>
+                                <use xlink:href="#option1"></use>
+                            </svg>
+                            <span class="title">The Loai</span>
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a href="#0" class="nav-link ">
+                            <svg>
+                                <use xlink:href="#option1"></use>
+                            </svg>
+                            <span class="title">Other</span>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </li>
+
+            <li>
+                <a th:href="@{/admin/khachhang}">
+                    <svg>
+                        <use xlink:href="#comments"></use>
+                    </svg>
+                    <span>Khach Hang</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#0">
+                    <svg>
+                        <use xlink:href="#appearance"></use>
+                    </svg>
+                    <span>Nhan Vien</span>
+                </a>
+            </li>
+
+            <li class="menu-heading">
+                <h3>Service</h3>
+            </li>
+
+            <li>
+                <a href="#0">
+                    <svg>
+                        <use xlink:href="#settings"></use>
+                    </svg>
+                    <span>Doi tra</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#!/phieu-giam-gia">
+                    <svg>
+                        <use xlink:href="#options"></use>
+                    </svg>
+                    <span>Giam Gia</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#0">
+                    <svg>
+                        <use xlink:href="#charts"></use>
+                    </svg>
+                    <span>Giao Hang</span>
+                </a>
+            </li>
+            <li>
+                <div class="switch">
+                    <input type="checkbox" id="mode" checked>
+                    <label for="mode">
+                        <span></span>
+                        <span>Dark</span>
+                    </label>
+                </div>
+
+                <button class="collapse-btn" aria-expanded="true" aria-label="collapse menu">
+                    <svg aria-hidden="true">
+                        <use xlink:href="#collapse"></use>
+                    </svg>
+                    <span>Collapse</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+</header>
