@@ -33,13 +33,13 @@
         <div class="col-sm-6">
         <label class="form-label">Giới Tính</label>
         <div class="form-check">
-            <input class="form-check-input" type="radio" name=""  value="1" th:checked="${khachHang.gioiTinh == 1}">
+            <input class="form-check-input" type="radio" name=""  value="1" th:field="*{gioiTinh}">
             <label class="form-check-label">
                 Nam
             </label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="radio" name=""  value="0" th:checked="${khachHang.gioiTinh == 0}">
+            <input class="form-check-input" type="radio" name=""  value="0" th:field="*{gioiTinh}">
             <label class="form-check-label">
                 Nu
             </label>
@@ -66,13 +66,13 @@
     <div class="col-sm-6">
         <label class="form-label">Trạng Thái</label>
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="" value="0" th:checked="${khachHang.trangThai == 0}">
+            <input class="form-check-input" type="radio" name="" value="0" th:field="*{trangThai}">
             <label class="form-check-label">
                 Khong Hoat Dong
             </label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="radio" name=""  value="1" th:checked="${khachHang.trangThai == 1}">
+            <input class="form-check-input" type="radio" name=""  value="1" th:field="*{trangThai}">
             <label class="form-check-label">
                 Hoat Dong
             </label>

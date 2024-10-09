@@ -65,6 +65,10 @@ public class KhachHangController {
     }
 
     @PutMapping("/update/{id}")
+
+
+
+
     public String update(@PathVariable("id") Integer id, @ModelAttribute("khachHang") KhachHang khachHang) {
         khachHangService.updateKhachHang(id, khachHang);
         return "redirect:/admin/khachhang";
