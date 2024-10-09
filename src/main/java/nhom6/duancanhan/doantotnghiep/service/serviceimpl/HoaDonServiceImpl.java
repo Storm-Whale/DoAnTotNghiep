@@ -50,4 +50,10 @@ public class HoaDonServiceImpl implements HoaDonService {
     public void deleteHoaDon(Integer id) {
         hoaDonRepository.deleteById(id);
     }
+
+    @Override
+    public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return hoaDonRepository.findByTenNguoiNhanContaining(keyword, pageable);
+    }
 }
