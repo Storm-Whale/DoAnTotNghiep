@@ -4,26 +4,43 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
-import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
+import nhom6.duancanhan.doantotnghiep.service.service.*;
 import nhom6.duancanhan.doantotnghiep.util.ValidationErrorHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
-@RequestMapping(value = "/products")
+@RequestMapping(value = "/admin/products")
 public class SanPhamController {
 
     private final SanPhamService sanPhamService;
+    private final ThuongHieuService thuongHieuService;
+    private final ChatLieuService chatLieuService;
+    private final KieuCoAoService kieuCoAoService;
+    private final KieuTayAoService kieuTayAoService;
 
     @GetMapping(value = "/index")
-    public ResponseEntity<List<SanPhamResponse>> index() {
+    public String index(Model model) {
         List<SanPhamResponse> products = sanPhamService.getAllSanPham();
-        return ResponseEntity.ok(products);
+        model.addAttribute("products", products);
+        return "/admin/sanpham/index";
+    }
+
+    @GetMapping("/create")
+    public String create(Model model) {
+        model.addAttribute("product", new SanPhamRequest());
+        model.addAttribute("thuongHieus", thuongHieuService.getAll());
+        model.addAttribute("chatLieus", chatLieuService.getAll());
+        model.addAttribute("kieuCoAos", kieuCoAoService.getAll());
+        model.addAttribute("kieuTayAos", kieuTayAoService.getAll());
+        return "/admin/sanpham/create";
     }
 
     @GetMapping(value = "/find_by_id/{id}")
@@ -33,12 +50,13 @@ public class SanPhamController {
     }
 
     @PostMapping(value = "/store")
-    public ResponseEntity<?> store(@Valid @RequestBody SanPhamRequest productRequest, BindingResult bindingResult) {
+    public String store(@Valid @ModelAttribute("product") SanPhamRequest productRequest, BindingResult bindingResult) {
+        System.out.println(productRequest);
         if (bindingResult.hasErrors()) {
             ValidationErrorHandler.handleValidationErrors(bindingResult);
         }
         SanPhamResponse productResponse = sanPhamService.storeSanPham(productRequest);
-        return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
+        return "redirect:/admin/sanpham/index";
     }
 
     @PutMapping(value = "/update/{id}")
