@@ -18,7 +18,7 @@ public interface KhachHangService {
 
      void addKhachHang(KhachHang khachHang);
 
-     void updateKhachHang(Integer id, KhachHang khachHang);
+     void updateKhachHang(KhachHang khachHang);
 
      void deleteKhachHang(Integer id);
 }

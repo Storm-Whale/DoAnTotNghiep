@@ -64,9 +64,17 @@ public class KhachHangController {
         return "redirect:/admin/khachhang";
     }
 
-    @PostMapping("/update/{id}")
-    public String update(@PathVariable("id") Integer id, @ModelAttribute("khachHang") KhachHang khachHang) {
-        khachHangService.updateKhachHang(id, khachHang);
+    @GetMapping("/view_update/{id}")
+    public String viewUpdate(@PathVariable("id") Integer id,Model model) {
+        model.addAttribute("khachHang",khachHangService.detail(id));
+        model.addAttribute("listKH",khachHangService.getAll());
+        model.addAttribute("listTK",taiKhoanService.getAll());
+        return "/admin/customer/khachhang";
+    }
+
+    @PostMapping("/update")
+    public String update( @ModelAttribute("khachHang") KhachHang khachHang) {
+        khachHangService.updateKhachHang(khachHang);
         return "redirect:/admin/khachhang";
     }
 

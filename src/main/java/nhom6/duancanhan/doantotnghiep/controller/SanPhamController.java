@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = "/admin/products")
+@RequestMapping(value = "/admin/products/")
 public class SanPhamController {
 
     private final SanPhamService sanPhamService;
