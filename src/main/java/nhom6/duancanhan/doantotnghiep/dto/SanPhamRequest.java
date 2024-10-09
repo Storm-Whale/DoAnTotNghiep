@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SanPhamRequest {
 
+    @NotBlank(message = "Không được để trống")
     String tenSanPham;
 
     String anhUrl;

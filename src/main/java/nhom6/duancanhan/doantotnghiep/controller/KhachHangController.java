@@ -52,25 +52,25 @@ public class KhachHangController {
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("detailKH",khachHangService.detail(id));
+        model.addAttribute("khachHang",khachHangService.detail(id));
         model.addAttribute("listKH",khachHangService.getAll());
+        model.addAttribute("listTK",taiKhoanService.getAll());
         return "/admin/customer/khachhang";
     }
 
     @PostMapping("/add")
     public String add(@ModelAttribute("khachHang") KhachHang khachHang,Model model) {
-
         khachHangService.addKhachHang(khachHang);
         return "redirect:/admin/khachhang";
     }
 
-    @PutMapping("/update/{id}")
+    @PostMapping("/update/{id}")
     public String update(@PathVariable("id") Integer id, @ModelAttribute("khachHang") KhachHang khachHang) {
         khachHangService.updateKhachHang(id, khachHang);
         return "redirect:/admin/khachhang";
     }
 
-    @DeleteMapping("/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
         khachHangService.deleteKhachHang(id);
         return "redirect:/admin/khachhang";

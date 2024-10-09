@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminController {
 
     @GetMapping("")
-    private String sanphamindex() {
+    private String trangchuindex() {
         return "/admin/indexx";
     }
 }
