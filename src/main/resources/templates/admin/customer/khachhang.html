@@ -107,6 +107,11 @@
             <td th:text="${entry.email}"></td>
             <td th:text="${entry.taiKhoan.id}"></td>
             <td th:text="${entry.trangThai}"></td>
+            <td>
+                <a th:href="@{/admin/khachhang/update/{id}(id=${entry.id})}"><button class="btn btn-danger">Update</button> </a>
+                <a th:href="@{/admin/khachhang/delete/{id}(id=${entry.id})}"><button class="btn btn-danger">Delete</button></a>
+                <a th:href="@{/admin/khachhang/detail/{id}(id=${entry.id})}"><button class="btn btn-danger">Detail</button></a>
+            </td>
         </tr>
         </tbody>
     </table>
