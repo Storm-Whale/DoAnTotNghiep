@@ -69,7 +69,7 @@ public class KhachHangController {
         model.addAttribute("khachHang",khachHangService.detail(id));
         model.addAttribute("listKH",khachHangService.getAll());
         model.addAttribute("listTK",taiKhoanService.getAll());
-        return "/admin/customer/khachhang";
+        return "/admin/customer/updateKhachHang";
     }
 
     @PostMapping("/update")

@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
 <!--    <link rel="stylesheet" th:href="@{/css/khachhang.css}">-->
-<style>
-
-</style>
 </head>
 <body class="container-fluid">
 <article th:replace="~{admin/fragments/article :: article}"></article>
@@ -16,82 +14,18 @@
 <nav th:replace="~{admin/fragments/nav :: nav}"></nav>
 
 <section class="page-content">
-    <h2>Update Khach Hang</h2>
-    <!--    <section class="search-and-user">-->
-    <form th:action="@{/admin/khachhang/update}" method="post" th:object="${khachHang}">
-        <div class="row">
-
-            <div class="col-sm-6">
-                <label for="id" class="form-label">ID</label>
-                <input type="text" class="form-control" id="id" th:field="*{id}">
-            </div>
-
-    <div class="col-sm-6">
-        <label for="anh" class="form-label">Ảnh Đại Diện</label>
-        <input type="text" class="form-control" id="anh" th:field="*{anhUrl}">
-    </div>
-
-    <div class="col-sm-6">
-            <label for="ten" class="form-label">Tên Khách Hàng</label>
-            <input type="text" class="form-control" id="ten" th:field="*{ten}">
-        </div>
-
-        <div class="col-sm-6">
-            <label for="ngaySinh" class="form-label">Ngày Sinh</label>
-            <input type="date" class="form-control" id="ngaySinh" th:field="*{ngaySinh}">
-        </div>
-
-        <div class="col-sm-6">
-        <label class="form-label">Giới Tính</label>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name=""  value="1" th:field="*{gioiTinh}" checked>
-            <label class="form-check-label">
-                Nam
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name=""  value="0" th:field="*{gioiTinh}">
-            <label class="form-check-label">
-                Nu
-            </label>
-        </div>
-        </div>
-
-    <div class="col-sm-6">
-        <label for="number" class="form-label">SDT</label>
-        <input type="number" class="form-control" id="number" th:field="*{soDienThoai}">
-    </div>
-
-        <div class="col-sm-6">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" th:field="*{email}">
-        </div>
-
-    <div class="col-sm-6">
-        <label class="form-label">Tài Khoản</label>
-        <select class="form-select" aria-label="Default select example" th:field="*{taiKhoan}">
-            <option th:each="taiKhoan : ${listTK}" th:value="${taiKhoan.id}"  th:text="${taiKhoan.id}"></option>
-        </select>
-    </div>
-
-    <div class="col-sm-6">
-        <label class="form-label">Trạng Thái</label>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="" value="0" th:field="*{trangThai}">
-            <label class="form-check-label">
-                Khong Hoat Dong
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name=""  value="1" th:field="*{trangThai}">
-            <label class="form-check-label">
-                Hoat Dong
-            </label>
+    <div class="col-5" style="margin: 10px 10px 10px 10px">
+        <div class="input-group">
+        <input class="form-control" placeholder="Nhập tên sản phẩm để tìm..." type="text"/>
+        <button class="btn btn-dark"><i class="bi bi-search"></i> Search</button>
         </div>
     </div>
-        <button class="btn btn-danger">Submit</button>
-    </div>
-    </form>
+
+    <a class="wrapper">
+        <a href="#demo-modal">
+            <button class="btn btn-light" style="margin-bottom: 20px"><i class="bi bi-plus-circle-fill"></i>Thêm Khách Hàng</button>
+        </a>
+    </a>
 
     <table class="table">
         <thead>
@@ -122,14 +56,12 @@
             <td>
 <!--                <a th:href="@{/admin/khachhang/update/{id}(id=${entry.id})}">-->
 <!--                <a th:href="@{/admin/khachhang/view_update/{id}(id=${entry.id})}"><button class="btn btn-primary">Update</button></a>-->
-                <a class="wrapper">
-                    <a href="#demo-modal"><button class="btn btn-primary">ADD</button></a>
-                </a>
+
 
 <!--                </a>-->
-                <a th:href="@{/admin/khachhang/delete/{id}(id=${entry.id})}"><button class="btn btn-danger">Delete</button></a>
-                <a th:href="@{/admin/khachhang/detail/{id}(id=${entry.id})}"><button class="btn btn-danger">Detail</button></a>
-                <a th:href="@{/admin/khachhang/view_update/{id}(id=${entry.id})}"><button class="btn btn-danger">Update</button></a>
+                <a th:href="@{/admin/khachhang/delete/{id}(id=${entry.id})}"><button class="btn btn-light"><i class="bi bi-trash-fill fs3"></i></button></a>
+                <a th:href="@{/admin/khachhang/detail/{id}(id=${entry.id})}"><button class="btn btn-light"><i class="bi bi-ticket-detailed fs3"></i></button></a>
+                <a th:href="@{/admin/khachhang/view_update/{id}(id=${entry.id})}"><button class="btn btn-light"><i class="bi bi-pencil-square fs3"></i></button></a>
             </td>
         </tr>
         </tbody>
