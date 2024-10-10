@@ -40,7 +40,7 @@ public class NhanVienServiceImpl implements NhanVienService {
     }
 
     @Override
-    public void updateNhanVien(Integer id, NhanVien nhanVien) {
+    public void updateNhanVien(NhanVien nhanVien) {
         nhanVienRepository.save(nhanVien);
     }
 

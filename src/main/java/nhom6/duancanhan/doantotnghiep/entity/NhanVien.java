@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,7 +30,10 @@ public class NhanVien {
     private String ten;
 
     @Column(name = "ngay_sinh")
-    private String gioi_tinh;
+    private LocalDate ngaySinh;
+
+    @Column(name = "gioi_tinh")
+    private String gioiTinh;
 
     @Column(name = "sdt")
     private String sdt;
@@ -49,5 +54,5 @@ public class NhanVien {
     private VaiTro vaiTro;
 
     @Column(name = "trang_thai")
-    private String trangThai;
+    private Integer trangThai;
 }

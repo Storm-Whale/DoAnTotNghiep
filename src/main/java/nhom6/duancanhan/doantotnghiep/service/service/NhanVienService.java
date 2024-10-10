@@ -16,7 +16,7 @@ public interface NhanVienService {
 
     void addNhanVien(NhanVien nhanVien);
 
-    void updateNhanVien(Integer id, NhanVien nhanVien);
+    void updateNhanVien(NhanVien nhanVien);
 
     void deleteNhanVien(Integer id);
 }
