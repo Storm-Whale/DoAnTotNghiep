@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.entity.PhieuGiamGia;
 import nhom6.duancanhan.doantotnghiep.repository.PhieuGiamGiaRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.PhieuGiamGiaService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,9 +23,15 @@ public class PhieuGiamGiaImpl implements PhieuGiamGiaService {
     }
 
     @Override
+    public Page<PhieuGiamGia> phanTrang(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return this.phieuGiamGiaRepository.findAll(pageable);
+    }
+
+    @Override
     public Optional<PhieuGiamGia> getById(Integer id) {
         Optional<PhieuGiamGia> phieuGiamGia = phieuGiamGiaRepository.findById(id);
-        return phieuGiamGia;
+        return Optional.of(phieuGiamGia.get());
     }
 
     @Override
