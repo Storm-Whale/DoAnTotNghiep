@@ -58,11 +58,16 @@ public class ChatLieuTestController {
         return "redirect:/admin/chatlieu";
     }
 
-    @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer id, @RequestParam("_method") String method) {
-        if ("delete".equals(method)) {
-            chatLieuService.deleteChatLieu(id);
-        }
-        return "redirect:/admin/chatlieu";
-    }
+//    @PostMapping("/delete/{id}")
+//    public String delete(@PathVariable("id") Integer id, @RequestParam("_method") String method) {
+//        if ("delete".equals(method)) {
+//            chatLieuService.deleteChatLieu(id);
+//        }
+//        return "redirect:/admin/chatlieu";
+//    }
+@DeleteMapping("/delete/{id}")
+public String delete(@PathVariable("id") Integer id) {
+    chatLieuService.deleteChatLieu(id);
+    return "redirect:/admin/chatlieu";
+}
 }
