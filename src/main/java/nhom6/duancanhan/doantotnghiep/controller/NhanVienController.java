@@ -5,6 +5,7 @@ import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import nhom6.duancanhan.doantotnghiep.repository.VaiTroRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.NhanVienService;
 import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
+import nhom6.duancanhan.doantotnghiep.service.service.VaiTroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,7 @@ public class NhanVienController {
     private NhanVienService nhanVienService;
 
     @Autowired
-    private VaiTroRepository vaiTroRepository;
+    private VaiTroService vaiTroService;
 
     @Autowired
     private TaiKhoanService taiKhoanService;
@@ -43,7 +44,7 @@ public class NhanVienController {
         model.addAttribute("nhanVien",new NhanVien());
         model.addAttribute("listNV",listNV);
         model.addAttribute("listTK",taiKhoanService.getAll());
-        model.addAttribute("listVT",vaiTroRepository.findAll());
+        model.addAttribute("listVT",vaiTroService.getAll());
         model.addAttribute("currentPage ", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems",page.getTotalElements());
@@ -55,7 +56,7 @@ public class NhanVienController {
         model.addAttribute("nhanVien",nhanVienService.detail(id));
         model.addAttribute("listTK",taiKhoanService.getAll());
         model.addAttribute("listNV",nhanVienService.getAll());
-        model.addAttribute("listVT",vaiTroRepository.findAll());
+        model.addAttribute("listVT",vaiTroService.getAll());
         return "/admin/nhanvien/nhanvien";
     }
 
@@ -70,7 +71,7 @@ public class NhanVienController {
         model.addAttribute("nhanVien",nhanVienService.detail(id));
         model.addAttribute("listNV",nhanVienService.getAll());
         model.addAttribute("listTK",taiKhoanService.getAll());
-        model.addAttribute("listVT",vaiTroRepository.findAll());
+        model.addAttribute("listVT",vaiTroService.getAll());
         return "/admin/nhanvien/updatenhanvien";
     }
 

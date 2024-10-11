@@ -14,9 +14,10 @@
 <nav th:replace="~{admin/fragments/nav :: nav}"></nav>
 
 <section class="page-content">
+    <h1>Quản Lý Khách Hàng</h1>
     <div class="col-5" style="margin: 10px 10px 10px 10px">
         <div class="input-group">
-        <input class="form-control" placeholder="Nhập tên sản phẩm để tìm..." type="text"/>
+        <input class="form-control" placeholder="Nhập tên khách hàng để tìm..." type="text"/>
         <button class="btn btn-dark"><i class="bi bi-search"></i> Search</button>
         </div>
     </div>
@@ -48,19 +49,18 @@
             <td th:text="${entry.anhUrl}"></td>
             <td th:text="${entry.ten}"></td>
             <td th:text="${entry.ngaySinh}"></td>
-            <td th:text="${entry.gioiTinh}"></td>
+            <td th:text="${entry.gioiTinh  == 1 ? 'Nam' : 'Nu' }"></td>
             <td th:text="${entry.soDienThoai}"></td>
             <td th:text="${entry.email}"></td>
             <td th:text="${entry.taiKhoan.id}"></td>
-            <td th:text="${entry.trangThai}"></td>
+            <td th:text="${entry.trangThai == 1 ? 'Hoạt Động' : 'Không Hoạt Động' }"></td>
             <td>
 <!--                <a th:href="@{/admin/khachhang/update/{id}(id=${entry.id})}">-->
 <!--                <a th:href="@{/admin/khachhang/view_update/{id}(id=${entry.id})}"><button class="btn btn-primary">Update</button></a>-->
 
 
 <!--                </a>-->
-                <a th:href="@{/admin/khachhang/delete/{id}(id=${entry.id})}"><button class="btn btn-light"><i class="bi bi-trash-fill fs3"></i></button></a>
-                <a th:href="@{/admin/khachhang/detail/{id}(id=${entry.id})}"><button class="btn btn-light"><i class="bi bi-ticket-detailed fs3"></i></button></a>
+                <a th:href="@{/admin/khachhang/delete/{id}(id=${entry.id})}"><button class="btn btn-light" onclick="return confirm('Bạn có chắc chắn muốn xóa?');"><i class="bi bi-trash-fill fs3"></i></button></a>
                 <a th:href="@{/admin/khachhang/view_update/{id}(id=${entry.id})}"><button class="btn btn-light"><i class="bi bi-pencil-square fs3"></i></button></a>
             </td>
         </tr>
@@ -125,13 +125,13 @@
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="" value="0" th:field="*{trangThai}">
                             <label class="form-check-label">
-                                Khong Hoat Dong
+                                Không Hoạt Động
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name=""  value="1" th:field="*{trangThai}">
                             <label class="form-check-label">
-                                Hoat Dong
+                               Hoạt Động
                             </label>
                         </div>
                     </div>
