@@ -1,59 +1,68 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
-import nhom6.duancanhan.doantotnghiep.entity.ChatLieu;
+import nhom6.duancanhan.doantotnghiep.entity.KieuCoAo;
 import nhom6.duancanhan.doantotnghiep.entity.KieuTayAo;
-import nhom6.duancanhan.doantotnghiep.service.service.ChatLieuService;
 import nhom6.duancanhan.doantotnghiep.service.service.KieuTayAoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@RestController
+import java.util.Optional;
+
+@Controller
+@RequestMapping("/admin/kieu-tay-ao")
 public class KieuTayAoController {
-    @Autowired
-    private KieuTayAoService kieuTayAoService;
+    private final KieuTayAoService kieuTayAoService;
 
-    @GetMapping("/kieu-tay-ao/hien-thi")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(kieuTayAoService.getAll());
+    public KieuTayAoController(KieuTayAoService kieuTayAoService) {
+        this.kieuTayAoService = kieuTayAoService;
     }
 
-    @GetMapping("/kieu-tay-ao/phan-trang/{pageNo}")
-    public ResponseEntity<?> phanTrang(@PathVariable(value = "pageNo") int pageNo) {
+    @GetMapping("")
+    public String getAll(Model model) {
+        return phanTrang(1,model);
+    }
+
+    @GetMapping("/{pageNo}")
+    public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
         int pageSize = 3;
-        Page<KieuTayAo> page = kieuTayAoService.phanTrang(pageNo,pageSize);
-        List<KieuTayAo> listKTA = page.getContent();
-        return ResponseEntity.ok(listKTA);
+        Page<KieuTayAo> page = kieuTayAoService.phanTrang(pageNo, pageSize);
+        List<KieuTayAo> listKCA = page.getContent();
+        model.addAttribute("kieuTayAo", new KieuTayAo());
+        model.addAttribute("listKTA", listKCA);
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems",page.getTotalElements());
+        return "/admin/sanpham/KieuTayAo/KieuTayAo";
     }
 
-    @GetMapping("/kieu-tay-ao/detail/{id}")
-    public ResponseEntity<?> detail(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(kieuTayAoService.detail(id));
+    @GetMapping("/detail/{id}")
+    public String detail(@PathVariable("id") Integer id, Model model) {
+        Optional<KieuTayAo> kieuTayAo = kieuTayAoService.detail(id);
+        if (kieuTayAo.isPresent()){
+            model.addAttribute("kieuTayAo", kieuTayAo.get());
+            return "/admin/sanpham/KieuTayAo/Detail";
+        }
+        return "redirect:/admin/kieu-tay-ao";
     }
 
-    @PostMapping("/kieu-tay-ao/add")
-    public ResponseEntity<?> add(@RequestBody KieuTayAo kieuTayAo) {
+    @PostMapping("/add")
+    public String add(@ModelAttribute("kieuTayAo") KieuTayAo kieuTayAo) {
         kieuTayAoService.addKieuTayAo(kieuTayAo);
-        return ResponseEntity.ok(kieuTayAo);
+        return "redirect:/admin/kieu-tay-ao";
     }
 
-    @PutMapping("/kieu-tay-ao/update/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Integer id, @RequestBody KieuTayAo kieuTayAo) {
+    @PutMapping("/update/{id}")
+    public String update(@PathVariable("id") Integer id, @ModelAttribute("kieuTayAo") KieuTayAo kieuTayAo) {
         kieuTayAoService.updateKieuTayAo(id, kieuTayAo);
-        return ResponseEntity.ok("Update Thanh Cong");
+        return "redirect:/admin/kieu-tay-ao";
     }
 
-    @DeleteMapping("/kieu-tay-ao/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
+    @DeleteMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Integer id) {
         kieuTayAoService.deleteKieuTayAo(id);
-        return ResponseEntity.ok("Delete Thanh Cong");
+        return "redirect:/admin/kieu-tay-ao";
     }
 }
