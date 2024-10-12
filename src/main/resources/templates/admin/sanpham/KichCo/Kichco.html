@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Kích Cỡ</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="container-fluid">
+<article th:replace="~{admin/fragments/article :: article}"></article>
+<header th:replace="~{admin/fragments/header :: header}"></header>
+<nav th:replace="~{admin/fragments/nav :: nav}"></nav>
+
+<section class="page-content my-4">
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <h2>Quản Lý Kích Cỡ</h2>
+    </div>
+  </div>
+
+
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <form th:action="@{/admin/kichco/add}" th:object="${kichCo}" method="post" class="row g-3">
+        <div class="col-md-6">
+          <label for="tenKichCo" class="form-label">Tên Kích Cỡ</label>
+          <input type="text" class="form-control"  th:field="*{tenKichCo}" placeholder="Nhập tên kích cỡ">
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-plus"></i> Thêm Kích Cỡ
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Table danh sách màu sắc -->
+  <table class="table table-bordered table-hover text-center">
+    <thead class="table-dark">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Tên Kích Cỡ</th>
+      <th scope="col">Hành Động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="kichCo : ${listKC}">
+      <td th:text="${kichCo.id}"></td>
+      <td th:text="${kichCo.tenKichCo}"></td>
+      <td>
+        <form class="d-inline-block">
+          <a class="btn btn-info btn-sm" th:href="@{'/admin/kichco/detail/' + ${kichCo.id}}">
+            <i class="fas fa-info-circle"></i> Chi Tiết
+          </a>
+        </form>
+        <form class="d-inline-block" th:action="@{'/admin/kichco/delete/' + ${kichCo.id}}" method="post">
+          <input type="hidden" name="_method" value="delete"/>
+          <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">
+            <i class="fas fa-trash-alt"></i> Xóa
+          </button>
+        </form>
+
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div th:if="${totalPages >= 1}">
+    <nav>
+      <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+          <a class="page-link" th:href="@{'/admin/kichco/' + (${currentPage -1})}" aria-label="Previous">Trước</a>
+        </li>
+        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
+          <a class="page-link" th:href="@{'/admin/kichco/' + ${i}}" th:text="${i}"></a>
+        </li>
+        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+          <a class="page-link" th:href="@{'/admin/kichco/' + (${currentPage + 1})}" aria-label="Next">Sau</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</section>
+
+<!-- Modal Thêm Chất Liệu -->
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form th:action="@{/admin/kichco/add}" th:object="${kichCo}" method="post">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addModalLabel">Thêm Kích Cỡ</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="tenKichCo" class="form-label">Tên Kích Cỡ</label>
+            <input type="text" class="form-control" id="tenKichCo" th:field="*{tenKichCo}" placeholder="Nhập tên kích cỡ">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</section>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/javascrip/admin.js}"></script>
+</html>

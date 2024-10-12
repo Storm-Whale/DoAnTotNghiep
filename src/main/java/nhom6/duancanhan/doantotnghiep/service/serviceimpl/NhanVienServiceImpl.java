@@ -1,5 +1,11 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
 import nhom6.duancanhan.doantotnghiep.repository.NhanVienRepository;
@@ -8,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -17,6 +25,10 @@ public class NhanVienServiceImpl implements NhanVienService {
 
     @Autowired
     private NhanVienRepository nhanVienRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Override
     public List<NhanVien> getAll() {
         return nhanVienRepository.findAll();
@@ -40,7 +52,7 @@ public class NhanVienServiceImpl implements NhanVienService {
     }
 
     @Override
-    public void updateNhanVien(Integer id, NhanVien nhanVien) {
+    public void updateNhanVien(NhanVien nhanVien) {
         nhanVienRepository.save(nhanVien);
     }
 
@@ -48,4 +60,11 @@ public class NhanVienServiceImpl implements NhanVienService {
     public void deleteNhanVien(Integer id) {
         nhanVienRepository.deleteById(id);
     }
+
+    @Override
+    public List<NhanVien> findSearch(String keyword) {
+        return  nhanVienRepository.searchNhanVien(keyword);
+    }
+
+
 }

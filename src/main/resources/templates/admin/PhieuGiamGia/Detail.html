@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Chất Liệu</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="container-fluid">
+<article th:replace="~{admin/fragments/article :: article}"></article>
+<header th:replace="~{admin/fragments/header :: header}"></header>
+<nav th:replace="~{admin/fragments/nav :: nav}"></nav>
+
+<section class="page-content my-4">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <h2>Thông Tin Chi Tiết Phiếu Giảm Giá</h2>
+        </div>
+    </div>
+    <form th:action="@{'/admin/phieu-giam-gia/update/' + ${phieuGiamGia.id}}" method="post" class="row g-3">
+        <div class="col-md-6">
+            <labe class="form-label">Mã phiếu giảm giá</labe>
+            <input type="text" class="form-control" name="maPhieuGiamGia" th:value="*{phieuGiamGia.maPhieuGiamGia}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Tên phiếu giảm giá</label>
+            <input type="text" class="form-control" name="tenPhieuGiamGia" th:value="*{phieuGiamGia.tenPhieuGiamGia}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Số lượng</label>
+            <input type="number" class="form-control" name="soLuong" min="1" th:value="*{phieuGiamGia.soLuong}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Điều kiện giảm (VND)</label>
+            <input type="number" class="form-control" name="dieuKien" min="0" th:value="*{phieuGiamGia.dieuKien}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Loại giảm giá</label>
+            <select class="form-select" th:field="*{phieuGiamGia.kieuGiamGia}" required>
+                <option value="1" th:selected="${phieuGiamGia.kieuGiamGia == 1}">Phần trăm</option>
+                <option value="2" th:selected="${phieuGiamGia.kieuGiamGia == 2}">VND</option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Ngày bắt đầu</label>
+            <input type="date" class="form-control" name="ngayBatDau" th:value="${#dates.format(phieuGiamGia.ngayBatDau, 'yyyy-MM-dd')}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Ngày kết thúc</label>
+            <input type="date" class="form-control" name="ngayKetThuc" th:value="${#dates.format(phieuGiamGia.ngayKetThuc, 'yyyy-MM-dd')}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Giá trị tối thiểu (VND)</label>
+            <input type="number" class="form-control" name="giaTriMin" min="0" th:value="*{phieuGiamGia.giaTriMin}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Giá trị tối đa (VND)</label>
+            <input type="number" class="form-control" name="giaTriMax" min="0" th:value="*{phieuGiamGia.giaTriMax}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Trạng thái</label>
+            <select class="form-select" th:value="*{phieuGiamGia.trangThai}" required>
+                <option value="1" th:selected="${phieuGiamGia.trangThai == 1}">Inactive</option>
+                <option value="0" th:selected="${phieuGiamGia.trangThai == 0}">Active</option>
+            </select>
+        </div>
+
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-outline-warning">Update</button>
+        </div>
+    </form>
+
+</section>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</section>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/javascrip/admin.js}"></script>
+</html>

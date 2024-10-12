@@ -43,7 +43,7 @@ public class KhachHangServiceImpl implements KhachHangService {
     }
 
     @Override
-    public void updateKhachHang(Integer id,KhachHang khachHang) {
+    public void updateKhachHang(KhachHang khachHang) {
         khachHangRepository.save(khachHang);
     }
 

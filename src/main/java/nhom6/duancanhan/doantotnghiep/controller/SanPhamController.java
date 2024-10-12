@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/products")
+@Controller("/admin/products")
 public class SanPhamController {
 
     private final SanPhamService sanPhamService;

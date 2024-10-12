@@ -27,5 +27,5 @@ public interface HoaDonService {
     void updateHoaDon(Integer id, HoaDon hoaDon);
 
     void deleteHoaDon(Integer id);
-
+    Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize);
 }
