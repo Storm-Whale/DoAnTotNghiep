@@ -3,6 +3,7 @@ package nhom6.duancanhan.doantotnghiep.service.service;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +20,7 @@ public interface NhanVienService {
     void updateNhanVien(NhanVien nhanVien);
 
     void deleteNhanVien(Integer id);
+
+    List<NhanVien> findSearch (String keyword);
+
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.List;
@@ -86,4 +87,16 @@ public class NhanVienController {
         nhanVienService.deleteNhanVien(id);
         return "redirect:/admin/nhanvien";
     }
+
+    @GetMapping("/search")
+    public String search(@RequestParam String keyword,Model model) {
+        System.out.println("search" + keyword);
+        List<NhanVien> nv = nhanVienService.findSearch(keyword);
+        model.addAttribute("nhanVien",new NhanVien());
+        model.addAttribute("listNV",nv);
+        model.addAttribute("listTK",taiKhoanService.getAll());
+        model.addAttribute("listVT",vaiTroService.getAll());
+        return "/admin/nhanvien/nhanvien";
+    }
+
 }
