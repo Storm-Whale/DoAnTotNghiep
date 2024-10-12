@@ -1,13 +1,15 @@
 package nhom6.duancanhan.doantotnghiep.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 
 @Getter
+@Builder
+@AllArgsConstructor
+@Setter
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SanPhamChiTietRequest {
 

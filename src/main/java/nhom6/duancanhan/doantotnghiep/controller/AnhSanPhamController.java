@@ -83,7 +83,7 @@ public class AnhSanPhamController {
         }
 
         String uniqueFilename = UUID.randomUUID() + "_" + filename;
-        Path uploadDir = Paths.get("upload");
+        Path uploadDir = Paths.get("D:\\WorkPlace\\Java\\DuAnTotNghiep\\DoAnTotNghiep\\src\\main\\resources\\static\\img");
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
         }

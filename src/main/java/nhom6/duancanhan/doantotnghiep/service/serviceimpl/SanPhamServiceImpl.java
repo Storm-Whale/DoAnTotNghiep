@@ -76,6 +76,16 @@ public class SanPhamServiceImpl implements SanPhamService {
         }, "Lỗi khi xóa sản phẩm từ cơ sở dữ liệu");
     }
 
+    @Override
+    public void sortDeleteSanPham(Integer id) {
+        DatabaseOperationHandler.handleDatabaseOperation(() -> {
+            SanPham existingSanPham = findSanPhamById(id);
+            existingSanPham.setTrangThai(0);
+            sanPhamRepository.save(existingSanPham);
+            return null;
+        }, "Lỗi khi xóa sản phẩm từ cơ sở dữ liệu");
+    }
+
     private void validateDuplicateProductName(String tenSanPham) {
         if (sanPhamRepository.existsSanPhamByTenSanPham(tenSanPham)) {
             throw new DuplicateKeyException("Đã có sản phẩm với tên: " + tenSanPham);

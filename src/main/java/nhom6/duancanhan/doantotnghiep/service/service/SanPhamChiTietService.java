@@ -13,9 +13,13 @@ public interface SanPhamChiTietService {
 
     SanPhamChiTietResponse getSanPhamChiTietById(Integer id);
 
+    List<SanPhamChiTietResponse> getSanPhamChiTietByIdSP(Integer idSP);
+
     SanPhamChiTietResponse storeSanPhamChiTiet(SanPhamChiTietRequest sanPhamChiTietRequest);
 
     SanPhamChiTietResponse updateSanPhamChiTiet(Integer id, SanPhamChiTietRequest sanPhamChiTietRequest);
 
     void deleteSanPhamChiTiet(Integer id);
+
+    void sortDeleteSanPhamChiTiet(Integer id);
 }
