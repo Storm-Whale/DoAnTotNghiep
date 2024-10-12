@@ -63,6 +63,9 @@ public class NhanVienServiceImpl implements NhanVienService {
 
     @Override
     public List<NhanVien> findSearch(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            throw new IllegalArgumentException("Keyword cannot be blank");
+        }
         return  nhanVienRepository.searchNhanVien(keyword);
     }
 

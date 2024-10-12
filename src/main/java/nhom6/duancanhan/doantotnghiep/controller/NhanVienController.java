@@ -1,6 +1,8 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
 
+import jakarta.validation.Valid;
+import nhom6.duancanhan.doantotnghiep.dto.SearchDTO;
 import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import nhom6.duancanhan.doantotnghiep.repository.VaiTroRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.NhanVienService;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -89,13 +93,21 @@ public class NhanVienController {
     }
 
     @GetMapping("/search")
-    public String search(@RequestParam String keyword,Model model) {
-        System.out.println("search" + keyword);
-        List<NhanVien> nv = nhanVienService.findSearch(keyword);
-        model.addAttribute("nhanVien",new NhanVien());
-        model.addAttribute("listNV",nv);
-        model.addAttribute("listTK",taiKhoanService.getAll());
-        model.addAttribute("listVT",vaiTroService.getAll());
+    public String search(@Valid @ModelAttribute SearchDTO searchDTO, BindingResult result, Model model) {
+        if(result.hasErrors()) {
+            for(FieldError error : result.getFieldErrors()) {
+              model.addAttribute(error.getField(),error.getDefaultMessage());
+            }
+            model.addAttribute("listNV",nhanVienService.getAll());
+            return "/admin/nhanvien/nhanvien";
+        }
+        List<NhanVien> nv = nhanVienService.findSearch(searchDTO.getKeyword());
+      if(nv.isEmpty()) {
+          model.addAttribute("message", "No results found");
+      }else{
+          model.addAttribute("nhanVien",new NhanVien());
+          model.addAttribute("listNV",nv);
+      }
         return "/admin/nhanvien/nhanvien";
     }
 

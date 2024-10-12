@@ -19,7 +19,7 @@
     <form th:action="@{/admin/nhanvien/search}" method="get">
     <div class="col-5" style="margin: 10px 10px 10px 10px">
         <div class="input-group">
-            <input class="form-control" name="keyword" placeholder="Nhập tên nhân viên để tìm..." type="text"/>
+            <input class="form-control" name="keyword" placeholder="Nhập tên nhân viên để tìm..." type="text" th:value="${keyword}"/>
             <button type="submit" class="btn btn-dark"><i class="bi bi-search"></i> Search</button>
         </div>
     </div>
