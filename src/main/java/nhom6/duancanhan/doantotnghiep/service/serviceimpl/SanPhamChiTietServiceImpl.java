@@ -50,6 +50,16 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
     }
 
     @Override
+    public List<SanPhamChiTietResponse> getSanPhamChiTietByIdSP(Integer idSP) {
+        return DatabaseOperationHandler.handleDatabaseOperation(
+                () -> sanPhamChiTietRepository.findSanPhamChiTietByIdSanPham(idSP).stream()
+                        .map(sanPhamChiTietMapper::toSanPhamChiTietResponse)
+                        .toList(),
+                "Lỗi khi lấy thông tin sản phẩm chi tiết từ cơ sở dữ liệu"
+        );
+    }
+
+    @Override
     public SanPhamChiTietResponse storeSanPhamChiTiet(SanPhamChiTietRequest sanPhamChiTietRequest) {
         return DatabaseOperationHandler.handleDatabaseOperation(() -> {
             SanPhamChiTiet sanPhamChiTiet = mapSanPhamChiTietRequestToEntity(sanPhamChiTietRequest);
@@ -75,8 +85,18 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
         }, "Lỗi khi xóa sản phẩm từ cơ sở dữ liệu");
     }
 
+    @Override
+    public void sortDeleteSanPhamChiTiet(Integer id) {
+        DatabaseOperationHandler.handleDatabaseOperation(() -> {
+            SanPhamChiTiet sanPhamChiTiet = findSanPhamChiTietById(id);
+            sanPhamChiTiet.setTrangThai(0);
+            sanPhamChiTietRepository.save(sanPhamChiTiet);
+            return null;
+        },"Lỗi khi xóa sản phẩm từ cơ sở dữ liệu");
+    }
+
     private void validateSPCTExists(Integer id) {
-        if(!sanPhamChiTietRepository.existsById(id)) {
+        if (!sanPhamChiTietRepository.existsById(id)) {
             throw new DataNotFoundException("Không tìm thấy sản phẩm chi tiết với id: " + id);
         }
     }

@@ -39,7 +39,7 @@
         }
 
         .select2-container--default .select2-selection--single {
-            height: 42px; /* Chiều cao của Select2 */
+            height: 40px; /* Chiều cao của Select2 */
             border: 1px solid #ced4da; /* Đường viền cho Select2 */
             font-size: 16px;
         }
@@ -93,72 +93,89 @@
     <div class="content">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <p style="font-size: 22px; font-weight: bold; margin: 0;">
-                Sản phẩm/<span style="font-size: 14px; font-weight: normal;">Thêm sản phẩm</span>
+                Sản phẩm chi tiết/<span style="font-size: 14px; font-weight: normal;">Thêm sản phẩm chi tiết</span>
             </p>
         </div>
 
         <div class="container">
             <h5 class="mb-3" style="text-align: center">Thông tin sản phẩm</h5>
-            <form action="#" th:action="@{/admin/products/store}" th:object="${product}" method="post">
-                <div>
-                    <div class="mb-3">
-                        <label for="tenSanPham" class="form-label" style="font-size: 15px;">Tên sản phẩm</label>
-                        <input type="text" class="form-control" id="tenSanPham" placeholder="Nhập tên sản phẩm"
-                               style="font-size: 15px;" th:field="*{tenSanPham}">
-                    </div>
-                </div>
+            <form action="#" th:action="@{/admin/product-details/update/{id}(id=${old_product_details.id})}"
+                  method="post">
                 <div class="mb-3">
-                    <label for="idThuongHieu" class="form-label" style="font-size: 15px;">Thương Hiệu</label>
+                    <label for="idSP" class="form-label" style="font-size: 15px;">Sản Phẩm</label>
                     <div class="d-flex align-items-center">
-                        <select id="idThuongHieu" class="form-control js-select2" th:field="*{idThuongHieu}">
-                            <option value="" selected>Chọn thương hiệu</option>
-                            <option th:each="thuonghieu : ${thuongHieus}"
-                                    th:value="${thuonghieu.getId()}"
-                                    th:text="${thuonghieu.getTenThuongHieu()}"></option>
+                        <select id="idSP" class="form-control js-select2" required disabled>
+                            <option th:each="product : ${products}"
+                                    th:value="${product.getId()}"
+                                    th:text="${product.getTenSanPham()}"
+                                    th:selected="${old_product_details != null and old_product_details.tenSanPham == product.tenSanPham}"
+                            ></option>
                         </select>
-                        <button type="button" class="btn btn-primary btn-custom ms-2">Thêm</button>
+                    </div>
+                    <input type="hidden" name="id_sp"
+                           th:each="product, stat : ${products}"
+                           th:value="${product.tenSanPham == old_product_details.tenSanPham ? product.id : ''}"
+                    />
+                    <label for="idMauSac" class="form-label" style="font-size: 15px;">Màu Sắc</label>
+                    <div class="d-flex align-items-center">
+                        <select id="idMauSac" class="form-control js-select2" name="id_mau_sac" required>
+                            <option th:each="color : ${mau_sacs}"
+                                    th:value="${color.getId()}"
+                                    th:text="${color.getTenMauSac()}"
+                                    th:selected="${old_product_details != null and old_product_details.tenMauSac == color.tenMauSac}"
+                            ></option>
+                        </select>
                     </div>
                 </div>
+
                 <div class="mb-3">
-                    <label for="idChatLieu" class="form-label" style="font-size: 15px;">Chất liệu</label>
+                    <label for="idChatLieu" class="form-label" style="font-size: 15px;">Kích Cỡ</label>
                     <div class="d-flex align-items-center">
-                        <select id="idChatLieu" class="form-control js-select2" th:field="*{idChatLieu}">
-                            <option value="" selected>Chọn chất liệu</option>
-                            <option th:each="chatlieu : ${chatLieus}"
-                                    th:value="${chatlieu.getId()}"
-                                    th:text="${chatlieu.getTenChatLieu()}"></option>
+                        <select id="idChatLieu" class="form-control js-select2" name="id_kich_co" required>
+                            <option th:each="size : ${kich_cos}"
+                                    th:value="${size.getId()}"
+                                    th:text="${size.getTenKichCo()}"
+                                    th:selected="${old_product_details != null and old_product_details.tenKichCo == size.tenKichCo}"
+                            ></option>
                         </select>
-                        <button type="button" class="btn btn-primary btn-custom ms-2">Thêm</button>
                     </div>
                 </div>
+
                 <div class="mb-3">
-                    <label for="idCoAo" class="form-label" style="font-size: 15px;">Kiểu cổ áo</label>
-                    <div class="d-flex align-items-center">
-                        <select id="idCoAo" class="form-control js-select2" th:field="*{idCoAo}">
-                            <option value="" selected>Chọn kiểu cổ áo</option>
-                            <option th:each="coao : ${kieuCoAos}"
-                                    th:value="${coao.getId()}"
-                                    th:text="${coao.getTenCoAo()}"></option>
-                        </select>
-                        <button type="button" class="btn btn-primary btn-custom ms-2">Thêm</button>
-                    </div>
+                    <label for="soLuong" class="form-label" style="font-size: 15px;">Số Lượng</label>
+                    <input type="number" class="form-control" id="soLuong" placeholder="Nhập số lượng"
+                           th:value="${old_product_details.soLuong}"
+                           style="font-size: 15px;" name="so_luong" min="1" required>
                 </div>
+
                 <div class="mb-3">
-                    <label for="idTayAo" class="form-label" style="font-size: 15px;">Kiểu tay áo</label>
-                    <div class="d-flex align-items-center">
-                        <select id="idTayAo" class="form-control js-select2" th:field="*{idTayAo}">
-                            <option value="" selected>Chọn kiểu tay áo</option>
-                            <option th:each="tayao : ${kieuTayAos}"
-                                    th:value="${tayao.getId()}"
-                                    th:text="${tayao.getTenTayAo()}"></option>
-                        </select>
-                        <button type="button" class="btn btn-primary btn-custom ms-2">Thêm</button>
-                    </div>
+                    <label for="gia" class="form-label" style="font-size: 15px;">Giá</label>
+                    <input type="number" class="form-control" id="gia" placeholder="Nhập giá sản phẩm"
+                           style="font-size: 15px;" name="gia"
+                           th:value="${old_product_details.gia}"
+                           step="any" min="0" required>
                 </div>
+
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="trang_thai" id="dangHoatDong" value="1"
+                           th:checked="${old_product_details.trangThai == 1}"
+                           style="font-size: 15px;">
+                    <label class="form-check-label" for="dangHoatDong" style="font-size: 15px;">Đang Hoạt Động</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="trang_thai" id="ngungHoatDong" value="0"
+                           th:checked="${old_product_details.trangThai == 0}"
+                           style="font-size: 15px;">
+                    <label class="form-check-label" for="ngungHoatDong" style="font-size: 15px;">Ngưng Hoạt Động</label>
+                </div>
+
                 <div class="text-center">
-                    <input type="submit" class="btn btn-primary" value="Thêm sản phẩm mới"/>
+                    <input type="submit" class="btn btn-primary" value="Sửa"/>
                 </div>
             </form>
+
+
         </div>
     </div>
 </section>
