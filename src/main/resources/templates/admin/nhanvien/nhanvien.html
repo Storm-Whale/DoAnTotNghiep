@@ -53,7 +53,7 @@
             <td th:text="${nv.anhUrl}"></td>
             <td th:text="${nv.ten}"></td>
             <td th:text="${nv.ngaySinh}"></td>
-            <td th:text="${nv.gioiTinh == 1 ? 'Nam' : 'Nu'}"></td>
+            <td th:text="${nv.gioiTinh == 1 ? 'Nam' : 'Nữ'}"></td>
             <td th:text="${nv.sdt}"></td>
             <td th:text="${nv.email}"></td>
             <td th:text="${nv.taiKhoan.id}"></td>
@@ -103,7 +103,7 @@
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name=""  value="0" th:field="*{gioiTinh}">
                             <label class="form-check-label">
-                                Nu
+                                Nữ
                             </label>
                         </div>
                     </div>

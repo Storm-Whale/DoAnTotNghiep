@@ -35,7 +35,7 @@ public class NhanVien {
     private LocalDate ngaySinh;
 
     @Column(name = "gioi_tinh")
-    private String gioiTinh;
+    private Integer gioiTinh;
 
     @Column(name = "sdt")
     private String sdt;

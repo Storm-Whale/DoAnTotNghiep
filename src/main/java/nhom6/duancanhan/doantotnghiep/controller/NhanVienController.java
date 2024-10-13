@@ -107,6 +107,7 @@ public class NhanVienController {
       }else{
           model.addAttribute("nhanVien",new NhanVien());
           model.addAttribute("listNV",nv);
+//          phanTrang(1,model);
       }
         return "/admin/nhanvien/nhanvien";
     }
