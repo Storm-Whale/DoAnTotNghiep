@@ -6,21 +6,26 @@ GO
 CREATE TABLE thuong_hieu (
     id INT PRIMARY KEY IDENTITY(1,1),
     ten_thuong_hieu NVARCHAR(20),
-    trang_thai INT
+    trang_thai INT,
+	ngay_tao DATE
 );
 
 -- Table for Materials
 CREATE TABLE chat_lieu (
     id INT PRIMARY KEY IDENTITY(1,1),
     ten_chat_lieu NVARCHAR(20),
-    trang_thai INT
+    trang_thai INT,
+	ngay_tao DATE,
+	ngay_sua DATE
 );
 
 -- Table for Sleeve Styles
 CREATE TABLE kieu_tay_ao (
     id INT PRIMARY KEY IDENTITY(1,1),
     ten_tay_ao NVARCHAR(20),
-    trang_thai INT
+    trang_thai INT,
+	ngay_tao DATE,
+	ngay_sua DATE
 );
 
 -- Table for Collar Styles
@@ -28,20 +33,26 @@ CREATE TABLE kieu_co_ao (
     id INT PRIMARY KEY IDENTITY(1,1),
     ten_co_ao NVARCHAR(20),
     trang_thai INT
+	ngay_tao DATE,
+	ngay_sua DATE
 );
 
 -- Table for Colors
 CREATE TABLE mau_sac (
     id INT PRIMARY KEY IDENTITY(1,1),
     ten_mau_sac NVARCHAR(20),
-    trang_thai INT
+    trang_thai INT,
+	ngay_tao DATE,
+	ngay_sua DATE
 );
 
 -- Table for Sizes
 CREATE TABLE kich_co (
     id INT PRIMARY KEY IDENTITY(1,1),
     ten_kich_co NVARCHAR(20),
-    trang_thai INT
+    trang_thai INT,
+	ngay_tao DATE,
+	ngay_sua DATE
 );
 
 -- Product Table
@@ -89,7 +100,7 @@ CREATE TABLE phieu_giam_gia (
     ma NVARCHAR(20),
     ten_phieu_giam_gia NVARCHAR(20),
     so_luong INT,
-    dieu_kien INT,
+    dieu_kien DECIMAL(10,2),
     kieu_giam_gia INT,
     ngay_bat_dau DATE,
     ngay_ket_thuc DATE,
