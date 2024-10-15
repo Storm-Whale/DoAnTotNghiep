@@ -11,6 +11,9 @@ import nhom6.duancanhan.doantotnghiep.repository.*;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
 import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -84,6 +87,24 @@ public class SanPhamServiceImpl implements SanPhamService {
             sanPhamRepository.save(existingSanPham);
             return null;
         }, "Lỗi khi xóa sản phẩm từ cơ sở dữ liệu");
+    }
+
+    @Override
+    public Page<SanPhamResponse> timKiemSanPham(String keyword, Integer status, int page, int size) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() -> {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<SanPham> sanPhamPage;
+            if (keyword != null && !keyword.isEmpty() && status != null) {
+                sanPhamPage = sanPhamRepository.findByTenSanPhamContainingAndTrangThai(keyword, status, pageable);
+            } else if (keyword != null && !keyword.isEmpty()) {
+                sanPhamPage = sanPhamRepository.findByTenSanPhamContaining(keyword, pageable);
+            } else if (status != null) {
+                sanPhamPage = sanPhamRepository.findByTrangThai(status, pageable);
+            } else {
+                sanPhamPage = sanPhamRepository.findAll(pageable);
+            }
+            return sanPhamPage.map(sanPhamMapper::toSanPhamResponse);
+        }, "Lỗi khi lấy thông tin từ cơ sở dữ liệu");
     }
 
     private void validateDuplicateProductName(String tenSanPham) {

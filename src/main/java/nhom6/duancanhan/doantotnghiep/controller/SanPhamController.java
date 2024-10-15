@@ -6,15 +6,17 @@ import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
 import nhom6.duancanhan.doantotnghiep.util.ValidationErrorHandler;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+@Controller
 @RequiredArgsConstructor
-@Controller("/admin/products")
+@RequestMapping("/admin/products")
 public class SanPhamController {
 
     private final SanPhamService sanPhamService;
@@ -25,9 +27,38 @@ public class SanPhamController {
     private final SanPhamChiTietService sanPhamChiTietService;
 
     @GetMapping("/index")
-    public String index(Model model) {
-        List<SanPhamResponse> products = sanPhamService.getAllSanPham();
-        model.addAttribute("products", products);
+    public String index(
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "status", required = false) Integer status,
+            @PageableDefault(size = 5) Pageable pageable,
+            Model model
+    ) {
+        Page<SanPhamResponse> products = sanPhamService.timKiemSanPham(keyword, status,
+                pageable.getPageNumber(), pageable.getPageSize());
+        model.addAttribute("products", products.getContent());
+
+        // Tính toán startPage và endPage
+        int currentPage = products.getNumber();
+        int totalPages = products.getTotalPages();
+        int startPage = Math.max(0, currentPage - 2);
+        int endPage = Math.min(totalPages - 1, currentPage + 2);
+
+
+        // Điều chỉnh nếu dải trang không đủ 5 trang
+        if (endPage - startPage < 4) {
+            if (startPage == 0) {
+                endPage = Math.min(4, totalPages - 1);
+            } else if (endPage == totalPages - 1) {
+                startPage = Math.max(0, totalPages - 5);
+            }
+        }
+
+        // Truyền các giá trị vào model
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("status", status);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
         return "/admin/sanpham/index";
     }
 

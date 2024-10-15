@@ -23,41 +23,52 @@
                 Sản phẩm
             </h3>
         </div>
-        <div class="mb-3 row">
-            <div class="col-5">
-                <input class="form-control" placeholder="Nhập tên sản phẩm để tìm..." type="text"/>
-            </div>
-            <div class="col-2">
-                <button class="btn btn-outline-primary">
-                    <a th:href="@{/admin/products/create}">
-                        + Thêm mới
-                    </a>
-                </button>
-            </div>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-3 row">
-            <div class="col-8 d-flex align-items-center" style="font-size: 14px">
-                <h6 class="me-3">Trạng Thái</h6>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="trangThai" id="tatCa" value="option1">
-                    <label class="form-check-label" for="tatCa">Tất cả</label>
+        <form action="#" th:action="@{/admin/products/index}" method="get">
+            <div class="mb-3 row">
+                <div class="col-5">
+                        <input class="form-control" name="keyword" th:value="${keyword}" placeholder="Nhập tên sản phẩm để tìm..." type="text"/>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="trangThai" id="hoatDong" value="option2">
-                    <label class="form-check-label" for="hoatDong">Hoạt động</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="trangThai" id="ngungHoatDong" value="option3">
-                    <label class="form-check-label" for="ngungHoatDong">Ngưng hoạt động</label>
-                </div>
+                <button class="btn btn-outline-success col-2" type="submit">Tìm kiếm</button>
             </div>
-<!--            <div class="col-auto">-->
-<!--                <button class="btn btn-outline-warning">-->
-<!--                    Export Excel-->
-<!--                </button>-->
-<!--            </div>-->
-        </div>
+            <div class="d-flex justify-content-between align-items-center mb-3 row">
+                <div class="col-8 d-flex align-items-center" style="font-size: 14px">
+                    <h6 class="me-3">Trạng Thái</h6>
 
+                    <!-- Tất cả -->
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="status" id="tatCa" value=""
+                               th:checked="${status == null}">
+                        <label class="form-check-label" for="tatCa">Tất cả</label>
+                    </div>
+
+                    <!-- Hoạt động -->
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="status" id="hoatDong" value="1"
+                               th:checked="${status == 1}">
+                        <label class="form-check-label" for="hoatDong">Hoạt động</label>
+                    </div>
+
+                    <!-- Ngưng hoạt động -->
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="status" id="ngungHoatDong" value="0"
+                               th:checked="${status == 0}">
+                        <label class="form-check-label" for="ngungHoatDong">Ngưng hoạt động</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!--            <div class="col-auto">-->
+        <!--                <button class="btn btn-outline-warning">-->
+        <!--                    Export Excel-->
+        <!--                </button>-->
+        <!--            </div>-->
+        <div>
+            <button class="btn btn-outline-primary mb-3">
+                <a th:href="@{/admin/products/create}">
+                    + Thêm mới
+                </a>
+            </button>
+        </div>
         <table class="table table-bordered text-center" style="font-size: 15px">
             <thead>
             <tr>
@@ -117,15 +128,9 @@
 
             <nav>
                 <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            1
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            2
-                        </a>
+                    <li th:each="i : ${#numbers.sequence(startPage, endPage)}" class="page-item">
+                        <a class="page-link" th:href="@{/admin/products/index(page=${i}, keyword=${keyword}, status=${status})}"
+                           th:text="${i + 1}"></a>
                     </li>
                 </ul>
             </nav>

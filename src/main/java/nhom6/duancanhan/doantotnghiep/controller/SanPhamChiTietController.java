@@ -1,6 +1,5 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietResponse;
@@ -8,12 +7,10 @@ import nhom6.duancanhan.doantotnghiep.service.service.KichCoService;
 import nhom6.duancanhan.doantotnghiep.service.service.MauSacService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
-import nhom6.duancanhan.doantotnghiep.util.ValidationErrorHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
