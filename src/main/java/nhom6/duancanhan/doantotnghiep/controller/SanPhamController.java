@@ -30,11 +30,12 @@ public class SanPhamController {
     public String index(
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "status", required = false) Integer status,
+            @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
             @PageableDefault(size = 5) Pageable pageable,
             Model model
     ) {
         Page<SanPhamResponse> products = sanPhamService.timKiemSanPham(keyword, status,
-                pageable.getPageNumber(), pageable.getPageSize());
+                pageable.getPageNumber(), size);
         model.addAttribute("products", products.getContent());
 
         // Tính toán startPage và endPage
@@ -42,7 +43,6 @@ public class SanPhamController {
         int totalPages = products.getTotalPages();
         int startPage = Math.max(0, currentPage - 2);
         int endPage = Math.min(totalPages - 1, currentPage + 2);
-
 
         // Điều chỉnh nếu dải trang không đủ 5 trang
         if (endPage - startPage < 4) {
@@ -58,6 +58,9 @@ public class SanPhamController {
         model.addAttribute("status", status);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("size", size); // Truyền size để sử dụng trong view
 
         return "/admin/sanpham/index";
     }
