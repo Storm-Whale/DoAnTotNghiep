@@ -19,7 +19,7 @@
     <form th:action="@{/admin/nhanvien/search}" method="get">
     <div class="col-5" style="margin: 10px 10px 10px 10px">
         <div class="input-group">
-            <input class="form-control" name="keyword" placeholder="Nhập tên nhân viên để tìm..." type="text"/>
+            <input class="form-control" name="keyword" placeholder="Nhập tên nhân viên để tìm..." type="text" th:value="${keyword}"/>
             <button type="submit" class="btn btn-dark"><i class="bi bi-search"></i> Search</button>
         </div>
     </div>
@@ -53,7 +53,7 @@
             <td th:text="${nv.anhUrl}"></td>
             <td th:text="${nv.ten}"></td>
             <td th:text="${nv.ngaySinh}"></td>
-            <td th:text="${nv.gioiTinh == 1 ? 'Nam' : 'Nu'}"></td>
+            <td th:text="${nv.gioiTinh == 1 ? 'Nam' : 'Nữ'}"></td>
             <td th:text="${nv.sdt}"></td>
             <td th:text="${nv.email}"></td>
             <td th:text="${nv.taiKhoan.id}"></td>
@@ -103,7 +103,7 @@
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name=""  value="0" th:field="*{gioiTinh}">
                             <label class="form-check-label">
-                                Nu
+                                Nữ
                             </label>
                         </div>
                     </div>
