@@ -1,10 +1,13 @@
 <div th:fragments="form">
 <form th:action="@{/admin/khachhang/add}" th:object="${khachHang}" method="post">
   <div class="row">
+
+    <label for="id">ID:</label>
+    <input type="number" th:field="*{id}" id="id">
+
     <div class="col-sm-6">
       <label class="form-label">Ảnh Đại Diện</label>
       <input type="text" class="form-control" th:field="*{anhUrl}">
-
     </div>
 
     <div class="col-sm-6">
