@@ -69,7 +69,7 @@ public class NhanVienController {
             for(FieldError error : result.getFieldErrors()) {
                 model.addAttribute(error.getField(),error.getDefaultMessage());
             }
-            return "adNhanVien1";
+            return "/admin/nhanvien/adNhanVien";
         }
         model.addAttribute("nhanVien",nhanVien);
         nhanVienService.addNhanVien(nhanVien);
