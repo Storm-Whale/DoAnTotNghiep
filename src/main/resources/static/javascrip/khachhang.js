@@ -1,13 +1,20 @@
-const dialog = document.querySelector("dialog");
-const showButton = document.querySelector("dialog + button");
-const closeButton = document.querySelector("dialog button");
+var dialogModal = document.getElementById("dialogModal");
+var openDialogBtn = document.getElementById("openDialogBtn");
+var closeDialogBtn = document.getElementById("closeDialogBtn");
 
-// "Show the dialog" button opens the dialog modally
-showButton.addEventListener("click", () => {
-    dialog.showModal();
-});
+// Khi nhấn vào nút "Mở Dialog", hiển thị hộp thoại (modal)
+openDialogBtn.onclick = function() {
+    dialogModal.style.display = "block";
+}
 
-// "Close" button closes the dialog
-closeButton.addEventListener("click", () => {
-    dialog.close();
-});
+// Khi nhấn vào nút "Đóng" (x), ẩn hộp thoại (modal)
+closeDialogBtn.onclick = function() {
+    dialogModal.style.display = "none";
+}
+
+// Khi nhấn ra ngoài vùng hộp thoại, cũng ẩn modal
+window.onclick = function(event) {
+    if (event.target == dialogModal) {
+        dialogModal.style.display = "none";
+    }
+}

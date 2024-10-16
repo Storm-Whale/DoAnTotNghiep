@@ -1,6 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
 
+import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.service.service.KhachHangService;
 import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
@@ -9,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -59,7 +62,13 @@ public class KhachHangController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("khachHang") KhachHang khachHang,Model model) {
+    public String add(@Valid @ModelAttribute("khachHang") KhachHang khachHang, BindingResult result, Model model) {
+        if(result.hasErrors()) {
+            for(FieldError error : result.getFieldErrors()) {
+                model.addAttribute(error.getField(),error.getDefaultMessage());
+            }
+            return "";
+        }
         khachHangService.addKhachHang(khachHang);
         return "redirect:/admin/khachhang";
     }
@@ -73,7 +82,13 @@ public class KhachHangController {
     }
 
     @PostMapping("/update")
-    public String update( @ModelAttribute("khachHang") KhachHang khachHang) {
+    public String update( @Valid @ModelAttribute("khachHang") KhachHang khachHang, BindingResult result, Model model) {
+        if(result.hasErrors()) {
+            for(FieldError error : result.getFieldErrors()) {
+                model.addAttribute(error.getField(),error.getDefaultMessage());
+            }
+            return "/admin/customer/updateKhachHang";
+        }
         khachHangService.updateKhachHang(khachHang);
         return "redirect:/admin/khachhang";
     }
