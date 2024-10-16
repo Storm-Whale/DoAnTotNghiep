@@ -29,16 +29,19 @@
         <div class="col-sm-6">
             <label class="form-label">Tên Khách Hàng</label>
             <input type="text" class="form-control" th:field="*{ten}">
+            <span style="color: red" th:if="${#fields.hasErrors('ten')}" th:errors="*{ten}"></span>
         </div>
 
         <div class="col-sm-6">
             <label class="form-label">Ngày SInh</label>
             <input type="date" class="form-control" th:field="*{ngaySinh}">
+            <span style="color: red" th:if="${#fields.hasErrors('ngaySinh')}" th:errors="*{ngaySinh}"></span>
         </div>
 
         <div class="col-sm-6">
             <label  class="form-label">SDT</label>
             <input type="number" class="form-control" th:field="*{sdt}">
+            <span style="color: red" th:if="${#fields.hasErrors('sdt')}" th:errors="*{sdt}"></span>
         </div>
 
         <div class="col-sm-6">
@@ -55,11 +58,13 @@
                     Nu
                 </label>
             </div>
+            <span style="color: red" th:if="${#fields.hasErrors('gioiTinh')}" th:errors="*{gioiTinh}"></span>
         </div>
 
         <div class="col-sm-6">
             <label class="form-label">Email</label>
-            <input type="email" class="form-control"  th:field="*{email}">
+            <input type="text" class="form-control"  th:field="*{email}">
+            <span style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
         </div>
 
         <div class="col-sm-6">
@@ -74,6 +79,7 @@
             <select class="form-select" aria-label="Default select example" th:field="*{vaiTro}">
                 <option th:each="vaiTro : ${listVT}" th:value="${vaiTro.id}"  th:text="${vaiTro.id}"></option>
             </select>
+
         </div>
 
         <div class="col-sm-6">
@@ -90,6 +96,7 @@
                     Hoạt Động
                 </label>
             </div>
+            <span style="color: red" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"></span>
         </div>
         <button class="btn btn-danger">Submit</button>
     </div>
