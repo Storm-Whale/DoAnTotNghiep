@@ -4,7 +4,6 @@ package nhom6.duancanhan.doantotnghiep.controller;
 import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.dto.SearchDTO;
 import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
-import nhom6.duancanhan.doantotnghiep.repository.VaiTroRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.NhanVienService;
 import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
 import nhom6.duancanhan.doantotnghiep.service.service.VaiTroService;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.List;
@@ -71,7 +69,7 @@ public class NhanVienController {
             for(FieldError error : result.getFieldErrors()) {
                 model.addAttribute(error.getField(),error.getDefaultMessage());
             }
-            return "/admin/nhanvien/adNhanVien";
+            return "adNhanVien1";
         }
         model.addAttribute("nhanVien",nhanVien);
         nhanVienService.addNhanVien(nhanVien);
