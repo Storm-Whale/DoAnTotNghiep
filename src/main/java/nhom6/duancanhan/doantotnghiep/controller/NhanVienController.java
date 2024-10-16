@@ -69,7 +69,8 @@ public class NhanVienController {
             for(FieldError error : result.getFieldErrors()) {
                 model.addAttribute(error.getField(),error.getDefaultMessage());
             }
-            return "/admin/nhanvien/adNhanVien";
+            phanTrang(1,model);
+             return "redirect:/admin/nhanvien/add#dialog";
         }
         model.addAttribute("nhanVien",nhanVien);
         nhanVienService.addNhanVien(nhanVien);

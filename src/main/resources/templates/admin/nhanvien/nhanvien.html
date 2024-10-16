@@ -28,7 +28,7 @@
     </form>
 
     <a class="wrapper">
-        <a href="#demo-modal">
+        <a th:href="@{#dialog}">
             <button class="btn btn-light" style="margin-bottom: 20px"><i class="bi bi-plus-circle-fill"></i>Thêm Khách Hàng</button>
         </a>
     </a>
@@ -70,13 +70,12 @@
     </table>
 
 
-    <div id="demo-modal" class="modal">
+    <div id="dialog" class="modal">
         <div class="modal__content">
             <h2>Thêm Khách Hàng</h2>
             <div th:replace="~{admin/nhanvien/adNhanVien :: form}"></div>
         </div>
     </div>
-
 
     <div th:if="${totalPages >= 1}">
         <div class="row col-sm-10">
