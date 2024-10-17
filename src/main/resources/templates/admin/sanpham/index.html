@@ -106,8 +106,8 @@
                         <!-- Product Name -->
                         <div class="col-md-4">
                             <label for="tenSanPham" class="form-label">Tên Sản Phẩm</label>
-                            <input type="text" class="form-control" id="tenSanPham" name="tenSanPham"
-                                   th:value="${tenSanPham}" placeholder="Nhập tên sản phẩm">
+                            <input type="text" class="form-control" id="tenSanPham" name="keyword"
+                                   th:value="${keyword}" placeholder="Nhập tên sản phẩm">
                         </div>
 
                         <!-- Status Filter -->
@@ -123,12 +123,13 @@
                         <!-- Brand Name -->
                         <div class="col-md-4">
                             <label for="thuongHieu" class="form-label">Tên Thương Hiệu</label>
-                            <select class="form-select js-select2" id="thuongHieu" name="thuongHieu">
+                            <select class="form-select js-select2" id="thuongHieu" name="thuongHieuId">
                                 <option value="">Chọn Thương Hiệu</option>
                                 <option
                                         th:each="thuonghieu : ${thuongHieus}"
                                         th:value="${thuonghieu.id}"
                                         th:text="${thuonghieu.tenThuongHieu}"
+                                        th:selected="${thuonghieu.id == thuongHieuId and thuongHieuId != null}"
                                 ></option>
                             </select>
                         </div>
@@ -136,12 +137,13 @@
                         <!-- Material Name -->
                         <div class="col-md-4">
                             <label for="chatLieu" class="form-label">Tên Chất Liệu</label>
-                            <select class="form-select js-select2" id="chatLieu" name="chatLieu">
+                            <select class="form-select js-select2" id="chatLieu" name="chatLieuId">
                                 <option value="">Chọn Chất Liệu</option>
                                 <option
                                         th:each="chatlieu : ${chatLieus}"
                                         th:value="${chatlieu.id}"
                                         th:text="${chatlieu.tenChatLieu}"
+                                        th:selected="${chatlieu.id == chatLieuId and chatLieuId != null}"
                                 ></option>
                             </select>
                         </div>
@@ -149,12 +151,13 @@
                         <!-- Sleeve Type -->
                         <div class="col-md-4">
                             <label for="tayAo" class="form-label">Tên Tay Áo</label>
-                            <select class="form-select js-select2" id="tayAo" name="tayAo">
+                            <select class="form-select js-select2" id="tayAo" name="tayAoId">
                                 <option value="">Chọn Tay Áo</option>
                                 <option
                                         th:each="tayao : ${kieuTayAos}"
                                         th:value="${tayao.id}"
                                         th:text="${tayao.tenTayAo}"
+                                        th:selected="${tayao.id == tayAoId and tayAoId != null}"
                                 ></option>
                             </select>
                         </div>
@@ -162,12 +165,13 @@
                         <!-- Collar Type -->
                         <div class="col-md-4">
                             <label for="coAo" class="form-label">Tên Cổ Áo</label>
-                            <select class="form-select js-select2" id="coAo" name="coAo">
+                            <select class="form-select js-select2" id="coAo" name="coAoId">
                                 <option value="">Chọn Cổ Áo</option>
                                 <option
                                         th:each="coao : ${kieuCoAos}"
                                         th:value="${coao.id}"
                                         th:text="${coao.tenCoAo}"
+                                        th:selected="${coao.id == coAoId and coAoId != null}"
                                 ></option>
                             </select>
                         </div>
@@ -244,7 +248,7 @@
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="d-flex align-items-center">
                 <label for="itemsPerPage" class="me-2">Xem</label>
-                <select class="form-select form-select-sm" id="itemsPerPage" style="width: 80px;"
+                <select class="form-select form-select-sm" id="itemsPerPage" name="size" style="width: 80px;"
                         onchange="changeItemsPerPage()">
                     <option value="5" th:selected="${size == 5}">5</option>
                     <option value="10" th:selected="${size == 10}">10</option>
@@ -287,16 +291,26 @@
         // Lấy giá trị hiện tại của các tham số URL
         var currentUrl = new URL(window.location.href);
         var keyword = currentUrl.searchParams.get("keyword") || "";
-        var status = currentUrl.searchParams.get("status") || "";
+
+        // Lấy giá trị từ các phần tử select
+        var status = document.getElementById("trangThai").value || "";
+        var thuongHieuId = document.getElementById("thuongHieu").value || "";
+        var chatLieuId = document.getElementById("chatLieu").value || "";
+        var tayAoId = document.getElementById("tayAo").value || "";
+        var coAoId = document.getElementById("coAo").value || "";
+
         var page = currentUrl.searchParams.get("page") || 0;
 
         // Tạo URL mới với giá trị size và giữ nguyên các tham số khác
-        var newUrl = `/admin/products/index?page=${page}&keyword=${keyword}&status=${status}&size=${size}`;
+        var newUrl = `/admin/products/index?page=${page}&keyword=${keyword}&status=${status}&thuongHieuId=${thuongHieuId}&chatLieuId=${chatLieuId}&tayAoId=${tayAoId}&coAoId=${coAoId}&size=${size}`;
 
         // Điều hướng đến URL mới
         window.location.href = newUrl;
     }
 </script>
+
+
+
 <!-- JavaScript của jQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 

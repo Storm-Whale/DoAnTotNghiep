@@ -2,6 +2,7 @@ package nhom6.duancanhan.doantotnghiep.service.service;
 
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
+import nhom6.duancanhan.doantotnghiep.dto.SanPhamShowOnClient;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,7 @@ public interface SanPhamService {
 
     void sortDeleteSanPham(Integer id);
 
-    Page<SanPhamResponse> timKiemSanPham(String keyword, Integer status, int page, int size);
+    Page<SanPhamResponse> timKiemSanPham(String keyword, Integer status, Integer thuongHieuId, Integer chatLieuId, Integer tayAoId, Integer coAoId, int page, int size);
+
+    List<SanPhamShowOnClient> getAllSanPhamShowOnClient();
 }

@@ -471,20 +471,20 @@ footer {
     transform: scale(1.05);
 }
 
-.product-card .discount-badge {
-    background-color: red;
-    color: white;
-    padding: 5px;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 12px;
-    transition: background-color 0.3s ease;
-}
+/*.product-card .discount-badge {*/
+/*    background-color: red;*/
+/*    color: white;*/
+/*    padding: 5px;*/
+/*    position: absolute;*/
+/*    top: 10px;*/
+/*    left: 10px;*/
+/*    font-size: 12px;*/
+/*    transition: background-color 0.3s ease;*/
+/*}*/
 
-.product-card .discount-badge:hover {
-    background-color: darkred;
-}
+/*.product-card .discount-badge:hover {*/
+/*    background-color: darkred;*/
+/*}*/
 
 .product-card del {
     color: gray;
