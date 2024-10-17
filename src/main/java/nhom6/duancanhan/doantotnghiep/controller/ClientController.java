@@ -15,6 +15,7 @@ public class ClientController {
 
     @GetMapping("2")
     private String trangchu2index() {
+
         return "/client/trangchu2";
     }
 }
