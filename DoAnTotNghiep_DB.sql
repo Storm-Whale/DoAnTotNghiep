@@ -33,7 +33,7 @@ CREATE TABLE kieu_tay_ao (
 CREATE TABLE kieu_co_ao (
     id INT PRIMARY KEY IDENTITY(1,1),
     ten_co_ao NVARCHAR(20),
-    trang_thai INT
+    trang_thai INT,
 	ngay_tao DATE,
 	ngay_sua DATE
 );

@@ -15,7 +15,8 @@ public interface SanPhamMapper {
             @Mapping(source = "thuongHieu.tenThuongHieu", target = "tenThuongHieu"),
             @Mapping(source = "chatLieu.tenChatLieu", target = "tenChatLieu"),
             @Mapping(source = "tayAo.tenTayAo", target = "tenTayAo"),
-            @Mapping(source = "coAo.tenCoAo", target = "tenCoAo")
+            @Mapping(source = "coAo.tenCoAo", target = "tenCoAo"),
+            @Mapping(source = "ngayTao", target = "ngayTao")
     })
     SanPhamResponse toSanPhamResponse(SanPham sanPham);
 

@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "san_pham")
-public class SanPham {
+public class SanPham extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -35,7 +35,9 @@ public class SanPham {
     @JoinColumn(name = "id_co_ao")
     private KieuCoAo coAo;
 
+    @Column(name = "mo_ta")
+    private String moTa;
+
     @Column(name = "trang_thai")
     private Integer trangThai;
-
 }

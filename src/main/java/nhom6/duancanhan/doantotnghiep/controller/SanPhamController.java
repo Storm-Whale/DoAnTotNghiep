@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/products")
@@ -61,6 +63,8 @@ public class SanPhamController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("size", size); // Truyền size để sử dụng trong view
+
+        addSanPhamModelAttributes(model);
 
         return "/admin/sanpham/index";
     }
@@ -122,6 +126,13 @@ public class SanPhamController {
 
     private void addSanPhamModelAttributes(Model model, SanPhamRequest sanPhamRequest) {
         model.addAttribute("product", sanPhamRequest);
+        model.addAttribute("thuongHieus", thuongHieuService.getAll());
+        model.addAttribute("chatLieus", chatLieuService.getAll());
+        model.addAttribute("kieuCoAos", kieuCoAoService.getAll());
+        model.addAttribute("kieuTayAos", kieuTayAoService.getAll());
+    }
+
+    private void addSanPhamModelAttributes(Model model) {
         model.addAttribute("thuongHieus", thuongHieuService.getAll());
         model.addAttribute("chatLieus", chatLieuService.getAll());
         model.addAttribute("kieuCoAos", kieuCoAoService.getAll());

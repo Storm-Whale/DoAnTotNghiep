@@ -26,4 +26,6 @@ public class SanPhamRequest {
     Integer idCoAo;
 
     Integer trangThai;
+
+    String moTa;
 }

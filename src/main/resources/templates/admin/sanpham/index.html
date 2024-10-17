@@ -5,8 +5,83 @@
     <title>Document</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
 
+    <!-- CSS -->
+    <style>
+        .wrap {
+            width: 800px;
+            margin: 0 auto;
+        }
+
+        .intro {
+            display: flex;
+        }
+
+        .intro h3 {
+            color: #2857a7;
+        }
+
+        .using-select2 {
+            width: 50%;
+        }
+
+        .js-select2 {
+            width: 100%;
+            height: 42px;
+            font-size: 16px;
+        }
+
+        .install-select2 {
+            width: 100%;
+        }
+
+        .select2-container--default .select2-selection--single {
+            height: 42px; /* Chiều cao của Select2 */
+            border: 1px solid #ced4da; /* Đường viền cho Select2 */
+            font-size: 16px;
+        }
+
+        .select2-selection__rendered {
+            line-height: 38px; /* Căn giữa chữ */
+            display: flex; /* Sử dụng flexbox để căn giữa */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            padding-left: 10px; /* Khoảng cách bên trái */
+        }
+
+        .select2-selection__arrow {
+            height: 38px; /* Căn chỉnh chiều cao mũi tên */
+        }
+
+        .select2-selection__placeholder {
+            line-height: 38px; /* Căn giữa chữ placeholder */
+        }
+
+        pre {
+            border-left: 4px solid #2857a7 !important;
+            display: block;
+            padding-left: 5px !important;
+            text-align: left;
+        }
+
+        /* Đảm bảo nút Thêm có kích thước phù hợp */
+        .btn-custom {
+            height: 40px; /* Đảm bảo nút có chiều cao tương đương với Select2 */
+            font-size: 16px; /* Thay đổi cỡ chữ cho nút */
+        }
+
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            /*text-align: center; !* Căn giữa văn bản *!*/
+            line-height: 2; /* Điều chỉnh chiều cao của dòng để văn bản nằm giữa */
+        }
+
+        .select2-container .select2-selection--single {
+            height: auto; /* Đảm bảo chiều cao không bị cố định */
+        }
+    </style>
 </head>
 
 <body class="container-fluid">
@@ -15,153 +90,192 @@
 <header th:replace="~{admin/fragments/header :: header}"></header>
 <nav th:replace="~{admin/fragments/nav :: nav}"></nav>
 
-
 <section class="page-content">
     <div class="content">
+        <!-- Section header -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>
-                Sản phẩm
-            </h3>
+            <h3 class="mb-0">Sản phẩm</h3>
         </div>
-        <form action="#" th:action="@{/admin/products/index}" method="get">
-            <div class="mb-3 row">
-                <div class="col-5">
-                        <input class="form-control" name="keyword" th:value="${keyword}" placeholder="Nhập tên sản phẩm để tìm..." type="text"/>
-                </div>
-                <button class="btn btn-outline-success col-2" type="submit">Tìm kiếm</button>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mb-3 row">
-                <div class="col-8 d-flex align-items-center" style="font-size: 14px">
-                    <h6 class="me-3">Trạng Thái</h6>
 
-                    <!-- Tất cả -->
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="status" id="tatCa" value=""
-                               th:checked="${status == null}">
-                        <label class="form-check-label" for="tatCa">Tất cả</label>
-                    </div>
+        <!-- Search Form -->
+        <form th:action="@{/admin/products/index}" method="get">
+            <div class="container-fluid mb-4" style="font-size: 15px;">
+                <div class="border p-4 shadow-sm" style="border-radius: 12px;">
+                    <div class="row g-3">
 
-                    <!-- Hoạt động -->
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="status" id="hoatDong" value="1"
-                               th:checked="${status == 1}">
-                        <label class="form-check-label" for="hoatDong">Hoạt động</label>
-                    </div>
+                        <!-- Product Name -->
+                        <div class="col-md-4">
+                            <label for="tenSanPham" class="form-label">Tên Sản Phẩm</label>
+                            <input type="text" class="form-control" id="tenSanPham" name="tenSanPham"
+                                   th:value="${tenSanPham}" placeholder="Nhập tên sản phẩm">
+                        </div>
 
-                    <!-- Ngưng hoạt động -->
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="status" id="ngungHoatDong" value="0"
-                               th:checked="${status == 0}">
-                        <label class="form-check-label" for="ngungHoatDong">Ngưng hoạt động</label>
+                        <!-- Status Filter -->
+                        <div class="col-md-4">
+                            <label for="trangThai" class="form-label">Trạng Thái</label>
+                            <select class="form-select" id="trangThai" name="status">
+                                <option value="" th:selected="${status == null}">Chọn Trạng Thái</option>
+                                <option value="1" th:selected="${status == 1}">Hoạt động</option>
+                                <option value="0" th:selected="${status == 0}">Ngưng hoạt động</option>
+                            </select>
+                        </div>
+
+                        <!-- Brand Name -->
+                        <div class="col-md-4">
+                            <label for="thuongHieu" class="form-label">Tên Thương Hiệu</label>
+                            <select class="form-select js-select2" id="thuongHieu" name="thuongHieu">
+                                <option value="">Chọn Thương Hiệu</option>
+                                <option
+                                        th:each="thuonghieu : ${thuongHieus}"
+                                        th:value="${thuonghieu.id}"
+                                        th:text="${thuonghieu.tenThuongHieu}"
+                                ></option>
+                            </select>
+                        </div>
+
+                        <!-- Material Name -->
+                        <div class="col-md-4">
+                            <label for="chatLieu" class="form-label">Tên Chất Liệu</label>
+                            <select class="form-select js-select2" id="chatLieu" name="chatLieu">
+                                <option value="">Chọn Chất Liệu</option>
+                                <option
+                                        th:each="chatlieu : ${chatLieus}"
+                                        th:value="${chatlieu.id}"
+                                        th:text="${chatlieu.tenChatLieu}"
+                                ></option>
+                            </select>
+                        </div>
+
+                        <!-- Sleeve Type -->
+                        <div class="col-md-4">
+                            <label for="tayAo" class="form-label">Tên Tay Áo</label>
+                            <select class="form-select js-select2" id="tayAo" name="tayAo">
+                                <option value="">Chọn Tay Áo</option>
+                                <option
+                                        th:each="tayao : ${kieuTayAos}"
+                                        th:value="${tayao.id}"
+                                        th:text="${tayao.tenTayAo}"
+                                ></option>
+                            </select>
+                        </div>
+
+                        <!-- Collar Type -->
+                        <div class="col-md-4">
+                            <label for="coAo" class="form-label">Tên Cổ Áo</label>
+                            <select class="form-select js-select2" id="coAo" name="coAo">
+                                <option value="">Chọn Cổ Áo</option>
+                                <option
+                                        th:each="coao : ${kieuCoAos}"
+                                        th:value="${coao.id}"
+                                        th:text="${coao.tenCoAo}"
+                                ></option>
+                            </select>
+                        </div>
+
+                        <!-- Search Button -->
+                        <div class="col-md-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary" style="border-radius: 8px;">
+                                Tìm kiếm
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </form>
-        <!--            <div class="col-auto">-->
-        <!--                <button class="btn btn-outline-warning">-->
-        <!--                    Export Excel-->
-        <!--                </button>-->
-        <!--            </div>-->
-        <div>
-            <button class="btn btn-outline-primary mb-3">
-                <a th:href="@{/admin/products/create}">
-                    + Thêm mới
-                </a>
-            </button>
-        </div>
-        <table class="table table-bordered text-center" style="font-size: 15px">
-            <thead>
-            <tr>
-                <th>STT</th>
-                <th>Tên sản phẩm</th>
-                <th>Tên thương hiệu</th>
-                <th>Tên chất liệu</th>
-                <th>Tên tay áo</th>
-                <th>Tên cổ áo</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="product, index : ${products}">
-                <td th:text="${index.index + 1}"></td>
-                <td th:text="${product.tenSanPham}"></td>
-                <td th:text="${product.tenThuongHieu}"></td>
-                <td th:text="${product.tenChatLieu}"></td>
-                <td th:text="${product.tenTayAo}"></td>
-                <td th:text="${product.tenCoAo}"></td>
 
-                <td>
-                    <span class="status-badge" th:if="${product.trangThai == 1}">
-                        Hoạt động
-                    </span>
-                    <span class="status-badge" th:if="${product.trangThai == 0}">
-                        Ngưng hoạt động
-                    </span>
-                </td>
-                <td>
-                    <button class="btn btn-primary">
-                        <a th:href="@{/admin/products/find_by_id/{id}(id=${product.id})}">Chi Tiết</a>
-                    </button>
-                    <button class="btn btn-success">
-                        <a th:href="@{/admin/products/edit/{id}(id=${product.id})}">Update</a>
-                    </button>
-                    <button class="btn btn-warning">
-                        <a th:href="@{/admin/products/delete/{id}(id=${product.id})}">Delete</a>
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="d-flex justify-content-between align-items-center">
+        <!-- Product Table -->
+        <div class="border p-3" style="border-radius: 12px;">
+            <table class="table table-bordered text-center" style="font-size: 15px;">
+                <thead>
+                <tr>
+                    <th colspan="9" class="text-start">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">Danh Sách Sản Phẩm</h3>
+                            <button class="btn btn-outline-primary" style="border-radius: 8px;">
+                                <a th:href="@{/admin/products/create}" style="text-decoration: none; color: inherit;">
+                                    + Thêm mới
+                                </a>
+                            </button>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Tên thương hiệu</th>
+                    <th>Tên chất liệu</th>
+                    <th>Tên tay áo</th>
+                    <th>Tên cổ áo</th>
+                    <th>Ngày tạo</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product, index : ${products}">
+                    <td th:text="${index.index + 1}"></td>
+                    <td th:text="${product.tenSanPham}"></td>
+                    <td th:text="${product.tenThuongHieu}"></td>
+                    <td th:text="${product.tenChatLieu}"></td>
+                    <td th:text="${product.tenTayAo}"></td>
+                    <td th:text="${product.tenCoAo}"></td>
+                    <td th:text="${product.ngayTao}"></td>
+                    <td>
+                        <span class="badge bg-success" th:if="${product.trangThai == 1}">Hoạt động</span>
+                        <span class="badge bg-danger" th:if="${product.trangThai == 0}">Ngưng hoạt động</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" style="border-radius: 8px;">
+                            <a th:href="@{/admin/products/find_by_id/{id}(id=${product.id})}" style="color: white;">Chi Tiết</a>
+                        </button>
+                        <button class="btn btn-success btn-sm" style="border-radius: 8px;">
+                            <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" style="color: white;">Update</a>
+                        </button>
+                        <button class="btn btn-warning btn-sm" style="border-radius: 8px;">
+                            <a th:href="@{/admin/products/delete/{id}(id=${product.id})}" style="color: white;">Delete</a>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination and Page Size Selector -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="d-flex align-items-center">
-                <label for="itemsPerPage" class="me-2" style="font-size: 14px;">
-                    Xem
-                </label>
-                <select class="form-select form-select-sm d-inline-block me-2" id="itemsPerPage" style="width: 80px; font-size: 14px;"
+                <label for="itemsPerPage" class="me-2">Xem</label>
+                <select class="form-select form-select-sm" id="itemsPerPage" style="width: 80px;"
                         onchange="changeItemsPerPage()">
                     <option value="5" th:selected="${size == 5}">5</option>
                     <option value="10" th:selected="${size == 10}">10</option>
                     <option value="15" th:selected="${size == 15}">15</option>
                 </select>
-                <span style="font-size: 14px;">sản phẩm</span>
+                <span>sản phẩm</span>
             </div>
-
             <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    <!-- Nút "First" quay về trang đầu -->
+                <ul class="pagination mb-0">
+                    <!-- First Page -->
                     <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                        <a class="page-link" th:href="@{/admin/products/index(page=0, keyword=${keyword}, status=${status}, size=${size})}">First</a>
+                        <a class="page-link" th:href="@{/admin/products/index(page=0, keyword=${keyword}, status=${status}, size=${size})}">
+                            First
+                        </a>
                     </li>
-
-<!--                    &lt;!&ndash; Nút "Previous" &ndash;&gt;-->
-<!--                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
-<!--                        <a class="page-link" th:href="@{/admin/products/index(page=${currentPage - 1}, keyword=${keyword}, status=${status}, size=${size})}">Previous</a>-->
-<!--                    </li>-->
-
-                    <!-- Hiển thị các số trang -->
+                    <!-- Page Numbers -->
                     <li th:each="i : ${#numbers.sequence(startPage, endPage)}" class="page-item"
                         th:classappend="${currentPage == i} ? 'active'">
                         <a class="page-link" th:href="@{/admin/products/index(page=${i}, keyword=${keyword}, status=${status}, size=${size})}"
                            th:text="${i + 1}"></a>
                     </li>
-
-<!--                    &lt;!&ndash; Nút "Next" &ndash;&gt;-->
-<!--                    <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">-->
-<!--                        <a class="page-link" th:href="@{/admin/products/index(page=${currentPage + 1}, keyword=${keyword}, status=${status}, size=${size})}">Next</a>-->
-<!--                    </li>-->
-
-                    <!-- Nút "Last" chuyển đến trang cuối cùng -->
+                    <!-- Last Page -->
                     <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-                        <a class="page-link" th:href="@{/admin/products/index(page=${totalPages - 1}, keyword=${keyword}, status=${status}, size=${size})}">Last</a>
+                        <a class="page-link" th:href="@{/admin/products/index(page=${totalPages - 1}, keyword=${keyword}, status=${status}, size=${size})}">
+                            Last
+                        </a>
                     </li>
                 </ul>
             </nav>
         </div>
-
     </div>
-
-
 </section>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -182,5 +296,18 @@
         // Điều hướng đến URL mới
         window.location.href = newUrl;
     }
+</script>
+<!-- JavaScript của jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- JavaScript của Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.js-select2').select2({
+            placeholder: "Chọn một tùy chọn",
+            allowClear: true
+        });
+    });
 </script>
 </html>
