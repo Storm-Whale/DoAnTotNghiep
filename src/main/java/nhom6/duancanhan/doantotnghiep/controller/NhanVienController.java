@@ -4,7 +4,6 @@ package nhom6.duancanhan.doantotnghiep.controller;
 import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.dto.SearchDTO;
 import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
-import nhom6.duancanhan.doantotnghiep.repository.VaiTroRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.NhanVienService;
 import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
 import nhom6.duancanhan.doantotnghiep.service.service.VaiTroService;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.List;
@@ -66,7 +64,15 @@ public class NhanVienController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("nhanVien") NhanVien nhanVien) {
+    public String add(@Valid @ModelAttribute("nhanVien") NhanVien nhanVien, BindingResult result, Model model) {
+        if(result.hasErrors()) {
+            for(FieldError error : result.getFieldErrors()) {
+                model.addAttribute(error.getField(),error.getDefaultMessage());
+            }
+            phanTrang(1,model);
+             return "redirect:/admin/nhanvien/add#dialog";
+        }
+        model.addAttribute("nhanVien",nhanVien);
         nhanVienService.addNhanVien(nhanVien);
         return "redirect:/admin/nhanvien";
     }
@@ -81,7 +87,16 @@ public class NhanVienController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute("nhanVien") NhanVien nhanVien) {
+    public String update(@Valid @ModelAttribute("nhanVien") NhanVien nhanVien, BindingResult result, Model model) {
+       if(result.hasErrors()) {
+            for(FieldError error : result.getFieldErrors()) {
+                model.addAttribute(error.getField(),error.getDefaultMessage());
+            }
+            model.addAttribute("listTK",taiKhoanService.getAll());
+            model.addAttribute("listVT",vaiTroService.getAll());
+            return "/admin/nhanvien/updatenhanvien";
+        }
+        model.addAttribute("nhanVien",nhanVien);
         nhanVienService.updateNhanVien(nhanVien);
         return "redirect:/admin/nhanvien";
     }
@@ -98,7 +113,7 @@ public class NhanVienController {
             for(FieldError error : result.getFieldErrors()) {
               model.addAttribute(error.getField(),error.getDefaultMessage());
             }
-            model.addAttribute("listNV",nhanVienService.getAll());
+            phanTrang(1,model);
             return "/admin/nhanvien/nhanvien";
         }
         List<NhanVien> nv = nhanVienService.findSearch(searchDTO.getKeyword());
@@ -107,9 +122,7 @@ public class NhanVienController {
       }else{
           model.addAttribute("nhanVien",new NhanVien());
           model.addAttribute("listNV",nv);
-//          phanTrang(1,model);
       }
         return "/admin/nhanvien/nhanvien";
     }
-
 }

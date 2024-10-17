@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Getter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -25,4 +27,6 @@ public class SanPhamResponse {
     String tenCoAo;
 
     Integer trangThai;
+
+    Date ngayTao;
 }

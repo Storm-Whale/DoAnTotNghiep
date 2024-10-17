@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/products")
@@ -30,12 +32,18 @@ public class SanPhamController {
     public String index(
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "status", required = false) Integer status,
-            @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
-            @PageableDefault(size = 5) Pageable pageable,
+            @RequestParam(name = "thuongHieuId", required = false) Integer thuongHieuId,
+            @RequestParam(name = "chatLieuId", required = false) Integer chatLieuId,
+            @RequestParam(name = "tayAoId", required = false) Integer tayAoId,
+            @RequestParam(name = "coAoId", required = false) Integer coAoId,
+            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size, // Đặt mặc định là 10
+            @PageableDefault(size = 10) Pageable pageable, // Đặt mặc định là 10
             Model model
     ) {
-        Page<SanPhamResponse> products = sanPhamService.timKiemSanPham(keyword, status,
-                pageable.getPageNumber(), size);
+        // Sử dụng size từ @RequestParam để phân trang
+        Page<SanPhamResponse> products = sanPhamService.timKiemSanPham(
+                keyword, status, thuongHieuId, chatLieuId, tayAoId, coAoId, pageable.getPageNumber(), size);
+
         model.addAttribute("products", products.getContent());
 
         // Tính toán startPage và endPage
@@ -56,11 +64,17 @@ public class SanPhamController {
         // Truyền các giá trị vào model
         model.addAttribute("keyword", keyword);
         model.addAttribute("status", status);
+        model.addAttribute("thuongHieuId", thuongHieuId);
+        model.addAttribute("chatLieuId", chatLieuId);
+        model.addAttribute("tayAoId", tayAoId);
+        model.addAttribute("coAoId", coAoId);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("size", size); // Truyền size để sử dụng trong view
+        model.addAttribute("size", size);
+
+        addSanPhamModelAttributes(model);
 
         return "/admin/sanpham/index";
     }
@@ -122,6 +136,13 @@ public class SanPhamController {
 
     private void addSanPhamModelAttributes(Model model, SanPhamRequest sanPhamRequest) {
         model.addAttribute("product", sanPhamRequest);
+        model.addAttribute("thuongHieus", thuongHieuService.getAll());
+        model.addAttribute("chatLieus", chatLieuService.getAll());
+        model.addAttribute("kieuCoAos", kieuCoAoService.getAll());
+        model.addAttribute("kieuTayAos", kieuTayAoService.getAll());
+    }
+
+    private void addSanPhamModelAttributes(Model model) {
         model.addAttribute("thuongHieus", thuongHieuService.getAll());
         model.addAttribute("chatLieus", chatLieuService.getAll());
         model.addAttribute("kieuCoAos", kieuCoAoService.getAll());

@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamGioHangResponse;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
+import nhom6.duancanhan.doantotnghiep.dto.SanPhamShowOnClient;
 import nhom6.duancanhan.doantotnghiep.entity.*;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.mapper.SanPhamMapper;
 import nhom6.duancanhan.doantotnghiep.repository.*;
+import nhom6.duancanhan.doantotnghiep.service.service.SanPhamChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
 import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.dao.DuplicateKeyException;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +31,7 @@ public class SanPhamServiceImpl implements SanPhamService {
     private final ChatLieuRepository chatLieuRepository;
     private final KieuTayAoRepository kieuTayAoRepository;
     private final KieuCoAoRepository kieuCoAoRepository;
+    private final SanPhamChiTietRepository sanPhamChiTietRepository;
 
     @Override
     public List<SanPhamResponse> getAllSanPham() {
@@ -90,20 +94,37 @@ public class SanPhamServiceImpl implements SanPhamService {
     }
 
     @Override
-    public Page<SanPhamResponse> timKiemSanPham(String keyword, Integer status, int page, int size) {
+    public Page<SanPhamResponse> timKiemSanPham(String keyword, Integer status, Integer thuongHieuId, Integer chatLieuId, Integer tayAoId, Integer coAoId, int page, int size) {
         return DatabaseOperationHandler.handleDatabaseOperation(() -> {
             Pageable pageable = PageRequest.of(page, size);
             Page<SanPham> sanPhamPage;
-            if (keyword != null && !keyword.isEmpty() && status != null) {
-                sanPhamPage = sanPhamRepository.findByTenSanPhamContainingAndTrangThai(keyword, status, pageable);
-            } else if (keyword != null && !keyword.isEmpty()) {
-                sanPhamPage = sanPhamRepository.findByTenSanPhamContaining(keyword, pageable);
-            } else if (status != null) {
-                sanPhamPage = sanPhamRepository.findByTrangThai(status, pageable);
-            } else {
-                sanPhamPage = sanPhamRepository.findAll(pageable);
-            }
+
+            // Tạo điều kiện tìm kiếm
+            String keywordSearch = (keyword != null && !keyword.isEmpty()) ? "%" + keyword + "%" : null;
+
+            // Tìm kiếm theo nhiều tiêu chí
+            sanPhamPage = sanPhamRepository.searchProducts(keywordSearch, status, thuongHieuId, chatLieuId, tayAoId, coAoId, pageable);
+
+            // Ánh xạ kết quả từ entity sang DTO
             return sanPhamPage.map(sanPhamMapper::toSanPhamResponse);
+        }, "Lỗi khi lấy thông tin từ cơ sở dữ liệu");
+    }
+
+    @Override
+    public List<SanPhamShowOnClient> getAllSanPhamShowOnClient() {
+        return DatabaseOperationHandler.handleDatabaseOperation(() -> {
+            List<SanPhamResponse> sanPhamResponses = getAllSanPham();
+            List<SanPhamShowOnClient> sanPhamShowOnClients = new ArrayList<>();
+
+            for (SanPhamResponse sanPhamResponse : sanPhamResponses) {
+                SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findFirstBySanPhamId(sanPhamResponse.getId());
+                SanPhamShowOnClient sanPhamShowOnClient = SanPhamShowOnClient.builder()
+                        .sanPhamResponse(sanPhamResponse)
+                        .gia(sanPhamChiTiet.getGia())
+                        .build();
+                sanPhamShowOnClients.add(sanPhamShowOnClient);
+            }
+            return sanPhamShowOnClients;
         }, "Lỗi khi lấy thông tin từ cơ sở dữ liệu");
     }
 
