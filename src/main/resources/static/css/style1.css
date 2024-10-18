@@ -564,3 +564,12 @@ header {
     background-color: #f0f0f0; /* Màu nền khi hover */
     transform: scale(1.1); /* Phóng to khi hover */
 }
+
+.product-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.product-card-link .product-card {
+    cursor: pointer;
+}
