@@ -57,21 +57,33 @@ document.addEventListener('DOMContentLoaded', function () {
         banner.classList.add('loaded');
     }
 });
-document.addEventListener("DOMContentLoaded", function () {
-    const products = document.querySelectorAll(".product-card");
-    const loadMoreBtn = document.getElementById("loadMoreBtn");
 
-    // Ẩn các sản phẩm sau 8 sản phẩm đầu tiên
-    const initialDisplayCount = 8;
+document.addEventListener("DOMContentLoaded", function() {
+    const initialDisplayCount = 12; //Số lượng sản phẩm hiển thị trên web
+    const products = document.querySelectorAll('.product-card');
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+    let isExpanded = false;
+
+
     for (let i = initialDisplayCount; i < products.length; i++) {
         products[i].style.display = "none";
     }
 
-    // Hàm để hiển thị thêm sản phẩm
-    window.showMoreProducts = function () {
-        for (let i = initialDisplayCount; i < products.length; i++) {
-            products[i].style.display = "block";
+
+    window.toggleProducts = function () {
+        if (!isExpanded) {
+
+            for (let i = initialDisplayCount; i < products.length; i++) {
+                products[i].style.display = "block";
+            }
+            loadMoreBtn.innerHTML = 'Thu gọn &#x25B2;';
+        } else {
+
+            for (let i = initialDisplayCount; i < products.length; i++) {
+                products[i].style.display = "none";
+            }
+            loadMoreBtn.innerHTML = 'Xem thêm &#x25BC;';
         }
-        loadMoreBtn.style.display = "none"; // Ẩn nút sau khi hiển thị tất cả sản phẩm
+        isExpanded = !isExpanded;
     };
 });

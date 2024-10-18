@@ -24,4 +24,8 @@ public class ClientController {
         model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient());
         return "/client/trangchu2";
     }
+    @GetMapping("chitiet")
+    private String trangct() {
+        return "/client/chitiet";
+    }
 }
