@@ -25,4 +25,8 @@ public class ClientController {
     private String sanPhamChiTiet(@PathVariable int id, Model model) {
         return "/client/chitiet";
     }
+    @GetMapping("chitiet")
+    private String trangct() {
+        return "/client/chitiet";
+    }
 }
