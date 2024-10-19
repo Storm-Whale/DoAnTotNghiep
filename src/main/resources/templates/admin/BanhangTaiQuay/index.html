@@ -32,7 +32,7 @@
             <h4>Giỏ Hàng</h4>
             <div>
                 <button id="btnScanQR">Quét Mã QR</button>
-                <a class="taiquay"><a href="#dialog"><button class="btn btn-primary">Thêm Sản Phẩm</button></a></a>
+                <a class="taiquay"><a th:href="@{/admin/taiquay#dialog}"><button class="btn btn-primary">Thêm Sản Phẩm</button></a></a>
             </div>
                 <table>
                 <thead>
@@ -60,27 +60,29 @@
                 <label for="sizeFilter" style="margin-right: 10px; font-size: 12px;">Kích Cỡ:</label>
                 <select id="sizeFilter" style="margin-right: 10px; font-size: 12px;">
                     <option value="">Chọn kích cỡ</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
+                    <option  th:each="kickco : ${kichCo}"
+                             th:value="${kickco.id}"
+                             th:text="${kickco.tenKichCo}"
+                             ></option>
                 </select>
 
                 <!-- ComboBox Lọc Màu Sắc -->
                 <label for="colorFilter" style="margin-right: 10px; font-size: 12px;">Màu Sắc:</label>
                 <select id="colorFilter" style="margin-right: 10px; font-size: 12px;">
                     <option value="">Chọn màu sắc</option>
-                    <option value="Đỏ">Đỏ</option>
-                    <option value="Xanh">Xanh</option>
-                    <option value="Vàng">Vàng</option>
+                    <option th:each="mausac : ${mauSac}"
+                            th:value="${mausac.id}"
+                            th:text="${mausac.tenMauSac}"
+                            ></option>
                 </select>
 
                 <!-- ComboBox Lọc Giá -->
                 <label for="priceFilter" style="margin-right: 10px; font-size: 12px;">Giá:</label>
                 <select id="priceFilter" style="margin-right: 10px; font-size: 12px;">
                     <option value="">Chọn giá</option>
-                    <option value="0-100000">Dưới 100,000đ</option>
-                    <option value="100000-500000">100,000đ - 500,000đ</option>
-                    <option value="500000">Trên 500,000đ</option>
+                    <option th:each="spct : ${sanPhamChiTiet}"
+                            th:value="${spct.id}"
+                            th:text="${spct.gia}"></option>
                 </select>
                 </div>
                 <div class="half" style="display: flex; align-items: center;">
@@ -90,45 +92,9 @@
                     <!-- Button Tìm kiếm -->
                     <button id="btnSearch" style="padding: 10px 10px; margin-bottom: 10px">Tìm kiếm</button>
                 </div>
-
             </div>
         <!-- Table Sản phẩm -->
-        <table>
-            <thead>
-            <tr>
-                <th>STT</th>
-                <th>Tên sản phẩm</th>
-                <th>Kích cỡ</th>
-                <th>Màu sắc</th>
-                <th>Giá</th>
-                <th>Số lượng</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1</td>
-                <td>Áo Thun</td>
-                <td>M</td>
-                <td>Đỏ</td>
-                <td>200,000đ</td>
-                <td>5</td>
-                <td>Còn hàng</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Quần Jeans</td>
-                <td>L</td>
-                <td>Xanh</td>
-                <td>500,000đ</td>
-                <td>3</td>
-                <td>Hết hàng</td>
-                <td></td>
-            </tr>
-            </tbody>
-        </table>
+                    <div th:replace="~{admin/BanhangTaiQuay/SPCTTable :: table}"></div>
                     <a href="#" class="modal__close">&times;</a>
         </div>
             </div>
