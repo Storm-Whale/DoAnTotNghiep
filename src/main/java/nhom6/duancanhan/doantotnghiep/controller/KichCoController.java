@@ -7,55 +7,74 @@ import nhom6.duancanhan.doantotnghiep.service.service.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
-@RestController
+@Controller
+@RequestMapping("/admin/kichco")
 public class KichCoController {
     @Autowired
     private KichCoService kichCoService;
 
-    @GetMapping("/kich-co/hien-thi")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(kichCoService.getAll());
+    @GetMapping("")
+    public String getAll(Model model) {
+        return phanTrang(1, model);
     }
 
-    @GetMapping("/kich-co/phan-trang/{pageNo}")
-    public ResponseEntity<?> phanTrang(@PathVariable(value = "pageNo") int pageNo) {
+    @GetMapping("/{pageNo}")
+    public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
         int pageSize = 3;
-        Page<KichCo> page = kichCoService.phanTrang(pageNo,pageSize);
+        Page<KichCo> page = kichCoService.phanTrang(pageNo, pageSize);
         List<KichCo> listKC = page.getContent();
-        return ResponseEntity.ok(listKC);
+        model.addAttribute("kichCo", new KichCo());
+        model.addAttribute("listKC", listKC);
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        return "/admin/sanpham/KichCo/Kichco";
     }
 
-    @GetMapping("/kich-co/detail/{id}")
-    public ResponseEntity<?> detail(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(kichCoService.detail(id));
+    @GetMapping("/detail/{id}")
+    public String showDetail(@PathVariable("id") Integer id, Model model) {
+        Optional<KichCo> kichCo = kichCoService.detail(id);
+        if (kichCo.isPresent()) {
+            model.addAttribute("kichCo", kichCo.get());
+            return "admin/sanpham/Kichco/Detail";
+        }
+        return "redirect:/admin/kichco";
     }
 
-    @PostMapping("/kich-co/add")
-    public ResponseEntity<?> add(@RequestBody KichCo kichCo) {
+
+    @PostMapping("/add")
+    public String add(@ModelAttribute("kichCo") KichCo kichCo, Model model) {
+        kichCo.setTrangThai(1);
         kichCoService.addKichCo(kichCo);
-        return ResponseEntity.ok(kichCo);
+        return "redirect:/admin/kichco";
     }
 
-    @PutMapping("/kich-co/update/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Integer id, @RequestBody KichCo kichCo) {
+    @PutMapping("/update/{id}")
+    public String update(@PathVariable("id") Integer id, @ModelAttribute("kichCo") KichCo kichCo) {
         kichCoService.updateKichCo(id, kichCo);
-        return ResponseEntity.ok("Update Thanh Cong");
+        return "redirect:/admin/kichco";
     }
 
-    @DeleteMapping("/kich-co/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
-        kichCoService.deleteKichCo(id);
-        return ResponseEntity.ok("Delete Thanh Cong");
+    @PostMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Integer id) {
+        kichCoService.deleteKichCo(id);  // Xóa bản ghi dựa trên ID
+        return "redirect:/admin/kichco";  // Chuyển hướng về trang danh sách sau khi xóa thành công
     }
 
 }

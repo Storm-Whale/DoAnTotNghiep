@@ -57,9 +57,10 @@
                         <i class="fas fa-info-circle"></i> Chi Tiết
                     </a>
                 </form>
-                <form class="d-inline-block" th:action="@{'/admin/mausac/delete/' + ${mauSac.id}}" method="post">
-                    <input type="hidden" name="_method" value="delete"/>
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">
+                <form class="d-inline-block" th:action="@{'/admin/mausac/delete/' + ${mauSac.id}}" method="post"
+                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                    <button type="submit" class="btn btn-danger btn-sm">
                         <i class="fas fa-trash-alt"></i> Xóa
                     </button>
                 </form>
@@ -73,18 +74,24 @@
     <div th:if="${totalPages >= 1}">
         <nav>
             <ul class="pagination justify-content-center">
+                <!-- Trang trước -->
                 <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{'/admin/mausac/' + (${currentPage -1})}" aria-label="Previous">Trước</a>
+                    <a class="page-link" th:href="@{|/admin/mausac/${currentPage - 1}|}" aria-label="Previous">Trước</a>
                 </li>
+
+                <!-- Các trang -->
                 <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
-                    <a class="page-link" th:href="@{'/admin/mausac/' + ${i}}" th:text="${i}"></a>
+                    <a class="page-link" th:href="@{|/admin/mausac/${i}|}" th:text="${i}"></a>
                 </li>
+
+                <!-- Trang sau -->
                 <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{'/admin/mausac/' + (${currentPage + 1})}" aria-label="Next">Sau</a>
+                    <a class="page-link" th:href="@{|/admin/mausac/${currentPage + 1}|}" aria-label="Next">Sau</a>
                 </li>
             </ul>
         </nav>
     </div>
+
 </section>
 
 <!-- Modal Thêm Chất Liệu -->
