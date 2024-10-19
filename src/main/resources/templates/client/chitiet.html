@@ -1,92 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chi Tiết Sản Phẩm</title>
     <link rel="stylesheet" th:href="@{/css/chitietsp.css}">
-    <link rel="icon" href="/img/Logoyagi2.png">
+    <link rel="icon" th:href="@{/img/Logoyagi2.png}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
 </head>
 <body>
 
 <header>
-    <a href="trangchu">
-        <img src="/img/LOGOYAGI.png" alt="Bee Shirt">
+    <a th:href="@{/client}">
+        <img src="/img/LOGOYAGI.png" alt="Bee Shirt Logo">
     </a>
 </header>
 
 <div class="container">
     <div class="product-detail">
-        <img src="https://yeepvn.sgp1.digitaloceanspaces.com/2023/03/4d54b44de952e150129d894236e7b08e.jpg"
-             alt="Áo sơ mi tháng 4">
+
+        <div class="gallery">
+            <div class="main-image-container">
+                <img id="mainImage" class="main-image"
+                     src="https://yeepvn.sgp1.digitaloceanspaces.com/2023/03/4d54b44de952e150129d894236e7b08e.jpg"
+                     alt="Áo sơ mi tháng 4">
+            </div>
+            <div class="thumbnail-container">
+                <img src="https://yeepvn.sgp1.digitaloceanspaces.com/2023/03/4d54b44de952e150129d894236e7b08e.jpg"
+                     alt="Thumbnail 1" onclick="changeImage(this)">
+                <img src="https://cdn.kkfashion.vn/26926-large_default/ao-thun-nu-mau-den-in-hinh-buom-asm16-35.jpg"
+                     alt="Thumbnail 2" onclick="changeImage(this)">
+                <img src="https://yeepvn.sgp1.digitaloceanspaces.com/2023/03/4d54b44de952e150129d894236e7b08e.jpg"
+                     alt="Thumbnail 3" onclick="changeImage(this)">
+                <img src="https://yeepvn.sgp1.digitaloceanspaces.com/2023/03/4d54b44de952e150129d894236e7b08e.jpg"
+                     alt="Thumbnail 4" onclick="changeImage(this)">
+            </div>
+        </div>
+
         <div class="product-info">
             <h1>Áo Sơ Mi Cuban Linen</h1>
             <div class="price">1,425,000₫</div>
+            <form action="#" th:action="@{/client/add_sp_vao_gio_hang/{idSP}(idSP = ${idSP})}" method="post">
+                <div class="container mt-3">
+                    <div class="color-options mb-3">
+                        <div class="row">
+                            <div class="col-auto">
+                                <strong>Màu Sắc:</strong>
+                            </div>
+                            <div class="col">
+                                <div class="d-flex gap-3 options">
+                                    <label class="p-2" th:each="mausacandanh : ${mauSacToAnhDaiDienMap}">
+                                        <input type="radio" name="mausac" th:value="${mausacandanh.key.getId()}">
+                                        <img th:src="@{/img/{anhUrl}(anhUrl = ${mausacandanh.value.getAnhUrl()})}"
+                                             alt="Màu sắc">
+                                        <span class="ml-2" th:text="${mausacandanh.key.getTenMauSac()}"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="details">
-                <!-- Tùy chọn màu sắc -->
-                <div class="color-options">
-                    <strong>Màu Sắc:</strong>
-                    <label>
-                        <input type="radio" name="color" value="Đỏ">
-                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAKEAqwMBIgACEQEDEQH/xAAYAAEBAQEBAAAAAAAAAAAAAAAAAQIDBv/EACkQAQEAAQIDCAIDAQAAAAAAAAABEQIhMVHwEkFhcYGhsdGRwSIy8QP/xAAYAQEBAQEBAAAAAAAAAAAAAAAAAQIHBf/EABgRAQEBAQEAAAAAAAAAAAAAAAABESES/9oADAMBAAIRAxEAPwDyidTcHgOyKk63CdbgufbxJkiffERqW8+Jbezv+csy0tzpQwWXbjfyhaqlv8gnfnuLQW2puRethDNSr9IgQzQVTJmoCrLV7V5ogmFICqGQEMgIBkFUyAgZAUWUygguUAQAVQAAAAAAAAAAAAAABADBgAa06e/bZmwTQBVAMCAGAAEUAwARUAAABQQABZDrLXLxGaX+vlGbPZrl43gzUIgCtEWkKiICqIsmfUJesgn6Fp1gBIsXrcE/cRYmQIqKAAgKT5XrIhfiM1qshEFQVQhaokXBFygggCiCiiZAVKFFFQBRBEaln+xc+7CwTGqzSoEgArSxAEFSKggCqAAAAAAAAAAAAAAAAAKgGUQtUAUCLIIgt+EAAVQBAAAAUCzxQEVCqiiKioJsohigCr3LGVlENXygAAKoUEAAAAEFAAAAAAPT2EDBkyAAoYJ6AgAoIAqg3NF8vNvsycmdZ9OU01boaurTPNi6qHSzCLlFUAVQACG/MBBaDIJ9g0isAyrYAI1/y4grNdXHUCJEAVsUAQUFZUBlUBof/9k=" alt="Màu Đỏ">
-                        <span>Đỏ</span>
-                    </label>
-                    <label>
-                        <input type="radio" name="color" value="Xanh">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARMAAAC3CAMAAAAGjUrGAAAAA1BMVEXC6PVuIQCDAAAAR0lEQVR4nO3BAQ0AAADCoPdPbQ8HFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPBgxUwAAU+n3sIAAAAASUVORK5CYII=" alt="Màu Xanh">
-                        <span>Xanh</span>
-                    </label>
-                    <label>
-                        <input type="radio" name="color" value="Tím">
-                        <img src="data:image/jpeg;base64,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" alt="Màu Tím">
-                        <span>Tím</span>
-                    </label>
-                    <label>
-                        <input type="radio" name="color" value="Nâu">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAA1BMVEVRKx5Ge7lXAAAASElEQVR4nO3BgQAAAADDoPlTX+AIVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwDcaiAAFXD1ujAAAAAElFTkSuQmCC" alt="Màu Nâu">
-                        <span>Nâu</span>
-                    </label>
-                    <label>
-                        <input type="radio" name="color" value="Hồng">
-                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIALcAwwMBIgACEQEDEQH/xAAVAAEBAAAAAAAAAAAAAAAAAAAABf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/xAAWAQEBAQAAAAAAAAAAAAAAAAAABgX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwC2A0VuAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//2Q==" alt="Màu Hồng">
-                        <span>Hồng</span>
-                    </label>
+                    <div class="size-options">
+                        <div class="hstack gap-3">
+                            <div class="col-auto p-2">
+                                <strong>Size:</strong>
+                            </div>
+                            <div class="size-labels p-2">
+                                <div class="size-label" th:each="size : ${kichCoSet}">
+                                    <input type="radio" th:id="${size.getTenKichCo()}" name="kichco"
+                                           th:value="${size.getId()}">
+                                    <label th:for="${size.getTenKichCo()}" class="grey"
+                                           th:text="${size.getTenKichCo()}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="size-options">
-                    <strong>Size:</strong>
-                    <select name="size" id="size" class="size-select">
-                        <option value="">Chọn size</option>
-                        <option value="S">S</option>
-                        <option value="M">M</option>
-                        <option value="L">L</option>
-                        <option value="XL">XL</option>
-                        <option value="XXL">XXL</option>
-                    </select>
+                <div class="add-to-cart">
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-outline-secondary" type="button" id="button-minus">-</button>
+                            </div>
+                            <input type="number" class="form-control" id="input-number" value="0" min="1" max="100" name="soluong">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="button-plus">+</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <span><strong>Chất liệu:</strong> Cotton</span>
-                <span><strong>Mã sản phẩm:</strong> ASM-2024-04</span>
-                <span><strong>Tình trạng:</strong> Còn hàng</span>
-            </div>
-            <div class="description">
-                <h2>Mô tả sản phẩm:</h2>
-                <p>Áo sơ mi màu trắng, size L, chất liệu cotton cao cấp, thoáng mát và thoải mái. Thiết kế đơn giản
-                    nhưng tinh tế, phù hợp với nhiều phong cách thời trang khác nhau.</p>
-            </div>
-            <div class="add-to-cart">
-                <input type="number" value="1" min="1">
-                <button id="add-to-cart-btn">Thêm vào giỏ hàng</button>
-            </div>
+                <div>
+                    <button class="btn btn-primary" type="submit" id="add-to-cart-btn">Thêm vào giỏ hàng</button>
+                    <button class="btn btn-primary">Mua hàng</button>
+                </div>
+            </form>
         </div>
     </div>
-
     <div class="similar-products">
+        <div class="description">
+            <h2>Mô tả sản phẩm:</h2>
+            <p>Áo sơ mi màu trắng, size L, chất liệu cotton cao cấp, thoáng mát và thoải mái. Thiết kế đơn giản
+                nhưng tinh tế, phù hợp với nhiều phong cách thời trang khác nhau.</p>
+        </div>
         <h3>Sản Phẩm Tương Tự</h3>
         <div class="product">
             <img src="https://studiovietnam.com/wp-content/uploads/2022/12/mau-anh-chup-ao-thun-nam-21.jpg"
-                 alt="Sản phẩm 1">
+                 alt="Sản phẩm tương tự 1">
             <div>
                 <a href="#">Áo sơ mi mùa hè</a><br>
                 <span>đ1,500,000</span>
@@ -94,27 +115,51 @@
         </div>
         <div class="product">
             <img src="https://studiovietnam.com/wp-content/uploads/2022/12/mau-anh-chup-ao-thun-nam-21.jpg"
-                 alt="Sản phẩm 2">
+                 alt="Sản phẩm tương tự 2">
             <div>
                 <a href="#">Áo sơ mi mùa đông</a><br>
                 <span>đ1,800,000</span>
             </div>
         </div>
     </div>
-</div>
 
-<div id="notification" class="notification">
-    Sản phẩm đã được thêm vào giỏ hàng!
+<!--    <div id="notification" class="notification">-->
+<!--        Sản phẩm đã được thêm vào giỏ hàng!-->
+<!--    </div>-->
 </div>
-
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-    document.getElementById('add-to-cart-btn').addEventListener('click', function () {
-        var notification = document.getElementById('notification');
-        notification.style.display = 'block';
-        setTimeout(function () {
-            notification.style.display = 'none';
-        }, 3000);
+    document.getElementById('button-minus').addEventListener('click', function () {
+        var input = document.getElementById('input-number');
+        var value = parseInt(input.value);
+        if (value > parseInt(input.min)) {
+            input.value = value - 1;
+        }
     });
+
+    document.getElementById('button-plus').addEventListener('click', function () {
+        var input = document.getElementById('input-number');
+        var value = parseInt(input.value);
+        if (value < parseInt(input.max)) {
+            input.value = value + 1;
+        }
+    });
+
+    // document.getElementById('add-to-cart-btn').addEventListener('click', function () {
+    //     var notification = document.getElementById('notification');
+    //     notification.style.display = 'block';
+    //     setTimeout(function () {
+    //         notification.style.display = 'none';
+    //     }, 3000);
+    // });
+
+    function changeImage(element) {
+        var mainImage = document.getElementById('mainImage');
+        mainImage.src = element.src;
+        mainImage.alt = element.alt;
+    }
 </script>
 
 </body>

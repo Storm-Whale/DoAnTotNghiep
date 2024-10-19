@@ -20,4 +20,6 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
        select spct from SanPhamChiTiet as spct where spct.sanPham.id = :idSP order by spct.gia asc limit 1
        """)
     SanPhamChiTiet findFirstBySanPhamId(@Param("idSP") Integer idSP);
+
+    SanPhamChiTiet findSanPhamChiTietBySanPhamIdAndKichCoIdAndMauSacId(Integer idSanPham, Integer idKichCo, Integer idMauSac);
 }

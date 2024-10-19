@@ -13,6 +13,8 @@ import nhom6.duancanhan.doantotnghiep.service.service.AnhSanPhamService;
 import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class AnhSanPhamServiceImpl implements AnhSanPhamService {
@@ -31,5 +33,13 @@ public class AnhSanPhamServiceImpl implements AnhSanPhamService {
             productImage.setSanPhamChiTiet(productDetail);
             return productImageMapper.toAnhSanPhamResponse(productImageRepository.save(productImage));
         }, "Lỗi khi thêm ảnh sản phẩm từ cơ sở dũ liệu");
+    }
+
+    @Override
+    public List<AnhSanPhamResponse> getAnhSanPhamByIdSPCT(Integer idSpct) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() -> productImageRepository.getBySanPhamChiTietId(idSpct).
+                stream().map(productImageMapper::toAnhSanPhamResponse)
+                .toList(), "Lỗi khi lấy thông tin từ cơ sở dữ liệu"
+        );
     }
 }

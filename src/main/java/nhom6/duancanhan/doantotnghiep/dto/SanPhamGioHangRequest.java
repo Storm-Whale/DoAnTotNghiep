@@ -10,8 +10,11 @@ import java.io.Serializable;
 
 @Data
 public class SanPhamGioHangRequest implements Serializable {
+
     private GioHang gioHang;
+
     private SanPhamChiTiet sanPhamChiTiet;
+
     @NotNull(message = "Vui lòng nhập số lượng")
     @Min(value = 1,message = "Số lượng phải lớn hơn 0")
     private int soLuong;
