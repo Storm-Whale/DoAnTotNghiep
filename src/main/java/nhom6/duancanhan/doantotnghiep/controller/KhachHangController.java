@@ -62,7 +62,8 @@ public class KhachHangController {
             for(FieldError error : result.getFieldErrors()) {
                 model.addAttribute(error.getField(),error.getDefaultMessage());
             }
-            return "redirect:/admin/khachhang/add" + "#demo-modal";
+            return "/admin/customer/khachhang";
+//          return "redirect:/admin/khachhang/add" + "#demo-modal";
         }
         khachHangService.addKhachHang(khachHang);
         return "redirect:/admin/khachhang";
