@@ -29,4 +29,8 @@ public class ClientController {
     private String trangct() {
         return "/client/chitiet";
     }
+    @GetMapping("hientuong")
+    private String trangct2() {
+        return "/client/hientuong";
+    }
 }
