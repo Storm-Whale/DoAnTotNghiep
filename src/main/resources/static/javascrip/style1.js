@@ -59,30 +59,26 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    const initialDisplayCount = 12; //Số lượng sản phẩm hiển thị trên web
+    const initialDisplayCount = 8;
     const products = document.querySelectorAll('.product-card');
     const loadMoreBtn = document.getElementById("loadMoreBtn");
     let isExpanded = false;
-
 
     for (let i = initialDisplayCount; i < products.length; i++) {
         products[i].style.display = "none";
     }
 
-
     window.toggleProducts = function () {
         if (!isExpanded) {
-
             for (let i = initialDisplayCount; i < products.length; i++) {
                 products[i].style.display = "block";
             }
-            loadMoreBtn.innerHTML = 'Thu gọn &#x25B2;';
+            loadMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up"></i>';
         } else {
-
             for (let i = initialDisplayCount; i < products.length; i++) {
                 products[i].style.display = "none";
             }
-            loadMoreBtn.innerHTML = 'Xem thêm &#x25BC;';
+            loadMoreBtn.innerHTML = 'Xem thêm <i class="fas fa-chevron-down"></i>';
         }
         isExpanded = !isExpanded;
     };

@@ -1,0 +1,35 @@
+<div th:fragments="table">
+    <table class="table table-bordered table-hover text-center">
+        <thead class="table-dark">
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">ImG</th>
+            <th scope="col">Tên Khách Hàng</th>
+            <th scope="col">Ngày Sinh</th>
+            <th scope="col">Giới Tính</th>
+            <th scope="col">SDT</th>
+            <th scope="col">Email</th>
+            <th scope="col">Tài Khoản</th>
+            <th scope="col">Trạng Thái</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="entry: ${listKH}">
+            <td th:text="${entry.id}"></td>
+            <td th:text="${entry.anhUrl}"></td>
+            <td th:text="${entry.ten}"></td>
+            <td th:text="${entry.ngaySinh}"></td>
+            <td th:text="${entry.gioiTinh  == 1 ? 'Nam' : 'Nu' }"></td>
+            <td th:text="${entry.soDienThoai}"></td>
+            <td th:text="${entry.email}"></td>
+            <!--            <td th:text="${entry.taiKhoan.id}"></td>-->
+            <td th:text="${entry.trangThai == 1 ? 'Hoạt Động' : 'Không Hoạt Động' }"></td>
+            <td>
+                <a th:href="@{/admin/khachhang/delete/{id}(id=${entry.id})}"><button class="btn btn-light" onclick="return confirm('Bạn có chắc chắn muốn xóa?');"><i class="bi bi-trash-fill fs3"></i></button></a>
+                <a th:href="@{/admin/khachhang/view_update/{id}(id=${entry.id})}"><button class="btn btn-light"><i class="bi bi-pencil-square fs3"></i></button></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

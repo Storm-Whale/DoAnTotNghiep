@@ -1,0 +1,32 @@
+<div th:fragments="table">
+  <table>
+    <thead>
+    <tr>
+      <th>STT</th>
+      <th>Tên sản phẩm</th>
+      <th>Kích cỡ</th>
+      <th>Màu sắc</th>
+      <th>Giá</th>
+      <th>Số lượng</th>
+      <th>Trạng thái</th>
+      <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="spct, index : ${sanPhamChiTiet}">
+      <td th:text="${index.index + 1}"></td>
+      <td th:text="${spct.tenSanPham}"></td>
+      <td th:text="${spct.tenKichCo}"></td>
+      <td th:text="${spct.tenMauSac}"></td>
+      <td th:text="${spct.gia}"></td>
+      <td th:text="${spct.soLuong}"></td>
+      <td th:text="${spct.trangThai}"></td>
+      <td>
+        <button class="btn btn-success btn-sm" style="border-radius: 8px;">
+          +
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

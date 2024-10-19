@@ -36,8 +36,8 @@ public class PhieuGiamGia {
     @Column(name = "ngay_ket_thuc")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date ngayKetThuc;
-    @Column(name = "gia_tri_min")
-    private double giaTriMin;
+    @Column(name = "gia_tri_giam")
+    private double giaTriGiam;
     @Column(name = "gia_tri_max")
     private double giaTriMax;
     @Column(name = "trang_thai")

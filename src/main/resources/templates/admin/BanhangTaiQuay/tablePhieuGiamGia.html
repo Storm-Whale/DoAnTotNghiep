@@ -1,0 +1,53 @@
+<div th:fragments="table">
+<table class="table table-bordered table-hover text-center">
+    <thead class="table-dark">
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Mã Phiếu Giảm Giá</th>
+        <th scope="col">Tên Phiếu Giảm Giá</th>
+        <th scope="col">Số Lượng</th>
+        <th scope="col">Điều Kiện Giảm</th>
+        <th scope="col">Loại Giảm Giá</th>
+        <th scope="col">Ngày Bắt Đầu</th>
+        <th scope="col">Ngày Kết Thúc</th>
+        <th scope="col">Giá Trị Tối Thiểu</th>
+        <th scope="col">Giá Trị Tối Đa</th>
+        <th scope="col">Trạng Thái</th>
+        <th scope="col">Hành Động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="phieuGiamGia : ${listPGG}">
+        <td th:text="${phieuGiamGia.id}"></td>
+        <td th:text="${phieuGiamGia.maPhieuGiamGia}"></td>
+        <td th:text="${phieuGiamGia.tenPhieuGiamGia}"></td>
+        <td th:text="${phieuGiamGia.soLuong}"></td>
+        <!--            <td th:text="${phieuGiamGia.dieuKien}"></td>-->
+        <!--            <td th:text="${#numbers.formatInteger(phieuGiamGia.dieuKien)} + (phieuGiamGia.kieuGiamGia == 1 ? '%' : ' VND')"></td>-->
+        <td>
+            <span th:text="${phieuGiamGia.dieuKien}"></span>
+            <span th:text="${phieuGiamGia.kieuGiamGia == 1 ? '%' : ' VND'}"></span>
+        </td>
+        <td th:text="${phieuGiamGia.kieuGiamGia == 1 ? 'Phần trăm' : 'Giá'}"></td>
+        <td th:text="${phieuGiamGia.ngayBatDau}"></td>
+        <td th:text="${phieuGiamGia.ngayKetThuc}"></td>
+        <td th:text="${phieuGiamGia.giaTriMin}"></td>
+        <td th:text="${phieuGiamGia.giaTriMax}"></td>
+        <td th:text="${phieuGiamGia.trangThai == 0 ? 'Active' : 'Inactive'}"></td>
+        <td>
+            <form class="d-inline-block">
+                <a class="btn btn-info btn-sm" th:href="@{'/admin/phieu-giam-gia/detail/' + ${phieuGiamGia.id}}">
+                    <i class="fas fa-info-circle"></i> Chi Tiết
+                </a>
+            </form>
+            <form class="d-inline-block" th:action="@{'/admin/phieu-giam-gia/delete/' + ${phieuGiamGia.id}}" method="post">
+                <input type="hidden" name="_method" value="delete"/>
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">
+                    <i class="fas fa-trash-alt"></i> Xóa
+                </button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>

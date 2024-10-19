@@ -24,12 +24,13 @@
 
     <a class="wrapper">
         <a href="#demo-modal">
+
             <button class="btn btn-light" style="margin-bottom: 20px"><i class="bi bi-plus-circle-fill"></i>Thêm Khách Hàng</button>
-        </a>
+
     </a>
 
-    <table class="table">
-        <thead>
+    <table class="table table-bordered table-hover text-center">
+        <thead class="table-dark">
         <tr>
             <th scope="col">id</th>
             <th scope="col">ImG</th>
@@ -65,7 +66,6 @@
         <div class="modal__content">
             <h2>Thêm Khách Hàng</h2>
             <div th:replace="~{admin/customer/adKhachHang :: form}">
-
             </div>
         </div>
     </div>

@@ -85,4 +85,8 @@ public class ClientController {
         sanPhamGioHangRepository.save(sanPhamGioHang);
         return "redirect:/client";
     }
+    @GetMapping("hientuong")
+    private String trangct2() {
+        return "/client/hientuong";
+    }
 }
