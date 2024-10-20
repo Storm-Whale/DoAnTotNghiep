@@ -8,7 +8,6 @@ import nhom6.duancanhan.doantotnghiep.service.service.MauSacService;
 import nhom6.duancanhan.doantotnghiep.service.service.PhieuGiamGiaService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,16 +54,4 @@ public class TaiQuayController {
         model.addAttribute("listPGG",phieuGiamGiaService.getAll());
         return "/admin/BanhangTaiQuay/index";
     }
-
-//    @GetMapping("khachhang")
-//    public String khachhang(Model model){
-//        model.addAttribute("listKH",khachHangService.getAll());
-//        return "/admin/BanhangTaiQuay/index";
-//    }
-//
-//    @GetMapping("phieugiamgia")
-//    public String phieuGiamGia(Model model){
-//        model.addAttribute("listPGG",phieuGiamGiaService.getAll());
-//        return "/admin/BanhangTaiQuay/index";
-//    }
 }

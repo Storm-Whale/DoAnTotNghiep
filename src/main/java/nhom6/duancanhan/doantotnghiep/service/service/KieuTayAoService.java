@@ -1,6 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
 
+import nhom6.duancanhan.doantotnghiep.entity.KieuCoAo;
 import nhom6.duancanhan.doantotnghiep.entity.KieuTayAo;
 import org.springframework.data.domain.Page;
 
@@ -17,6 +18,8 @@ public interface KieuTayAoService {
     void addKieuTayAo(KieuTayAo kieuTayAo);
 
     void updateKieuTayAo(Integer id, KieuTayAo kieuTayAo);
+    void updateKieuTayAoById(Integer id, KieuTayAo kieuTayAo);
+
 
     void deleteKieuTayAo(Integer id);
 }

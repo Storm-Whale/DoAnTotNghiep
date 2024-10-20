@@ -18,11 +18,6 @@
         <div class="col-md-6">
             <h2>Chi Tiết Tay Áo</h2>
         </div>
-        <div class="col-md-6 text-end">x
-            <a href="/admin/kieu-tay-ao" class="btn btn-primary">
-                <i class="fas fa-arrow-left"></i> Back
-            </a>
-        </div>
     </div>
 
     <div class="row mb-4">
@@ -33,29 +28,87 @@
                 </div>
                 <div class="card-body">
 
-                    <form th:action="@{'/admin/kieu-tay-ao/update/' + ${kieuTayAo.id}}" method="post" class="d-inline-block">
+                    <form class="d-inline-block w-100">
 
                         <input type="hidden" name="_method" value="put">
-                        <div class="mb-3">
-                            <label for="id" class="form-label">ID:</label>
-                            <input type="text" id="id" name="id" class="form-control" th:value="${kieuTayAo.id}" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label  class="form-label">Tên Cổ Áo:</label>
-                            <input type="text" class="form-control" id="tenTayAo" name="tenTayAo"
-                                   th:value="${kieuTayAo.tenTayAo}" required>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id" class="form-label">ID:</label>
+                                <input type="text" id="id" name="id" class="form-control" th:value="${kieuTayAo.id}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="trangThai" class="form-label">Trạng Thái:</label>
+                                <input type="text" id="trangThai" name="trangThai" class="form-control"
+                                       th:value="${kieuTayAo.trangThai == 0 ? 'Hoạt động' : 'Ngừng hoạt động'}" readonly>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="trangThai" class="form-label">Trạng Thái:</label>
-                            <input type="text" id="trangThai" name="trangThai" class="form-control"
-                                   th:value="${kieuTayAo.trangThai == 'Active' ? 0 : 1}">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="tenCoAo" class="form-label">Tên Cổ Áo:</label>
+                                <input type="text" id="tenCoAo" name="tenCoAo" class="form-control" th:value="${kieuTayAo.tenTayAo}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ngayTao" class="form-label">Ngày Tạo:</label>
+                                <input type="text" id="ngayTao" name="ngayTao" class="form-control" th:value="${kieuTayAo.ngayTao}" readonly>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-warning btn-sm">
-                            <i class="fas fa-edit"></i> Update
-                        </button>
+
+                        <div class="row">
+                            <div class="col text-end">
+                                <a href="/admin/kieu-tay-ao" class="btn btn-warning">
+                                    <i class="fas fa-arrow-left"></i> Back
+                                </a>
+                            </div>
+                        </div>
+
                     </form>
+
                 </div>
+            </div>
+            <div>
+                <h5 class="mb-3" style="text-align: center ; margin-top: 10px">Danh sách kiểu Tay áo</h5>
+                <table class="table table-bordered table-hover text-center">
+                    <thead class="table-dark">
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Tên Kiểu Tay Áo</th>
+                        <th scope="col">Tên Sản Phẩm</th>
+                        <th scope="col">Trạng Thái</th>
+                        <th scope="col">Ngày Tạo</th>
+                        <th scope="col">Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="kieuTayAo : ${kieuTayAo}">
+                        <th:block th:each="sanPham, index : ${sanPhams}" th:if="${sanPham.tenTayAo == kieuTayAo.tenTayAo}">
+                            <tr>
+                                <td th:text="${index.index + 1}"></td>
+                                <td th:text="${kieuTayAo.tenTayAo}"></td>
+                                <td>
+                                    <span th:text="${sanPham.tenSanPham}"></span>
+                                </td>
+                                <td th:text="${kieuTayAo.trangThai == 0 ? 'Hoạt động' : 'Ngừng hoạt động'}"></td>
+                                <td th:text="${kieuTayAo.ngayTao}"></td>
+                                <td>
+                                    <form class="d-inline-block">
+                                        <a class="btn btn-warning btn-sm" th:href="@{'/admin/kieu-tay-ao/edit/' + ${kieuTayAo.id}}">
+                                            <i class="fas fa-info-circle"></i> Update
+                                        </a>
+                                    </form>
+                                    <form class="d-inline-block" th:action="@{'/admin/kieu-tay-ao/updatett/' + ${kieuTayAo.id}}" method="post">
+                                        <input type="hidden" name="_method" value=""/>
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tạm dừng hoạt động kiểu cổ áo này?');">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </th:block>
+                    </th:block>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

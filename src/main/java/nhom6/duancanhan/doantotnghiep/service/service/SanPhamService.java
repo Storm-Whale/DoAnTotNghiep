@@ -12,6 +12,8 @@ import java.util.List;
 public interface SanPhamService {
 
     List<SanPhamResponse> getAllSanPham();
+    List<SanPhamResponse> getSanPhamByKieuCoAoId(Integer id); //getSP byKieuCoAoId
+    List<SanPhamResponse> getSanPhamByKieuTayAoId(Integer id); //getSP byKieuCoAoId
 
     SanPhamResponse getSanPhamById(Integer id);
 

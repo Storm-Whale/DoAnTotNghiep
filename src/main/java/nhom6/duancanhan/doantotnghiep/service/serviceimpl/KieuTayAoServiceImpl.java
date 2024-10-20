@@ -1,6 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 
+import nhom6.duancanhan.doantotnghiep.entity.KieuCoAo;
 import nhom6.duancanhan.doantotnghiep.entity.KieuTayAo;
 
 import nhom6.duancanhan.doantotnghiep.repository.KieuTayAoRepository;
@@ -42,6 +43,11 @@ public class KieuTayAoServiceImpl implements KieuTayAoService {
 
     @Override
     public void updateKieuTayAo(Integer id, KieuTayAo kieuTayAo) {
+        kieuTayAoRepository.save(kieuTayAo);
+    }
+
+    @Override
+    public void updateKieuTayAoById(Integer id, KieuTayAo kieuTayAo) {
         kieuTayAoRepository.save(kieuTayAo);
     }
 

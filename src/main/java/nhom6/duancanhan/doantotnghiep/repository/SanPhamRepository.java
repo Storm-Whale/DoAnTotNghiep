@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
 
@@ -37,5 +39,8 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
             @Param("coAoId") Integer coAoId,
             Pageable pageable
     );
-
+    @Query("SELECT s FROM SanPham s WHERE s.coAo.id = :kieuCoAoId")
+    List<SanPham> findByIdCoAo(@Param("kieuCoAoId") Integer kieuCoAoId);
+    @Query("SELECT s FROM SanPham s WHERE s.tayAo.id = :kieuTayAoId")
+    List<SanPham> findByIdTayAo(@Param("kieuTayAoId") Integer kieuTayAoId);
 }

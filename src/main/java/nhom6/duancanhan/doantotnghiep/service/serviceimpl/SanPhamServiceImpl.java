@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +42,24 @@ public class SanPhamServiceImpl implements SanPhamService {
                         .toList(),
                 "Lỗi khi lấy thông tin sản phẩm từ cơ sở dữ liệu"
         );
+    }
+
+    //Get List sp byId KieuCoAo
+    @Override
+    public List<SanPhamResponse> getSanPhamByKieuCoAoId(Integer id) {
+        List<SanPham> sanPhams = sanPhamRepository.findByIdCoAo(id);
+        return sanPhams.stream()
+                .map(sanPhamMapper::toSanPhamResponse)
+                .collect(Collectors.toList());
+    }
+
+    //Get List sp byId KieuTayAo
+    @Override
+    public List<SanPhamResponse> getSanPhamByKieuTayAoId(Integer id) {
+        List<SanPham> sanPhams = sanPhamRepository.findByIdTayAo(id);
+        return sanPhams.stream()
+                .map(sanPhamMapper::toSanPhamResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
