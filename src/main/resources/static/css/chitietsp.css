@@ -48,20 +48,11 @@ header img:hover {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/*.product-detail:hover {*/
-/*    transform: scale(1.02);*/
-/*    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
-/*}*/
-
 .product-detail img {
     width: 300px;
     border-radius: 5px;
     transition: transform 0.3s ease;
 }
-
-/*.product-detail img:hover {*/
-/*    transform: scale(1.05);*/
-/*}*/
 
 .product-info {
     flex: 1;
@@ -93,10 +84,6 @@ header img:hover {
     align-items: center;
     gap: 10px;
 }
-
-/*.add-to-cart button:hover {*/
-/*    background-color: #b71c1c;*/
-/*}*/
 
 .notification {
     display: none;
@@ -161,14 +148,15 @@ header img:hover {
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
+
 .color-options {
     display: flex;
-    align-items: center; /* Giúp tiêu đề và các tùy chọn màu canh giữa theo chiều dọc */
-    gap: 10px; /* Khoảng cách giữa các tùy chọn màu và tiêu đề */
+    align-items: center;
+    gap: 10px;
 }
 
 .color-options strong {
-    margin-right: 10px; /* Khoảng cách giữa tiêu đề và các tùy chọn màu */
+    margin-right: 10px;
 }
 
 .color-options label {
@@ -187,28 +175,15 @@ header img:hover {
 }
 
 .color-options img {
-    width: 20px;
+    width: 50px;
     height: 20px;
-    border-radius: 5px;
+    border-radius: 1px;
 }
 
 .color-options input[type="radio"]:checked + img {
     border: 2px solid #d32f2f;
 }
-/*-------------------------------------------------------------------Size CSS--------------------------------------------------------------------*/
-/*.size-options {*/
-/*    display: flex;*/
-/*    align-items: center;*/
-/*    gap: 10px;*/
-/*    margin-bottom: 15px;*/
-/*}*/
 
-/*.size-options strong {*/
-/*    margin-right: 10px;*/
-/*    font-weight: 600;*/
-/*    color: #333;*/
-/*}*/
-/*-------------------------------------------------------------------Size CSS--------------------------------------------------------------------*/
 .size-select {
     padding: 10px;
     border: 1px solid #ccc;
@@ -219,11 +194,9 @@ header img:hover {
     cursor: pointer;
 }
 
-
 .size-select:hover {
     border-color: #888;
 }
-
 
 .size-select:focus {
     outline: none;
@@ -234,27 +207,31 @@ header img:hover {
 .main-image-container {
     width: 100%;
     max-width: 600px;
-    height: 400px; /* Đặt chiều cao cố định */
+    height: 400px;
     margin-bottom: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 .main-image {
     max-width: 100%;
     max-height: 100%;
 }
+
 .thumbnail-container {
     display: flex;
     justify-content: center;
     gap: 10px;
 }
+
 .thumbnail-container img {
     width: 60px;
     height: auto;
     cursor: pointer;
     opacity: 0.6;
 }
+
 .thumbnail-container img:hover {
     opacity: 1;
 }
@@ -269,23 +246,290 @@ header img:hover {
     justify-content: center;
     margin-top: 20px;
 }
+
 .size-label {
     margin-right: 10px;
 }
+
 .size-label input[type="radio"] {
     display: none;
 }
+
 .size-label label {
     padding: 3px;
-    border-radius: 5px;
+    border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
 }
+
 .size-label input[type="radio"]:checked + label {
     border: 2px solid red;
 }
+
 .size-label label.grey {
     border: 2px solid grey;
 }
+
+
+.options {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.color-item {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 5px;
+    cursor: pointer;
+    width: auto;
+}
+
+.color-item img {
+    width: 25px;
+    height: 25px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.color-item span {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.options label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    transition: border-color 0.3s ease;
+}
+
+.color-item {
+    cursor: pointer;
+    display: inline-block;
+    border: 2px solid transparent;
+    padding: 10px;
+    border-radius: 8px;
+    transition: border 0.3s ease;
+}
+
+.color-item:hover {
+    border: 2px solid red;
+}
+
+.color-item input[type="radio"] {
+    display: none;
+}
+
+.d-flex {
+    display: flex;
+    align-items: center;
+}
+
+.color-item input[type="radio"]:checked + .d-flex img,
+.color-item:hover .d-flex img {
+    border: 2px solid red;
+}
+
+.color-item input[type="radio"]:checked + .d-flex span,
+.color-item:hover .d-flex span {
+    color: red;
+}
+
+.similar-products {
+    background-color: white;
+    padding: 20px;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 20px;
+}
+
+.similar-products h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #333;
+    border-bottom: 2px solid #d32f2f;
+    padding-bottom: 10px;
+    border-radius: 0;
+}
+
+.product-detail table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.product-detail table td {
+    padding: 8px 15px;
+    vertical-align: top;
+}
+
+.product-detail table td:first-child {
+    font-weight: bold;
+    color: #666;
+    width: 200px;
+}
+
+.product-detail a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.product-detail a:hover {
+    text-decoration: underline;
+}
+
+.description p {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.main-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+
+.product-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+
+.similar-products {
+    flex: 1;
+}
+
+
+.description {
+    flex: 1;
+}
+
+
+.main-container h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #333;
+    border-bottom: 2px solid #d32f2f;
+    padding-bottom: 10px;
+}
+/* Thêm CSS cho nút "Thêm vào giỏ hàng" */
+#add-to-cart-btn {
+    background-color: #E0F7FF; /* Màu nền xanh da trời nhạt */
+    color: #007BFF; /* Màu chữ xanh da trời đậm */
+    border: 2px solid #007BFF; /* Viền xanh đậm */
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+#add-to-cart-btn:hover {
+    background-color: #007BFF; /* Màu nền đậm khi hover */
+    color: #ffffff; /* Màu chữ trắng khi hover */
+}
+
+/* Thêm CSS cho nút "Mua hàng" */
+button.btn-primary {
+    background-color: #007BFF; /* Màu nền xanh da trời đậm */
+    color: #ffffff; /* Màu chữ trắng */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-left: 10px; /* Khoảng cách giữa hai nút */
+}
+
+button.btn-primary:hover {
+    background-color: #0056b3; /* Màu nền đậm hơn khi hover */
+}
+/* CSS cho tiêu đề sản phẩm */
+.product-info h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* CSS cho giá sản phẩm */
+.price {
+    font-size: 24px;
+    color: #d32f2f;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* CSS cho tùy chọn màu sắc */
+.color-options {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.color-options strong {
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.color-item {
+    display: flex;
+    align-items: center;
+    border: 2px solid #ccc;
+    padding: 5px;
+    border-radius: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.color-item img {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.color-item:hover {
+    border-color: #007BFF;
+}
+
+/* CSS cho tùy chọn size */
+.size-options {
+    margin-top: 10px;
+}
+
+.size-options strong {
+    display: inline-block;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.size-labels {
+    display: flex;
+    gap: 10px;
+}
+
 
 
