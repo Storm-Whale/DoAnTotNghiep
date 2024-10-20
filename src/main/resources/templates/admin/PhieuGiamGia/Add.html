@@ -44,8 +44,8 @@
         <div class="col-md-6">
             <label for="voucherType" class="form-label">Loại giảm giá</label>
             <select class="form-select" id="voucherType" name="voucherType" th:field="*{kieuGiamGia}" required>
-                <option value="1">Phần trăm</option>
-                <option value="2">VND</option>
+                <option value="1">%</option>
+                <option value="0">VND</option>
             </select>
         </div>
 
@@ -61,7 +61,7 @@
 
         <div class="col-md-6">
             <label for="minValue" class="form-label">Giá trị tối thiểu (VND)</label>
-            <input type="number" class="form-control" id="minValue" name="minValue" min="0" th:field="*{giaTriMin}" required>
+            <input type="number" class="form-control" id="minValue" name="minValue" min="0" th:field="*{giaTriGiam}" required>
         </div>
 
         <div class="col-md-6">

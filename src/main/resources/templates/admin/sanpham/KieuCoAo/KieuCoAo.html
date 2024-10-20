@@ -106,7 +106,7 @@
     <script>
         function changeItemsPerPage() {
             const selectedSize = document.getElementById("itemsPerPage").value;
-            const currentPage = [[${currentPage}]]; // Lấy trang hiện tại từ model
+            const currentPage = [[${currentPage}]];
             const url = `/admin/kieu-co-ao/${currentPage}?size=${selectedSize}`;
             window.location.href = url;
         }

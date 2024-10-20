@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +24,11 @@ public class PhieuGiamGiaImpl implements PhieuGiamGiaService {
     }
 
     @Override
-    public Page<PhieuGiamGia> phanTrang(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-        return this.phieuGiamGiaRepository.findAll(pageable);
+    public Page<PhieuGiamGia> findByCriteria(String maPhieuGiamGia, String tenPhieuGiamGia, Date ngayBatDau, Date ngayKetThuc,
+                                        Integer kieuGiamGia, Integer trangThai, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo , pageSize);
+        return phieuGiamGiaRepository.findByCriteria(maPhieuGiamGia, tenPhieuGiamGia, ngayBatDau, ngayKetThuc,
+                kieuGiamGia, trangThai, pageable);
     }
 
     @Override
