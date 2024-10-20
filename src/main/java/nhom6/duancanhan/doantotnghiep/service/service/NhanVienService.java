@@ -21,6 +21,6 @@ public interface NhanVienService {
 
     void deleteNhanVien(Integer id);
 
-    List<NhanVien> findSearch (String keyword);
+    Page<NhanVien> SearchandPhantrang (String keyword, Integer trangThai, int pageNo, int pageSize);
 
 }

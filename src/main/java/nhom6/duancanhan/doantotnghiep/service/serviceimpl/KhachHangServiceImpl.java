@@ -51,4 +51,10 @@ public class KhachHangServiceImpl implements KhachHangService {
     public void deleteKhachHang(Integer id) {
         khachHangRepository.deleteById(id);
     }
+
+    @Override
+    public Page<KhachHang> SearchandPhantrang(String keyword, Integer trangThai, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        return khachHangRepository.searchKhachHang(keyword,trangThai,pageable);
+    }
 }

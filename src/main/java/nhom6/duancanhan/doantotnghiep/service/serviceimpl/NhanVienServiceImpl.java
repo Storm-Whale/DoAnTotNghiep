@@ -62,11 +62,9 @@ public class NhanVienServiceImpl implements NhanVienService {
     }
 
     @Override
-    public List<NhanVien> findSearch(String keyword) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-          return (List<NhanVien>) phanTrang(1,3);
-        }
-        return  nhanVienRepository.searchNhanVien(keyword);
+    public Page<NhanVien> SearchandPhantrang(String keyword, Integer trangThai, int pageNo, int pageSize) {
+      Pageable pageable = PageRequest.of(pageNo,pageSize);
+      return nhanVienRepository.searchNhanVien(keyword,trangThai,pageable);
     }
 
 

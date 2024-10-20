@@ -16,20 +16,26 @@
 <section class="page-content">
     <h1>Quản Lý Nhân Viên</h1>
 
-    <form th:action="@{/admin/nhanvien/search}" th:object="${nhanVien}" method="get">
+    <form th:action="@{/admin/nhanvien}" method="get">
     <div class="col-5" style="margin: 10px 10px 10px 10px">
-        <div class="input-group">
-            <input class="form-control" name="keyword" th:value="${keyword}" placeholder="Nhập tên nhân viên để tìm..." type="text"/>
+        <div class="input-group" style="width: 800px">
+            <input class="form-control" style="width: 400px" name="keyword" th:value="${keyword}" placeholder="Nhập tên nhân viên để tìm..." type="text"/>
 <!--            <span th:if="${#fields.hasErrors('keyword')}" th:errors="*{keyword}"></span>-->
             <button type="submit" class="btn btn-dark"><i class="bi bi-search"></i> Search</button>
+            <select style="margin-left: 30px" class="form-select col-sm-12" aria-label="Default select example" name="trangThai">
+                <option value="">Chọn trạng thái</option>
+                <option type="submit" value="1" th:selected="${trangThai == 1}">Hoạt động</option>
+                <option type="submit" value="0" th:selected="${trangThai == 0}">Không hoạt động</option>
+            </select>
         </div>
+
     </div>
 
     </form>
 
     <a class="wrapper">
         <a href="#dialog">
-            <button class="btn btn-light" style="margin-bottom: 20px"><i class="bi bi-plus-circle-fill"></i>Thêm Khách Hàng</button>
+            <button class="btn btn-light" style="margin-bottom: 20px"><i class="bi bi-plus-circle-fill"></i>Thêm Nhân Viên</button>
         </a>
     </a>
 
@@ -43,8 +49,6 @@
             <th scope="col">Giới Tính</th>
             <th scope="col">SDT</th>
             <th scope="col">Email</th>
-            <th scope="col">Tài Khoản</th>
-            <th scope="col">Vai Trò</th>
             <th scope="col">Trạng Thái</th>
             <th scope="col">Action</th>
         </tr>
@@ -77,32 +81,21 @@
         </div>
     </div>
 
-    <div th:if="${totalPages >= 1}">
-        <div class="row col-sm-10">
 
-            <div class="col-sm-2">
-                Total Rows: [[${totalItems}]]
-            </div>
+    <nav>
+        <ul class="pagination">
+            <li th:classappend="${currentPage == 0} ? 'disabled'">
+                <a th:href="@{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage - 1}, size=${size})}" class="page-link">Previous</a>
+            </li>
+            <li th:each="pageNum : ${pageNumbers}" th:classappend="${pageNum == currentPage} ? 'active'">
+                <a th:href="@{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${pageNum}, size=${size})}" th:text="${pageNum + 1}" class="page-link"></a>
+            </li>
+            <li th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a th:href="@{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage + 1}, size=${size})}" class="page-link">Next</a>
+            </li>
+        </ul>
+    </nav>
 
-            <div class="col-sm-1">
-            <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-                <a th:if="${currentPage != i}" th:href="@{'/admin/nhanvien/' + ${i}}">[[${i}]]</a>
-                <span th:unless="${currentPage != i}">[[${i}]]</span>&nbsp;&nbsp;
-            </span>
-            </div>
-
-            <div class="col-sm-1">
-                <a th:if="${currentPage < totalPages}"
-                   th:href="@{'/admin/nhanvien/' + ${currentPage != null ? currentPage + 1 : 1}}">Next</a>
-                <span th:unless="${currentPage < totalPages}">Next</span>
-            </div>
-
-            <div class="col-sm-1">
-                <a th:if="${currentPage < totalPages}" th:href="@{'/admin/nhanvien/' + ${totalPages}}">Last</a>
-                <span th:unless="${currentPage < totalPages}">Last</span>
-            </div>
-        </div>
-    </div>
     <!--</section>-->
 </section>
 </body>
