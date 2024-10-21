@@ -15,13 +15,21 @@ import java.util.List;
 import java.util.Optional;
 @Service
 public class KieuCoAoServiceImpl implements KieuCoAoService {
-    @Autowired
-    private KieuCoAoRepository kieuCoAoRepository;
+    private final KieuCoAoRepository kieuCoAoRepository;
+
+    public KieuCoAoServiceImpl(KieuCoAoRepository kieuCoAoRepository) {
+        this.kieuCoAoRepository = kieuCoAoRepository;
+    }
 
     @Override
     public List<KieuCoAo> getAll() {
         return kieuCoAoRepository.findAll();
     }
+
+//    @Override
+//    public Page<KieuCoAo> getAll(int page, int size) {
+//        return null;
+//    }
 
     @Override
     public Page<KieuCoAo> phanTrang(int pageNo, int pageSize) {
@@ -46,7 +54,7 @@ public class KieuCoAoServiceImpl implements KieuCoAoService {
     }
 
     @Override
-    public void deleteKieuCoAo(Integer id) {
-        kieuCoAoRepository.deleteById(id);
+    public void updateKieuCoAoById(Integer id, KieuCoAo kieuCoAo) {
+        kieuCoAoRepository.save(kieuCoAo);
     }
 }

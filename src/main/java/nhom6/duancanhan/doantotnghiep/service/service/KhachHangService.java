@@ -1,6 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
+import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -21,4 +22,7 @@ public interface KhachHangService {
      void updateKhachHang(KhachHang khachHang);
 
      void deleteKhachHang(Integer id);
+
+     Page<KhachHang> SearchandPhantrang (String keyword, Integer trangThai, int pageNo, int pageSize);
+
 }

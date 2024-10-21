@@ -2,9 +2,6 @@
 <form th:action="@{/admin/khachhang/add}" th:object="${khachHang}" method="post">
   <div class="row">
 
-    <label for="id">ID:</label>
-    <input type="number" th:field="*{id}" id="id">
-
     <div class="col-sm-6">
       <label class="form-label">Ảnh Đại Diện</label>
       <input type="text" class="form-control" th:field="*{anhUrl}">
@@ -55,12 +52,12 @@
 
     </div>
 
-    <div class="col-sm-6">
-      <label class="form-label">Tài Khoản</label>
-      <select class="form-select" aria-label="Default select example" th:field="*{taiKhoan}">
-        <option th:each="taiKhoan : ${listTK}" th:value="${taiKhoan.id}"  th:text="${taiKhoan.id}"></option>
-      </select>
-    </div>
+<!--    <div class="col-sm-6">-->
+<!--      <label class="form-label">Tài Khoản</label>-->
+<!--      <select class="form-select" aria-label="Default select example" th:field="*{taiKhoan}">-->
+<!--        <option th:each="taiKhoan : ${listTK}" th:value="${taiKhoan.id}"  th:text="${taiKhoan.id}"></option>-->
+<!--      </select>-->
+<!--    </div>-->
 
     <div class="col-sm-6">
       <label class="form-label">Trạng Thái</label>

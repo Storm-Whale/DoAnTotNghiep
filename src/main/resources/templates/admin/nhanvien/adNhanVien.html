@@ -47,19 +47,19 @@
         <span style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
       </div>
 
-      <div class="col-sm-6">
-        <label class="form-label">Tài Khoản</label>
-        <select class="form-select" aria-label="Default select example" th:field="*{taiKhoan}">
-          <option th:each="taiKhoan : ${listTK}" th:value="${taiKhoan.id}"  th:text="${taiKhoan.id}"></option>
-        </select>
-      </div>
+<!--      <div class="col-sm-6">-->
+<!--        <label class="form-label">Tài Khoản</label>-->
+<!--        <select class="form-select" aria-label="Default select example" th:field="*{taiKhoan}">-->
+<!--          <option th:each="taiKhoan : ${listTK}" th:value="${taiKhoan.id}"  th:text="${taiKhoan.id}"></option>-->
+<!--        </select>-->
+<!--      </div>-->
 
-      <div class="col-sm-6">
-        <label class="form-label">Vai Tro</label>
-        <select class="form-select" aria-label="Default select example" th:field="*{vaiTro}">
-          <option th:each="vaiTro : ${listVT}" th:value="${vaiTro.id}"  th:text="${vaiTro.id}"></option>
-        </select>
-      </div>
+<!--      <div class="col-sm-6">-->
+<!--        <label class="form-label">Vai Tro</label>-->
+<!--        <select class="form-select" aria-label="Default select example" th:field="*{vaiTro}">-->
+<!--          <option th:each="vaiTro : ${listVT}" th:value="${vaiTro.id}"  th:text="${vaiTro.id}"></option>-->
+<!--        </select>-->
+<!--      </div>-->
 
       <div class="col-sm-6">
         <label class="form-label">Trạng Thái</label>

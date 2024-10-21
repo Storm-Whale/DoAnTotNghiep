@@ -15,6 +15,9 @@ import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamChiTietService;
 import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -74,6 +77,16 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
             updateSanPhamChiTietFromRequest(sanPhamChiTietRequest, existingSanPhamChiTiet);
             return sanPhamChiTietMapper.toSanPhamChiTietResponse(sanPhamChiTietRepository.save(existingSanPhamChiTiet));
         }, "Lỗi khi thay đỗi thông tin sản phẩm chi tiết từ cơ sở dũ liệu");
+    }
+
+    @Override
+    public Page<SanPhamChiTietResponse> timKiemSanPham(String keyword, Integer kichCoId, Integer mauSacId, Integer trangThai, int page, int size) {
+        Pageable pageable = PageRequest.of(page , size);
+        Page<SanPhamChiTiet> sanPhamChiTietPage;
+        String keywordSearch = (keyword != null && !keyword.isEmpty()) ? "%" + keyword + "%" : null;
+        sanPhamChiTietPage= (Page<SanPhamChiTiet>) sanPhamChiTietRepository.findByCriteria(keywordSearch, kichCoId, mauSacId,
+                trangThai, pageable);
+        return sanPhamChiTietPage.map(sanPhamChiTietMapper::toSanPhamChiTietResponse);
     }
 
     @Override

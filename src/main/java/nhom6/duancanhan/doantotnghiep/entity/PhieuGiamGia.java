@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -27,7 +28,7 @@ public class PhieuGiamGia {
     @Column(name = "so_luong")
     private int soLuong;
     @Column(name = "dieu_kien")
-    private int dieuKien;
+    private double dieuKien;
     @Column(name = "kieu_giam_gia")
     private int kieuGiamGia;
     @Column(name = "ngay_bat_dau")
@@ -42,4 +43,19 @@ public class PhieuGiamGia {
     private double giaTriMax;
     @Column(name = "trang_thai")
     private int trangThai;
+
+    @Column(name= "ngay_tao")
+    LocalDate ngayTao;
+    @Column(name = "ngay_sua")
+    LocalDate ngaySua;
+
+    @PrePersist
+    protected void onCreateCreate() {
+        ngayTao = LocalDate.now();
+        ngaySua = LocalDate.now();
+    }
+    @PreUpdate
+    protected void onUpdateUpdate() {
+        ngaySua = LocalDate.now();
+    }
 }

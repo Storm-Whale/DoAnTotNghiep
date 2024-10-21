@@ -78,12 +78,12 @@
                 </select>
 
                 <!-- ComboBox Lọc Giá -->
-                <label for="priceFilter" style="margin-right: 10px; font-size: 12px;">Giá:</label>
+                <label for="priceFilter" style="margin-right: 10px; font-size: 12px;">Trạng thái:</label>
                 <select id="priceFilter" style="margin-right: 10px; font-size: 12px;">
-                    <option value="">Chọn giá</option>
+                    <option value="">Chọn trạng thái</option>
                     <option th:each="spct : ${sanPhamChiTiet}"
                             th:value="${spct.id}"
-                            th:text="${spct.gia}"></option>
+                            th:text="${spct.trangThai}"></option>
                 </select>
                 </div>
                 <div class="half" style="display: flex; align-items: center;">
@@ -94,6 +94,40 @@
                     <button id="btnSearch" style="padding: 10px 10px; margin-bottom: 10px">Tìm kiếm</button>
                 </div>
             </div>
+
+<!--                    <div>-->
+<!--                        <div class="d-flex align-items-center">-->
+<!--                            <label for="itemsPerPage" class="me-2">Xem</label>-->
+<!--                            <select class="form-select form-select-sm" id="itemsPerPage" name="size" style="width: 80px;"-->
+<!--                                    onchange="changeItemsPerPage()">-->
+<!--                                <option value="5" th:selected="${size == 5}">5</option>-->
+<!--                                <option value="10" th:selected="${size == 10}">10</option>-->
+<!--                                <option value="15" th:selected="${size == 15}">15</option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                        <nav>-->
+<!--                            <ul class="pagination justify-content-center">-->
+<!--                                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
+<!--                                    <a class="page-link" th:href="@{/admin/taiquay/1(size=${size})}" aria-label="First">First</a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">-->
+<!--                                    <a class="page-link" th:href="@{'/admin/taiquay/'+${pageNo}(size=${size})}" th:with="pageNo=${i}" th:text="${i}"></a>-->
+<!--                                </li>-->
+
+<!--                                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
+<!--                                    <a class="page-link" th:href="@{'/admin/taiquay/'+${pageNo}(size=${size})}" th:with="pageNo=${totalPages}" aria-label="Last">Last</a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </nav>-->
+<!--                    </div>-->
+<!--                    <script>-->
+<!--                        function changeItemsPerPage() {-->
+<!--                            const selectedSize = document.getElementById("itemsPerPage").value;-->
+<!--                            const currentPage = [[${currentPage}]];-->
+<!--                            const url = `/admin/taiquay/${currentPage}?size=${selectedSize}`;-->
+<!--                            window.location.href = url;-->
+<!--                        }-->
+<!--                    </script>-->
         <!-- Table Sản phẩm -->
                     <div th:replace="~{admin/BanhangTaiQuay/SPCTTable :: table}"></div>
                     <a href="#" class="modal__close">&times;</a>
