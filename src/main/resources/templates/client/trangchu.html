@@ -124,7 +124,7 @@
         <a th:href="@{/client/san_pham_chi_tiet/{id}(id=${sanpham.sanPhamResponse.id})}" class="product-card-link" th:each="sanpham : ${sanphams}">
             <div class="product-card">
                 <!-- Image URL -->
-                <img th:src="@{/img/{anhUrl}(anhUrl=${sanpham.sanPhamResponse.anhUrl + '.jpg'})}" alt="Product Image">
+                <img th:src="@{/img/{anhUrl}(anhUrl=${sanpham.sanPhamResponse.anhUrl + '.png'})}" alt="Product Image">
                 <!-- Product Name -->
                 <p th:text="${sanpham.sanPhamResponse.tenSanPham}"></p>
                 <!-- Old Price -->
