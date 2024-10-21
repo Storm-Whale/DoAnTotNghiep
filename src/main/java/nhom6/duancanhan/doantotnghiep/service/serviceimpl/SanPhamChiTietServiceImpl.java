@@ -84,7 +84,7 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
         Pageable pageable = PageRequest.of(page , size);
         Page<SanPhamChiTiet> sanPhamChiTietPage;
         String keywordSearch = (keyword != null && !keyword.isEmpty()) ? "%" + keyword + "%" : null;
-        sanPhamChiTietPage= (Page<SanPhamChiTiet>) sanPhamChiTietRepository.findByCriteria(keywordSearch, kichCoId, mauSacId,
+        sanPhamChiTietPage= sanPhamChiTietRepository.findByCriteria(keywordSearch, kichCoId, mauSacId,
                 trangThai, pageable);
         return sanPhamChiTietPage.map(sanPhamChiTietMapper::toSanPhamChiTietResponse);
     }

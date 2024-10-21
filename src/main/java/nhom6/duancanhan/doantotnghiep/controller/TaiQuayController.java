@@ -48,22 +48,17 @@ public class TaiQuayController {
     }
 
     @GetMapping("")
-    public String showIndex(@RequestParam(name = "keyword", required = false) String keyword,
-                            @RequestParam(name = "trangThai", required = false) Integer trangThai,
-                            @RequestParam(name = "mauSacId", required = false) Integer mauSacId,
-                            @RequestParam(name = "kichCoId", required = false) Integer kichCoId,
-                            @RequestParam(value = "page", defaultValue = "0") int page,
-                            @RequestParam(value = "size", defaultValue = "5") int size,
-                            Model model){
-        Page<SanPhamChiTietResponse> sanPhamChiTietResponses = sanPhamChiTietService.timKiemSanPham(keyword, trangThai,
-                mauSacId, kichCoId, page, size);
+    public String showIndex(Model model){
         model.addAttribute("hoaDon", new HoaDon());
-        model.addAttribute("sanPhamChiTiet", sanPhamChiTietResponses.getContent());
         model.addAttribute("sanPham", sanPhamService.getAllSanPham());
+        model.addAttribute("sanPhamChiTiet", sanPhamChiTietService.getAllSanPhamChiTiet());
         model.addAttribute("mauSac", mauSacService.getAll());
         model.addAttribute("kichCo", kichCoService.getAll());
         model.addAttribute("listKH",khachHangService.getAll());
         model.addAttribute("listPGG",phieuGiamGiaService.getAll());
         return "/admin/BanhangTaiQuay/index";
     }
+    //        Page<SanPhamChiTietResponse> sanPhamChiTietResponses = sanPhamChiTietService.timKiemSanPham(keyword, trangThai,
+//                mauSacId, kichCoId, page, size);
+//        model.addAttribute("sanPhamChiTiet", sanPhamChiTietResponses.getContent());
 }

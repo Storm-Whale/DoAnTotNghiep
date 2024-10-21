@@ -20,59 +20,11 @@
             <h2>Phiếu Giảm Giá</h2>
         </div>
     </div>
-<!--    <div class="row mb-4">-->
-<!--        <div class="col-md-12">-->
-<!--            <form method="post" class="row g-3">-->
-<!--                <div class="col-md-6 d-flex">-->
-<!--                    <input type="text" class="form-control me-2 " style="height: 35px; line-height: 1;" placeholder="Search...">-->
-<!--                    <button type="submit" class="btn btn-outline-primary me-2" style="height: 35px; line-height: 1;">Search</button>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 d-flex">-->
-<!--                    <div class="ms-auto">-->
-<!--                        <a class="btn btn-outline-warning btn-sm" th:href="@{'/admin/phieu-giam-gia/add'}">-->
-<!--                            <i class="fas fa-info-circle"></i> Thêm mới-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-3">-->
-<!--                    <label for="startDate" class="form-label">Ngày bắt đầu</label>-->
-<!--                    <input type="date" id="startDate" class="form-control">-->
-<!--                </div>-->
-<!--                <div class="col-md-3">-->
-<!--                    <label for="endDate" class="form-label">Ngày kết thúc</label>-->
-<!--                    <input type="date" id="endDate" class="form-control">-->
-<!--                </div>-->
-
-
-<!--&lt;!&ndash;                Loại giảm giá&ndash;&gt;-->
-<!--                <div class="col-md-3">-->
-<!--                    <label for="filterOption2" class="form-label">Loại giảm giá</label>-->
-<!--                    <select id="filterOption2" class="form-select">-->
-<!--                        <option>Chọn</option>-->
-<!--                        <option value="1">%</option>-->
-<!--                        <option value="0">VND</option>-->
-<!--                    </select>-->
-<!--                </div>-->
-
-
-<!--&lt;!&ndash;                Trạng thái&ndash;&gt;-->
-<!--                <div class="col-md-3">-->
-<!--                    <label for="filterOption3" class="form-label">Trạng thái</label>-->
-<!--                    <select id="filterOption3" class="form-select">-->
-<!--                        <option>Chọn</option>-->
-<!--                        <option value="0">Active</option>-->
-<!--                        <option value="1">Inactive</option>-->
-<!--                    </select>-->
-<!--                </div>-->
-
-<!--            </form>-->
-<!--        </div>-->
-<!--    </div>-->
     <div class="row mb-4">
         <div class="col-md-12">
             <form method="get" action="/admin/phieu-giam-gia/index" class="row g-3">
                 <div class="col-md-6 d-flex">
-                    <input type="text" name="ma" class="form-control me-2" style="height: 35px; line-height: 1;" placeholder="Search...">
+                    <input name="keyword" th:value="${keyword}" type="text" class="form-control me-2" style="height: 35px; line-height: 1;" placeholder="Search...">
                     <button type="submit" class="btn btn-outline-primary me-2" style="height: 35px; line-height: 1;">Search</button>
                 </div>
                 <div class="col-md-6 d-flex">
@@ -93,29 +45,30 @@
 
                 <!-- Loại giảm giá -->
                 <div class="col-md-3">
-                    <label for="filterOption2" class="form-label">Loại giảm giá</label>
-                    <select id="filterOption2" name="kieuGiamGia" class="form-select">
+                    <label for="kieuGiamGia" class="form-label">Loại giảm giá</label>
+                    <select id="kieuGiamGia" name="kieuGiamGia" class="form-select">
                         <option value="">Chọn</option>
-                        <option value="1">%</option>
-                        <option value="0">VND</option>
+                        <option value="1" th:selected="${trangThai == 1}">%</option>
+                        <option value="0" th:selected="${trangThai == 0}">VND</option>
                     </select>
                 </div>
 
                 <!-- Trạng thái -->
                 <div class="col-md-3">
-                    <label for="filterOption3" class="form-label">Trạng thái</label>
-                    <select id="filterOption3" name="trangThai" class="form-select">
+                    <label for="trangThai" class="form-label">Trạng thái</label>
+                    <select id="trangThai" name="trangThai" class="form-select">
                         <option value="">Chọn</option>
-                        <option value="0">Active</option>
-                        <option value="1">Inactive</option>
+                        <option value="0" th:selected="${trangThai == 1}">Active</option>
+                        <option value="1" th:selected="${trangThai == 1}">Inactive</option>
                     </select>
                 </div>
+
             </form>
         </div>
     </div>
 
 
-    <table class="table table-bordered table-hover text-center">
+    <table id="resultList" class="table table-bordered table-hover text-center">
         <thead class="table-dark">
         <tr>
             <th scope="col">STT</th>
@@ -161,41 +114,6 @@
         </tr>
         </tbody>
     </table>
-
-<!--    <div>-->
-<!--        <div class="d-flex align-items-center">-->
-<!--            <label for="itemsPerPage" class="me-2">Xem</label>-->
-<!--            <select class="form-select form-select-sm" id="itemsPerPage" name="size" style="width: 80px;"-->
-<!--                    onchange="changeItemsPerPage()">-->
-<!--                <option value="5" th:selected="${size == 5}">5</option>-->
-<!--                <option value="10" th:selected="${size == 10}">10</option>-->
-<!--                <option value="15" th:selected="${size == 15}">15</option>-->
-<!--                <option value="20" th:selected="${size == 20}">20</option>-->
-<!--            </select>-->
-<!--        </div>-->
-<!--        <nav>-->
-<!--            <ul class="pagination justify-content-center">-->
-<!--                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
-<!--                    <a class="page-link" th:href="@{/admin/phieu-giam-gia/1(size=${size})}" aria-label="First">First</a>-->
-<!--                </li>-->
-<!--                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">-->
-<!--                    <a class="page-link" th:href="@{'/admin/phieu-giam-gia/'+${pageNo}(size=${size})}" th:with="pageNo=${i}" th:text="${i}"></a>-->
-<!--                </li>-->
-
-<!--                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
-<!--                    <a class="page-link" th:href="@{'/admin/phieu-giam-gia/'+${pageNo}(size=${size})}" th:with="pageNo=${totalPages}" aria-label="Last">Last</a>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </nav>-->
-<!--    </div>-->
-<!--    <script>-->
-<!--        function changeItemsPerPage() {-->
-<!--            const selectedSize = document.getElementById("itemsPerPage").value;-->
-<!--            const currentPage = [[${currentPage}]];-->
-<!--            const url = `/admin/phieu-giam-gia/${currentPage}?size=${selectedSize}`;-->
-<!--            window.location.href = url;-->
-<!--        }-->
-<!--    </script>-->
     <div>
         <div class="d-flex align-items-center">
             <label for="itemsPerPage" class="me-2">Xem</label>
@@ -209,28 +127,72 @@
         </div>
         <nav>
             <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/phieu-giam-gia/index?page=0(size=${size})}" aria-label="First">First</a>
+                <!-- First button -->
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{'/admin/phieu-giam-gia/index?page=0&size=' + ${size}}" aria-label="First">First</a>
                 </li>
+                <!-- Page numbers -->
                 <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage + 1} ? 'active'">
-                    <a class="page-link" th:href="@{/admin/phieu-giam-gia/index?page=${i - 1}(size=${size})}" th:text="${i}"></a>
+                    <a class="page-link" th:href="@{'/admin/phieu-giam-gia/index?page=' + (${i} - 1) + '&size=' + ${size}}" th:text="${i}"></a>
                 </li>
+                <!-- Last button -->
                 <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/phieu-giam-gia/index?page=${totalPages - 1}&size=${size}}" aria-label="Last">Last</a>
+                    <a class="page-link" th:href="@{'/admin/phieu-giam-gia/index?page=' + (${totalPages} - 1) + '&size=' + ${size}}" aria-label="Last">Last</a>
                 </li>
-            </ul>
 
+            </ul>
         </nav>
+
     </div>
     <script>
         function changeItemsPerPage() {
             const selectedSize = document.getElementById("itemsPerPage").value;
-            const currentPage = [[${currentPage}]];
+            const currentPage = /*[[${currentPage}]]*/ 0;  // Chọn trang đầu khi thay đổi số lượng mục
             const url = `/admin/phieu-giam-gia/index?page=${currentPage}&size=${selectedSize}`;
             window.location.href = url;
         }
     </script>
 
+    <!--    <script>-->
+<!--        function changeItemsPerPage() {-->
+<!--            const selectedSize = document.getElementById("itemsPerPage").value;-->
+<!--            const currentPage = [[${currentPage}]];-->
+<!--            const url = `/admin/phieu-giam-gia/index?page=${currentPage}&size=${selectedSize}`;-->
+<!--            window.location.href = url;-->
+<!--        }-->
+<!--    </script>-->
+<!--<script>-->
+<!--    $(document).ready(function () {-->
+<!--        // Khi có sự thay đổi trong select box-->
+<!--        $('#kieuGiamGia, #trangThai').on('change', function () {-->
+<!--            // Lấy giá trị của các select-->
+<!--            var kieuGiamGia = $('#kieuGiamGia').val();-->
+<!--            var trangThai = $('#trangThai').val();-->
+
+<!--            // Thực hiện filter hoặc gọi API để lấy danh sách lọc-->
+<!--            filterResults(kieuGiamGia, trangThai);-->
+<!--        });-->
+<!--        // Hàm thực hiện lọc danh sách-->
+<!--        function filterResults(kieuGiamGia, trangThai) {-->
+<!--            // Gửi yêu cầu AJAX để lấy danh sách dựa trên filter-->
+<!--            $.ajax({-->
+<!--                url: '/admin/phieu-giam-gia/filter',  // Đường dẫn đến API xử lý filter-->
+<!--                method: 'GET',-->
+<!--                data: {-->
+<!--                    kieuGiamGia: kieuGiamGia,-->
+<!--                    trangThai: trangThai-->
+<!--                },-->
+<!--                success: function (response) {-->
+<!--                    // Xử lý kết quả trả về-->
+<!--                    $('#resultList').html(response); // Cập nhật danh sách mới lên bảng-->
+<!--                },-->
+<!--                error: function () {-->
+<!--                    alert('Lỗi khi lấy dữ liệu!');-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
 </section>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </section>

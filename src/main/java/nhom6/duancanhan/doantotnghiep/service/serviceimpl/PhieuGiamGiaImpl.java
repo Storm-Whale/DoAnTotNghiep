@@ -24,10 +24,10 @@ public class PhieuGiamGiaImpl implements PhieuGiamGiaService {
     }
 
     @Override
-    public Page<PhieuGiamGia> findByCriteria(String maPhieuGiamGia, String tenPhieuGiamGia, Date ngayBatDau, Date ngayKetThuc,
+    public Page<PhieuGiamGia> findByCriteria(String keyword, Date ngayBatDau, Date ngayKetThuc,
                                         Integer kieuGiamGia, Integer trangThai, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo , pageSize);
-        return phieuGiamGiaRepository.findByCriteria(maPhieuGiamGia, tenPhieuGiamGia, ngayBatDau, ngayKetThuc,
+        return phieuGiamGiaRepository.findByCriteria(keyword, ngayBatDau, ngayKetThuc,
                 kieuGiamGia, trangThai, pageable);
     }
 

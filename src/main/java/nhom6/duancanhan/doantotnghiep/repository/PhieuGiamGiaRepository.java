@@ -12,18 +12,20 @@ import java.util.Date;
 
 @Repository
 public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Integer> {
-    @Query("SELECT p FROM PhieuGiamGia p WHERE "
-            + "(LOWER(p.maPhieuGiamGia) LIKE LOWER(CONCAT('%', :maPhieuGiamGia, '%')) OR "
-            + " LOWER(p.tenPhieuGiamGia) LIKE LOWER(CONCAT('%', :tenPhieuGiamGia, '%'))) AND "
-            + "(p.ngayBatDau >= :ngayBatDau AND p.ngayKetThuc <= :ngayKetThuc) AND "
-            + "(p.kieuGiamGia = :kieuGiamGia OR :kieuGiamGia IS NULL) AND "
-            + "(p.trangThai = :trangThai OR :trangThai IS NULL)")
+    @Query("SELECT p FROM PhieuGiamGia p WHERE " +
+            "(:keyword IS NULL OR " +
+            "(LOWER(p.maPhieuGiamGia) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(p.tenPhieuGiamGia) LIKE LOWER(CONCAT('%', :keyword, '%'))) ) AND " +
+            "(:ngayBatDau IS NULL OR p.ngayBatDau >= :ngayBatDau) AND " +
+            "(:ngayKetThuc IS NULL OR p.ngayKetThuc <= :ngayKetThuc) AND " +
+            "(:kieuGiamGia IS NULL OR p.kieuGiamGia = :kieuGiamGia) AND " +
+            "(:trangThai IS NULL OR p.trangThai = :trangThai)")
     Page<PhieuGiamGia> findByCriteria(
-            @Param("maPhieuGiamGia") String maPhieuGiamGia,
-            @Param("tenPhieuGiamGia") String tenPhieuGiamGia,
+            @Param("keyword") String keyword,
             @Param("ngayBatDau") Date ngayBatDau,
             @Param("ngayKetThuc") Date ngayKetThuc,
             @Param("kieuGiamGia") Integer kieuGiamGia,
             @Param("trangThai") Integer trangThai,
             Pageable pageable);
+
 }
