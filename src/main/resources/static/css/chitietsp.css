@@ -4,32 +4,6 @@ body {
     padding: 0;
     background-color: #f8f8f8;
 }
-
-header {
-    background-color: white;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-}
-
-header a {
-    text-decoration: none;
-    color: white;
-}
-
-header img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    transition: transform 0.3s ease;
-}
-
-header img:hover {
-    transform: scale(1.1);
-}
-
 .container {
     width: 80%;
     margin: 20px auto;
