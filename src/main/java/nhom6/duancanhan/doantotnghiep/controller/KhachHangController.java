@@ -40,6 +40,12 @@ public class KhachHangController {
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "5") int size,
         Model model) {
+        if (keyword != null) {
+            keyword = keyword.trim();
+            if (keyword.isEmpty()) {
+                keyword = null; // Đặt thành null để khớp với logic xử lý trong service
+            }
+        }
             if(page < 0) {
                 page = 0;
             }

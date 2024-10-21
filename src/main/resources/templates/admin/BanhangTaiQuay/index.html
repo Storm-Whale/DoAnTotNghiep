@@ -112,6 +112,7 @@
                             <input type="text" id="inputDiscountCode" placeholder="Nhập mã giảm giá">
                             <a class="taiquay" ><a th:href="@{/admin/taiquay#phieugiamgia}"><button id="choose">Chọn </button></a></a>
                         </div>
+
                         <div id="phieugiamgia" class="dialogmodal">
                             <div class="modal__center">
                                 <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: table}"></div>
@@ -124,12 +125,15 @@
                         <div class="half">
                             <label for="inputDiscountCode" style="font-size: 14px;">Tên khách hàng:</label>
                             <p style="font-size: 14px; margin-top: 5px">Khách lẻ</p>
-                            <a class="taiquay" ><a th:href="@{/admin/taiquay#khachhang}"><button id="btnChonKH" >Chọn </button></a></a>
+                            <a class="taiquay" ><a th:href="@{/admin/taiquay/khachhang#khachhang}"><button id="btnChonKH" >Chọn Khach Hang </button></a></a>
                         </div>
+
                         <div id="khachhang" class="dialogmodal">
                             <div class="modal__center">
+                                <div th:replace="~{admin/BanhangTaiQuay/tableKhachHang :: form}"></div>
                                 <div th:replace="~{admin/BanhangTaiQuay/tableKhachHang :: table}"></div>
                                 <a href="#" class="modal__close">&times;</a>
+                                <div th:replace="~{admin/BanhangTaiQuay/tableKhachHang :: nav}"></div>
                             </div>
                         </div>
                     </div>

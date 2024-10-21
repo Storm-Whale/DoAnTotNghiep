@@ -1,3 +1,19 @@
+<div th:fragments="form">
+    <form th:action="@{/admin/taiquay/khachhang#khachhang}" method="get">
+        <div class="col-5" style="margin: 10px 10px 10px 10px">
+            <div class="input-group" style="width: 800px">
+                <input class="form-control" style="width: 400px" name="keyword" th:value="${keyword}" placeholder="Nhập tên khach hang để tìm..." type="text"/>
+                <!--            <span th:if="${#fields.hasErrors('keyword')}" th:errors="*{keyword}"></span>-->
+                <button type="submit" class="btn btn-dark"><i class="bi bi-search"></i> Search</button>
+                <select style="margin-left: 30px" class="form-select col-sm-12" aria-label="Default select example" name="trangThai">
+                    <option value="">Chọn trạng thái</option>
+                    <option type="submit" value="1" th:selected="${trangThai == 1}">Hoạt động</option>
+                    <option type="submit" value="0" th:selected="${trangThai == 0}">Không hoạt động</option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
 <div th:fragments="table">
     <table class="table table-bordered table-hover text-center">
         <thead class="table-dark">
@@ -9,7 +25,7 @@
             <th scope="col">Giới Tính</th>
             <th scope="col">SDT</th>
             <th scope="col">Email</th>
-            <th scope="col">Tài Khoản</th>
+<!--            <th scope="col">Tài Khoản</th>-->
             <th scope="col">Trạng Thái</th>
             <th scope="col">Action</th>
         </tr>
@@ -32,4 +48,19 @@
         </tr>
         </tbody>
     </table>
+</div>
+<div th:fragments="nav">
+    <nav>
+<!--        <ul class="pagination">-->
+<!--            <li th:classappend="${currentPage == 0} ? 'disabled'">-->
+<!--                <a th:href="@{/admin/taiquay/khachhang#khachhang(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage - 1}, size=${size})}" class="page-link">Previous</a>-->
+<!--            </li>-->
+<!--            <li th:each="pageNum : ${pageNumbers}" th:classappend="${pageNum == currentPage} ? 'active'">-->
+<!--                <a th:href="@{/admin/taiquay/khachhang#khachhang(keyword=${keyword}, trangThai=${trangThai}, page=${pageNum}, size=${size})}" th:text="${pageNum + 1}" class="page-link"></a>-->
+<!--            </li>-->
+<!--            <li th:classappend="${currentPage == totalPages - 1} ? 'disabled'">-->
+<!--                <a th:href="@{/admin/taiquay/khachhang#khachhang(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage + 1}, size=${size})}" class="page-link">Next</a>-->
+<!--            </li>-->
+<!--        </ul>-->
+    </nav>
 </div>
