@@ -79,11 +79,11 @@
         <div id="sanpham" class="dialogmodal">
             <div class="modal__center">
                 <h4>Sản phẩm</h4>
-                <form action="/admin/taiquay/sanpham#sanpham">
+                <form id="filterForm" action="/admin/taiquay/sanpham#sanpham" method="GET">
                     <div class="form-grid">
                         <!-- ComboBox Lọc Kích Cỡ -->
                         <label for="sizeFilter">Kích Cỡ:</label>
-                        <select id="sizeFilter" name="kichCoId">
+                        <select id="sizeFilter" name="kichCoId" onchange="submitForm()">
                             <option value="">Chọn kích cỡ</option>
                             <option th:each="kichco : ${kichCo}"
                                     th:value="${kichco.id}"
@@ -94,7 +94,7 @@
 
                         <!-- ComboBox Lọc Màu Sắc -->
                         <label for="colorFilter">Màu Sắc:</label>
-                        <select id="colorFilter" name="mauSacId">
+                        <select id="colorFilter" name="mauSacId" onchange="submitForm()">
                             <option value="">Chọn màu sắc</option>
                             <option th:each="mausac : ${mauSac}"
                                     th:value="${mausac.id}"
@@ -105,7 +105,7 @@
 
                         <!-- ComboBox Lọc Thương Hiệu -->
                         <label for="brandFilter">Thương Hiệu:</label>
-                        <select id="brandFilter" name="thuongHieuId">
+                        <select id="brandFilter" name="thuongHieuId" onchange="submitForm()">
                             <option value="">Chọn thương hiệu</option>
                             <option th:each="thuongHieu : ${thuongHieu}"
                                     th:value="${thuongHieu.id}"
@@ -116,7 +116,7 @@
 
                         <!-- ComboBox Lọc Chất Liệu -->
                         <label for="materialFilter">Chất Liệu:</label>
-                        <select id="materialFilter" name="chatLieuId">
+                        <select id="materialFilter" name="chatLieuId" onchange="submitForm()">
                             <option value="">Chọn chất liệu</option>
                             <option th:each="chatLieu : ${chatLieu}"
                                     th:value="${chatLieu.id}"
@@ -127,7 +127,7 @@
 
                         <!-- ComboBox Lọc Tay Áo -->
                         <label for="sleeveFilter">Tay Áo:</label>
-                        <select id="sleeveFilter" name="tayAoId">
+                        <select id="sleeveFilter" name="tayAoId" onchange="submitForm()">
                             <option value="">Chọn tay áo</option>
                             <option th:each="tayao : ${tayAo}"
                                     th:value="${tayao.id}"
@@ -138,7 +138,7 @@
 
                         <!-- ComboBox Lọc Cổ Áo -->
                         <label for="collarFilter">Cổ Áo:</label>
-                        <select id="collarFilter" name="coAoId">
+                        <select id="collarFilter" name="coAoId" onchange="submitForm()">
                             <option value="">Chọn cổ áo</option>
                             <option th:each="coao : ${coAo}"
                                     th:value="${coao.id}"
@@ -148,61 +148,100 @@
                         </select>
 
                         <!-- Input tìm kiếm sản phẩm -->
-                        <input type="text" id="productSearch" placeholder="Nhập tên sản phẩm" th:value="${keyword}" name="keyword">
+<!--                        <input type="text" id="productSearch" placeholder="Nhập tên sản phẩm" th:value="${keyword}" name="keyword" oninput="submitForm()">-->
+                        <input type="text" id="productSearch" placeholder="Nhập tên sản phẩm" th:value="${keyword}" name="keyword" oninput="submitAjaxForm()">
                         <button id="btnSearch">Tìm kiếm</button>
                     </div>
                 </form>
+
                 <!-- Table Sản phẩm -->
-                <div th:replace="~{admin/BanhangTaiQuay/SPCTTable :: table}"></div>
+<!--                <div id="sanphamTable">-->
+                    <div th:replace="~{admin/BanhangTaiQuay/SPCTTable :: table}"></div>
+<!--                </div>-->
                 <a href="#" class="modal__close">&times;</a>
-                <div>
-                    <div style="margin-top: 15px" class="d-flex align-items-center">
-                        <label for="itemsPerPage" class="me-2">Xem</label>
-                        <select class="form-select form-select-sm" id="itemsPerPage2" name="size"
-                                style="width: 80px;"
-                                onchange="changeItemsPerPage2()">
-                            <option value="5" th:selected="${size == 5}">5</option>
-                            <option value="10" th:selected="${size == 10}">10</option>
-                            <option value="15" th:selected="${size == 15}">15</option>
-                            <option value="20" th:selected="${size == 20}">20</option>
-                        </select>
-                    </div>
-                    <nav>
-                        <ul class="pagination justify-content-center">
-                            <!-- First button -->
-                            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                                <a class="page-link"
-                                   th:href="@{'/admin/taiquay/sanpham?page=0&size=' + ${size}+'#sanpham'}"
-                                   aria-label="First">First</a>
-                            </li>
-                            <!-- Page numbers -->
-                            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
-                                th:classappend="${i == currentPage + 1} ? 'active'">
-                                <a class="page-link"
-                                   th:href="@{'/admin/taiquay/sanpham?page=' + (${i} - 1) + '&size=' + ${size}+'#sanpham'}"
-                                   th:text="${i}"></a>
-                            </li>
-                            <!-- Last button -->
-                            <li class="page-item"
-                                th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                                <a class="page-link"
-                                   th:href="@{'/admin/taiquay/sanpham?page=' + (${totalPages} - 1) + '&size=' + ${size} +'#sanpham'}"
-                                   aria-label="Last">Last</a>
-                            </li>
-                        </ul>
-                    </nav>
+
+                <div style="margin-top: 15px" class="d-flex align-items-center">
+                    <label for="itemsPerPage" class="me-2">Xem</label>
+                    <select class="form-select form-select-sm" id="itemsPerPage2" name="size"
+                            style="width: 80px;"
+                            onchange="changeItemsPerPage2()">
+                        <option value="5" th:selected="${size == 5}">5</option>
+                        <option value="10" th:selected="${size == 10}">10</option>
+                        <option value="15" th:selected="${size == 15}">15</option>
+                        <option value="20" th:selected="${size == 20}">20</option>
+                    </select>
                 </div>
 
+                <!-- Phân trang -->
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <!-- First button -->
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/admin/taiquay/sanpham?page=0&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"
+                               aria-label="First">First</a>
+                        </li>
+                        <!-- Page numbers -->
+                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                            th:classappend="${i == currentPage + 1} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{'/admin/taiquay/sanpham?page=' + (${i} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"
+                               th:text="${i}"></a>
+                        </li>
+                        <!-- Last button -->
+                        <li class="page-item"
+                            th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/admin/taiquay/sanpham?page=' + (${totalPages} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"
+                               aria-label="Last">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+
                 <script>
+                    function submitForm() {
+                        document.getElementById("filterForm").submit();
+                    }
+
+                    let debounceTimer;
+                    function submitForm() {
+                        clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(function() {
+                            document.getElementById("filterForm").submit();
+                        }, 500);  // Trì hoãn 500ms trước khi submit form
+                    }
+
+                    let timeout = null;
+                    function submitAjaxForm() {
+                        clearTimeout(timeout);  // Xóa timeout nếu người dùng vẫn đang nhập
+
+                        timeout = setTimeout(() => {  // Đợi 300ms trước khi gửi yêu cầu
+                            const form = document.getElementById('filterForm');
+                            const formData = new FormData(form);
+                            const params = new URLSearchParams(formData);
+
+                            fetch(`/admin/taiquay/sanpham?${params.toString()}`, {
+                                method: 'GET',
+                            })
+                                .then(response => response.text())
+                                .then(html => {
+                                    // Cập nhật lại phần table sản phẩm
+                                    document.getElementById('sanphamTable').innerHTML = html;
+                                })
+                                .catch(error => console.error('Error:', error));
+                        }, 300);  // Chỉ gửi yêu cầu sau khi người dùng ngừng nhập trong 300ms
+                    }
+
                     function changeItemsPerPage2() {
                         const selectedSize = document.getElementById("itemsPerPage2").value;
-                        const currentPage = /*[[${currentPage}]]*/ 0;  // Chọn trang đầu khi thay đổi số lượng mục
+                        const currentPage = 0;
                         const url = `/admin/taiquay/sanpham?page=${currentPage}&size=${selectedSize}#sanpham`;
                         window.location.href = url;
                     }
                 </script>
             </div>
         </div>
+
 
         <!-- Thông Tin Thanh Toán -->
         <div class="section">
@@ -262,6 +301,17 @@
                         </div>
 
                         <script>
+                            function submitForm2() {
+                                document.getElementById("filterForm2").submit();
+                            }
+
+                            let debounceTimer;
+                            function submitForm2() {
+                                clearTimeout(debounceTimer);
+                                debounceTimer = setTimeout(function() {
+                                    document.getElementById("filterForm2").submit();
+                                }, 500);  // Trì hoãn 500ms trước khi submit form
+                            }
                             function changeItemsPerPage() {
                                 const selectedSize = document.getElementById("itemsPerPage").value;
                                 const currentPage = /*[[${currentPage}]]*/ 0;  // Chọn trang đầu khi thay đổi số lượng mục

@@ -1,5 +1,5 @@
 <div th:fragments="form">
-            <form method="get" class="row g-3">
+            <form id="filterForm2" method="get" class="row g-3">
                 <div class="col-md-6 d-flex" style="margin-top: 15px">
                     <input name="keyword" th:value="${keyword}" type="text" class="form-control me-2" style="height: 35px; line-height: 1;" placeholder="Search...">
                     <button type="submit" class="btn btn-outline-primary me-2" style="height: 35px; line-height: 1;">Search</button>
@@ -16,7 +16,7 @@
                     <!-- Loại giảm giá -->
                     <div class="col-md-3">
                         <label for="kieuGiamGia" class="form-label">Loại giảm giá</label>
-                        <select id="kieuGiamGia" name="kieuGiamGia" class="form-select">
+                        <select id="kieuGiamGia" name="kieuGiamGia" class="form-select" onchange="submitForm2()">
                             <option value="">Chọn</option>
                             <option value="1" th:selected="${trangThai == 1}">%</option>
                             <option value="0" th:selected="${trangThai == 0}">VND</option>
@@ -26,7 +26,7 @@
                 <!-- Trạng thái -->
                 <div class="col-md-3">
                     <label for="trangThai" class="form-label">Trạng thái</label>
-                    <select id="trangThai" name="trangThai" class="form-select">
+                    <select id="trangThai" name="trangThai" class="form-select" onchange="submitForm2()">
                         <option value="">Chọn</option>
                         <option value="0" th:selected="${trangThai == 0}">Active</option>
                         <option value="1" th:selected="${trangThai == 1}">Inactive</option>

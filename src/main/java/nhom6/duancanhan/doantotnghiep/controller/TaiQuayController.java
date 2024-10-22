@@ -34,14 +34,10 @@ public class TaiQuayController {
     final
     KichCoService kichCoService;
     final HoaDonService hoaDonService;
-
     final
     KhachHangService khachHangService;
-
     final
     PhieuGiamGiaService phieuGiamGiaService;
-
-    //
     private final ThuongHieuService thuongHieuService;
     private final ChatLieuService chatLieuService;
     private final KieuCoAoService kieuCoAoService;
