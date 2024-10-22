@@ -80,13 +80,14 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
     }
 
     @Override
-    public Page<SanPhamChiTietResponse> timKiemSanPham(String keyword, Integer kichCoId, Integer mauSacId, Integer trangThai, int page, int size) {
+    public Page<SanPhamChiTiet> timKiemSanPham(String keyword,  Integer thuongHieuId,Integer chatLieuId,Integer tayAoId,
+                                                       Integer coAoId, Integer kichCoId, Integer mauSacId, Integer trangThai, int page, int size) {
         Pageable pageable = PageRequest.of(page , size);
         Page<SanPhamChiTiet> sanPhamChiTietPage;
         String keywordSearch = (keyword != null && !keyword.isEmpty()) ? "%" + keyword + "%" : null;
-        sanPhamChiTietPage= sanPhamChiTietRepository.findByCriteria(keywordSearch, kichCoId, mauSacId,
-                trangThai, pageable);
-        return sanPhamChiTietPage.map(sanPhamChiTietMapper::toSanPhamChiTietResponse);
+        sanPhamChiTietPage= sanPhamChiTietRepository.findByCriteria(keywordSearch, thuongHieuId, chatLieuId, tayAoId,
+                coAoId, kichCoId, mauSacId, trangThai, pageable);
+        return sanPhamChiTietPage;
     }
 
     @Override

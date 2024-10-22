@@ -58,7 +58,7 @@
                     <label for="trangThai" class="form-label">Trạng thái</label>
                     <select id="trangThai" name="trangThai" class="form-select">
                         <option value="">Chọn</option>
-                        <option value="0" th:selected="${trangThai == 1}">Active</option>
+                        <option value="0" th:selected="${trangThai == 0}">Active</option>
                         <option value="1" th:selected="${trangThai == 1}">Inactive</option>
                     </select>
                 </div>
@@ -152,47 +152,30 @@
             window.location.href = url;
         }
     </script>
-
-    <!--    <script>-->
-<!--        function changeItemsPerPage() {-->
-<!--            const selectedSize = document.getElementById("itemsPerPage").value;-->
-<!--            const currentPage = [[${currentPage}]];-->
-<!--            const url = `/admin/phieu-giam-gia/index?page=${currentPage}&size=${selectedSize}`;-->
-<!--            window.location.href = url;-->
-<!--        }-->
-<!--    </script>-->
-<!--<script>-->
-<!--    $(document).ready(function () {-->
-<!--        // Khi có sự thay đổi trong select box-->
-<!--        $('#kieuGiamGia, #trangThai').on('change', function () {-->
-<!--            // Lấy giá trị của các select-->
-<!--            var kieuGiamGia = $('#kieuGiamGia').val();-->
-<!--            var trangThai = $('#trangThai').val();-->
-
-<!--            // Thực hiện filter hoặc gọi API để lấy danh sách lọc-->
-<!--            filterResults(kieuGiamGia, trangThai);-->
-<!--        });-->
-<!--        // Hàm thực hiện lọc danh sách-->
-<!--        function filterResults(kieuGiamGia, trangThai) {-->
-<!--            // Gửi yêu cầu AJAX để lấy danh sách dựa trên filter-->
-<!--            $.ajax({-->
-<!--                url: '/admin/phieu-giam-gia/filter',  // Đường dẫn đến API xử lý filter-->
-<!--                method: 'GET',-->
-<!--                data: {-->
-<!--                    kieuGiamGia: kieuGiamGia,-->
-<!--                    trangThai: trangThai-->
-<!--                },-->
-<!--                success: function (response) {-->
-<!--                    // Xử lý kết quả trả về-->
-<!--                    $('#resultList').html(response); // Cập nhật danh sách mới lên bảng-->
-<!--                },-->
-<!--                error: function () {-->
-<!--                    alert('Lỗi khi lấy dữ liệu!');-->
-<!--                }-->
-<!--            });-->
-<!--        }-->
-<!--    });-->
-<!--</script>-->
+<script>
+    $(document).ready(function () {
+        $('#kieuGiamGia, #trangThai').on('change', function () {
+            var kieuGiamGia = $('#kieuGiamGia').val();
+            var trangThai = $('#trangThai').val();
+            filterResults(kieuGiamGia, trangThai);
+        });
+        function filterResults(kieuGiamGia, trangThai) {
+            $.ajax({
+                url: '/admin/phieu-giam-gia/filter',
+                method: 'GET',
+                data: {
+                    kieuGiamGia: kieuGiamGia,
+                    trangThai: trangThai
+                },
+                success: function (response) {
+                },
+                error: function () {
+                    alert('Lỗi khi lấy dữ liệu!');
+                }
+            });
+        }
+    });
+</script>
 </section>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </section>
