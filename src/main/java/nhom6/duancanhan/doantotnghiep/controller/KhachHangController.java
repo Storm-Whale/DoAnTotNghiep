@@ -40,6 +40,7 @@ public class KhachHangController {
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "5") int size,
         Model model) {
+
         if (keyword != null) {
             keyword = keyword.trim();
             if (keyword.isEmpty()) {
