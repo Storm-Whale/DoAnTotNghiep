@@ -15,7 +15,7 @@
 
 <section class="page-content">
     <h1>Quản Lý Khách Hàng</h1>
-    <form th:action="@{/admin/khachhang}" method="get">
+    <form method="get">
         <div class="col-5" style="margin: 10px 10px 10px 10px">
             <div class="input-group" style="width: 800px">
                 <input class="form-control" style="width: 400px" name="keyword" th:value="${keyword}" placeholder="Nhập tên khach hang để tìm..." type="text"/>
@@ -75,7 +75,6 @@
             </div>
         </div>
     </div>
-
 
         <nav>
             <ul class="pagination">
