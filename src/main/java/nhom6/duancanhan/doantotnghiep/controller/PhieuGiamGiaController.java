@@ -5,6 +5,7 @@ import nhom6.duancanhan.doantotnghiep.service.service.PhieuGiamGiaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,14 +42,13 @@ public class PhieuGiamGiaController {
     public String getAll(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "5") int size,
-            @RequestParam(value = "maPhieuGiamGia", required = false) String maPhieuGiamGia,
-            @RequestParam(value = "tenPhieuGiamGia", required = false) String tenPhieuGiamGia,
-            @RequestParam(value = "ngayBatDau", required = false) Date ngayBatDau,
-            @RequestParam(value = "ngayKetThuc", required = false) Date ngayKetThuc,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "ngayBatDau", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayBatDau,
+            @RequestParam(value = "ngayKetThuc", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayKetThuc,
             @RequestParam(value = "kieuGiamGia", required = false) Integer kieuGiamGia,
             @RequestParam(value = "trangThai", required = false) Integer trangThai,
             Model model) {
-        Page<PhieuGiamGia> pageFind = phieuGiamGiaService.findByCriteria(maPhieuGiamGia, tenPhieuGiamGia, ngayBatDau,
+        Page<PhieuGiamGia> pageFind = phieuGiamGiaService.findByCriteria(keyword, ngayBatDau,
                 ngayKetThuc, kieuGiamGia, trangThai, page, size);
         Pageable pageable = PageRequest.of(page, size);
 
@@ -62,8 +62,8 @@ public class PhieuGiamGiaController {
         model.addAttribute("totalItems", pageFind.getTotalElements());
 
         // Thêm các tham số tìm kiếm vào model để hiển thị lại trên trang
-        model.addAttribute("maPhieuGiamGia", maPhieuGiamGia);
-        model.addAttribute("tenPhieuGiamGia", tenPhieuGiamGia);
+        model.addAttribute("keyword", keyword);
+//        model.addAttribute("tenPhieuGiamGia", tenPhieuGiamGia);
         model.addAttribute("ngayBatDau", ngayBatDau);
         model.addAttribute("ngayKetThuc", ngayKetThuc);
         model.addAttribute("kieuGiamGia", kieuGiamGia);
@@ -79,7 +79,7 @@ public class PhieuGiamGiaController {
             model.addAttribute("phieuGiamGia", phieuGiamGia.get());
             return "/admin/PhieuGiamGia/Detail";
         }
-        return "redirect:/admin/phieu-giam-gia";
+        return "redirect:/admin/phieu-giam-gia/index";
     }
 
     @GetMapping("/add")
@@ -90,18 +90,18 @@ public class PhieuGiamGiaController {
     @PostMapping("/update/{id}")
     public String update(@PathVariable("id") Integer id, @ModelAttribute("phieuGiamGia") PhieuGiamGia phieuGiamGia) {
         phieuGiamGiaService.update(id, phieuGiamGia);
-        return "redirect:/admin/phieu-giam-gia";
+        return "redirect:/admin/phieu-giam-gia/index";
     }
 
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
         phieuGiamGiaService.delete(id);
-        return "redirect:/admin/phieu-giam-gia";
+        return "redirect:/admin/phieu-giam-gia/index";
     }
 
     @PostMapping("/addpg")
     public String addpg(@ModelAttribute("phieuGiamGia") PhieuGiamGia phieuGiamGia) {
         phieuGiamGiaService.create(phieuGiamGia);
-        return "redirect:/admin/phieu-giam-gia";
+        return "redirect:/admin/phieu-giam-gia/index";
     }
 }

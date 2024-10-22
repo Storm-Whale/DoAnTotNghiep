@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PhieuGiamGiaService {
     List<PhieuGiamGia> getAll();
-    Page<PhieuGiamGia> findByCriteria(String maPhieuGiamGia, String tenPhieuGiamGia, Date ngayBatDau,
+    Page<PhieuGiamGia> findByCriteria(String keyword, Date ngayBatDau,
                                  Date ngayKetThuc, Integer kieuGiamGia, Integer trangThai, int pageNo, int pageSize);
     Optional<PhieuGiamGia> getById(Integer id);
     void create(PhieuGiamGia phieuGiamGia);
