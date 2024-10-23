@@ -175,40 +175,40 @@ body {
 
 .panel {
     padding: 0 10px;
-    display: block; /* Ensure display property is block for max-height */
+    display: block;
     overflow: hidden;
     max-height: 0;
     transition: max-height 0.3s ease, padding 0.3s ease;
 }
 .logo {
-    /* Cố định kích thước cho logo container */
-    width: 100px; /* Hoặc kích thước bạn muốn */
-    height: auto; /* Đảm bảo chiều cao tự động điều chỉnh */
-    overflow: hidden; /* Ẩn phần vượt quá của logo nếu có */
+
+    width: 100px;
+    height: auto;
+    overflow: hidden;
 }
 
 .logo img {
-    /* Đảm bảo logo không bị biến dạng */
-    width: 70%; /* Logo sẽ chiếm toàn bộ chiều rộng của container */
-    height: auto; /* Chiều cao tự động điều chỉnh để giữ tỷ lệ */
-    display: block; /* Loại bỏ khoảng trắng dưới ảnh */
+
+    width: 70%;
+    height: auto;
+    display: block;
 }
 /* CSS cho banner */
 .banner {
     position: relative;
     width: 100%;
-    height: 300px; /* Bạn có thể điều chỉnh chiều cao theo nhu cầu */
+    height: 300px;
     overflow: hidden;
 }
 
 .banner img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Đảm bảo ảnh phủ đầy banner và giữ tỷ lệ */
-    transition: opacity 0.5s ease-in-out; /* Thêm hiệu ứng chuyển tiếp */
+    object-fit: cover;
+    transition: opacity 0.5s ease-in-out;
 }
 
-/* Nếu bạn cần hiệu ứng chuyển tiếp cho banner khi tải trang */
+
 .banner.fade-in img {
     opacity: 0;
 }
@@ -216,7 +216,7 @@ body {
 .banner.fade-in img {
     opacity: 1;
 }
-/* Các thiết lập cơ bản cho sản phẩm */
+
 .product-item {
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -233,17 +233,17 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* Hiệu ứng khi hover vào sản phẩm */
+
 .product-item:hover {
-    transform: scale(1.05); /* Tăng kích thước sản phẩm khi hover */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Tăng độ shadow khi hover */
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .product-item:hover img {
-    transform: scale(1.1); /* Phóng to hình ảnh khi hover */
+    transform: scale(1.1);
 }
 
-/* Cải thiện kiểu chữ cho mô tả và giá */
+
 .product-item p {
     margin: 10px 0;
     color: #333;
@@ -255,14 +255,14 @@ body {
     font-weight: bold;
 }
 
-/* Tăng cường thẻ giá */
+
 .product-item p:last-of-type {
-    color: #e53935; /* Màu đỏ cho giá */
+    color: #e53935;
     font-size: 16px;
     font-weight: bold;
 }
 
-/* Hiệu ứng cho các thẻ button trong bộ lọc */
+
 .tag-button {
     background-color: #f2f2f2;
     border: none;
@@ -278,14 +278,14 @@ body {
     color: #333;
 }
 
-/* Hiệu ứng cho filter sidebar */
+
 .filter-sidebar {
-    /* Các thiết lập cơ bản đã có */
+
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .filter-sidebar.active {
-    /* Các thiết lập cơ bản đã có */
+
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 .sort-options {
@@ -440,9 +440,9 @@ footer {
     width: 80%;
     padding-left: 270px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Co giãn các sản phẩm */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
-    justify-content: center; /* Căn giữa các sản phẩm */
+    justify-content: center;
 }
 
 .product-card {
@@ -500,31 +500,31 @@ footer {
     display: block;
     margin: 20px auto;
     padding: 12px 30px;
-    background-color: #ffffff; /* Nền màu trắng */
-    color: #000000; /* Chữ màu đen */
+    background-color: #ffffff;
+    color: #000000;
     font-size: 16px;
     font-weight: bold;
     border: none;
-    border-radius: 50px; /* Bo góc tròn */
+    border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .load-more-btn:hover {
-    background-color: #f0f0f0; /* Màu xám khi hover */
-    transform: translateY(-3px); /* Hiệu ứng nhảy lên khi hover */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Đổ bóng mạnh hơn khi hover */
+    background-color: #f0f0f0;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
 .load-more-btn:active {
-    transform: translateY(0); /* Giảm hiệu ứng nhảy khi bấm vào */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Giảm bóng khi bấm vào */
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 header {
     background-color: #fff;
-    padding: 5px 15px; /* Giảm padding để header gọn hơn */
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1); /* Giảm độ mạnh của bóng */
+    padding: 5px 15px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .header-container {
@@ -534,14 +534,14 @@ header {
 }
 
 .header-icons {
-    /* Thêm một chút điều chỉnh nếu cần thiết */
+
     display: flex;
     justify-content: flex-end;
-    gap: 10px; /* Giảm khoảng cách giữa các biểu tượng */
+    gap: 10px;
 }
 
 .icon {
-    width: 25px; /* Giảm kích thước biểu tượng để header gọn hơn */
+    width: 25px;
     height: 25px;
     object-fit: contain;
     transition: transform 0.2s ease;
@@ -552,17 +552,17 @@ header {
 }
 .product-options a {
     text-decoration: none;
-    color: black; /* Màu chữ cho các lựa chọn sản phẩm */
-    font-weight: bold; /* Làm nổi bật các lựa chọn */
-    padding: 10px 20px; /* Khoảng cách trong các lựa chọn */
-    border-radius: 5px; /* Bo tròn góc cho các lựa chọn */
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Hiệu ứng chuyển màu và phóng to */
-    font-size: 18px; /* Kích thước chữ lớn hơn */
+    color: black;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 18px;
 }
 
 .product-options a:hover {
-    background-color: #f0f0f0; /* Màu nền khi hover */
-    transform: scale(1.1); /* Phóng to khi hover */
+    background-color: #f0f0f0;
+    transform: scale(1.1);
 }
 
 .product-card-link {
