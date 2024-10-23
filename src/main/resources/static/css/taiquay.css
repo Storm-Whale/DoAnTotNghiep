@@ -121,3 +121,22 @@ input[type="text"] {
     color: #585858;
     text-decoration: none;
 }
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 cột đều nhau */
+    gap: 10px; /* Khoảng cách giữa các phần tử */
+    align-items: center; /* Căn giữa các phần tử theo trục dọc */
+}
+
+.form-grid select,
+.form-grid input {
+    font-size: 12px;
+    padding: 5px;
+    width: 100%; /* Đảm bảo các phần tử input/select chiếm hết chiều rộng cột */
+}
+
+.form-grid button {
+    grid-column: span 1; /* Để nút chỉ chiếm 1 cột */
+    padding: 5px 10px;
+    font-size: 12px;
+}

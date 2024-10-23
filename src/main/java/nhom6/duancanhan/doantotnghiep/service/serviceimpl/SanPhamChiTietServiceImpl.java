@@ -20,7 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -107,6 +109,11 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
             sanPhamChiTietRepository.save(sanPhamChiTiet);
             return null;
         },"Lỗi khi xóa sản phẩm từ cơ sở dữ liệu");
+    }
+
+    @Override
+    public List<SanPhamChiTiet> findbyidSPCT(Integer id) {
+        return  sanPhamChiTietRepository.findAllById(Collections.singleton(id));
     }
 
     private void validateSPCTExists(Integer id) {

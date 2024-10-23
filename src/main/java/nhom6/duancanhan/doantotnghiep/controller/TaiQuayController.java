@@ -2,10 +2,15 @@ package nhom6.duancanhan.doantotnghiep.controller;
 
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
+import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.entity.PhieuGiamGia;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
+import nhom6.duancanhan.doantotnghiep.entity.SanPhamGioHang;
+import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
+import nhom6.duancanhan.doantotnghiep.repository.SanPhamGioHangRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,6 +21,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,6 +49,12 @@ public class TaiQuayController {
     private final ChatLieuService chatLieuService;
     private final KieuCoAoService kieuCoAoService;
     private final KieuTayAoService kieuTayAoService;
+
+    @Autowired
+    SanPhamGioHangRepository sanPhamGioHangRepository;
+
+    @Autowired
+    HoaDonChiTietRepository hoaDonChiTietRepository;
 
     public TaiQuayController(SanPhamChiTietService sanPhamChiTietService, SanPhamService sanPhamService, MauSacService mauSacService, KichCoService kichCoService, HoaDonService hoaDonService, KhachHangService khachHangService, PhieuGiamGiaService phieuGiamGiaService, ThuongHieuService thuongHieuService, ChatLieuService chatLieuService, KieuCoAoService kieuCoAoService, KieuTayAoService kieuTayAoService) {
         this.sanPhamChiTietService = sanPhamChiTietService;
@@ -110,6 +123,11 @@ public class TaiQuayController {
         model.addAttribute("coAoId", coAoId);
         model.addAttribute("kichCoId", kichCoId);
         model.addAttribute("mauSacId", mauSacId);
+
+        List<SanPhamGioHang> sanPhamGioHangs = sanPhamGioHangRepository.findAll();
+        model.addAttribute("list", sanPhamGioHangs);
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAll();
+        model.addAttribute("listHDCT", hoaDonChiTietList);
         return "/admin/BanhangTaiQuay/index";
     }
 
