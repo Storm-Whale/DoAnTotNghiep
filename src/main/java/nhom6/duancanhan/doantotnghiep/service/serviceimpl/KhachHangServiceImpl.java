@@ -54,7 +54,9 @@ public class KhachHangServiceImpl implements KhachHangService {
 
     @Override
     public Page<KhachHang> SearchandPhantrang(String keyword, Integer trangThai, int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo,pageSize);
-        return khachHangRepository.searchKhachHang(keyword,trangThai,pageable);
-    }
+        String keywordSearch = (keyword != null && !keyword.isEmpty()) ? "%" + keyword + "%" : null;
+            Pageable pageable = PageRequest.of(pageNo, pageSize);
+            return khachHangRepository.searchKhachHang(keywordSearch, trangThai, pageable);
+        }
+
 }
