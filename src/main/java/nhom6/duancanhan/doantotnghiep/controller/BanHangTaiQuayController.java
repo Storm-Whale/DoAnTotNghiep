@@ -1,11 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietResponse;
-import nhom6.duancanhan.doantotnghiep.entity.GioHang;
-import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
-import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
-import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
-import nhom6.duancanhan.doantotnghiep.entity.SanPhamGioHang;
+import nhom6.duancanhan.doantotnghiep.entity.*;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.GioHangRepository;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
@@ -18,19 +14,18 @@ import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamGioHangService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/taiquay")
@@ -64,7 +59,7 @@ public class BanHangTaiQuayController {
     Integer idGioHang = 1;
     Integer idHoaDon = 1;
 
-//    @PostMapping("taohoadon")
+    //    @PostMapping("taohoadon")
 //    public String taoHoaDon(
 //                            @RequestParam("idHoaDon") Integer idHoaDon, Model model
 //    ) {
@@ -92,7 +87,128 @@ public class BanHangTaiQuayController {
 //        // Redirect hoặc trả về trang kèm ID hóa đơn
 //        return "redirect:/admin/taiquay";
 //    }
+//    hoaDon = hoaDonRepository.findById(idHoaDon).get();
+//    KhachHang khachHang = new KhachHang();
+//        khachHang.setTen("Le Nam");
+//    NhanVien nhanVien = new NhanVien();
+//        nhanVien.setTen("Le Ha");
+//        hoaDon.setNguoiTao(nhanVien);
+//    @PostMapping("taohoadon")
+//    public String taoHoaDon(
+//            Model model
+//    ) {
+//        HoaDon hoaDon = new HoaDon();
+//        model.addAttribute("hoaDon", hoaDon);
+//        hoaDon.setTrangThai(0);
+//        hoaDonRepository.save(hoaDon);
+//        return "redirect:/admin/taiquay";
+//    }
+    @PostMapping("/taohoadon")
+    @ResponseBody
+    public HoaDon taoHoaDon(Model model) {
+        HoaDon hoaDon = new HoaDon();
+        hoaDon.setTrangThai(1); // Set trạng thái mới tạo
+        hoaDonRepository.save(hoaDon); // Lưu vào cơ sở dữ liệu
+        return hoaDon;
+    }
 
+
+    //    @GetMapping("/detail/{idHD}")
+//    public String detailHoaDon(@PathVariable("idHD") Integer idHD, Model model) {
+//        idHoaDon = idHD;
+//        HoaDon hoaDon = hoaDonRepository.findById(idHD).get();
+//        model.addAttribute("hoaDon", hoaDon);
+//
+//        model.addAttribute("listCTSP", sanPhamChiTietRepository.findAll());
+//        hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
+//        model.addAttribute("listHDCT", hoaDonChiTiet);
+//        model.addAttribute("listHD", hoaDonRepository.findAll());
+////        model.addAttribute("tongTien", tongTien);
+////        tongTien = 0.0;
+////        for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTiet) {
+////            tongTien += hoaDonChiTiet.getTongTien();
+////        }
+//        return "/admin/BanhangTaiQuay/index";
+//    }
+//    @GetMapping("/detail/{idHD}")
+//    public String detailHoaDon(@PathVariable("idHD") Integer idHD, Model model) {
+//        HoaDon hoaDon = hoaDonRepository.findById(idHD).orElse(null);
+//        model.addAttribute("hoaDon", hoaDon);
+//
+//        model.addAttribute("listCTSP", sanPhamChiTietRepository.findAll());
+//        List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
+//        model.addAttribute("listHDCT", hoaDonChiTiet);
+//
+//        return "/admin/BanhangTaiQuay/index";
+//    }
+    @GetMapping("/detail/{idHD}")
+    public String detailHoaDon(@PathVariable("idHD") Integer idHD, Model model) {
+        idHoaDon = idHD;
+        HoaDon hoaDon = hoaDonRepository.findById(idHD).orElse(null);
+        model.addAttribute("hoaDon", hoaDon);
+
+        // Hiển thị danh sách sản phẩm chi tiết và hóa đơn chi tiết
+        model.addAttribute("listCTSP", sanPhamChiTietRepository.findAll());
+        List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
+        model.addAttribute("listHDCT", hoaDonChiTiet);
+
+        // Hiển thị hóa đơn đầu tiên
+        HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
+//        if (firstHoaDon != null) {
+//            model.addAttribute("firstHoaDon", firstHoaDon);
+//        } else {
+//            model.addAttribute("firstHoaDon", new HoaDon()); // Tạo đối tượng rỗng để tránh lỗi
+//        }
+        // Tạo danh sách hóa đơn chờ và thêm hóa đơn đầu tiên vào danh sách nếu cần
+        List<HoaDon> listHD = hoaDonRepository.findHoaDonsWithStatusOne();
+        // Kiểm tra xem hóa đơn đầu tiên đã có trong danh sách chưa
+        if (firstHoaDon != null && !listHD.contains(firstHoaDon)) {
+            listHD.add(0, firstHoaDon); // Thêm hóa đơn đầu tiên vào đầu danh sách
+        }
+        model.addAttribute("listHD", listHD.stream().limit(5).collect(Collectors.toList())); // Giới hạn danh sách về 5 hóa đơn
+        return "/admin/BanhangTaiQuay/index"; // Trả về view của bạn
+    }
+
+//    @GetMapping("/detail/{idHD}")
+//    public String detailHoaDon(@PathVariable("idHD") Integer idHD, Model model) {
+//        idHoaDon = idHD;
+//        HoaDon hoaDon = hoaDonRepository.findById(idHD).orElse(null);
+//        model.addAttribute("hoaDon", hoaDon);
+//
+//        // Hiển thị danh sách sản phẩm chi tiết và hóa đơn chi tiết
+//        model.addAttribute("listCTSP", sanPhamChiTietRepository.findAll());
+//        List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
+//        model.addAttribute("listHDCT", hoaDonChiTiet);
+//
+//        // Hiển thị hóa đơn đầu tiên
+////        HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc(); // Lấy hóa đơn đầu tiên
+////        model.addAttribute("firstHoaDon", firstHoaDon);
+//        HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
+//        model.addAttribute("firstHoaDon", firstHoaDon != null ? firstHoaDon : new HoaDon());
+//        // Hiển thị tối đa 4 hóa đơn mới tạo
+////        List<HoaDon> listHD = hoaDonRepository.findTop4ByOrderByIdDesc(); // Lấy 4 hóa đơn mới nhất
+////        HoaDon listHD = hoaDonRepository.save(new HoaDon());
+//        List<HoaDon> listHD = hoaDonRepository.findHoaDonsWithStatusOne();
+//        model.addAttribute("listHD", listHD.stream().limit(5).collect(Collectors.toList()));
+//
+//        return "/admin/BanhangTaiQuay/index";
+//    }
+
+//    @GetMapping("/detail/{idHD}")
+//    public String detailHoaDon(@PathVariable("idHD") Integer idHD, Model model) {
+//        idHoaDon = idHD;
+//        HoaDon hoaDon = hoaDonRepository.findById(idHD).orElse(null);
+//        model.addAttribute("hoaDon", hoaDon);
+//        // Lấy danh sách sản phẩm chi tiết và hóa đơn chi tiết
+//        model.addAttribute("listCTSP", sanPhamChiTietRepository.findAll());
+//        List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
+//        model.addAttribute("listHDCT", hoaDonChiTiet);
+//        // Lấy danh sách hóa đơn và thêm vào model
+//        List<HoaDon> listHD = hoaDonRepository.findAll();;
+//        model.addAttribute("listHD", listHD);
+//
+//        return "/admin/BanhangTaiQuay/index";
+//    }
 
     @GetMapping("/add-sanpham-giohang/{id}")
     public String addSanPhamGioHang(@PathVariable("id") Integer id, Model model) {

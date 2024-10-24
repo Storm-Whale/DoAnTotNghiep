@@ -51,16 +51,16 @@
 </div>
 <div th:fragments="nav">
     <nav>
-        <ul class="pagination">
-            <li th:classappend="${currentPage == 0} ? 'disabled'">
-                <a th:href="@{/admin/taiquay/khachhang#khachhang(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage - 1}, size=${size})}" class="page-link">Previous</a>
-            </li>
-            <li th:each="pageNum : ${pageNumbers}" th:classappend="${pageNum == currentPage} ? 'active'">
-                <a th:href="@{/admin/taiquay/khachhang#khachhang(keyword=${keyword}, trangThai=${trangThai}, page=${pageNum}, size=${size})}" th:text="${pageNum + 1}" class="page-link"></a>
-            </li>
-            <li th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a th:href="@{/admin/taiquay/khachhang#khachhang(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage + 1}, size=${size})}" class="page-link">Next</a>
-            </li>
-        </ul>
+<!--        <ul class="pagination">-->
+<!--            <li th:classappend="${currentPage == 0} ? 'disabled'">-->
+<!--                <a th:href="@{/admin/taiquay/khachhang#khachhang(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage - 1}, size=${size})}" class="page-link">Previous</a>-->
+<!--            </li>-->
+<!--            <li th:each="pageNum : ${pageNumbers}" th:classappend="${pageNum == currentPage} ? 'active'">-->
+<!--                <a th:href="@{/admin/taiquay/khachhang#khachhang(keyword=${keyword}, trangThai=${trangThai}, page=${pageNum}, size=${size})}" th:text="${pageNum + 1}" class="page-link"></a>-->
+<!--            </li>-->
+<!--            <li th:classappend="${currentPage == totalPages - 1} ? 'disabled'">-->
+<!--                <a th:href="@{/admin/taiquay/khachhang#khachhang(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage + 1}, size=${size})}" class="page-link">Next</a>-->
+<!--            </li>-->
+<!--        </ul>-->
     </nav>
 </div>

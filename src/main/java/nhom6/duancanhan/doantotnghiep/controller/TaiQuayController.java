@@ -1,6 +1,5 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
-import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
@@ -8,12 +7,11 @@ import nhom6.duancanhan.doantotnghiep.entity.PhieuGiamGia;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamGioHang;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
+import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamGioHangRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,6 +53,8 @@ public class TaiQuayController {
 
     @Autowired
     HoaDonChiTietRepository hoaDonChiTietRepository;
+    @Autowired
+    HoaDonRepository hoaDonRepository;
 
     public TaiQuayController(SanPhamChiTietService sanPhamChiTietService, SanPhamService sanPhamService, MauSacService mauSacService, KichCoService kichCoService, HoaDonService hoaDonService, KhachHangService khachHangService, PhieuGiamGiaService phieuGiamGiaService, ThuongHieuService thuongHieuService, ChatLieuService chatLieuService, KieuCoAoService kieuCoAoService, KieuTayAoService kieuTayAoService) {
         this.sanPhamChiTietService = sanPhamChiTietService;
@@ -128,6 +128,16 @@ public class TaiQuayController {
         model.addAttribute("list", sanPhamGioHangs);
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAll();
         model.addAttribute("listHDCT", hoaDonChiTietList);
+        //
+        HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
+//        model.addAttribute("firstHoaDon", firstHoaDon != null ? firstHoaDon : new HoaDon());
+        // Tạo danh sách hóa đơn chờ và thêm hóa đơn đầu tiên vào danh sách nếu cần
+        List<HoaDon> listHD = hoaDonRepository.findHoaDonsWithStatusOne();
+        // Kiểm tra xem hóa đơn đầu tiên đã có trong danh sách chưa
+        if (firstHoaDon != null && !listHD.contains(firstHoaDon)) {
+            listHD.add(0, firstHoaDon); // Thêm hóa đơn đầu tiên vào đầu danh sách
+        }
+        model.addAttribute("listHD", listHD.stream().limit(5).collect(Collectors.toList())); // Giới hạn danh sách về 5 hóa đơn
         return "/admin/BanhangTaiQuay/index";
     }
 

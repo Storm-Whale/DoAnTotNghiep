@@ -2,14 +2,9 @@ package nhom6.duancanhan.doantotnghiep.service.service;
 
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
 
 import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
-import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
-import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
-import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,4 +23,10 @@ public interface HoaDonService {
 
     void deleteHoaDon(Integer id);
     Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize);
+    ////
+    ///
+//    PageDTO<List<HoaDonDTO>> phanTrang(PageRequestDTO pageRequestDTO);
+//    HoaDon themHoaDon(HoaDonDTO hoaDonDTO);
+//    HoaDonDTO converToDto(HoaDon hoaDon);
+//    HoaDon converToEntity(HoaDonDTO hoaDonDTO);
 }
