@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,14 +18,17 @@ public class SanPhamChiTiet {
     private Integer id;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "id_san_pham")
     private SanPham sanPham;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "id_kich_co")
     private KichCo kichCo;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "id_mau_sac")
     private MauSac mauSac;
 
@@ -36,5 +40,4 @@ public class SanPhamChiTiet {
 
     @Column(name = "trang_thai")
     private Integer trangThai;
-
 }

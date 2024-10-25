@@ -147,6 +147,17 @@ public class SanPhamServiceImpl implements SanPhamService {
         }, "Lỗi khi lấy thông tin từ cơ sở dữ liệu");
     }
 
+    @Override
+    public SanPhamShowOnClient getSanPhamShowOnClientById(Integer id) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() -> {
+                SanPham sanPham = findSanPhamById(id);
+                return SanPhamShowOnClient.builder()
+                        .sanPhamResponse(sanPhamMapper.toSanPhamResponse(sanPham))
+                        .build();
+            }, "Lỗi khi lấy thông tin sản phẩm từ cơ sở dữ liệu"
+        );
+    }
+
     private void validateDuplicateProductName(String tenSanPham) {
         if (sanPhamRepository.existsSanPhamByTenSanPham(tenSanPham)) {
             throw new DuplicateKeyException("Đã có sản phẩm với tên: " + tenSanPham);

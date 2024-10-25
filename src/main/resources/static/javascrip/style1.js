@@ -31,32 +31,32 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-document.addEventListener('DOMContentLoaded', function () {
-    const banner = document.querySelector('.banner');
-
-    // Thêm lớp fade-in sau khi trang đã tải xong
-    banner.classList.add('fade-in');
-});
-document.addEventListener('DOMContentLoaded', function () {
-    const productItems = document.querySelectorAll('.product-item');
-    const productCountElement = document.getElementById('product-count');
-
-    // Cập nhật số lượng sản phẩm
-    const productCount = productItems.length;
-    productCountElement.textContent = `${productCount} sản phẩm`;
-
-    // Hiệu ứng chuyển tiếp cho banner
-    const banner = document.querySelector('.banner');
-    const img = banner.querySelector('img');
-
-    img.addEventListener('load', function () {
-        banner.classList.add('loaded');
-    });
-
-    if (img.complete) {
-        banner.classList.add('loaded');
-    }
-});
+// document.addEventListener('DOMContentLoaded', function () {
+//     const banner = document.querySelector('.banner');
+//
+//     // Thêm lớp fade-in sau khi trang đã tải xong
+//     banner.classList.add('fade-in');
+// });
+// document.addEventListener('DOMContentLoaded', function () {
+//     const productItems = document.querySelectorAll('.product-item');
+//     const productCountElement = document.getElementById('product-count');
+//
+//     // Cập nhật số lượng sản phẩm
+//     const productCount = productItems.length;
+//     productCountElement.textContent = `${productCount} sản phẩm`;
+//
+//     // Hiệu ứng chuyển tiếp cho banner
+//     const banner = document.querySelector('.banner');
+//     const img = banner.querySelector('img');
+//
+//     img.addEventListener('load', function () {
+//         banner.classList.add('loaded');
+//     });
+//
+//     if (img.complete) {
+//         banner.classList.add('loaded');
+//     }
+// });
 
 document.addEventListener("DOMContentLoaded", function() {
     const initialDisplayCount = 8;

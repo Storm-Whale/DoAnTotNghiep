@@ -177,26 +177,37 @@ body {
     border-color: #007BFF;
     background-color: #fff;
 }
+/* ---------------------------------------------------- Ảnh SP ---------------------------------------------------- */
+.gallery {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
 
 .main-image-container {
     width: 100%;
-    max-width: 600px;
     height: 400px;
-    margin-bottom: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .main-image {
     max-width: 100%;
     max-height: 100%;
+    object-fit: contain;
 }
 
 .thumbnail-container {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 10px;
+    margin-top: 10px;
 }
 
 .thumbnail-container img {
@@ -204,12 +215,33 @@ body {
     height: auto;
     cursor: pointer;
     opacity: 0.6;
+    transition: opacity 0.3s;
 }
 
 .thumbnail-container img:hover {
     opacity: 1;
 }
 
+.thumbnail-container img.selected {
+    opacity: 1;
+    border: 2px solid #007BFF; /* Thêm viền cho ảnh được chọn */
+}
+
+.prev-btn, .next-btn {
+    background-color: rgba(0, 0, 0, 0.3); /* Giảm độ trong suốt của nền */
+    color: white;
+    border: none;
+    font-size: 24px; /* Giảm kích thước font chữ */
+    cursor: pointer;
+    padding: 8px; /* Giảm khoảng cách bên trong */
+    border-radius: 5px; /* Thêm bo tròn cho nút */
+    transition: background-color 0.3s; /* Thêm hiệu ứng chuyển màu */
+}
+
+.prev-btn:hover, .next-btn:hover {
+    background-color: rgba(0, 0, 0, 0.5); /* Giữ cho nút sáng hơn khi hover */
+}
+/* ---------------------------------------------------- Ảnh SP ---------------------------------------------------- */
 .input-group {
     max-width: 150px;
     margin: 50px auto auto;
@@ -241,7 +273,7 @@ body {
 }
 
 .size-label label.grey {
-    border: 2px solid grey;
+    border: 2px solid black;
 }
 
 
@@ -546,6 +578,18 @@ button.btn-primary:hover {
     padding: 2px;
     font-size: 18px;
 }
+
+.size-label label.grey {
+    border: 2px solid black; /* Viền mặc định */
+    color: black; /* Màu chữ mặc định */
+}
+
+.size-label input[type="radio"]:checked + label {
+    border: 2px solid black; /* Viền khi được chọn */
+    color: rgba(0, 0, 0, 0.5); /* Màu chữ mờ */
+}
+
+
 
 
 

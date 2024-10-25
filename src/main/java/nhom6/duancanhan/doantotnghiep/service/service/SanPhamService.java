@@ -12,7 +12,9 @@ import java.util.List;
 public interface SanPhamService {
 
     List<SanPhamResponse> getAllSanPham();
+
     List<SanPhamResponse> getSanPhamByKieuCoAoId(Integer id); //getSP byKieuCoAoId
+
     List<SanPhamResponse> getSanPhamByKieuTayAoId(Integer id); //getSP byKieuCoAoId
 
     SanPhamResponse getSanPhamById(Integer id);
@@ -28,4 +30,6 @@ public interface SanPhamService {
     Page<SanPhamResponse> timKiemSanPham(String keyword, Integer status, Integer thuongHieuId, Integer chatLieuId, Integer tayAoId, Integer coAoId, int page, int size);
 
     List<SanPhamShowOnClient> getAllSanPhamShowOnClient();
+
+    SanPhamShowOnClient getSanPhamShowOnClientById(Integer id);
 }

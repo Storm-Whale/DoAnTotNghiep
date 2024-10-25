@@ -28,5 +28,7 @@ public class SanPhamResponse {
 
     Integer trangThai;
 
+    String moTa;
+
     Date ngayTao;
 }
