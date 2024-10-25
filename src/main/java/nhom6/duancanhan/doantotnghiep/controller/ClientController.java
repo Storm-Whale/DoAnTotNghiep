@@ -85,8 +85,9 @@ public class ClientController {
         sanPhamGioHangRepository.save(sanPhamGioHang);
         return "redirect:/client";
     }
-    @GetMapping("hientuong")
-    private String trangct2() {
-        return "/client/hientuong";
+    @GetMapping("v2")
+    private String trangchuindex2(Model model) {
+        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient());
+        return "/client/trangchuv2";
     }
 }

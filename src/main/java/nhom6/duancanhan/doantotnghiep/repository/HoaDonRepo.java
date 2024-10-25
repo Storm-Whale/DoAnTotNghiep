@@ -1,6 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.repository;
 
 import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
+import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

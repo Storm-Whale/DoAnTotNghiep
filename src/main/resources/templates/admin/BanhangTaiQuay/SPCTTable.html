@@ -17,8 +17,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="spct, index : ${ListSPCT}">
-            <td th:text="${index.index + 1}"></td>
+        <tr th:each="spct : ${ListSPCT}">
+            <td th:text="${spct.id}"></td>
             <td th:text="${spct.sanPham.tenSanPham}"></td>
             <td th:text="${spct.kichCo.tenKichCo}"></td>
             <td th:text="${spct.mauSac.tenMauSac}"></td>
@@ -30,9 +30,14 @@
             <td th:text="${spct.soLuong}"></td>
             <td th:text="${spct.trangThai}"></td>
             <td>
-                <button class="btn btn-success btn-sm" style="border-radius: 8px; text-align: center">
-                    +
-                </button>
+                <a th:href="@{/admin/taiquay/add-sanpham-giohang/{id}(id=${spct.id})}">
+                <button class="btn btn-success btn-sm" style="border-radius: 8px; text-align: center">+</button>
+                </a>
+            </td>
+            <td>
+                <a th:href="@{/admin/taiquay/add-sanpham-hdct/{id}(id=${spct.id})}">
+                    <button class="btn btn-success btn-sm" style="border-radius: 8px; text-align: center">+HDCT</button>
+                </a>
             </td>
         </tr>
         </tbody>
