@@ -6,6 +6,7 @@ import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.GioHangRepository;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
+import nhom6.duancanhan.doantotnghiep.repository.PhuongThucThanhToanRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamGioHangRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.GioHangService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -59,6 +61,13 @@ public class BanHangTaiQuayController {
     Integer idGioHang = 1;
     Integer idHoaDon = 1;
 
+
+    // Khai báo ModelAttribute toàn cục
+//    @ModelAttribute
+//    public void addAttributes(Model model) {
+//        idHoaDon = 1; // Gán giá trị cho biến toàn cục
+//        model.addAttribute("idHoaDon", idHoaDon); // Thêm vào model
+//    }
     //    @PostMapping("taohoadon")
 //    public String taoHoaDon(
 //                            @RequestParam("idHoaDon") Integer idHoaDon, Model model
@@ -141,33 +150,33 @@ public class BanHangTaiQuayController {
 //
 //        return "/admin/BanhangTaiQuay/index";
 //    }
-    @GetMapping("/detail/{idHD}")
-    public String detailHoaDon(@PathVariable("idHD") Integer idHD, Model model) {
-        idHoaDon = idHD;
-        HoaDon hoaDon = hoaDonRepository.findById(idHD).orElse(null);
-        model.addAttribute("hoaDon", hoaDon);
-
-        // Hiển thị danh sách sản phẩm chi tiết và hóa đơn chi tiết
-        model.addAttribute("listCTSP", sanPhamChiTietRepository.findAll());
-        List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
-        model.addAttribute("listHDCT", hoaDonChiTiet);
-
-        // Hiển thị hóa đơn đầu tiên
-        HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
-//        if (firstHoaDon != null) {
-//            model.addAttribute("firstHoaDon", firstHoaDon);
-//        } else {
-//            model.addAttribute("firstHoaDon", new HoaDon()); // Tạo đối tượng rỗng để tránh lỗi
+//    @GetMapping("/detail/{idHD}")
+//    public String detailHoaDon(@PathVariable("idHD") Integer idHD, Model model) {
+//        idHoaDon = idHD;
+//        HoaDon hoaDon = hoaDonRepository.findById(idHD).orElse(null);
+//        model.addAttribute("hoaDon", hoaDon);
+//
+//        // Hiển thị danh sách sản phẩm chi tiết và hóa đơn chi tiết
+//        model.addAttribute("listCTSP", sanPhamChiTietRepository.findAll());
+//        List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
+//        model.addAttribute("listHDCT", hoaDonChiTiet);
+//
+//        // Hiển thị hóa đơn đầu tiên
+//        HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
+////        if (firstHoaDon != null) {
+////            model.addAttribute("firstHoaDon", firstHoaDon);
+////        } else {
+////            model.addAttribute("firstHoaDon", new HoaDon()); // Tạo đối tượng rỗng để tránh lỗi
+////        }
+//        // Tạo danh sách hóa đơn chờ và thêm hóa đơn đầu tiên vào danh sách nếu cần
+//        List<HoaDon> listHD = hoaDonRepository.findHoaDonsWithStatusOne();
+//        // Kiểm tra xem hóa đơn đầu tiên đã có trong danh sách chưa
+//        if (firstHoaDon != null && !listHD.contains(firstHoaDon)) {
+//            listHD.add(0, firstHoaDon); // Thêm hóa đơn đầu tiên vào đầu danh sách
 //        }
-        // Tạo danh sách hóa đơn chờ và thêm hóa đơn đầu tiên vào danh sách nếu cần
-        List<HoaDon> listHD = hoaDonRepository.findHoaDonsWithStatusOne();
-        // Kiểm tra xem hóa đơn đầu tiên đã có trong danh sách chưa
-        if (firstHoaDon != null && !listHD.contains(firstHoaDon)) {
-            listHD.add(0, firstHoaDon); // Thêm hóa đơn đầu tiên vào đầu danh sách
-        }
-        model.addAttribute("listHD", listHD.stream().limit(5).collect(Collectors.toList())); // Giới hạn danh sách về 5 hóa đơn
-        return "/admin/BanhangTaiQuay/index"; // Trả về view của bạn
-    }
+//        model.addAttribute("listHD", listHD.stream().limit(5).collect(Collectors.toList())); // Giới hạn danh sách về 5 hóa đơn
+//        return "/admin/BanhangTaiQuay/index"; // Trả về view của bạn
+//    }
 
 //    @GetMapping("/detail/{idHD}")
 //    public String detailHoaDon(@PathVariable("idHD") Integer idHD, Model model) {
@@ -194,65 +203,129 @@ public class BanHangTaiQuayController {
 //        return "/admin/BanhangTaiQuay/index";
 //    }
 
-//    @GetMapping("/detail/{idHD}")
-//    public String detailHoaDon(@PathVariable("idHD") Integer idHD, Model model) {
-//        idHoaDon = idHD;
-//        HoaDon hoaDon = hoaDonRepository.findById(idHD).orElse(null);
-//        model.addAttribute("hoaDon", hoaDon);
-//        // Lấy danh sách sản phẩm chi tiết và hóa đơn chi tiết
-//        model.addAttribute("listCTSP", sanPhamChiTietRepository.findAll());
-//        List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
-//        model.addAttribute("listHDCT", hoaDonChiTiet);
-//        // Lấy danh sách hóa đơn và thêm vào model
+    @GetMapping("/detail/{idHD}")
+    public String detailHoaDon(@PathVariable("idHD") Integer idHD, Model model) {
+        idHoaDon = idHD;
+        HoaDon hoaDon = hoaDonRepository.findById(idHD).orElse(null);
+        model.addAttribute("hoaDon", hoaDon);
+        // Lấy danh sách sản phẩm chi tiết và hóa đơn chi tiết
+        model.addAttribute("listCTSP", sanPhamChiTietRepository.findAll());
+        List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
+        model.addAttribute("listHDCT", hoaDonChiTiet);
+        // Lấy danh sách hóa đơn và thêm vào model
 //        List<HoaDon> listHD = hoaDonRepository.findAll();;
-//        model.addAttribute("listHD", listHD);
 //
-//        return "/admin/BanhangTaiQuay/index";
-//    }
+//        model.addAttribute("listHD", listHD);
 
-    @GetMapping("/add-sanpham-giohang/{id}")
-    public String addSanPhamGioHang(@PathVariable("id") Integer id, Model model) {
-        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(id).get();
-        sanPhamGioHang = sanPhamGioHangRepository.findAllByGioHangId(idGioHang);
-        boolean checkCongDon = false;
-        for (SanPhamGioHang ghct : sanPhamGioHang) {
-            if (ghct.getSanPhamChiTiet().getId().equals(id)) {
-                ghct.setSoLuong(ghct.getSoLuong() + 1);
-                // tru so luong trong database
-                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
-                sanPhamChiTietRepository.save(sanPhamChiTiet);
-                BigDecimal tongTien = sanPhamGioHang.stream()
-                        .map(spgh -> spgh.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(spgh.getSoLuong())))
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-                sanPhamGioHangRepository.save(ghct);
-                model.addAttribute("tongTien", tongTien);
-                checkCongDon = true;
-                break;
-            }
+        HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
+//        model.addAttribute("firstHoaDon", firstHoaDon != null ? firstHoaDon : new HoaDon());
+        // Tạo danh sách hóa đơn chờ và thêm hóa đơn đầu tiên vào danh sách nếu cần
+        List<HoaDon> listHD = hoaDonRepository.findHoaDonsWithStatusOne();
+        // Kiểm tra xem hóa đơn đầu tiên đã có trong danh sách chưa
+        if (firstHoaDon != null && !listHD.contains(firstHoaDon)) {
+            listHD.add(0, firstHoaDon); // Thêm hóa đơn đầu tiên vào đầu danh sách
         }
-        if (!checkCongDon) {
-            GioHang gioHang = gioHangRepository.findById(1)
-                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy giỏ hàng"));
-            SanPhamGioHang sanPhamGioHang = SanPhamGioHang.builder()
-                    .gioHang(gioHang)
-                    .sanPhamChiTiet(sanPhamChiTiet)
-                    .soLuong(1)
-                    .build();
-            sanPhamGioHangRepository.save(sanPhamGioHang);
-            List<SanPhamGioHang> sanPhamGioHangs = sanPhamGioHangRepository.findAll();
-            BigDecimal tongTien = sanPhamGioHangs.stream()
-                    .map(spgh -> spgh.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(spgh.getSoLuong())))
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-            model.addAttribute("tongTien", tongTien);
-            model.addAttribute("list", sanPhamGioHangs);
-        }
+        model.addAttribute("listHD", listHD.stream().limit(5).collect(Collectors.toList())); // Giới hạn danh sách về 5 hóa đơn
 
-        return "redirect:/admin/taiquay";
+        BigDecimal tongTien = hoaDonChiTiet.stream()
+                .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        model.addAttribute("tongTien", tongTien);
+
+        return "/admin/BanhangTaiQuay/index";
     }
+
+    @Autowired
+    PhuongThucThanhToanRepository phuongThucThanhToanRepository;
+    @GetMapping("/thanhtoan")
+    public String thanhtoan(@RequestParam("tongTien") BigDecimal tongTien,
+                            @RequestParam("ghiChu") String ghiChu,
+                            @RequestParam("phuongThucThanhToan") Integer phuongThucId
+            , Model model) {
+
+
+        // Lấy hóa đơn và cập nhật thông tin
+
+
+        // Lấy phương thức thanh toán theo ID và gán vào hoaDon
+
+        System.out.println("Ghi chú nhận được: " + ghiChu);
+//        BigDecimal tongTien  = hoaDonChiTiet.stream()
+//                .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        model.addAttribute("tongTien", tongTien);
+
+        HoaDon hoaDon = new HoaDon();
+        if (tongTien.compareTo(BigDecimal.ZERO) == 0) {
+            hoaDon.setTrangThai(1);
+            hoaDonRepository.save(hoaDon);
+            return "redirect:/admin/taiquay";
+        } else {
+            hoaDon = hoaDonRepository.findById(idHoaDon).get();
+//            PhuongThucThanhToan phuongThucThanhToan = new PhuongThucThanhToan();
+//            phuongThucThanhToan.setTenPhuongThuc("Chuy?n kho?n ngân hàng"); // Đặt tên phương thức thanh toán phù hợp
+//            NhanVien nhanVien = new NhanVien();
+//            nhanVien.setTen("Nguyễn Văn F");
+            PhuongThucThanhToan phuongThuc = phuongThucThanhToanRepository.findById(phuongThucId).orElse(null);
+            hoaDon.setPhuongThucThanhToan(phuongThuc);
+            hoaDon.setTrangThai(2);
+            hoaDon.setGhiChu(ghiChu);
+//            hoaDon.setPhuongThucThanhToan(phuongThucThanhToan);
+//            hoaDon.setNguoiTao(nhanVien);
+            hoaDon.setTongTien(tongTien);
+            hoaDonRepository.save(hoaDon);
+            return "redirect:/admin/hoadon";
+        }
+
+
+    }
+//    @GetMapping("/add-sanpham-giohang/{id}")
+//    public String addSanPhamGioHang(@PathVariable("id") Integer id, Model model) {
+//        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(id).get();
+//        sanPhamGioHang = sanPhamGioHangRepository.findAllByGioHangId(idGioHang);
+//        boolean checkCongDon = false;
+//        for (SanPhamGioHang ghct : sanPhamGioHang) {
+//            if (ghct.getSanPhamChiTiet().getId().equals(id)) {
+//                ghct.setSoLuong(ghct.getSoLuong() + 1);
+//                // tru so luong trong database
+//                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
+//                sanPhamChiTietRepository.save(sanPhamChiTiet);
+//                BigDecimal tongTien = sanPhamGioHang.stream()
+//                        .map(spgh -> spgh.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(spgh.getSoLuong())))
+//                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+//                sanPhamGioHangRepository.save(ghct);
+//                model.addAttribute("tongTien", tongTien);
+//                checkCongDon = true;
+//                break;
+//            }
+//        }
+//        if (!checkCongDon) {
+//            GioHang gioHang = gioHangRepository.findById(1)
+//                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy giỏ hàng"));
+//            SanPhamGioHang sanPhamGioHang = SanPhamGioHang.builder()
+//                    .gioHang(gioHang)
+//                    .sanPhamChiTiet(sanPhamChiTiet)
+//                    .soLuong(1)
+//                    .build();
+//            sanPhamGioHangRepository.save(sanPhamGioHang);
+//            List<SanPhamGioHang> sanPhamGioHangs = sanPhamGioHangRepository.findAll();
+//
+//
+//            BigDecimal tongTien = sanPhamGioHangs.stream()
+//                    .map(spgh -> spgh.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(spgh.getSoLuong())))
+//                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+//
+//
+//            model.addAttribute("tongTien", tongTien);
+//            model.addAttribute("list", sanPhamGioHangs);
+//        }
+//
+//        return "redirect:/admin/taiquay";
+//    }
 
 
     @GetMapping("/add-sanpham-hdct/{id}")
-    public String addSanPhamHDCT(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
+    public String addSanPhamHDCT(@PathVariable("id") Integer id, Model model) {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Sản phẩm không tồn tại"));
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
@@ -269,9 +342,8 @@ public class BanHangTaiQuayController {
                     BigDecimal tongTien = hoaDonChiTietList.stream()
                             .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-                    hoaDonChiTietRepository.save(hdct);
                     model.addAttribute("tongTien", tongTien);
+                    hoaDonChiTietRepository.save(hdct);
                 } else {
                     return model.addAttribute("errorSoLuong", "Sản Phẩm Đã Bán Hết").toString();
 
@@ -299,9 +371,54 @@ public class BanHangTaiQuayController {
             model.addAttribute("tongTien", tongTien);
             model.addAttribute("listHDCT", hoaDonChiTietList);
         }
-
-        return "redirect:/admin/taiquay";
+        return "redirect:/admin/taiquay/sanpham#sanpham";
     }
+//    private final BigDecimal tongTien = new BigDecimal("2540000");
+//    @PostMapping("/tinh-tien-thua")
+//    public String tinhTienThua(@RequestParam("tienKhachDua") BigDecimal tienKhachDua, Model model) {
+//        BigDecimal tienThua = tienKhachDua.subtract(tongTien);
+//
+//        if (tienThua.compareTo(BigDecimal.ZERO) < 0) {
+//            model.addAttribute("message", "Khách đưa thiếu: " + tienThua.abs() + " VND");
+//        } else {
+//            model.addAttribute("message", "Tiền thừa: " + tienThua + " VND");
+//        }
+//
+//        model.addAttribute("tongTien", tongTien);
+//        model.addAttribute("tienKhachDua", tienKhachDua);
+//        model.addAttribute("tienThua", tienThua);
+//
+//        return  "redirect:/admin/taiquay";
+//    }
+//    @Autowired
+//    PhuongThucThanhToanRepository phuongThucThanhToanRepository;
+//@PostMapping("thanhtoan")
+//public String thanhToan(@RequestParam("soTienKhachDua") BigDecimal soTienKhachDua, Model model) {
+//    // Lấy danh sách hóa đơn chi tiết
+//    List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAll();
+//    model.addAttribute("listHDCT", hoaDonChiTietList);
+//
+//    // Tính tổng tiền cần thanh toán
+//    BigDecimal tongTien = hoaDonChiTietList.stream()
+//            .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
+//            .reduce(BigDecimal.ZERO, BigDecimal::add);
+//    model.addAttribute("tongTienThanhToan", tongTien);
+//
+//    // Tính tiền thừa
+//    BigDecimal tienThua = soTienKhachDua.subtract(tongTien);
+//
+//    // Truyền tiền thừa vào redirect attributes để sử dụng khi điều hướng lại
+//    RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
+//    redirectAttributes.addFlashAttribute("tienThua", tienThua);
+//
+//    // Lấy danh sách phương thức thanh toán
+//    model.addAttribute("listThanhToan", phuongThucThanhToanRepository.findAll());
+//
+//    return "redirect:/admin/taiquay/detail/" + idHoaDon;
+//}
+
+//    @PostMapping("thanhtoan")
+
 
 }
 
