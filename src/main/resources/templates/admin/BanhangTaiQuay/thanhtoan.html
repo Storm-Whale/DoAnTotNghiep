@@ -1,0 +1,46 @@
+<div class="container">
+  <h2>Thanh toán</h2>
+
+  <!-- Tổng tiền khách cần trả -->
+  <div class="total">
+    <label>Khách cần trả:</label>
+    <span id="tongTien">1,800,000</span> đ
+  </div>
+
+  <!-- Nhập số tiền khách đưa -->
+  <div class="received">
+    <label>Số tiền khách đưa:</label>
+    <input type="number" id="tienKhachDua" placeholder="Nhập số tiền" min="0">
+  </div>
+
+  <!-- Chọn phương thức thanh toán -->
+  <div class="method-buttons">
+    <button onclick="selectPaymentMethod('Tiền mặt')">Tiền mặt</button>
+    <button onclick="selectPaymentMethod('Chuyển khoản')">Chuyển khoản</button>
+  </div>
+
+  <!-- Bảng giao dịch -->
+  <table border="1" cellspacing="0" cellpadding="10" style="margin-top: 10px; width: 100%;">
+    <thead>
+    <tr>
+      <th>STT</th>
+      <th>Mã giao dịch</th>
+      <th>Số tiền</th>
+      <th>Phương thức</th>
+      <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody id="transactionTable">
+    <!-- Các giao dịch sẽ được thêm vào đây -->
+    </tbody>
+  </table>
+
+  <!-- Tiền thừa -->
+  <div class="change">
+    <label>Tiền thừa:</label>
+    <span id="tienThua">0</span> đ
+  </div>
+
+  <!-- Nút Xác nhận -->
+  <button id="xacNhan" onclick="confirmPayment()" disabled>Xác nhận</button>
+</div>
