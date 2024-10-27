@@ -90,4 +90,9 @@ public class ClientController {
         model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient());
         return "/client/trangchuv2";
     }
+    @GetMapping("gh")
+    private String gh2() {
+
+        return "/client/hientuong";
+    }
 }
