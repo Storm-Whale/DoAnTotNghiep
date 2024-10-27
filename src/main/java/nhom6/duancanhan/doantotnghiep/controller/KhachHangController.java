@@ -35,37 +35,37 @@ public class KhachHangController {
 
     @GetMapping("")
     public String searchKhachHang(
-        @RequestParam(value = "keyword", required = false) String keyword,
-        @RequestParam(value = "trangThai", required = false) Integer trangThai,
-        @RequestParam(value = "page", defaultValue = "0") int page,
-        @RequestParam(value = "size", defaultValue = "5") int size,
-        Model model) {
-
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "trangThai", required = false) Integer trangThai,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            Model model
+    ) {
         if (keyword != null) {
             keyword = keyword.trim();
             if (keyword.isEmpty()) {
                 keyword = null; // Đặt thành null để khớp với logic xử lý trong service
             }
         }
-            if(page < 0) {
-                page = 0;
-            }
-            Page<KhachHang> listKH = khachHangService.SearchandPhantrang(keyword, trangThai, page, size);
-            int totalPages = listKH.getTotalPages();
-            if(page >= totalPages) {
-                page = totalPages > 0 ? totalPages - 1 : 0; // Go to the last page if out of bounds or reset to 0 if no pages exist
-                listKH = khachHangService.SearchandPhantrang(keyword, trangThai, page, size); // Fetch the last page data
-            }
-            List<Integer> pageNumbers = IntStream.range(0, totalPages).boxed().collect(Collectors.toList());
-            model.addAttribute("khachHang", new KhachHang());
-            model.addAttribute("listKH", listKH);
-            model.addAttribute("currentPage", page);
-            model.addAttribute("totalPages",totalPages);
-            model.addAttribute("keyword", keyword);
-            model.addAttribute("trangThai", trangThai);
-            model.addAttribute("pageNumbers", pageNumbers);
-            return "/admin/customer/khachhang";
-       }
+//        if (page < 0) {
+//            page = 0;
+//        }
+        Page<KhachHang> listKH = khachHangService.SearchandPhantrang(keyword, trangThai, page, size);
+        int totalPages = listKH.getTotalPages();
+        if (page >= totalPages) {
+            page = totalPages > 0 ? totalPages - 1 : 0; // Go to the last page if out of bounds or reset to 0 if no pages exist
+            listKH = khachHangService.SearchandPhantrang(keyword, trangThai, page, size); // Fetch the last page data
+        }
+        List<Integer> pageNumbers = IntStream.range(0, totalPages).boxed().collect(Collectors.toList());
+        model.addAttribute("khachHang", new KhachHang());
+        model.addAttribute("listKH", listKH);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("pageNumbers", pageNumbers);
+        return "/admin/customer/khachhang";
+    }
 
 //    @GetMapping("{pageNo}")
 //    public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
@@ -83,17 +83,17 @@ public class KhachHangController {
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("khachHang",khachHangService.detail(id));
-        model.addAttribute("listKH",khachHangService.getAll());
-        model.addAttribute("listTK",taiKhoanService.getAll());
+        model.addAttribute("khachHang", khachHangService.detail(id));
+        model.addAttribute("listKH", khachHangService.getAll());
+        model.addAttribute("listTK", taiKhoanService.getAll());
         return "/admin/customer/khachhang";
     }
 
     @PostMapping("/add")
     public String add(@Valid @ModelAttribute("khachHang") KhachHang khachHang, BindingResult result, Model model) {
-        if(result.hasErrors()) {
-            for(FieldError error : result.getFieldErrors()) {
-                model.addAttribute(error.getField(),error.getDefaultMessage());
+        if (result.hasErrors()) {
+            for (FieldError error : result.getFieldErrors()) {
+                model.addAttribute(error.getField(), error.getDefaultMessage());
             }
             return "/admin/customer/khachhang";
 //          return "redirect:/admin/khachhang/add" + "#demo-modal";
@@ -103,18 +103,18 @@ public class KhachHangController {
     }
 
     @GetMapping("/view_update/{id}")
-    public String viewUpdate(@PathVariable("id") Integer id,Model model) {
-        model.addAttribute("khachHang",khachHangService.detail(id));
-        model.addAttribute("listKH",khachHangService.getAll());
-        model.addAttribute("listTK",taiKhoanService.getAll());
+    public String viewUpdate(@PathVariable("id") Integer id, Model model) {
+        model.addAttribute("khachHang", khachHangService.detail(id));
+        model.addAttribute("listKH", khachHangService.getAll());
+        model.addAttribute("listTK", taiKhoanService.getAll());
         return "/admin/customer/updateKhachHang";
     }
 
     @PostMapping("/update")
-    public String update( @Valid @ModelAttribute("khachHang") KhachHang khachHang, BindingResult result, Model model) {
-        if(result.hasErrors()) {
-            for(FieldError error : result.getFieldErrors()) {
-                model.addAttribute(error.getField(),error.getDefaultMessage());
+    public String update(@Valid @ModelAttribute("khachHang") KhachHang khachHang, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            for (FieldError error : result.getFieldErrors()) {
+                model.addAttribute(error.getField(), error.getDefaultMessage());
             }
             return "/admin/customer/updateKhachHang";
         }

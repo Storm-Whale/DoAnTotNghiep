@@ -59,26 +59,6 @@ body {
     gap: 10px;
 }
 
-.notification {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #d32f2f;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-}
-
-.similar-products {
-    background-color: white;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-}
-
 .similar-products h3 {
     margin: 0 0 10px;
     font-size: 22px;
@@ -154,10 +134,6 @@ body {
     border-radius: 1px;
 }
 
-.color-options input[type="radio"]:checked + img {
-    border: 2px solid #d32f2f;
-}
-
 .size-select {
     padding: 10px;
     border: 1px solid #ccc;
@@ -167,49 +143,72 @@ body {
     transition: border-color 0.3s, background-color 0.3s;
     cursor: pointer;
 }
-
-.size-select:hover {
-    border-color: #888;
-}
-
-.size-select:focus {
-    outline: none;
-    border-color: #007BFF;
-    background-color: #fff;
+/* ---------------------------------------------------- Ảnh SP ---------------------------------------------------- */
+.gallery {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .main-image-container {
     width: 100%;
-    max-width: 600px;
     height: 400px;
-    margin-bottom: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .main-image {
     max-width: 100%;
     max-height: 100%;
+    object-fit: contain;
 }
 
 .thumbnail-container {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 10px;
+    margin-top: 10px;
 }
 
 .thumbnail-container img {
     width: 60px;
-    height: auto;
+    margin-left: 2px;
+    height: 60px;
     cursor: pointer;
     opacity: 0.6;
+    transition: opacity 0.3s;
 }
 
 .thumbnail-container img:hover {
     opacity: 1;
 }
 
+.thumbnail-container img.selected {
+    opacity: 1;
+    border: 2px solid #007BFF; /* Thêm viền cho ảnh được chọn */
+}
+
+.prev-btn, .next-btn {
+    background-color: rgba(0, 0, 0, 0.3); /* Giảm độ trong suốt của nền */
+    color: white;
+    border: none;
+    font-size: 24px; /* Giảm kích thước font chữ */
+    cursor: pointer;
+    padding: 8px; /* Giảm khoảng cách bên trong */
+    border-radius: 5px; /* Thêm bo tròn cho nút */
+    transition: background-color 0.3s; /* Thêm hiệu ứng chuyển màu */
+}
+
+.prev-btn:hover, .next-btn:hover {
+    background-color: rgba(0, 0, 0, 0.5); /* Giữ cho nút sáng hơn khi hover */
+}
+/* ---------------------------------------------------- Ảnh SP ---------------------------------------------------- */
 .input-group {
     max-width: 150px;
     margin: 50px auto auto;
@@ -236,12 +235,8 @@ body {
     cursor: pointer;
 }
 
-.size-label input[type="radio"]:checked + label {
-    border: 2px solid red;
-}
-
 .size-label label.grey {
-    border: 2px solid grey;
+    border: 2px solid black;
 }
 
 
@@ -249,15 +244,6 @@ body {
     display: flex;
     gap: 15px;
     flex-wrap: wrap;
-}
-
-.color-item {
-    display: flex;
-    align-items: center;
-    border: 1px solid #ccc;
-    padding: 5px;
-    cursor: pointer;
-    width: auto;
 }
 
 .color-item img {
@@ -283,15 +269,6 @@ body {
     transition: border-color 0.3s ease;
 }
 
-.color-item {
-    cursor: pointer;
-    display: inline-block;
-    border: 2px solid transparent;
-    padding: 10px;
-    border-radius: 8px;
-    transition: border 0.3s ease;
-}
-
 .color-item:hover {
     border: 2px solid red;
 }
@@ -308,11 +285,6 @@ body {
 .color-item input[type="radio"]:checked + .d-flex img,
 .color-item:hover .d-flex img {
     border: 2px solid red;
-}
-
-.color-item input[type="radio"]:checked + .d-flex span,
-.color-item:hover .d-flex span {
-    color: red;
 }
 
 .similar-products {
@@ -386,7 +358,6 @@ body {
     align-items: flex-start;
 }
 
-
 .similar-products {
     flex: 1;
 }
@@ -395,7 +366,6 @@ body {
 .description {
     flex: 1;
 }
-
 
 .main-container h2 {
     font-size: 22px;
@@ -456,17 +426,6 @@ button.btn-primary:hover {
     font-size: 16px;
 }
 
-.color-item {
-    display: flex;
-    align-items: center;
-    border: 2px solid #ccc;
-    padding: 5px;
-    border-radius: 5px;
-    margin-right: 10px;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-}
-
 .color-item img {
     width: 30px;
     height: 30px;
@@ -516,7 +475,15 @@ button.btn-primary:hover {
 }
 
 .color-item {
+    display: flex;
+    align-items: center;
+    border: 2px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
     cursor: pointer; /* Đổi con trỏ khi di chuột lên các lựa chọn màu sắc */
+    width: auto;
+    margin-right: 10px;
+    transition: border-color 0.3s ease; /* Sửa đổi thuộc tính chuyển tiếp để nhất quán */
 }
 
 .img-thumbnail {
@@ -547,7 +514,9 @@ button.btn-primary:hover {
     font-size: 18px;
 }
 
-
+.size-label input[type="radio"]:checked + label {
+    border: 2px solid orangered; /* Viền khi được chọn */
+}
 
 .themgiohang .btn {
     flex-shrink: 0;

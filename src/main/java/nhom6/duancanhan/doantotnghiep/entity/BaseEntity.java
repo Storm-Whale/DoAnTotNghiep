@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -12,21 +12,19 @@ import java.util.Date;
 public class BaseEntity {
 
     @Column(name = "ngay_tao")
-    @Temporal(TemporalType.DATE)
-    Date ngayTao;
+    LocalDateTime ngayTao;
 
     @Column(name = "ngay_sua")
-    @Temporal(TemporalType.DATE)
-    Date ngaySua;
+    LocalDateTime  ngaySua;
 
     @PrePersist
     protected void onCreate() {
-        ngayTao = new Date();
-        ngaySua = new Date();
+        ngayTao = LocalDateTime.now();
+        ngaySua = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        ngaySua = new Date();
+        ngaySua = LocalDateTime.now();
     }
 }

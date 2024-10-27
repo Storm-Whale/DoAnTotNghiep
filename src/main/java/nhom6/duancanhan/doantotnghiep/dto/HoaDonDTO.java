@@ -2,22 +2,17 @@ package nhom6.duancanhan.doantotnghiep.dto;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Entity
 public class HoaDonDTO {
     @Id
     private Integer id;
-
     private String TenKH; // Khách hàng
     private String ten_nguoi_nhan;  // Người nhận
     private String sdt;           // Số điện thoại
