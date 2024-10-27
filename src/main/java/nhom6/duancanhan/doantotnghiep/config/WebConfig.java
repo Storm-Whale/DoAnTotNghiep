@@ -1,4 +1,4 @@
-package nhom6.duancanhan.doantotnghiep.controller;
+package nhom6.duancanhan.doantotnghiep.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.HiddenHttpMethodFilter;

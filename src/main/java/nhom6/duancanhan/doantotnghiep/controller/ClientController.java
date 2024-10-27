@@ -2,6 +2,7 @@ package nhom6.duancanhan.doantotnghiep.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.AnhSanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietRequest;
@@ -14,6 +15,7 @@ import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamGioHangRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.AnhSanPhamService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -141,11 +143,13 @@ public class ClientController {
 
 
     @PostMapping("/add_sp_vao_gio_hang/{idSP}")
+    @ResponseStatus(HttpStatus.OK)
     private void addSpVaoGioHang(
             @PathVariable(name = "idSP") int idSP,
             @RequestParam(name = "soluong") Integer soluong,
             @RequestParam(name = "mausac") Integer idMauSac,
             @RequestParam(name = "kichco") Integer idKichCo,
+            HttpServletRequest httpServletRequest,
             Model model
     ) {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findSanPhamChiTietBySanPhamIdAndKichCoIdAndMauSacId(idSP, idKichCo, idMauSac);
@@ -160,8 +164,8 @@ public class ClientController {
         sanPhamGioHangRepository.save(sanPhamGioHang);
     }
 
-    @GetMapping("hientuong")
-    private String trangct2() {
-        return "/client/hientuong";
+    @GetMapping("/gio-hang")
+    private String gioHang(Model model) {
+        return "/client/gio-hang";
     }
 }

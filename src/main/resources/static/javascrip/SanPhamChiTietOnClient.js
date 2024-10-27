@@ -1,4 +1,4 @@
-// --------------------------------------------------- Tăng Giảm Giá Trị Bằng Button ---------------------------------------------------
+// --------------------------------------------------- Start Tăng Giảm Giá Trị Bằng Button ---------------------------------------------------
 document.getElementById('button-minus').addEventListener('click', function () {
     var input = document.getElementById('input-number');
     var value = parseInt(input.value);
@@ -14,16 +14,7 @@ document.getElementById('button-plus').addEventListener('click', function () {
         input.value = value + 1;
     }
 });
-// --------------------------------------------------- Tăng Giảm Giá Trị Bằng Button ---------------------------------------------------
-
-// document.getElementById('add-to-cart-btn').addEventListener('click', function () {
-//     var notification = document.getElementById('notification');
-//     notification.style.display = 'block';
-//     setTimeout(function () {
-//         notification.style.display = 'none';
-//     }, 3000);
-// });
-
+// --------------------------------------------------- End Tăng Giảm Giá Trị Bằng Button ---------------------------------------------------
 // --------------------------------------------------- Start Thay Đổi Khung Ảnh Ở Dưới Main Img  ---------------------------------------------------
 // Hàm thay đổi ảnh chính khi người dùng chọn một thumbnail
 function changeMainImage(src) {
@@ -77,11 +68,12 @@ function changeImgColor() {
     var mainImage = document.getElementById('mainImage');
     mainImage.src = selectedColorImg;
 }
-// --------------------------------------------------- End Thay Đổi Khung Ảnh Ở Dưới Main Img  ---------------------------------------------------
 
+// --------------------------------------------------- End Thay Đổi Khung Ảnh Ở Dưới Main Img  ---------------------------------------------------
 // -------------------------------------------------- Start Lấy Kích Cỡ Khi Ấn Radio Màu Sắc & Giá Tiền Khi Chọn Ảnh  ---------------------------------------------------
 var mapMauSacKichCo = JSON.parse(mauSacToKichCoJson);
 var mapScpt = JSON.parse(spcts)
+
 function filterSizes(mausacId) {
     // Làm mờ tất cả các size
     document.querySelectorAll('.size-label').forEach(function (label) {
@@ -103,7 +95,6 @@ function filterSizes(mausacId) {
                 if (labelElement) {
                     labelElement.style.opacity = '1'; // Hiển thị rõ ràng
                     labelElement.style.pointerEvents = 'auto'; // Cho phép tương tác
-                    labelElement.style.color = 'rgba(0, 0, 0, 0.5)'; // Màu chữ mờ
                 }
             }
         });
@@ -118,4 +109,46 @@ function filterSizes(mausacId) {
         oldPriceElement.innerHTML = newPrice.toLocaleString('vi-VN') + ' đ'
     }
 }
+
 // -------------------------------------------------- End Lấy Kích Cỡ Khi Ấn Radio Màu Sắc & Giá Tiền Khi Chọn Ảnh  ---------------------------------------------------
+// -------------------------------------------------- Start Thêm sản phẩm mới vào giỏ hàng & Mua Ngay Sản Phẩm  ---------------------------------------------------
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('add-to-cart-btn').addEventListener('click', function () {
+        const formData = new FormData(document.getElementById('cart-form'))
+        const idSP = document.querySelector('input[name=idSP]').value
+        fetch(`/client/add_sp_vao_gio_hang/${idSP}`, {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text()
+                } else {
+                    throw new Error('Có lỗi khi xảy ra khi thêm sản phẩm')
+                }
+            })
+            .then(data => {
+                showSuccessAlert()
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    })
+})
+// -------------------------------------------------- End Thêm sản phẩm mới vào giỏ hàng  ---------------------------------------------------
+// -------------------------------------------------- Start Alert  ---------------------------------------------------
+function showSuccessAlert() {
+    Swal.fire({
+        position: "bottom-end",
+        icon: "success",
+        title: "Bạn đã thêm sản phẩm thành công",
+        showConfirmButton: false,
+        timer: 1750,
+        backdrop: false,
+        customClass: {
+            popup: 'sizeAlert'
+        }
+    });
+}
+
+// -------------------------------------------------- End Alert  ---------------------------------------------------

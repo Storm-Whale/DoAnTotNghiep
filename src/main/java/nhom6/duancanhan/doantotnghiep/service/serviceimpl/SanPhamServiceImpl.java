@@ -134,14 +134,15 @@ public class SanPhamServiceImpl implements SanPhamService {
         return DatabaseOperationHandler.handleDatabaseOperation(() -> {
             List<SanPhamResponse> sanPhamResponses = getAllSanPham();
             List<SanPhamShowOnClient> sanPhamShowOnClients = new ArrayList<>();
-
             for (SanPhamResponse sanPhamResponse : sanPhamResponses) {
                 SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findFirstBySanPhamId(sanPhamResponse.getId());
-                SanPhamShowOnClient sanPhamShowOnClient = SanPhamShowOnClient.builder()
-                        .sanPhamResponse(sanPhamResponse)
-                        .gia(sanPhamChiTiet.getGia())
-                        .build();
-                sanPhamShowOnClients.add(sanPhamShowOnClient);
+                if (sanPhamChiTiet != null) {
+                    SanPhamShowOnClient sanPhamShowOnClient = SanPhamShowOnClient.builder()
+                            .sanPhamResponse(sanPhamResponse)
+                            .gia(sanPhamChiTiet.getGia())
+                            .build();
+                    sanPhamShowOnClients.add(sanPhamShowOnClient);
+                }
             }
             return sanPhamShowOnClients;
         }, "Lỗi khi lấy thông tin từ cơ sở dữ liệu");
