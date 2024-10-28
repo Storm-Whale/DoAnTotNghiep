@@ -173,4 +173,9 @@ public class ClientController {
 
         return "/client/hientuong";
     }
+    @GetMapping("LG")
+    private String LG() {
+
+        return "/client/Login";
+    }
 }
