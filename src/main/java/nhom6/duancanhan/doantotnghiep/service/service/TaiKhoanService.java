@@ -21,4 +21,8 @@ public interface TaiKhoanService {
     void updateTaiKhoan(Integer id, TaiKhoan taiKhoan);
 
     void deleteTaiKhoan(Integer id);
+
+
+    TaiKhoan findByTenDangNhap(String tenDangNhap);
+
 }

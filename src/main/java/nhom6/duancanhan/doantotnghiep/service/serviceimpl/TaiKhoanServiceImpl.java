@@ -49,4 +49,9 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
     public void deleteTaiKhoan(Integer id) {
          taiKhoanRepository.deleteById(id);
     }
+
+    @Override
+    public TaiKhoan findByTenDangNhap(String tenDangNhap) {
+        return taiKhoanRepository.findByTenDangNhap(tenDangNhap);
+    }
 }
