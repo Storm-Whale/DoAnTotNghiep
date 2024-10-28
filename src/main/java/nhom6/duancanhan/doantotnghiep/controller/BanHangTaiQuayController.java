@@ -9,12 +9,19 @@ import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.repository.PhuongThucThanhToanRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamGioHangRepository;
+import nhom6.duancanhan.doantotnghiep.service.service.ChatLieuService;
 import nhom6.duancanhan.doantotnghiep.service.service.GioHangService;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
+import nhom6.duancanhan.doantotnghiep.service.service.KichCoService;
+import nhom6.duancanhan.doantotnghiep.service.service.KieuCoAoService;
+import nhom6.duancanhan.doantotnghiep.service.service.KieuTayAoService;
+import nhom6.duancanhan.doantotnghiep.service.service.MauSacService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamGioHangService;
+import nhom6.duancanhan.doantotnghiep.service.service.ThuongHieuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +60,25 @@ public class BanHangTaiQuayController {
 
     @Autowired
     HoaDonChiTietRepository hoaDonChiTietRepository;
+
+
+    @Autowired
+    MauSacService mauSacService;
+
+    @Autowired
+    ThuongHieuService thuongHieuService;
+
+    @Autowired
+    ChatLieuService chatLieuService;
+
+    @Autowired
+    KichCoService kichCoService;
+
+    @Autowired
+    KieuCoAoService kieuCoAoService;
+
+    @Autowired
+    KieuTayAoService kieuTayAoService;
 
     @Autowired
     HoaDonRepository hoaDonRepository;
@@ -204,12 +230,47 @@ public class BanHangTaiQuayController {
 //    }
 
     @GetMapping("/detail/{idHD}")
-    public String detailHoaDon(@PathVariable("idHD") Integer idHD, Model model) {
+    public String detailHoaDon(@PathVariable("idHD") Integer idHD,
+                               @RequestParam(value = "page", defaultValue = "0") int page,
+                               @RequestParam(value = "size", defaultValue = "5") int size,
+                               @RequestParam(value = "keyword", required = false) String keyword,
+                               @RequestParam(value = "thuongHieuId", required = false) Integer thuongHieuId,
+                               @RequestParam(value = "chatLieuId", required = false) Integer chatLieuId,
+                               @RequestParam(value = "tayAoId", required = false) Integer tayAoId,
+                               @RequestParam(value = "coAoId", required = false) Integer coAoId,
+                               @RequestParam(value = "kichCoId", required = false) Integer kichCoId,
+                               @RequestParam(value = "mauSacId", required = false) Integer mauSacId,
+                               @RequestParam(value = "trangThai", required = false) Integer trangThai, Model model) {
         idHoaDon = idHD;
+        Page<SanPhamChiTiet> pageFind = sanPhamChiTietService.timKiemSanPham(keyword, thuongHieuId, chatLieuId, tayAoId,
+                coAoId, kichCoId, mauSacId, trangThai, page, size);
+        List<SanPhamChiTiet> listCTSP = pageFind.getContent();
+        model.addAttribute("currentPage", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", pageFind.getTotalPages());
+        model.addAttribute("totalItems", pageFind.getTotalElements());
+        //
+        model.addAttribute("mauSac", mauSacService.getAll());
+        model.addAttribute("kichCo", kichCoService.getAll());
+        model.addAttribute("thuongHieu", thuongHieuService.getAll());
+        model.addAttribute("chatLieu", chatLieuService.getAll());
+        model.addAttribute("tayAo", kieuTayAoService.getAll());
+        model.addAttribute("coAo", kieuCoAoService.getAll());
+        // Thêm các tham số tìm kiếm vào model để hiển thị lại trên trang
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("thuongHieuId", thuongHieuId);
+        model.addAttribute("chatLieuId", chatLieuId);
+        model.addAttribute("tayAoId", tayAoId);
+        model.addAttribute("coAoId", coAoId);
+        model.addAttribute("kichCoId", kichCoId);
+        model.addAttribute("mauSacId", mauSacId);
+        model.addAttribute("trangThai", trangThai);
+
+
         HoaDon hoaDon = hoaDonRepository.findById(idHD).orElse(null);
         model.addAttribute("hoaDon", hoaDon);
         // Lấy danh sách sản phẩm chi tiết và hóa đơn chi tiết
-        model.addAttribute("listCTSP", sanPhamChiTietRepository.findAll());
+        model.addAttribute("listCTSP", listCTSP);
         List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
         model.addAttribute("listHDCT", hoaDonChiTiet);
         // Lấy danh sách hóa đơn và thêm vào model
@@ -237,6 +298,7 @@ public class BanHangTaiQuayController {
 
     @Autowired
     PhuongThucThanhToanRepository phuongThucThanhToanRepository;
+
     @GetMapping("/thanhtoan")
     public String thanhtoan(@RequestParam("tongTien") BigDecimal tongTien,
                             @RequestParam("ghiChu") String ghiChu,
@@ -325,7 +387,42 @@ public class BanHangTaiQuayController {
 
 
     @GetMapping("/add-sanpham-hdct/{id}")
-    public String addSanPhamHDCT(@PathVariable("id") Integer id, Model model) {
+    public String addSanPhamHDCT(@PathVariable("id") Integer id,
+                                 @RequestParam(value = "page", defaultValue = "0") int page,
+                                 @RequestParam(value = "size", defaultValue = "5") int size,
+                                 @RequestParam(value = "keyword", required = false) String keyword,
+                                 @RequestParam(value = "thuongHieuId", required = false) Integer thuongHieuId,
+                                 @RequestParam(value = "chatLieuId", required = false) Integer chatLieuId,
+                                 @RequestParam(value = "tayAoId", required = false) Integer tayAoId,
+                                 @RequestParam(value = "coAoId", required = false) Integer coAoId,
+                                 @RequestParam(value = "kichCoId", required = false) Integer kichCoId,
+                                 @RequestParam(value = "mauSacId", required = false) Integer mauSacId,
+                                 @RequestParam(value = "trangThai", required = false) Integer trangThai,
+                                 Model model) {
+        Page<SanPhamChiTiet> pageFind = sanPhamChiTietService.timKiemSanPham(keyword, thuongHieuId, chatLieuId, tayAoId,
+                coAoId, kichCoId, mauSacId, trangThai, page, size);
+        List<SanPhamChiTiet> ListSPCT = pageFind.getContent();
+        model.addAttribute("ListSPCT", ListSPCT);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", pageFind.getTotalPages());
+        model.addAttribute("totalItems", pageFind.getTotalElements());
+        model.addAttribute("mauSac", mauSacService.getAll());
+        model.addAttribute("kichCo", kichCoService.getAll());
+        model.addAttribute("thuongHieu", thuongHieuService.getAll());
+        model.addAttribute("chatLieu", chatLieuService.getAll());
+        model.addAttribute("tayAo", kieuTayAoService.getAll());
+        model.addAttribute("coAo", kieuCoAoService.getAll());
+        // Thêm các tham số tìm kiếm vào model để hiển thị lại trên trang
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("thuongHieuId", thuongHieuId);
+        model.addAttribute("chatLieuId", chatLieuId);
+        model.addAttribute("tayAoId", tayAoId);
+        model.addAttribute("coAoId", coAoId);
+        model.addAttribute("kichCoId", kichCoId);
+        model.addAttribute("mauSacId", mauSacId);
+        model.addAttribute("trangThai", trangThai);
+
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Sản phẩm không tồn tại"));
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
