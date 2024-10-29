@@ -1,7 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import lombok.RequiredArgsConstructor;
-import nhom6.duancanhan.doantotnghiep.dto.SanPhamGioHangResponse;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamShowOnClient;
@@ -9,7 +8,6 @@ import nhom6.duancanhan.doantotnghiep.entity.*;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.mapper.SanPhamMapper;
 import nhom6.duancanhan.doantotnghiep.repository.*;
-import nhom6.duancanhan.doantotnghiep.service.service.SanPhamChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
 import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.dao.DuplicateKeyException;

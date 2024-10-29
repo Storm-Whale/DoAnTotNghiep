@@ -1,10 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -13,9 +10,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "hoa_don")
-public class HoaDon {
-
+public class HoaDon extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +29,7 @@ public class HoaDon {
     @Column(name = "sdt")
     private String sdt;
 
-    @Column(name = "email_nguoi_nhan", length = 255)
+    @Column(name = "email_nguoi_nhan")
     private String emailNguoiNhan;
 
     @ManyToOne
@@ -59,5 +56,4 @@ public class HoaDon {
 
     @Column(name = "trang_thai")
     private int trangThai;
-
 }

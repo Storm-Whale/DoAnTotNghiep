@@ -3,7 +3,6 @@ package nhom6.duancanhan.doantotnghiep.controller;
 
 import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
-import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import nhom6.duancanhan.doantotnghiep.service.service.KhachHangService;
 import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
 import org.springframework.beans.factory.annotation.Autowired;

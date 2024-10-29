@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     throw new Error('Có lỗi khi xảy ra khi thêm sản phẩm')
                 }
             })
-            .then(data => {
+            .then(() => {
                 showSuccessAlert()
             })
             .catch(error => {
@@ -135,6 +135,12 @@ document.addEventListener('DOMContentLoaded', function () {
             })
     })
 })
+
+function submitForm(buyNowValue) {
+    const form = document.getElementById('cart-form');
+    form.action = `/client/check-out/${buyNowValue}`;
+    form.submit();
+}
 // -------------------------------------------------- End Thêm sản phẩm mới vào giỏ hàng  ---------------------------------------------------
 // -------------------------------------------------- Start Alert  ---------------------------------------------------
 function showSuccessAlert() {
@@ -150,5 +156,4 @@ function showSuccessAlert() {
         }
     });
 }
-
 // -------------------------------------------------- End Alert  ---------------------------------------------------

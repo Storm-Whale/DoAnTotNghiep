@@ -1,58 +1,73 @@
 package nhom6.duancanhan.doantotnghiep.controller;
-
 import nhom6.duancanhan.doantotnghiep.entity.ChatLieu;
-import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
 import nhom6.duancanhan.doantotnghiep.service.service.ChatLieuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@RestController
+import java.util.Optional;
+
+@Controller
+@RequestMapping("/admin/chatlieu")
 public class ChatLieuController {
     @Autowired
     private ChatLieuService chatLieuService;
 
-    @GetMapping("/chat-lieu/hien-thi")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(chatLieuService.getAll());
+    @GetMapping("")
+    public String getAll(Model model) {
+        return phanTrang(1, model);
     }
 
-    @GetMapping("/chat-lieu/phan-trang/{pageNo}")
-    public ResponseEntity<?> phanTrang(@PathVariable(value = "pageNo") int pageNo) {
+    @GetMapping("/{pageNo}")
+    public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
         int pageSize = 3;
-        Page<ChatLieu> page = chatLieuService.phanTrang(pageNo,pageSize);
+        Page<ChatLieu> page = chatLieuService.phanTrang(pageNo, pageSize);
         List<ChatLieu> listCL = page.getContent();
-        return ResponseEntity.ok(listCL);
+        model.addAttribute("chatLieu", new ChatLieu());
+        model.addAttribute("listCL", listCL);
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        return "/admin/sanpham/ChatLieu/Chatlieu";
     }
 
-    @GetMapping("/chat-lieu/detail/{id}")
-    public ResponseEntity<?> detail(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(chatLieuService.detail(id));
+    @GetMapping("/detail/{id}")
+    public String showDetail(@PathVariable("id") Integer id, Model model) {
+        Optional<ChatLieu> chatLieu = chatLieuService.detail(id);
+        if (chatLieu.isPresent()) {
+            model.addAttribute("chatLieu", chatLieu.get());
+            return "/admin/sanpham/ChatLieu/Detail";
+        }
+        return "redirect:/admin/chatlieu";
     }
 
-    @PostMapping("/chat-lieu/add")
-    public ResponseEntity<?> add(@RequestBody ChatLieu chatLieu) {
+
+    @PostMapping("/add")
+    public String add(@ModelAttribute("chatLieu") ChatLieu chatLieu, Model model) {
+        chatLieu.setTrangThai(1);
         chatLieuService.addChatLieu(chatLieu);
-        return ResponseEntity.ok(chatLieu);
+        return "redirect:/admin/chatlieu";
     }
 
-    @PutMapping("/chat-lieu/update/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Integer id, @RequestBody ChatLieu chatLieu) {
+    @PutMapping("/update/{id}")
+    public String update(@PathVariable("id") Integer id, @ModelAttribute("chatLieu") ChatLieu chatLieu) {
         chatLieuService.updateChatLieu(id, chatLieu);
-        return ResponseEntity.ok("Update Thanh Cong");
+        return "redirect:/admin/chatlieu";
     }
 
-    @DeleteMapping("/chat-lieu/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
-        chatLieuService.deleteChatLieu(id);
-        return ResponseEntity.ok("Delete Thanh Cong");
-    }
+//    @PostMapping("/delete/{id}")
+//    public String delete(@PathVariable("id") Integer id, @RequestParam("_method") String method) {
+//        if ("delete".equals(method)) {
+//            chatLieuService.deleteChatLieu(id);
+//        }
+//        return "redirect:/admin/chatlieu";
+//    }
+@DeleteMapping("/delete/{id}")
+public String delete(@PathVariable("id") Integer id) {
+    chatLieuService.deleteChatLieu(id);
+    return "redirect:/admin/chatlieu";
+}
 }

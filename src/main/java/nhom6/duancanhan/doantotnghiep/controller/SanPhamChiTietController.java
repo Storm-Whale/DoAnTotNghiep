@@ -2,13 +2,10 @@ package nhom6.duancanhan.doantotnghiep.controller;
 
 import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietRequest;
-import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietResponse;
 import nhom6.duancanhan.doantotnghiep.service.service.KichCoService;
 import nhom6.duancanhan.doantotnghiep.service.service.MauSacService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,17 +22,6 @@ public class SanPhamChiTietController {
     private final SanPhamService sanPhamService;
     private final KichCoService kichCoService;
     private final MauSacService mauSacService;
-
-    @GetMapping(value = "/index")
-    public ResponseEntity<List<SanPhamChiTietResponse>> index() {
-        return new ResponseEntity<>(sanPhamChiTietService.getAllSanPhamChiTiet(), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/find_by_id/{id}")
-    public ResponseEntity<SanPhamChiTietResponse> findById(@PathVariable(name = "id") Integer id) {
-        SanPhamChiTietResponse product_detail = sanPhamChiTietService.getSanPhamChiTietById(id);
-        return new ResponseEntity<>(product_detail, HttpStatus.OK);
-    }
 
     @GetMapping("/create")
     public String create(Model model) {

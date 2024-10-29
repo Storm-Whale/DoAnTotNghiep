@@ -1,8 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
-import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
 import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
-import nhom6.duancanhan.doantotnghiep.service.service.DiaChiService;
 import nhom6.duancanhan.doantotnghiep.service.service.ThuongHieuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

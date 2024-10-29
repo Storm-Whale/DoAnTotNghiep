@@ -130,9 +130,7 @@
                     <button id="add-to-cart-btn" class="btn btn-primary" type="button">
                         Thêm vào giỏ hàng
                     </button>
-                    <button class="btn btn-primary"
-                        th:formaction="@{/client/gio-hang}"
-                    >
+                    <button id="buy-now-btn" class="btn btn-primary" type="button" onclick="submitForm('buyNow')">
                         Mua hàng
                     </button>
                 </div>
@@ -201,6 +199,6 @@
     var mauSacToKichCoJson = /*[[${mauSacToKichCoJson}]]*/ '{}';
     var spcts = /*[[${spcts}]]*/ '{}';
 </script>
-<script th:src="@{/javascrip/SanPhamChiTietOnClient.js}"></script>
+<script th:src="@{/javascript/SanPhamChiTietOnClient.js}"></script>
 </body>
 </html>

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -13,36 +12,25 @@ import java.time.LocalDate;
 @Entity
 @Builder
 @Table(name = "san_pham_gio_hang")
-public class SanPhamGioHang {
+public class SanPhamGioHang extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
+
     @ManyToOne
     @JoinColumn(name = "id_gio_hang")
     private GioHang gioHang;
+
     @ManyToOne
     @JoinColumn(name = "id_spct")
     private SanPhamChiTiet sanPhamChiTiet;
+
     @Column(name = "so_luong")
     private int soLuong;
 
-    @Column(name= "ngay_tao")
-    LocalDate ngayTao;
-
-    @Column(name = "ngay_sua")
-    LocalDate ngaySua;
-
-    @PrePersist
-    protected void onCreateCreate() {
-        ngayTao = LocalDate.now();
-        ngaySua = LocalDate.now();
-    }
-
-    @PreUpdate
-    protected void onUpdateUpdate() {
-        ngaySua = LocalDate.now();
-    }
+    @Column(name = "trang_thai")
+    private Integer trangThai;
 
     public BigDecimal tongTien() {
         return sanPhamChiTiet.getGia().multiply(BigDecimal.valueOf(soLuong));

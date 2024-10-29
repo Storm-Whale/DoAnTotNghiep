@@ -1,29 +1,17 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
-import nhom6.duancanhan.doantotnghiep.entity.ChatLieu;
-import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
-import nhom6.duancanhan.doantotnghiep.entity.KieuTayAo;
 import nhom6.duancanhan.doantotnghiep.entity.MauSac;
-import nhom6.duancanhan.doantotnghiep.service.service.ChatLieuService;
-import nhom6.duancanhan.doantotnghiep.service.service.KhachHangService;
-import nhom6.duancanhan.doantotnghiep.service.service.KieuTayAoService;
 import nhom6.duancanhan.doantotnghiep.service.service.MauSacService;
-import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;

@@ -30,7 +30,7 @@ public class PhieuGiamGiaRequest implements Serializable {
     @Future(message = "Ngày kết thúc phải là tương lai")
     private Date ngayKetThuc;
     @NotNull(message = "Vui lòng nhập giá trị min")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Giá trị tối thiểu phải lớn hơn hoặc bằng 0")
+    @DecimalMin(value = "0.0", message = "Giá trị tối thiểu phải lớn hơn hoặc bằng 0")
     private double giaTriMin;
     @NotNull(message = "Vui lòng nhập giá trị max")
     @DecimalMin(value = "0.0", inclusive = true, message = "Giá trị tối đa phải lớn hơn hoặc bằng 0")

@@ -1,34 +1,3 @@
-function toggleFilter(id) {
-    var ul = document.getElementById(id);
-    if (ul.style.display === "block") {
-        ul.style.display = "none";
-    } else {
-        ul.style.display = "block";
-    }
-}
-document.addEventListener('DOMContentLoaded', function () {
-    var accordionLinks = document.querySelectorAll('.card-heading a');
-    var arrows = document.querySelectorAll('.arrow');
-
-    accordionLinks.forEach(function(link, index) {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            var target = document.querySelector(link.getAttribute('data-target'));
-
-            if (target.classList.contains('show')) {
-                target.classList.remove('show');
-                arrows[index].innerHTML = '&#9662;';
-            } else {
-                target.classList.add('show');
-                arrows[index].innerHTML = '&#9652;';
-            }
-        });
-    });
-});
-
-
-
-
 function toggleFilter() {
     const sidebar = document.getElementById('filter-sidebar');
     if (sidebar.classList.contains('active')) {
@@ -62,35 +31,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-document.addEventListener('DOMContentLoaded', function () {
-    const banner = document.querySelector('.banner');
-
-    // Thêm lớp fade-in sau khi trang đã tải xong
-    banner.classList.add('fade-in');
-});
-document.addEventListener('DOMContentLoaded', function () {
-    const productItems = document.querySelectorAll('.product-item');
-    const productCountElement = document.getElementById('product-count');
-
-    // Cập nhật số lượng sản phẩm
-    const productCount = productItems.length;
-    productCountElement.textContent = `${productCount} sản phẩm`;
-
-    // Hiệu ứng chuyển tiếp cho banner
-    const banner = document.querySelector('.banner');
-    const img = banner.querySelector('img');
-
-    img.addEventListener('load', function () {
-        banner.classList.add('loaded');
-    });
-
-    if (img.complete) {
-        banner.classList.add('loaded');
-    }
-});
 
 document.addEventListener("DOMContentLoaded", function() {
-    const initialDisplayCount = 9;
+    const initialDisplayCount = 8;
     const products = document.querySelectorAll('.product-card');
     const loadMoreBtn = document.getElementById("loadMoreBtn");
     let isExpanded = false;
@@ -114,3 +57,26 @@ document.addEventListener("DOMContentLoaded", function() {
         isExpanded = !isExpanded;
     };
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('paymentSuccess') === 'true') {
+        showSuccessAlert();
+        // Xóa trạng thái để không hiển thị lại khi tải lại trang
+        localStorage.removeItem('paymentSuccess');
+    }
+});
+
+function showSuccessAlert() {
+    Swal.fire({
+        position: "bottom-end",
+        icon: "success",
+        title: "Thanh Toán Thành Công",
+        showConfirmButton: false,
+        timer: 1750,
+        backdrop: false,
+        customClass: {
+            popup: 'sizeAlert'
+        }
+    });
+}
+

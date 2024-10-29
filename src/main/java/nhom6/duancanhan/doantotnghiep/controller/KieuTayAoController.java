@@ -1,11 +1,9 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
-import nhom6.duancanhan.doantotnghiep.entity.KieuCoAo;
 import nhom6.duancanhan.doantotnghiep.entity.KieuTayAo;
 import nhom6.duancanhan.doantotnghiep.service.service.KieuTayAoService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

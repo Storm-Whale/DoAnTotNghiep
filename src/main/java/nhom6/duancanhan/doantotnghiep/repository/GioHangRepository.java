@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface GioHangRepository extends JpaRepository<GioHang, Integer> {
-//    List<GioHang> countGioHangBy (Integer id);
+
+    GioHang findByKhachHangId(int khachHangId);
 }

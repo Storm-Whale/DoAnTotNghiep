@@ -21,8 +21,7 @@ public class PhuongThucThanhToanServiceImpl implements PhuongThucThanhToanServic
 
     @Override
     public Optional<PhuongThucThanhToan> getById(Integer id) {
-        Optional<PhuongThucThanhToan> phuongThucThanhToan = phuongThucThanhToanRepository.findById(id);
-        return phuongThucThanhToan;
+        return phuongThucThanhToanRepository.findById(id);
     }
 
     @Override

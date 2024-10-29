@@ -21,18 +21,18 @@ public class SanPhamGioHangController {
     }
     @GetMapping("/find/{id}")
     public ResponseEntity<SanPhamGioHangResponse> findById(@PathVariable Integer id){
-        SanPhamGioHangResponse spGioHangReponse = sanPhamGioHangService.getById(id);
-        return new ResponseEntity<>(spGioHangReponse, HttpStatus.OK);
+        SanPhamGioHangResponse spGioHangResponse = sanPhamGioHangService.getById(id);
+        return new ResponseEntity<>(spGioHangResponse, HttpStatus.OK);
     }
     @PostMapping("/store")
     public ResponseEntity<?> store(SanPhamGioHangRequest gioHangRequest){
-        SanPhamGioHangResponse gioHangReponse = sanPhamGioHangService.create(gioHangRequest);
-        return new ResponseEntity<>(gioHangReponse, HttpStatus.CREATED);
+        SanPhamGioHangResponse gioHangResponse = sanPhamGioHangService.create(gioHangRequest);
+        return new ResponseEntity<>(gioHangResponse, HttpStatus.CREATED);
     }
     @PutMapping(value = "/update/{id}")
     public ResponseEntity<?> update(@PathVariable(name = "id") Integer id, SanPhamGioHangRequest gioHangRequest) {
-        SanPhamGioHangResponse gioHangReponse = sanPhamGioHangService.update(id, gioHangRequest);
-        return new ResponseEntity<>(gioHangReponse, HttpStatus.CREATED);
+        SanPhamGioHangResponse gioHangResponse = sanPhamGioHangService.update(id, gioHangRequest);
+        return new ResponseEntity<>(gioHangResponse, HttpStatus.CREATED);
     }
     @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable(name = "id") Integer id) {

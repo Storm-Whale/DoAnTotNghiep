@@ -1,11 +1,8 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import nhom6.duancanhan.doantotnghiep.entity.KieuCoAo;
-import nhom6.duancanhan.doantotnghiep.entity.KieuTayAo;
 import nhom6.duancanhan.doantotnghiep.repository.KieuCoAoRepository;
-import nhom6.duancanhan.doantotnghiep.repository.KieuTayAoRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.KieuCoAoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

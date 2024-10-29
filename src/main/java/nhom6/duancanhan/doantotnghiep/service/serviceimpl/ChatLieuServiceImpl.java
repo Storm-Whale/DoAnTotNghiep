@@ -1,7 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import nhom6.duancanhan.doantotnghiep.entity.ChatLieu;
-import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
 import nhom6.duancanhan.doantotnghiep.repository.ChatLieuRepository;
 
 import nhom6.duancanhan.doantotnghiep.service.service.ChatLieuService;

@@ -1,6 +1,5 @@
 package nhom6.duancanhan.doantotnghiep.dto;
 
-import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.io.Serializable;

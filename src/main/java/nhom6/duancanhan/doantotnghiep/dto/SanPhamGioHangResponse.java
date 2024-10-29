@@ -1,7 +1,5 @@
 package nhom6.duancanhan.doantotnghiep.dto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;

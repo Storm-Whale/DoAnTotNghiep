@@ -1,7 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
 import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
-import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

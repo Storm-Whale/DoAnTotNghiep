@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface SanPhamGioHangRepository extends JpaRepository<SanPhamGioHang, Integer> {
@@ -13,5 +12,5 @@ public interface SanPhamGioHangRepository extends JpaRepository<SanPhamGioHang, 
       List<SanPhamGioHang> findAllByGioHangId(Integer gioHangId);
 //    List<SanPhamGioHang> findByIdGioHangAndIdSpct(Integer id, Integer idSpct);
 
-
+      List<SanPhamGioHang> findByGioHangIdAndTrangThai(Integer gioHangId, Integer trangThai);
 }

@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -112,7 +111,7 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
     }
 
     @Override
-    public List<SanPhamChiTiet> findbyidSPCT(Integer id) {
+    public List<SanPhamChiTiet> findByIdSPCT(Integer id) {
         return  sanPhamChiTietRepository.findAllById(Collections.singleton(id));
     }
 

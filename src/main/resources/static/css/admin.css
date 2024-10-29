@@ -122,7 +122,6 @@ body {
 .page-header .logo {
     display: block;
     margin: 0 40px;
-    margin-bottom: 0px;
     border-radius: 50%; /* Làm tròn ảnh thành hình tròn */
 }
 

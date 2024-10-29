@@ -1,8 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
-import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
-import nhom6.duancanhan.doantotnghiep.repository.DiaChiRepossitory;
+import nhom6.duancanhan.doantotnghiep.repository.DiaChiRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.DiaChiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,7 @@ import java.util.Optional;
 public class DiaChiServiceImpl implements DiaChiService {
 
     @Autowired
-    private DiaChiRepossitory diaChiRepossitory;
+    private DiaChiRepository diaChiRepossitory;
     @Override
     public List<DiaChi> getAll() {
         return diaChiRepossitory.findAll();

@@ -1,18 +1,10 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
-import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
-import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
-import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
-import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepo;
-import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonChiTietService;
-import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +28,6 @@ public class HoaDonChiTietController {
         List<HoaDonChiTiet> listHDCT = page.getContent();
         return ResponseEntity.ok(listHDCT);
     }
-
 
     @PostMapping("/addHoaDonct")
     public ResponseEntity<?> addHDct(@RequestBody HoaDonChiTiet hoaDon) {

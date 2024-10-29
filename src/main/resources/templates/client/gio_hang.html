@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bee Shirt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/headerStyle.css}">
+    <link rel="stylesheet" th:href="@{/css/gioHangStyle.css}">
+</head>
+<body>
+<header class="mb-3">
+    <div class="header-container">
+        <div class="logo">
+            <a th:href="@{/client}">
+                <img th:src="@{/img/LOGOYAGI.png}" alt="Bee Shirt" style="width: 48px; height: 48px;">
+            </a>
+        </div>
+        <div class="product-options">
+            <a href="#">Sản phẩm mới</a>
+            <a href="#">Sale</a>
+            <a href="#">Khuyến mãi</a>
+        </div>
+        <div class="header-icons">
+            <img th:src="@{/img/nguoidung.png}" alt="User Icon" class="icon">
+            <img th:src="@{/img/timkiem.png}" alt="Heart Icon" class="icon">
+            <img th:src="@{/img/giohang.png}" alt="Cart Icon" class="icon">
+        </div>
+    </div>
+</header>
+<div class="container cart-container">
+    <div class="cart-header">
+        <input class="form-check-input me-2" type="checkbox">
+        <span>Chọn Tất Cả (2)</span>
+    </div>
+    <!-- Khung riêng cho mỗi thương hiệu -->
+    <div th:each="entry : ${thuongHieuSPGHListHashMap.entrySet()}">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Thương hiệu: <span th:text="${entry.key.tenThuongHieu}"></span></h5>
+            </div>
+            <div class="card-body">
+                <div class="cart-item" th:each="spgh : ${entry.value}">
+                    <input class="form-check-input me-3" type="checkbox" th:id="${spgh.sanPhamGioHang.id}">
+                    <img th:src="@{/img/{anhUrl} (anhUrl = ${spgh.anhUrl})}" alt="Sản phẩm">
+                    <div class="cart-item-details">
+                        <h5 th:text="${spgh.sanPhamGioHang.sanPhamChiTiet.sanPham.tenSanPham}"></h5>
+                        <p class="mb-0">
+                            <span class="fw-bold">Màu Sắc: </span><span th:text="${spgh.sanPhamGioHang.sanPhamChiTiet.mauSac.tenMauSac}"></span>,
+                            <span class="fw-bold">Kích cỡ: </span><span th:text="${spgh.sanPhamGioHang.sanPhamChiTiet.kichCo.tenKichCo}"></span>
+                        </p>
+                        <div class="d-flex align-items-center mt-2">
+                            <span class="cart-item-price"
+                                  th:text="${#numbers.formatDecimal(spgh.sanPhamGioHang.tongTien(), 1, 'COMMA', 0, 'POINT')} + ' đ'">
+                            </span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <button id="btn-minus" class="btn btn-outline-secondary btn-sm me-1">-</button>
+                        <span id="soLuongSp" th:text="${spgh.getSanPhamGioHang().soLuong}"></span>
+                        <button id="btn-plus" class="btn btn-outline-secondary btn-sm ms-1">+</button>
+                        <a href="#" class="text-danger ms-3">Xóa</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cart Footer -->
+<div class="cart-footer">
+    <div class="d-flex justify-content-end align-items-center">
+        <span class="total me-3">Tổng thanh toán (2 Sản phẩm): <span class="text-danger">₫9.650</span></span>
+        <button class="btn-buy">Mua Hàng</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous">
+</script>
+<script th:src="@{/javascript/gioHang.js}"></script>
+</body>
+</html>

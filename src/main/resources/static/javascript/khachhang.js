@@ -14,7 +14,7 @@ closeDialogBtn.onclick = function() {
 
 // Khi nhấn ra ngoài vùng hộp thoại, cũng ẩn modal
 window.onclick = function(event) {
-    if (event.target == dialogModal) {
+    if (event.target === dialogModal) {
         dialogModal.style.display = "none";
     }
 }

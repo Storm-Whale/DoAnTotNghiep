@@ -1,8 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
-import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
 import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
-import nhom6.duancanhan.doantotnghiep.repository.DiaChiRepossitory;
 import nhom6.duancanhan.doantotnghiep.repository.ThuongHieuRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.ThuongHieuService;
 import org.springframework.beans.factory.annotation.Autowired;

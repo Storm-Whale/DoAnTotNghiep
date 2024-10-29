@@ -1,9 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import nhom6.duancanhan.doantotnghiep.entity.KichCo;
-import nhom6.duancanhan.doantotnghiep.entity.MauSac;
 import nhom6.duancanhan.doantotnghiep.repository.KichCoRepository;
-import nhom6.duancanhan.doantotnghiep.repository.MauSacRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.KichCoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
-import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
