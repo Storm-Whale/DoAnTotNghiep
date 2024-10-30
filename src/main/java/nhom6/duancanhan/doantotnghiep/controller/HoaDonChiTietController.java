@@ -20,40 +20,39 @@ public class HoaDonChiTietController {
 
 //    @GetMapping("delete/{id}")
 //    public String delete(@PathVariable("id") Integer id, Model model) {
-//
 //        hoaDonChiTietService.deleteHoaDon(id);
 //    }
 
-//    @GetMapping("/hoadonct")
-//    public List<HoaDonChiTiet> getAllhdct() {
-//        return hoaDonChiTietService.getAll();
-//    }
-//
-//    @GetMapping("/phan-trangct/{page}")
-//    public ResponseEntity<?> phanTranghdct(@PathVariable(value = "page") int pagee) {
-//        int pageSize = 3;
-//        Page<HoaDonChiTiet> page = hoaDonChiTietService.phanTrang(pagee,pageSize);
-//        List<HoaDonChiTiet> listHDCT = page.getContent();
-//        return ResponseEntity.ok(listHDCT);
-//    }
+    @GetMapping("/hoadonct")
+    public List<HoaDonChiTiet> getAllhdct() {
+        return hoaDonChiTietService.getAll();
+    }
 
-//    @PostMapping("/addHoaDonct")
-//    public ResponseEntity<?> addHDct(@RequestBody HoaDonChiTiet hoaDon) {
-//        hoaDonChiTietService.addHoaDon(hoaDon);
-//        return ResponseEntity.ok(hoaDon);
-//    }
-//    @DeleteMapping("/deletect/{id}")
-//    public ResponseEntity<?> deletehdct(@PathVariable("id") Integer id) {
-//        hoaDonChiTietService.deleteHoaDon(id);
-//        return ResponseEntity.ok("delete thanh cong");
-//    }
-//    @GetMapping("/detailct/{id}")
-//    public ResponseEntity<?> detailHDct(@PathVariable("id") Integer id) {
-//        return ResponseEntity.ok(hoaDonChiTietService.detail(id));
-//    }
-//    @PutMapping("/updatehdct/{id}")
-//    public ResponseEntity<?> updateHDct(@PathVariable("id") Integer id, @RequestBody HoaDonChiTiet hoaDon) {
-//        hoaDonChiTietService.updateHoaDon(id, hoaDon);
-//        return ResponseEntity.ok("update thanh cong");
-//    }
+    @GetMapping("/phan-trangct/{page}")
+    public ResponseEntity<?> phanTranghdct(@PathVariable(value = "page") int pagee) {
+        int pageSize = 3;
+        Page<HoaDonChiTiet> page = hoaDonChiTietService.phanTrang(pagee,pageSize);
+        List<HoaDonChiTiet> listHDCT = page.getContent();
+        return ResponseEntity.ok(listHDCT);
+    }
+
+    @PostMapping("/addHoaDonct")
+    public ResponseEntity<?> addHDct(@RequestBody HoaDonChiTiet hoaDon) {
+        hoaDonChiTietService.addHoaDon(hoaDon);
+        return ResponseEntity.ok(hoaDon);
+    }
+    @DeleteMapping("/deletect/{id}")
+    public ResponseEntity<?> deletehdct(@PathVariable("id") Integer id) {
+        hoaDonChiTietService.deleteHoaDon(id);
+        return ResponseEntity.ok("delete thanh cong");
+    }
+    @GetMapping("/detailct/{id}")
+    public ResponseEntity<?> detailHDct(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(hoaDonChiTietService.detail(id));
+    }
+    @PutMapping("/updatehdct/{id}")
+    public ResponseEntity<?> updateHDct(@PathVariable("id") Integer id, @RequestBody HoaDonChiTiet hoaDon) {
+        hoaDonChiTietService.updateHoaDon(id, hoaDon);
+        return ResponseEntity.ok("update thanh cong");
+    }
 }
