@@ -232,6 +232,31 @@ input[type="text"] {
     margin-right: 10px; /* Khoảng cách bên phải nếu cần */
 
 }
+#btnCreateInvoice {
+    display: flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+#btnCreateInvoice i {
+    margin-right: 5px;
+}
+
+#btnCreateInvoice:hover {
+    background-color: #e0e0e0;
+}
+
+#btnCreateInvoice:active {
+    background-color: #d0d0d0;
+}
 /*.sectionhoadon {*/
 /*    background-color: #fff;*/
 /*    border: 1px solid #ddd;*/
