@@ -14,31 +14,44 @@ public class LoginController {
 
 
     @Autowired
-     TaiKhoanService taiKhoanService;
+    private TaiKhoanService service;
 
 
 
-    @PostMapping
-    public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes) {
+//    @PostMapping
+//    public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes) {
+//        TaiKhoan user = service.findByTenDangNhap(username);
+//        if (user != null && user.getMat_khau().equals(password)) {
+//            redirectAttributes.addFlashAttribute("loginStatus", "success");
+//            redirectAttributes.addFlashAttribute("message", "Đăng nhập thành công!");
+//            return "redirect:/client/LG"; // Chuyển hướng đến trang chủ
+//        } else {
+//            redirectAttributes.addFlashAttribute("loginStatus", "error");
+//            redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");
+//            return "redirect:/client/LG"; // Chuyển hướng lại đến trang đăng nhập
+//        }
+//    }
+@PostMapping
+public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes) {
 
-        if (username.toLowerCase().contains("admin") || username.toLowerCase().contains("nhanvien")) {
-            redirectAttributes.addFlashAttribute("loginStatus", "error");
-            redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");
-            return "redirect:/client/LG";
-        }
-
-
-        TaiKhoan user = taiKhoanService.findByTenDangNhap(username);
-        if (user != null && user.getMat_khau().equals(password)) {
-            redirectAttributes.addFlashAttribute("loginStatus", "success");
-            redirectAttributes.addFlashAttribute("message", "Đăng nhập thành công!");
-            return "redirect:/client/LG";
-        } else {
-            redirectAttributes.addFlashAttribute("loginStatus", "error");
-            redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");
-            return "redirect:/client/LG";
-        }
+    if (username.toLowerCase().contains("admin") || username.toLowerCase().contains("nhanvien")) {
+        redirectAttributes.addFlashAttribute("loginStatus", "error");
+        redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");
+        return "redirect:/client/LG";
     }
+
+
+    TaiKhoan user = service.findByTenDangNhap(username);
+    if (user != null && user.getMat_khau().equals(password)) {
+        redirectAttributes.addFlashAttribute("loginStatus", "success");
+        redirectAttributes.addFlashAttribute("message", "Đăng nhập thành công!");
+        return "redirect:/client/LG";
+    } else {
+        redirectAttributes.addFlashAttribute("loginStatus", "error");
+        redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");
+        return "redirect:/client/LG";
+    }
+}
 
 
 
@@ -47,13 +60,21 @@ public class LoginController {
 
     @GetMapping("/add")
     public String addUser(@ModelAttribute TaiKhoan user) {
-        taiKhoanService.addTaiKhoan(user);
+        service.addTaiKhoan(user);
         return "redirect:/users";
     }
 
     @GetMapping
     public List<TaiKhoan> getAllUsers() {
-        return taiKhoanService.getAll();
+        return service.getAll();
     }
 
+    @GetMapping("ad")
+    public String Hienthi(){
+        return "/client/Loginadmin";
+    }
+    @GetMapping("dk")
+    public String Hienthi2(){
+        return "/client/Dangky";
+    }
 }
