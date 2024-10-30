@@ -10,53 +10,83 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
-@RestController
+@Controller
+@RequestMapping("/admin/hoadon")
 public class HoaDonController {
     @Autowired
-    HoaDonService hoaDonService;
-    @Autowired
-    HoaDonRepository hoaDonRepository;
-    @Autowired
-    HoaDonRepo repo;
-    @GetMapping("/hoadon")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(hoaDonService.getAll());
+    private HoaDonService hoaDonService;
+
+
+    @GetMapping("")
+    public String getAll(Model model) {
+        return phanTrang(1, model);
     }
 
-    @GetMapping("/hoadon2")
-    public List<HoaDonDTO> getAll2() {
-        return repo.getAll();
+    @GetMapping("/{pageNo}")
+    public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
+        int pageSize = 3;
+        Page<HoaDon> page = hoaDonService.phanTrang(pageNo, pageSize);
+        List<HoaDon> listHD = page.getContent();
+        model.addAttribute("hoaDon", new HoaDon());
+        model.addAttribute("listHD", listHD);
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        return "/admin/customer/hoadon";
     }
 
-    @GetMapping("/phantrangHD/{page}")
-    public ResponseEntity<?> phanTrang(@PathVariable(value = "page") int pagee) {
-        int pageSize = 3;  // Kích thước trang là 3
-        Pageable pageable = PageRequest.of(pagee - 1, pageSize); // Tạo Pageable (Spring sử dụng trang 0-based)
-        Page<HoaDonDTO> page = repo.phanTrang(pageable);  // Gọi phương thức phân trang của repo
-        List<HoaDonDTO> listHD = page.getContent();  // Lấy danh sách nội dung từ trang hiện tại
-        return ResponseEntity.ok(listHD);  // Trả về danh sách dưới dạng JSON
+    // Hiển thị chi tiết hóa đơn
+    @GetMapping("/detail/{id}")
+    public String showDetail(@PathVariable("id") Integer id, Model model) {
+        Optional<HoaDon> hoaDon = hoaDonService.detail(id);
+        if (hoaDon.isPresent()) {
+            model.addAttribute("hoaDon", hoaDon.get());
+            return "/admin/hoadon/HoaDon/Detail";
+        }
+        return "redirect:/admin/hoadon";
     }
-    @PostMapping("/addHoaDon")
-    public ResponseEntity<?> addHD(@RequestBody HoaDon hoaDon) {
+
+
+    @PostMapping("/add")
+    public String add(@ModelAttribute("hoaDon") HoaDon hoaDon, Model model) {
         hoaDonService.addHoaDon(hoaDon);
-        return ResponseEntity.ok(hoaDon);
+        return "redirect:/admin/hoadon";
     }
-    @DeleteMapping("/deleteHD/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
-        hoaDonService.deleteHoaDon(id);
-        return ResponseEntity.ok("delete thanh cong");
-    }
-    @GetMapping("/detailHD/{id}")
-    public ResponseEntity<?> detail(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(hoaDonService.detail(id));
-    }
-    @PutMapping("/updateHD/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Integer id, @RequestBody HoaDon hoaDon) {
+
+
+    @PutMapping("/update/{id}")
+    public String update(@PathVariable("id") Integer id, @ModelAttribute("hoaDon") HoaDon hoaDon) {
         hoaDonService.updateHoaDon(id, hoaDon);
-        return ResponseEntity.ok("update thanh cong");
+        return "redirect:/admin/hoadon";
+    }
+
+    // Xóa hóa đơn
+    @PostMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Integer id, @RequestParam("_method") String method) {
+        if ("delete".equals(method)) {
+            hoaDonService.deleteHoaDon(id);
+        }
+        return "redirect:/admin/hoadon";
+    }
+    @GetMapping("/search")
+    public String timKiem(@RequestParam("keyword") String keyword, Model model) {
+        int pageNo = 1;
+        int pageSize = 3;
+        Page<HoaDon> page = hoaDonService.timKiem(keyword, pageNo, pageSize);
+        List<HoaDon> listHD = page.getContent();
+        model.addAttribute("hoaDon", new HoaDon());
+        model.addAttribute("listHD", listHD);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        return "/admin/customer/hoadon";
     }
 }
