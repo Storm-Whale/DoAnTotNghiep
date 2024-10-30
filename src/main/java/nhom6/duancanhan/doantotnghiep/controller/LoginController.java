@@ -14,7 +14,7 @@ public class LoginController {
 
 
     @Autowired
-    private TaiKhoanService service;
+    private TaiKhoanService taiKhoanService;
 
 
 
@@ -41,7 +41,7 @@ public String login(@RequestParam String username, @RequestParam String password
     }
 
 
-    TaiKhoan user = service.findByTenDangNhap(username);
+    TaiKhoan user = taiKhoanService.findByTenDangNhap(username);
     if (user != null && user.getMat_khau().equals(password)) {
         redirectAttributes.addFlashAttribute("loginStatus", "success");
         redirectAttributes.addFlashAttribute("message", "Đăng nhập thành công!");
@@ -60,13 +60,13 @@ public String login(@RequestParam String username, @RequestParam String password
 
     @GetMapping("/add")
     public String addUser(@ModelAttribute TaiKhoan user) {
-        service.addTaiKhoan(user);
+        taiKhoanService.addTaiKhoan(user);
         return "redirect:/users";
     }
 
     @GetMapping
     public List<TaiKhoan> getAllUsers() {
-        return service.getAll();
+        return taiKhoanService.getAll();
     }
 
     @GetMapping("ad")
