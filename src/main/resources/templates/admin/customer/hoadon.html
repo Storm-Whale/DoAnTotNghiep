@@ -53,12 +53,12 @@
             <td th:text="${hoaDon.tenNguoiNhan}"></td>
             <td th:text="${hoaDon.sdt}"></td>
             <td th:text="${hoaDon.emailNguoiNhan}"></td>
-            <td th:text="${hoaDon.diaChi.diaChiChiTiet}"></td>
-            <td th:text="${hoaDon.phuongThucThanhToan.tenPhuongThuc}"></td>
+            <td th:text="${hoaDon.diaChi ==  null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>
+            <td th:text="${hoaDon.phuongThucThanhToan ==  null ? '' : hoaDon.phuongThucThanhToan.tenPhuongThuc}"></td>
             <td th:text="${hoaDon.tongTien}"></td>
             <td th:text="${hoaDon.ghiChu}"></td>
             <td>
-                <span th:text="${hoaDon.trangThai == 1 ? 'Đã Xử Lý' : 'Chưa Xử Lý'}"></span>
+                <span th:text="${hoaDon.trangThai == 1 ? 'Chưa Thanh Toán' : 'Đã Thanh Toán'}"></span>
             </td>
         </tr>
         </tbody>
