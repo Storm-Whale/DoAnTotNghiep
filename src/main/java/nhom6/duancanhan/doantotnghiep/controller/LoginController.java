@@ -14,8 +14,7 @@ public class LoginController {
 
 
     @Autowired
-     TaiKhoanService taiKhoanService;
-
+    private TaiKhoanService taiKhoanService;
 
 
 
