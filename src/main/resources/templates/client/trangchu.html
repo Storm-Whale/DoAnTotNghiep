@@ -25,6 +25,11 @@
         </div>
         <div class="header-icons">
             <img src="/img/nguoidung.png" alt="User Icon" class="icon">
+            <div>
+                <p th:if="${session.currentUser}">Xin chào, <span th:text="${session.currentUser}"></span>!</p>
+            </div>
+
+
             <img src="/img/timkiem.png" alt="Heart Icon" class="icon">
             <a href="/client/gh">
                 <img src="/img/giohang.png" alt="Cart Icon" class="icon">

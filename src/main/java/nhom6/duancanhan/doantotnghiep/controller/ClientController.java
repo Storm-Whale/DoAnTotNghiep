@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.AnhSanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietRequest;
@@ -289,5 +290,15 @@ public class ClientController {
                 .build();
         return sanPhamGioHangRepository.save(sanPhamGioHang);
     }
+    @GetMapping("/client")
+    public String home(HttpSession session, Model model) {
+        String currentUser = (String) session.getAttribute("currentUser");
+        if (currentUser == null || currentUser.isEmpty()) {
+            return "redirect:/client/LG";
+        }
+        model.addAttribute("currentUser", currentUser);
+        return "/client/trangchu";
+    }
+
 
 }
