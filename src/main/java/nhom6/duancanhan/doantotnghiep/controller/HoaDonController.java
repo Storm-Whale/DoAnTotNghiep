@@ -31,7 +31,11 @@ public class HoaDonController {
 
     @GetMapping("/{pageNo}")
     public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
+
         int pageSize = 3;
+
+
+
         Page<HoaDon> page = hoaDonService.phanTrang(pageNo, pageSize);
         List<HoaDon> listHD = page.getContent();
         model.addAttribute("hoaDon", new HoaDon());

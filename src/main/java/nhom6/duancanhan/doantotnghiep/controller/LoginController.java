@@ -14,7 +14,8 @@ public class LoginController {
 
 
     @Autowired
-    private TaiKhoanService service;
+     TaiKhoanService taiKhoanService;
+
 
 
 
@@ -31,6 +32,9 @@ public class LoginController {
 //            return "redirect:/client/LG"; // Chuyển hướng lại đến trang đăng nhập
 //        }
 //    }
+
+
+//
 @PostMapping
 public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes) {
 
@@ -41,7 +45,7 @@ public String login(@RequestParam String username, @RequestParam String password
     }
 
 
-    TaiKhoan user = service.findByTenDangNhap(username);
+    TaiKhoan user = taiKhoanService.findByTenDangNhap(username);
     if (user != null && user.getMat_khau().equals(password)) {
         redirectAttributes.addFlashAttribute("loginStatus", "success");
         redirectAttributes.addFlashAttribute("message", "Đăng nhập thành công!");
@@ -52,29 +56,24 @@ public String login(@RequestParam String username, @RequestParam String password
         return "redirect:/client/LG";
     }
 }
-
-
-
-
-
-
     @GetMapping("/add")
     public String addUser(@ModelAttribute TaiKhoan user) {
-        service.addTaiKhoan(user);
+        taiKhoanService.addTaiKhoan(user);
         return "redirect:/users";
     }
 
     @GetMapping
     public List<TaiKhoan> getAllUsers() {
-        return service.getAll();
+        return taiKhoanService.getAll();
     }
 
     @GetMapping("ad")
-    public String Hienthi(){
+    public String Hienthi () {
         return "/client/Loginadmin";
     }
     @GetMapping("dk")
-    public String Hienthi2(){
+    public String Hienthi2 () {
         return "/client/Dangky";
     }
+
 }
