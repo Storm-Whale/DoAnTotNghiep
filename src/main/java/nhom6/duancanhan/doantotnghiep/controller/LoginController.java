@@ -81,7 +81,7 @@ public class LoginController {
             // Lưu tên người dùng vào session
             session.setAttribute("currentUser", user.getTenDangNhap());
             System.out.println("Session được lưu với tên người dùng: " + user.getTenDangNhap());
-            // Lấy thông tin khách hàng từ `khach_hang` dựa trên `id` của tài khoản
+
             KhachHang khachHang = khachHangService.findByIdTaiKhoan(user.getId());
             if (khachHang != null) {
                 session.setAttribute("currentUserImage", khachHang.getAnhUrl());
@@ -105,7 +105,7 @@ public class LoginController {
         session.invalidate();
         redirectAttributes.addFlashAttribute("logoutStatus", "success");
         redirectAttributes.addFlashAttribute("message", "Đăng xuất thành công!");
-        return "redirect:/client/LG"; // Đảm bảo rằng đường dẫn này có phương thức xử lý
+        return "redirect:/client";
     }
 
 

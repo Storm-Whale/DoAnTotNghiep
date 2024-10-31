@@ -23,29 +23,57 @@
             <a href="#">Sale</a>
             <a href="#">Khuyến mãi</a>
         </div>
+<!--        <div class="header-icons">-->
+
+<!--            <div class="imguser">-->
+<!--            <img th:src="@{'/img/' + ${session.currentUserImage}}"alt="User Icon" class="icon">-->
+<!--            </div>-->
+<!--            <div class="account-dropdown">-->
+<!--                <p>Tài Khoản Của Tôi</p>-->
+<!--                <p>Đơn Mua</p>-->
+<!--                <form action="/login/logout" method="post" style="display:inline;">-->
+<!--                    <button type="submit" style="background:none; border:none; color:blue; cursor:pointer;">Đăng Xuất</button>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--&lt;!&ndash;            <img th:src="@{'/img/' + ${session.currentUserImage}}" alt="Heart Icon" />&ndash;&gt;-->
+<!--            <div class="chuus">-->
+<!--                <p th:if="${session.currentUser}">Xin chào : <span th:text="${session.currentUser}"></span></p>-->
+<!--            </div>-->
+
+
+<!--            <img src="/img/timkiem.png" alt="Heart Icon" class="icon">-->
+<!--            <a href="/client/gh">-->
+<!--                <img src="/img/giohang.png" alt="Cart Icon" class="icon">-->
+<!--            </a>-->
+
+<!--        </div>-->
         <div class="header-icons">
-            <div class="imguser">
-            <img th:src="@{'/img/' + ${session.currentUserImage}}"alt="User Icon" class="icon">
+
+            <div th:if="${session.currentUser}" class="imguser">
+                <img th:src="@{'/img/' + ${session.currentUserImage}}" alt="User Icon" class="icon">
             </div>
-            <div class="account-dropdown">
+
+            <div th:if="${session.currentUser}" class="account-dropdown">
                 <p>Tài Khoản Của Tôi</p>
                 <p>Đơn Mua</p>
                 <form action="/login/logout" method="post" style="display:inline;">
                     <button type="submit" style="background:none; border:none; color:blue; cursor:pointer;">Đăng Xuất</button>
                 </form>
             </div>
-<!--            <img th:src="@{'/img/' + ${session.currentUserImage}}" alt="Heart Icon" />-->
-            <div class="chuus">
-                <p th:if="${session.currentUser}">Xin chào : <span th:text="${session.currentUser}"></span></p>
+
+            <div th:if="${session.currentUser}" class="chuus">
+                <p>Xin chào : <span th:text="${session.currentUser}"></span></p>
             </div>
 
 
-            <img src="/img/timkiem.png" alt="Heart Icon" class="icon">
+            <img src="/img/timkiem.png" alt="Search Icon" class="icon">
             <a href="/client/gh">
                 <img src="/img/giohang.png" alt="Cart Icon" class="icon">
             </a>
 
         </div>
+
+
     </div>
 </header>
 <main>
