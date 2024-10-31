@@ -18,4 +18,7 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
    Page<KhachHang> searchKhachHang(@Param(("keyword")) String keyword,
                                  @Param(("trangThai")) Integer trangThai,
                                  Pageable pageable);
+
+   @Query("SELECT k FROM KhachHang k WHERE k.id = :idTaiKhoan")
+   KhachHang findByIdTaiKhoan(@Param("idTaiKhoan") int idTaiKhoan);
 }

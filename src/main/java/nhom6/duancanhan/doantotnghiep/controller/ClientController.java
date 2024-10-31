@@ -298,7 +298,7 @@ public class ClientController {
         }
         model.addAttribute("currentUser", currentUser);
         return "/client/trangchu";
-    }
 
+    }
 
 }

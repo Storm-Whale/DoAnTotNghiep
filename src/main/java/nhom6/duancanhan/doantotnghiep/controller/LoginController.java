@@ -1,6 +1,8 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 import jakarta.servlet.http.HttpSession;
+import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
+import nhom6.duancanhan.doantotnghiep.service.service.KhachHangService;
 import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +19,8 @@ public class LoginController {
 
     @Autowired
     private TaiKhoanService taiKhoanService;
-
+    @Autowired
+    private KhachHangService khachHangService;
 
 
 //    @PostMapping
@@ -78,10 +81,17 @@ public class LoginController {
             // Lưu tên người dùng vào session
             session.setAttribute("currentUser", user.getTenDangNhap());
             System.out.println("Session được lưu với tên người dùng: " + user.getTenDangNhap());
+            // Lấy thông tin khách hàng từ `khach_hang` dựa trên `id` của tài khoản
+            KhachHang khachHang = khachHangService.findByIdTaiKhoan(user.getId());
+            if (khachHang != null) {
+                session.setAttribute("currentUserImage", khachHang.getAnhUrl());
+                System.out.println("Ảnh của người dùng: " + khachHang.getAnhUrl());
+            }
+
 
             redirectAttributes.addFlashAttribute("loginStatus", "success");
             redirectAttributes.addFlashAttribute("message", "Đăng nhập thành công!");
-            return "redirect:/client";
+            return "redirect:/client/LG";
         } else {
             redirectAttributes.addFlashAttribute("loginStatus", "error");
             redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");

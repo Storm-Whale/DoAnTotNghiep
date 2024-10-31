@@ -59,4 +59,9 @@ public class KhachHangServiceImpl implements KhachHangService {
         return khachHangRepository.searchKhachHang(keyword, trangThai, pageable);
     }
 
+    @Override
+    public KhachHang findByIdTaiKhoan(int idTaiKhoan) {
+        return khachHangRepository.findByIdTaiKhoan(idTaiKhoan);
+    }
+
 }

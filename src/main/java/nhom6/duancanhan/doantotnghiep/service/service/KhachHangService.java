@@ -23,5 +23,5 @@ public interface KhachHangService {
      void deleteKhachHang(Integer id);
 
      Page<KhachHang> SearchandPhantrang (String keyword, Integer trangThai, int pageNo, int pageSize);
-
+     public KhachHang findByIdTaiKhoan(int idTaiKhoan) ;
 }
