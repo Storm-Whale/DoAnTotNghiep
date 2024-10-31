@@ -26,9 +26,12 @@
             <a href="#">Khuyến mãi</a>
         </div>
         <div class="header-icons">
-            <img th:src="@{/img/nguoidung.png}" alt="User Icon" class="icon">
-            <div>
-                <p th:if="${session.currentUser}">Xin chào : <span th:text="${session.currentUser}"></span>!</p>
+            <div class="imguser">
+                <img th:src="@{'/img/' + ${session.currentUserImage}}"alt="User Icon" class="icon">
+            </div>
+            <!--            <img th:src="@{'/img/' + ${session.currentUserImage}}" alt="Heart Icon" />-->
+            <div class="chuus">
+                <p th:if="${session.currentUser}">Xin chào : <span th:text="${session.currentUser}"></span></p>
             </div>
             <img th:src="@{/img/timkiem.png}" alt="Heart Icon" class="icon">
             <img th:src="@{/img/giohang.png}" alt="Cart Icon" class="icon">
