@@ -27,6 +27,13 @@
             <div class="imguser">
             <img th:src="@{'/img/' + ${session.currentUserImage}}"alt="User Icon" class="icon">
             </div>
+            <div class="account-dropdown">
+                <p>Tài Khoản Của Tôi</p>
+                <p>Đơn Mua</p>
+                <form action="/login/logout" method="post" style="display:inline;">
+                    <button type="submit" style="background:none; border:none; color:blue; cursor:pointer;">Đăng Xuất</button>
+                </form>
+            </div>
 <!--            <img th:src="@{'/img/' + ${session.currentUserImage}}" alt="Heart Icon" />-->
             <div class="chuus">
                 <p th:if="${session.currentUser}">Xin chào : <span th:text="${session.currentUser}"></span></p>

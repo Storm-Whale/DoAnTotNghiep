@@ -78,5 +78,31 @@ function showSuccessAlert() {
             popup: 'sizeAlert'
         }
     });
+
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    const imgUser = document.querySelector('.imguser');
+    const accountDropdown = document.querySelector('.account-dropdown');
+
+    imgUser.addEventListener('click', function (event) {
+        event.stopPropagation(); // Ngăn chặn sự kiện click lan truyền
+        const isVisible = accountDropdown.style.display === 'block';
+        accountDropdown.style.display = isVisible ? 'none' : 'block'; // Chuyển đổi trạng thái hiển thị
+    });
+
+    // Ẩn menu khi click ra ngoài
+    document.addEventListener('click', function () {
+        accountDropdown.style.display = 'none';
+    });
+
+    // Ẩn menu khi di chuột ra ngoài
+    accountDropdown.addEventListener('mouseleave', function () {
+        accountDropdown.style.display = 'none'; // Ẩn menu khi di chuột ra ngoài
+    });
+
+    // Ngăn chặn sự kiện click khi click vào menu
+    accountDropdown.addEventListener('click', function (event) {
+        event.stopPropagation();
+    });
+});

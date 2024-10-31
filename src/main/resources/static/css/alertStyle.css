@@ -10,14 +10,67 @@
     object-fit: cover;
 }
 .chuus {
-    font-family: 'Arial', sans-serif; /* Chọn font chữ */
-    font-size: 20px; /* Kích thước chữ */
-    color: #333; /* Màu chữ */
+    font-family: 'Arial', sans-serif;
+    font-size: 20px;
+    color: #333;
 padding-top: 10px;
 
 }
 
 .chuus span {
-    font-weight: bold; /* Làm chữ trong span đậm hơn */
-    color: #007bff; /* Màu chữ cho tên người dùng */
+    font-weight: bold;
+    color: #007bff;
+}
+
+.header-icons {
+    position: relative;
+    z-index: 5;
+}
+
+.account-dropdown {
+    display: none;
+    position: absolute;
+    top: 99%;
+    left: 0;
+    background-color: white;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 6;
+}
+
+.imguser:hover + .account-dropdown {
+    display: block;
+}
+
+.product-card {
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    z-index: 10;
+    transform: scale(1.05);
+}
+
+.carousel {
+    z-index: 1;
+}
+.account-dropdown {
+    display: none;
+    position: absolute;
+    background-color: white;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 6;
+}
+.account-dropdown {
+    display: none;
+    position: absolute;
+    top: 99%;
+    left: 0;
+    background-color: white;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 6;
 }

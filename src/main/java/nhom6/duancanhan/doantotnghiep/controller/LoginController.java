@@ -100,6 +100,13 @@ public class LoginController {
     }
 
 
+    @PostMapping("/logout")
+    public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
+        session.invalidate();
+        redirectAttributes.addFlashAttribute("logoutStatus", "success");
+        redirectAttributes.addFlashAttribute("message", "Đăng xuất thành công!");
+        return "redirect:/client/LG"; // Đảm bảo rằng đường dẫn này có phương thức xử lý
+    }
 
 
 
