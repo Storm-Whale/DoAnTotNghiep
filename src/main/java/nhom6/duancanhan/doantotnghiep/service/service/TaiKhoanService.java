@@ -24,4 +24,6 @@ public interface TaiKhoanService {
 
     TaiKhoan findByTenDangNhap(String tenDangNhap);
 
+    public TaiKhoan saveTaiKhoan(TaiKhoan taiKhoan) ;
+
 }

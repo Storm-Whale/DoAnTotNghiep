@@ -54,5 +54,9 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
     public TaiKhoan findByTenDangNhap(String tenDangNhap) {
         return taiKhoanRepository.findByTenDangNhap(tenDangNhap);
     }
+    @Override
+    public TaiKhoan saveTaiKhoan(TaiKhoan taiKhoan) {
+        return taiKhoanRepository.save(taiKhoan);
+    }
 
 }

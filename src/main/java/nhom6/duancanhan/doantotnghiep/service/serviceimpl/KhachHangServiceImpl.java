@@ -63,5 +63,8 @@ public class KhachHangServiceImpl implements KhachHangService {
     public KhachHang findByIdTaiKhoan(int idTaiKhoan) {
         return khachHangRepository.findByIdTaiKhoan(idTaiKhoan);
     }
-
+    @Override
+    public KhachHang saveKhachHang(KhachHang khachHang) {
+        return khachHangRepository.save(khachHang);
+    }
 }

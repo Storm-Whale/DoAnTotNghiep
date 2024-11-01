@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,6 +30,8 @@ public class TaiKhoan {
 
     @Column(name = "mat_khau")
     private String mat_khau;
+    @Column(name = "ngay_tao")
+    private LocalDate ngayTao;
 
     @Column(name = "trang_thai")
     private Integer trangThai;
