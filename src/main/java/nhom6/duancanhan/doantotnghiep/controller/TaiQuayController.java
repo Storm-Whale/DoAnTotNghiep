@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
+import jakarta.servlet.http.HttpSession;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -103,6 +105,8 @@ public class TaiQuayController {
                             @RequestParam(value = "mauSacId", required = false) Integer mauSacId,
                             @RequestParam(value = "kieuGiamGia", required = false) Integer kieuGiamGia,
                             @RequestParam(value = "trangThai", required = false) Integer trangThai,
+                            @RequestParam(name = "soDienThoai", required = false) String soDienThoai
+            , RedirectAttributes redirectAttributes,
                             Model model) {
         model.addAttribute("hoaDon", new HoaDon());
         model.addAttribute("sanPhamChiTiet", sanPhamChiTietService.getAllSanPhamChiTiet());
@@ -168,44 +172,50 @@ public class TaiQuayController {
                 .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         model.addAttribute("tongTien", tongTien);
-        model.addAttribute("idHoaDon", idHoaDon); // Thêm vào model
+        model.addAttribute("idHoaDon", idHoaDon);
+
+        KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
+        redirectAttributes.addFlashAttribute("khachHang", khachHang);
+        // Thêm vào model
         return "/admin/BanhangTaiQuay/index";
     }
 
-    @GetMapping("khachhang")
-    public String khachhang(
-            @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "trangThai", required = false) Integer trangThai,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size,
-            Model model) {
-        if (keyword != null) {
-            keyword = keyword.trim();
-            if (keyword.isEmpty()) {
-                keyword = null; // Đặt thành null để khớp với logic xử lý trong service
-            }
-        }
-        if (page < 0) {
-            page = 0;
-        }
-        Page<KhachHang> listKH = khachHangService.SearchandPhantrang(keyword, trangThai, page, size);
-        int totalPages = listKH.getTotalPages();
-        if (page >= totalPages) {
-            page = totalPages > 0 ? totalPages - 1 : 0; // Go to the last page if out of bounds or reset to 0 if no pages exist
-            listKH = khachHangService.SearchandPhantrang(keyword, trangThai, page, size); // Fetch the last page data
-        }
-        List<Integer> pageNumbers = IntStream.range(0, totalPages).boxed().collect(Collectors.toList());
-        model.addAttribute("khachHang", new KhachHang());
-        model.addAttribute("listKH", listKH);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("trangThai", trangThai);
-        model.addAttribute("pageNumbers", pageNumbers);
-        model.addAttribute("idHoaDon",idHoaDon);
+//    @GetMapping("khachhang")
+//    public String khachhang(
+//            @RequestParam(value = "keyword", required = false) String keyword,
+//            @RequestParam(value = "trangThai", required = false) Integer trangThai,
+//            @RequestParam(value = "page", defaultValue = "0") int page,
+//            @RequestParam(value = "size", defaultValue = "5") int size,
+//            Model model) {
+//        if (keyword != null) {
+//            keyword = keyword.trim();
+//            if (keyword.isEmpty()) {
+//                keyword = null; // Đặt thành null để khớp với logic xử lý trong service
+//            }
+//        }
+//        if (page < 0) {
+//            page = 0;
+//        }
+//        Page<KhachHang> listKH = khachHangService.SearchandPhantrang(keyword, trangThai, page, size);
+//        int totalPages = listKH.getTotalPages();
+//        if (page >= totalPages) {
+//            page = totalPages > 0 ? totalPages - 1 : 0; // Go to the last page if out of bounds or reset to 0 if no pages exist
+//            listKH = khachHangService.SearchandPhantrang(keyword, trangThai, page, size); // Fetch the last page data
+//        }
+//        List<Integer> pageNumbers = IntStream.range(0, totalPages).boxed().collect(Collectors.toList());
+//        model.addAttribute("khachHang", new KhachHang());
+//        model.addAttribute("listKH", listKH);
+//        model.addAttribute("currentPage", page);
+//        model.addAttribute("totalPages", totalPages);
+//        model.addAttribute("keyword", keyword);
+//        model.addAttribute("trangThai", trangThai);
+//        model.addAttribute("pageNumbers", pageNumbers);
+//        model.addAttribute("idHoaDon",idHoaDon);
+//
+//        return "/admin/BanhangTaiQuay/index";
+//    }
 
-        return "/admin/BanhangTaiQuay/index";
-    }
+
 
     @GetMapping("/phieugiamgia")
     public String phieuGiamGia(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -296,7 +306,8 @@ public class TaiQuayController {
                                @RequestParam(value = "coAoId", required = false) Integer coAoId,
                                @RequestParam(value = "kichCoId", required = false) Integer kichCoId,
                                @RequestParam(value = "mauSacId", required = false) Integer mauSacId,
-                               @RequestParam(value = "trangThai", required = false) Integer trangThai, Model model) {
+                               @RequestParam(value = "trangThai", required = false) Integer trangThai,HttpSession session
+            , Model model) {
         idHoaDon = idHD;
         Page<SanPhamChiTiet> pageFind = sanPhamChiTietService.timKiemSanPham(keyword, thuongHieuId, chatLieuId, tayAoId,
                 coAoId, kichCoId, mauSacId, trangThai, page, size);
@@ -324,6 +335,10 @@ public class TaiQuayController {
 
 
         HoaDon hoaDon = hoaDonRepository.findById(idHD).orElse(null);
+
+        KhachHang khachHang = hoaDon.getKhachHang();
+        model.addAttribute("khachHang",khachHang);
+
         model.addAttribute("hoaDon", hoaDon);
         // Lấy danh sách sản phẩm chi tiết và hóa đơn chi tiết
         model.addAttribute("listCTSP", listCTSP);
@@ -353,6 +368,28 @@ public class TaiQuayController {
         return "/admin/BanhangTaiQuay/index";
     }
 
+    @GetMapping("tim-kiem")
+    public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = false) String soDienThoai, HttpSession session
+            , RedirectAttributes redirectAttributes) {
+
+        KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
+//        if(khachHang != null) {
+//            session.setAttribute("khachHang",khachHang);
+//        }
+
+        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
+                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
+        // Cập nhật khách hàng cho hóa đơn
+        hoaDon.setKhachHang(khachHang);
+        hoaDon.setTrangThai(1);
+        hoaDonRepository.save(hoaDon);
+
+        // Tạo ModelAndView để chuyển dữ liệu sang view Thymeleaf
+        redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
+        redirectAttributes.addFlashAttribute("khachHang", khachHang);
+        return "redirect:/admin/taiquay/detail/" + idHoaDon; // Tên view Thymeleaf để hiển thị kết quả
+    }
+
     @Autowired
     PhuongThucThanhToanRepository phuongThucThanhToanRepository;
 
@@ -371,7 +408,9 @@ public class TaiQuayController {
             return "redirect:/admin/taiquay";
         } else {
             hoaDon = hoaDonRepository.findById(idHoaDon).orElseThrow(() -> new DataNotFoundException("Product not found"));;
+
             PhuongThucThanhToan phuongThuc = phuongThucThanhToanRepository.findById(phuongThucId).orElse(null);
+
             hoaDon.setPhuongThucThanhToan(phuongThuc);
             hoaDon.setTrangThai(2);
             hoaDon.setGhiChu(ghiChu);
