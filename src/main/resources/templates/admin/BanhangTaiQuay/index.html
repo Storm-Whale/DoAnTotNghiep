@@ -361,30 +361,30 @@
                 </div>
 
                 <!-- Phân trang -->
-                <nav>
-                    <ul class="pagination justify-content-center">
-                        <!-- First button -->
-                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link"
-                               th:href="@{'/admin/taiquay/sanpham?page=0&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"
-                               aria-label="First">First</a>
-                        </li>
-                        <!-- Page numbers -->
-                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
-                            th:classappend="${i == currentPage + 1} ? 'active'">
-                            <a class="page-link"
-                               th:href="@{'/admin/taiquay/sanpham?page=' + (${i} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"
-                               th:text="${i}"></a>
-                        </li>
-                        <!-- Last button -->
-                        <li class="page-item"
-                            th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link"
-                               th:href="@{'/admin/taiquay/sanpham?page=' + (${totalPages} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"
-                               aria-label="Last">Last</a>
-                        </li>
-                    </ul>
-                </nav>
+<!--                <nav>-->
+<!--                    <ul class="pagination justify-content-center">-->
+<!--                        &lt;!&ndash; First button &ndash;&gt;-->
+<!--                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
+<!--                            <a class="page-link"-->
+<!--                               th:href="@{'/admin/taiquay/sanpham?page=0&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"-->
+<!--                               aria-label="First">First</a>-->
+<!--                        </li>-->
+<!--                        &lt;!&ndash; Page numbers &ndash;&gt;-->
+<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"-->
+<!--                            th:classappend="${i == currentPage + 1} ? 'active'">-->
+<!--                            <a class="page-link"-->
+<!--                               th:href="@{'/admin/taiquay/sanpham?page=' + (${i} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"-->
+<!--                               th:text="${i}"></a>-->
+<!--                        </li>-->
+<!--                        &lt;!&ndash; Last button &ndash;&gt;-->
+<!--                        <li class="page-item"-->
+<!--                            th:classappend="${currentPage == totalPages - 1} ? 'disabled'">-->
+<!--                            <a class="page-link"-->
+<!--                               th:href="@{'/admin/taiquay/sanpham?page=' + (${totalPages} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"-->
+<!--                               aria-label="Last">Last</a>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </nav>-->
 
                 <script>
                     function submitForm() {
@@ -432,25 +432,36 @@
 
     <div class="container">
         <div class="section">
-            <div class="half">
-                <div class="customer-info">
-                <label for="inputDiscountCode" style="font-size: 14px;">Tên khách hàng:</label>
-                <p style="font-size: 14px; margin-top: 5px">Khách lẻ</p>
-                <a class="taiquay"><a th:href="@{/admin/taiquay/khachhang#khachhang}">
-                    <button id="btnChonKH">Chọn Khach Hang</button>
-                </a></a>
-                    </div>
-            </div>
 
-            <div id="khachhang" class="dialogmodal">
-                <div class="modal__center">
-                    <div th:replace="~{admin/BanhangTaiQuay/tableKhachHang :: form}"></div>
-                    <div th:replace="~{admin/BanhangTaiQuay/tableKhachHang :: table}"></div>
-                    <a th:href="@{/admin/taiquay/detail/{id}(id=${idHoaDon})}" class="modal__close">&times;</a>
-                    <div th:replace="~{admin/BanhangTaiQuay/tableKhachHang :: nav}"></div>
-                </div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <h3 style="color: #333; font-size: 18px; margin: 0;">Thông tin khách hàng</h3>
+
+                <form th:action="@{/admin/taiquay/tim-kiem}" method="get" style="display: flex; align-items: center; gap: 10px;">
+                    <input type="text" id="soDienThoai" name="soDienThoai" required
+                           style="padding: 5px; border-radius: 5px; border: 1px solid #ddd; width: 200px;">
+                    <button type="submit"
+                            style="background-color: #2c3e50; color: white; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
+                        Tìm kiếm
+                    </button>
+                </form>
             </div>
-        </div>
+                    <div class="half">
+                    <!-- Tên Khách Hàng -->
+                    <div style="display: flex; align-items: center; margin-bottom: 5px; width: 300px;">
+                        <span style="width: 110px; font-weight: bold; color: #555;">Tên Khách Hàng:</span>
+                        <span th:if="${khachHang != null}" th:text="${khachHang.ten}" style="font-size: 16px;width: 150px; color: #2c3e50; background-color: #f0f0f0; padding: 5px 10px; border-radius: 5px; margin-left: 10px;"></span>
+                    </div>
+
+                    <!-- Số Điện Thoại -->
+                    <div style="display: flex; align-items: center;width: 300px;">
+                        <span style="width: 110px; font-weight: bold; color: #555; ">Số điện thoại:</span>
+                        <span th:if="${khachHang != null}" th:text="${khachHang.soDienThoai}" style="font-size: 16px;width: 150px; color: #2c3e50; background-color: #f0f0f0; padding: 5px 10px; border-radius: 5px; margin-left: 10px;"></span>
+                    </div>
+                    </div>
+
+
+
+
     </div>
     </div>
 
@@ -629,11 +640,9 @@
                 </div>
             <!-- Phương Thức Thanh Toán -->
             <br>
-            <div class="flex" style="margin-top: 10px;">
-
-            </div>
         </div>
     </div>
+
 
 </section>
 </div>

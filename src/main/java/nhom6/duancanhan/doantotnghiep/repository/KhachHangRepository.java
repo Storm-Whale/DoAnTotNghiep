@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
    @Query("SELECT nv FROM KhachHang nv WHERE (:keyword IS NULL OR " +
@@ -21,4 +23,6 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
 
    @Query("SELECT k FROM KhachHang k WHERE k.id = :idTaiKhoan")
    KhachHang findByIdTaiKhoan(@Param("idTaiKhoan") int idTaiKhoan);
+
+   List<KhachHang> findBySoDienThoai(String soDienThoai);
 }

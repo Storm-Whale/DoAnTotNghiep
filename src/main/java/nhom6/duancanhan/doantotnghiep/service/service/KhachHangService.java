@@ -24,4 +24,6 @@ public interface KhachHangService {
 
      Page<KhachHang> SearchandPhantrang (String keyword, Integer trangThai, int pageNo, int pageSize);
      public KhachHang findByIdTaiKhoan(int idTaiKhoan) ;
+
+     KhachHang findBySoDienThoaiKhachHang (String soDienThoai);
 }
