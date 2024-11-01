@@ -63,8 +63,18 @@ public class KhachHangServiceImpl implements KhachHangService {
     public KhachHang findByIdTaiKhoan(int idTaiKhoan) {
         return khachHangRepository.findByIdTaiKhoan(idTaiKhoan);
     }
+
     @Override
     public KhachHang saveKhachHang(KhachHang khachHang) {
         return khachHangRepository.save(khachHang);
     }
+
+
+    @Override
+    public KhachHang findBySoDienThoaiKhachHang(String soDienThoai) {
+        List<KhachHang> khachHangs = khachHangRepository.findBySoDienThoai(soDienThoai);
+        return khachHangs.isEmpty() ? null : khachHangs.get(1);
+    }
+
+
 }
