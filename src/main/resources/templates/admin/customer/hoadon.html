@@ -50,7 +50,7 @@
         <tbody>
         <tr th:each="hoaDon : ${listHD}">
             <td th:text="${hoaDon.id}"></td>
-            <td th:text="${hoaDon.khachHang  ==  null ? '' : hoaDon.khachHang.ten}"></td>
+            <td th:text="${hoaDon.khachHang  ==  null ? 'Khách Lẻ' : hoaDon.khachHang.ten}"></td>
             <td th:text="${hoaDon.sdt}"></td>
             <td th:text="${hoaDon.emailNguoiNhan}"></td>
             <td th:text="${hoaDon.diaChi ==  null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>

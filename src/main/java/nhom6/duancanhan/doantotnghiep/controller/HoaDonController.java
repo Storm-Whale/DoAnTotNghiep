@@ -82,7 +82,7 @@ public class HoaDonController {
     @GetMapping("/search")
     public String timKiem(@RequestParam("keyword") String keyword, Model model) {
         int pageNo = 1;
-        int pageSize = 3;
+        int pageSize = 7;
         Page<HoaDon> page = hoaDonService.timKiem(keyword, pageNo, pageSize);
         List<HoaDon> listHD = page.getContent();
         model.addAttribute("hoaDon", new HoaDon());

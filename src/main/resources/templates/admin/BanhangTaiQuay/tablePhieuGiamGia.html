@@ -73,6 +73,53 @@
         </tbody>
     </table>
 </div>
+<div th:fragments="nav">
+<nav>
+    <ul class="pagination justify-content-center">
+        <!-- First button -->
+        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{'/admin/taiquay/phieugiamgia?page=0&size=' + ${size}+'#phieugiamgia'}"
+               aria-label="First">First</a>
+        </li>
+        <!-- Page numbers -->
+        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+            th:classappend="${i == currentPage + 1} ? 'active'">
+            <a class="page-link"
+               th:href="@{'/admin/taiquay/phieugiamgia?page=' + (${i} - 1) + '&size=' + ${size}+'#phieugiamgia'}"
+               th:text="${i}"></a>
+        </li>
+        <!-- Last button -->
+        <li class="page-item"
+            th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{'/admin/taiquay/phieugiamgia?page=' + (${totalPages} - 1) + '&size=' + ${size} +'#phieugiamgia'}"
+               aria-label="Last">Last</a>
+        </li>
+    </ul>
+</nav>
+</div>
+<div th:fragments="script">
+<script>
+    function submitForm2() {
+        document.getElementById("filterForm2").submit();
+    }
+
+    let debounceTimer;
+    function submitForm2() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            document.getElementById("filterForm2").submit();
+        }, 500);  // Trì hoãn 500ms trước khi submit form
+    }
+    function changeItemsPerPage() {
+        const selectedSize = document.getElementById("itemsPerPage").value;
+        const currentPage = /*[[${currentPage}]]*/ 0;  // Chọn trang đầu khi thay đổi số lượng mục
+        const url = `/admin/taiquay/phieugiamgia?page=${currentPage}&size=${selectedSize}#phieugiamgia`;
+        window.location.href = url;
+    }
+</script>
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>

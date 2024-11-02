@@ -319,3 +319,89 @@ input[type="text"] {
 .discount-code-container button:hover {
     background-color: #0056b3; /* Màu khi hover */
 }
+/* Style cho bảng */
+.custom-table {
+    border-collapse: separate;
+    width: 100%;
+    border-spacing: 0 10px; /* Khoảng cách giữa các hàng */
+}
+
+.custom-table th {
+    text-align: center;
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #6c757d;
+    border: none;
+    font-size: 1rem;
+    padding: 10px;
+}
+
+.custom-table td {
+    text-align: center;
+    padding: 15px;
+    border: none;
+    vertical-align: middle;
+}
+
+/* Style cho các hàng */
+.custom-table tbody tr {
+    background-color: #ffe6cc; /* Màu nền nhẹ cho cả hàng */
+    border-radius: 8px; /* Bo góc cho toàn hàng */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+}
+
+.custom-table tbody tr td {
+    background-color: transparent; /* Loại bỏ màu nền của từng ô */
+    border-radius: 0; /* Không bo góc từng ô */
+}
+
+/* Style cho ô ghi chú */
+.custom-note-row {
+    background-color: #e2e3e5; /* Màu nền nhẹ cho hàng ghi chú */
+    color: #495057; /* Màu chữ đậm */
+    font-weight: 500;
+    padding: 15px;
+    border-radius: 8px; /* Bo góc */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.custom-note-row .note {
+    font-size: 1rem;
+    margin-right: auto;
+}
+
+.custom-note-row .total {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #dc3545;
+}
+.container-row {
+    display: flex;
+    gap: 20px; /* Khoảng cách giữa bảng và thông tin thanh toán */
+    align-items: flex-start;
+    padding: 20px;
+}
+
+.custom-table {
+    flex: 2; /* Chiếm khoảng 2 phần */
+}
+
+.payment-info {
+    flex: 1; /* Chiếm khoảng 1 phần */
+    padding: 20px;
+    background-color: #f8f9fa; /* Màu nền sáng cho phần thanh toán */
+    border-radius: 8px; /* Bo góc cho khung */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+}
+
+.payment-info label, .payment-info p, .payment-info button {
+    font-size: 14px;
+}
+
+.payment-info button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+}
