@@ -149,8 +149,8 @@ public class TaiQuayController {
 
         List<SanPhamGioHang> sanPhamGioHangs = sanPhamGioHangRepository.findAll();
         model.addAttribute("list", sanPhamGioHangs);
-        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAll();
-        model.addAttribute("listHDCT", hoaDonChiTietList);
+//        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAll();
+//        model.addAttribute("listHDCT", hoaDonChiTietList);
         //
         HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
 //        model.addAttribute("firstHoaDon", firstHoaDon != null ? firstHoaDon : new HoaDon());
@@ -168,10 +168,10 @@ public class TaiQuayController {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         model.addAttribute("tongTienGH", tongTienGH);
 
-        BigDecimal tongTien = hoaDonChiTietList.stream()
-                .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        model.addAttribute("tongTien", tongTien);
+//        BigDecimal tongTien = hoaDonChiTietList.stream()
+//                .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//        model.addAttribute("tongTien", tongTien);
         model.addAttribute("idHoaDon", idHoaDon);
 
         KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
