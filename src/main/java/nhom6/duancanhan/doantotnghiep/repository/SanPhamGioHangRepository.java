@@ -13,4 +13,8 @@ public interface SanPhamGioHangRepository extends JpaRepository<SanPhamGioHang, 
 //    List<SanPhamGioHang> findByIdGioHangAndIdSpct(Integer id, Integer idSpct);
 
       List<SanPhamGioHang> findByGioHangIdAndTrangThai(Integer gioHangId, Integer trangThai);
+
+      boolean existsBySanPhamChiTietIdAndTrangThai(Integer sanPhamChiTietId, Integer trangThai);
+
+      SanPhamGioHang findSanPhamGioHangByGioHangIdAndSanPhamChiTietIdAndTrangThai(Integer gioHangId, Integer sanPhamChiTietId, Integer trangThai);
 }

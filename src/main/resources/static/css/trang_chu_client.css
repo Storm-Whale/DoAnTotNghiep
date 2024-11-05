@@ -5,35 +5,9 @@ body {
     box-sizing: border-box;
 }
 
-.logo img {
-    width: 150px;
+.custom-header .form-control {
+    width: 300px;
 }
-
-.search-bar {
-    display: flex;
-    flex-grow: 1;
-    margin: 0 20px;
-}
-
-.search-bar input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.header-icons {
-    display: flex;
-    align-items: center;
-}
-
-.header-icons .icon {
-    width: 40px;
-    height: 40px;
-    margin-left: 40px;
-    cursor: pointer;
-}
-
 
 .filters {
     display: flex;
@@ -168,19 +142,7 @@ body {
     max-height: 0;
     transition: max-height 0.3s ease, padding 0.3s ease;
 }
-.logo {
 
-    width: 100px;
-    height: auto;
-    overflow: hidden;
-}
-
-.logo img {
-
-    width: 70%;
-    height: auto;
-    display: block;
-}
 /* CSS cho banner */
 .banner {
     position: relative;
@@ -522,7 +484,6 @@ header {
 }
 
 .header-icons {
-
     display: flex;
     justify-content: flex-end;
     gap: 10px;
@@ -593,7 +554,7 @@ header {
     background-color: white;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 6;
+    z-index: 10;
 }
 
 .imguser:hover + .account-dropdown {
@@ -613,24 +574,6 @@ header {
 
 .carousel {
     z-index: 1;
-}
-.account-dropdown {
-    display: none;
-    position: absolute;
-    background-color: white;
-    padding: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 6;
-}
-.account-dropdown {
-    display: none;
-    position: absolute;
-    top: 99%;
-    left: 0;
-    background-color: white;
-    padding: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 6;
 }
 
 

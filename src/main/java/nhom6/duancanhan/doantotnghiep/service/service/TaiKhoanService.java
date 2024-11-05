@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Service
 public interface TaiKhoanService {
+
     List<TaiKhoan> getAll();
 
     Page<TaiKhoan> phanTrang(int pageNo, int pageSize);
@@ -21,10 +22,12 @@ public interface TaiKhoanService {
 
     void deleteTaiKhoan(Integer id);
 
-
     TaiKhoan findByTenDangNhap(String tenDangNhap);
 
-    public TaiKhoan saveTaiKhoan(TaiKhoan taiKhoan) ;
+    TaiKhoan saveTaiKhoan(TaiKhoan taiKhoan);
     public TaiKhoan findByResetCode(String resetCode) ;
 
+    boolean checkAccount(String username, String password);
+
+    TaiKhoan findByTTKAndMK (String username, String password);
 }

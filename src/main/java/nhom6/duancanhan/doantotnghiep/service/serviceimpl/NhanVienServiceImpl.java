@@ -60,5 +60,8 @@ public class NhanVienServiceImpl implements NhanVienService {
       return nhanVienRepository.searchNhanVien(keyword,trangThai,pageable);
     }
 
-
+    @Override
+    public NhanVien getNhanVienByIdTaiKhoan(Integer idTK) {
+        return nhanVienRepository.findByTaiKhoanId(idTK);
+    }
 }

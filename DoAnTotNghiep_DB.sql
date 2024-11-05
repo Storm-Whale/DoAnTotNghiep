@@ -283,3 +283,12 @@ CREATE TABLE lich_sua_hoa_don
     ngay_sua   DATE,
     FOREIGN KEY (id_hoa_don) REFERENCES hoa_don (id)
 );
+
+alter table tai_khoan
+    add id_vai_tro int
+go
+
+alter table tai_khoan
+    add constraint tai_khoan_vai_tro_id_fk
+        foreign key (id_vai_tro) references vai_tro
+go

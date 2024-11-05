@@ -20,4 +20,6 @@ public interface NhanVienRepository extends JpaRepository<NhanVien,Integer> {
                                   @Param(("trangThai")) Integer trangThai,
                                   Pageable pageable
     );
+
+    NhanVien findByTaiKhoanId(Integer idTaiKhoan);
 }

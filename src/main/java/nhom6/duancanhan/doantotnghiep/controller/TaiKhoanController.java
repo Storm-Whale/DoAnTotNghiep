@@ -1,57 +1,189 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
+import nhom6.duancanhan.doantotnghiep.service.service.KhachHangService;
+import nhom6.duancanhan.doantotnghiep.service.service.NhanVienService;
 import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+import java.time.LocalDate;
 
-@RestController
-@RequestMapping("/tai-khoan/")
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/login")
 public class TaiKhoanController {
 
-    @Autowired
-    private TaiKhoanService taiKhoanService;
+    private final TaiKhoanService taiKhoanService;
 
-    @GetMapping("")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(taiKhoanService.getAll());
+    private final KhachHangService khachHangService;
+
+    private final NhanVienService nhanVienService;
+
+    @PostMapping
+    public String login(@RequestParam String username,
+                        @RequestParam String password,
+                        RedirectAttributes redirectAttributes,
+                        HttpSession session) {
+        System.out.println("Đang thực hiện đăng nhập với tên người dùng: " + username);
+
+
+        if (username.equalsIgnoreCase("admin") || username.equalsIgnoreCase("nhanvien")) {
+            redirectAttributes.addFlashAttribute("loginStatus", "error");
+            redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");
+            return "redirect:/client/LG";
+        }
+        TaiKhoan user = taiKhoanService.findByTenDangNhap(username);
+        if (user != null && user.getMatKhau().equals(password)) {
+            // Lưu tên người dùng vào session
+            session.setAttribute("currentUser", user.getTenDangNhap());
+            System.out.println("Session được lưu với tên người dùng: " + user.getTenDangNhap());
+
+            KhachHang khachHang = khachHangService.findByIdTaiKhoan(user.getId());
+            if (khachHang != null) {
+                session.setAttribute("currentUserImage", khachHang.getAnhUrl());
+                System.out.println("Ảnh của người dùng: " + khachHang.getAnhUrl());
+            }
+            redirectAttributes.addFlashAttribute("loginStatus", "success");
+            redirectAttributes.addFlashAttribute("message", "Đăng nhập thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("loginStatus", "error");
+            redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");
+        }
+        return "redirect:/client/LG";
     }
 
-    @GetMapping("/phan-trang/{pageNo}")
-    public ResponseEntity<?> phanTrang(@PathVariable(value = "pageNo") int pageNo) {
-        int pageSize = 3;
-        Page<TaiKhoan> page = taiKhoanService.phanTrang(pageNo,pageSize);
-        List<TaiKhoan> listTK = page.getContent();
-        return ResponseEntity.ok(listTK);
+    @PostMapping("/login2")
+    public String login2(@RequestParam String username,
+                         @RequestParam String password,
+                         RedirectAttributes redirectAttributes,
+                         HttpSession session) {
+        System.out.println("Đang thực hiện đăng nhập với tên người dùng: " + username);
+
+
+        if (username.equalsIgnoreCase("admin") || username.equalsIgnoreCase("nhanvien")) {
+            redirectAttributes.addFlashAttribute("loginStatus", "error");
+            redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");
+            return "redirect:/login/ad";
+        }
+
+
+        TaiKhoan user = taiKhoanService.findByTenDangNhap(username);
+        if (user != null && user.getMatKhau().equals(password)) {
+            // Lưu tên người dùng vào session
+            session.setAttribute("currentUser", user.getTenDangNhap());
+            System.out.println("Session được lưu với tên người dùng: " + user.getTenDangNhap());
+
+            KhachHang khachHang = khachHangService.findByIdTaiKhoan(user.getId());
+            if (khachHang != null) {
+                session.setAttribute("currentUserImage", khachHang.getAnhUrl());
+                System.out.println("Ảnh của người dùng: " + khachHang.getAnhUrl());
+            }
+            redirectAttributes.addFlashAttribute("loginStatus", "success");
+            redirectAttributes.addFlashAttribute("message", "Đăng nhập thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("loginStatus", "error");
+            redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");
+        }
+        return "redirect:/login/ad";
     }
 
-    @GetMapping("/detail/{id}")
-    public ResponseEntity<?> detail(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(taiKhoanService.detail(id));
+    @GetMapping("/add")
+    public String addUser(@ModelAttribute TaiKhoan user) {
+        taiKhoanService.addTaiKhoan(user);
+        return "redirect:/users";
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody TaiKhoan taiKhoan) {
-        taiKhoanService.addTaiKhoan(taiKhoan);
-        return ResponseEntity.ok(taiKhoan);
+    @GetMapping("ad")
+    public String Hienthi() {
+        return "/client/Loginadmin";
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Integer id, @RequestBody TaiKhoan taiKhoan) {
-        taiKhoanService.updateTaiKhoan(id, taiKhoan);
-        return ResponseEntity.ok("update thanh cong");
+    @GetMapping("dk")
+    public String Hienthi2() {
+        return "/client/Dangky";
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
-        taiKhoanService.deleteTaiKhoan(id);
-        return ResponseEntity.ok("delete thanh cong");
+    @GetMapping("/dangky")
+    public String showDangKyForm(Model model) {
+        model.addAttribute("taiKhoan", new TaiKhoan());
+        model.addAttribute("khachHang", new KhachHang());
+        return "/client/Dangky"; // Trả về tên file HTML "dangky.html"
     }
 
+    @PostMapping("dangkytk")
+    public String dangKy(@ModelAttribute TaiKhoan taiKhoan, @ModelAttribute KhachHang khachHang) {
+        // Thiết lập trạng thái tài khoản là 1
+        taiKhoan.setTrangThai(1); // Thêm dòng này
+        khachHang.setTrangThai(1);
+        khachHang.setNgayTao(LocalDate.now());
+        khachHang.setAnhUrl("img_1.png");
+        TaiKhoan savedTaiKhoan = taiKhoanService.saveTaiKhoan(taiKhoan);
+        khachHang.setTaiKhoan(savedTaiKhoan);
+        khachHangService.saveKhachHang(khachHang);
+        return "redirect:/login/ad";
+    }
 
+    //  TODO : Vào Trang Đăng nhập
+    @GetMapping(value = "/login-client")
+    public String loginClient(Model model) {
+        return "/client/Login";
+    }
+
+    //  TODO : Login
+    @PostMapping(value = "/check-login")
+    public String login(
+            @RequestParam(name = "username") String username,
+            @RequestParam(name = "password") String password,
+            HttpSession session, Model model
+    ) {
+        if (taiKhoanService.checkAccount(username, password)) {
+            TaiKhoan taiKhoan = taiKhoanService.findByTTKAndMK(username, password);
+            switch (taiKhoan.getVaiTro().getId()){
+                case 1, 2:
+                    session.setAttribute("nhanvien", nhanVienService.getNhanVienByIdTaiKhoan(taiKhoan.getId()));
+                    session.setAttribute("loginStatus", true);  // Thêm flag
+                    return "redirect:/admin";
+                case 3:
+                    session.setAttribute("user", khachHangService.findByIdTaiKhoan(taiKhoan.getId()));
+                    session.setAttribute("loginStatus", true);  // Thêm flag
+                    return "redirect:/client";
+            }
+        } else {
+            model.addAttribute("loginStatus", "Vui Lòng Xem Lại Tên Đăng Nhập Hoặc Mật Khẩu.");
+            return "/client/Login";
+        }
+        return "/client/Login";
+    }
+
+    //   TODO : Logout
+    @GetMapping("/logout")
+    public String logout(HttpSession session, HttpServletResponse response, HttpServletRequest request) {
+        // Xóa session người dùng và trạng thái đăng nhập
+        session.removeAttribute("user");
+        session.removeAttribute("loginStatus");
+        session.invalidate();
+
+        // Xóa tất cả cookie để đảm bảo thông tin phiên được xóa hoàn toàn
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookie.setValue("");
+                cookie.setPath("/");
+                cookie.setMaxAge(0); // Xóa cookie ngay lập tức
+                response.addCookie(cookie);
+            }
+        }
+
+        // Chuyển hướng về trang chính
+        return "redirect:/client";
+    }
 }

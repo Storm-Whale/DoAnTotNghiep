@@ -1,42 +1,85 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
 import lombok.RequiredArgsConstructor;
-import nhom6.duancanhan.doantotnghiep.dto.SanPhamGioHangRequest;
-import nhom6.duancanhan.doantotnghiep.dto.SanPhamGioHangResponse;
-import nhom6.duancanhan.doantotnghiep.service.service.SanPhamGioHangService;
+import nhom6.duancanhan.doantotnghiep.entity.SanPhamGioHang;
+import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
+import nhom6.duancanhan.doantotnghiep.repository.SanPhamGioHangRepository;
+import nhom6.duancanhan.doantotnghiep.util.ChangeNumberOfDetailProduct;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping(value = "/san-pham-gio-hang")
 public class SanPhamGioHangController {
-    private final SanPhamGioHangService sanPhamGioHangService;
-    @GetMapping("/index")
-    public ResponseEntity<List<SanPhamGioHangResponse>> getAll(){
-        return new ResponseEntity<>(sanPhamGioHangService.getAll(), HttpStatus.OK);
+
+    private final SanPhamGioHangRepository sanPhamGioHangRepository;
+    private final ChangeNumberOfDetailProduct changeNumberOfDetailProduct;
+
+    //  TODO : Tăng Số Lượng Sản Phẩm Chi Tiết Trong Sản Phẩm Giỏ Hàng
+    @PostMapping(value = "/plus-spgh/{idspgh}")
+    @ResponseStatus(HttpStatus.OK)
+    public void plusSPGH(@PathVariable int idspgh) {
+        SanPhamGioHang sanPhamGioHang = findSanPhamGioHangById(idspgh);
+        int oldSoLuong = sanPhamGioHang.getSoLuong();
+        int idspct = sanPhamGioHang.getSanPhamChiTiet().getId();
+        sanPhamGioHang.setSoLuong(oldSoLuong + 1);
+        sanPhamGioHangRepository.save(sanPhamGioHang);
+        changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, 1, "-");
     }
-    @GetMapping("/find/{id}")
-    public ResponseEntity<SanPhamGioHangResponse> findById(@PathVariable Integer id){
-        SanPhamGioHangResponse spGioHangResponse = sanPhamGioHangService.getById(id);
-        return new ResponseEntity<>(spGioHangResponse, HttpStatus.OK);
+
+    //  TODO : Giảm Số Lượng Sản Phẩm Chi Tiết Trong Sản Phẩm Giỏ Hàng
+    @PostMapping(value = "/minus-spgh/{idspgh}")
+    @ResponseStatus(HttpStatus.OK)
+    public void minus(@PathVariable int idspgh) {
+        SanPhamGioHang sanPhamGioHang = findSanPhamGioHangById(idspgh);
+        int oldSoLuong = sanPhamGioHang.getSoLuong();
+        int idspct = sanPhamGioHang.getSanPhamChiTiet().getId();
+        sanPhamGioHang.setSoLuong(oldSoLuong - 1);
+        sanPhamGioHangRepository.save(sanPhamGioHang);
+        changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, 1, "+");
     }
-    @PostMapping("/store")
-    public ResponseEntity<?> store(SanPhamGioHangRequest gioHangRequest){
-        SanPhamGioHangResponse gioHangResponse = sanPhamGioHangService.create(gioHangRequest);
-        return new ResponseEntity<>(gioHangResponse, HttpStatus.CREATED);
+
+    //  TODO : Tăng Or Giảm Số Lượng Sản Phẩm Chi Tiết Trong Sản Phẩm Giỏ Hàng
+    @PostMapping(value = "/update-number-of-product/{idspgh}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateNumberOfProduct(
+            @PathVariable(name = "idspgh") int idspgh,
+            @RequestBody Map<String, Integer> requestBody
+    ) {
+        int numberOfProduct = requestBody.get("quantity");
+        SanPhamGioHang sanPhamGioHang = findSanPhamGioHangById(idspgh);
+        int oldSoLuong = sanPhamGioHang.getSoLuong();
+        int idspct = sanPhamGioHang.getSanPhamChiTiet().getId();
+        sanPhamGioHang.setSoLuong(numberOfProduct);
+        sanPhamGioHangRepository.save(sanPhamGioHang);
+
+        //  What For : So sánh để tăng or giảm số lượng trong sản phẩm chi tiết
+        if (numberOfProduct > oldSoLuong) {
+            int quantityDifference = numberOfProduct - oldSoLuong;
+            changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, quantityDifference, "-");
+        } else {
+            int quantityDifference = oldSoLuong - numberOfProduct;
+            changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, quantityDifference, "+");
+        }
     }
-    @PutMapping(value = "/update/{id}")
-    public ResponseEntity<?> update(@PathVariable(name = "id") Integer id, SanPhamGioHangRequest gioHangRequest) {
-        SanPhamGioHangResponse gioHangResponse = sanPhamGioHangService.update(id, gioHangRequest);
-        return new ResponseEntity<>(gioHangResponse, HttpStatus.CREATED);
+
+    //  TODO : Xóa Sản Phẩm Chi Tiết Khỏi Sản Phẩm Gio Hàng
+    @PostMapping(value = "/delete-spgh/{idspgh}")
+    @ResponseStatus(HttpStatus.OK)
+    public void DeleteSanPhamGioHang(@PathVariable(name = "idspgh") int idspgh) {
+        SanPhamGioHang sanPhamGioHang = findSanPhamGioHangById(idspgh);
+        int soluong = sanPhamGioHang.getSoLuong();
+        Integer idspct = sanPhamGioHang.getSanPhamChiTiet().getId();
+        changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, soluong, "+");
     }
-    @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable(name = "id") Integer id) {
-        sanPhamGioHangService.delete(id);
-        return ResponseEntity.ok("Delete success:" + id);
+
+    //  * Hàm tìm kiếm sản phẩm giỏ hàng by id
+    private SanPhamGioHang findSanPhamGioHangById(int idspgh) {
+        return sanPhamGioHangRepository.findById(idspgh)
+                .orElseThrow(() -> new DataNotFoundException("Không tìm thấy sản phẩm với giỏ hàng nào"));
     }
 }

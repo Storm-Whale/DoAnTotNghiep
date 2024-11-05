@@ -48,5 +48,4 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
             @Param("trangThai") Integer trangThai,
             Pageable pageable
     );
-
 }

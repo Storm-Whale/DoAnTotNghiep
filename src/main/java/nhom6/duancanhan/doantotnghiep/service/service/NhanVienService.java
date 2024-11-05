@@ -21,4 +21,5 @@ public interface NhanVienService {
 
     Page<NhanVien> SearchandPhantrang (String keyword, Integer trangThai, int pageNo, int pageSize);
 
+    NhanVien getNhanVienByIdTaiKhoan(Integer idTK);
 }
