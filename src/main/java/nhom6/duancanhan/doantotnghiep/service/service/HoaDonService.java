@@ -29,4 +29,5 @@ public interface HoaDonService {
 //    HoaDon themHoaDon(HoaDonDTO hoaDonDTO);
 //    HoaDonDTO converToDto(HoaDon hoaDon);
 //    HoaDon converToEntity(HoaDonDTO hoaDonDTO);
+    void cancelHoaDon(Integer id);
 }

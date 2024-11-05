@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -16,7 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "phieu_giam_gia")
-public class PhieuGiamGia {
+public class PhieuGiamGia extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -28,7 +29,7 @@ public class PhieuGiamGia {
     @Column(name = "so_luong")
     private int soLuong;
     @Column(name = "dieu_kien")
-    private double dieuKien;
+    private BigDecimal dieuKien;
     @Column(name = "kieu_giam_gia")
     private int kieuGiamGia;
     @Column(name = "ngay_bat_dau")
@@ -38,24 +39,9 @@ public class PhieuGiamGia {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date ngayKetThuc;
     @Column(name = "gia_tri_giam")
-    private double giaTriGiam;
+    private BigDecimal giaTriGiam;
     @Column(name = "gia_tri_max")
-    private double giaTriMax;
+    private BigDecimal giaTriMax;
     @Column(name = "trang_thai")
     private int trangThai;
-
-    @Column(name= "ngay_tao")
-    LocalDate ngayTao;
-    @Column(name = "ngay_sua")
-    LocalDate ngaySua;
-
-    @PrePersist
-    protected void onCreateCreate() {
-        ngayTao = LocalDate.now();
-        ngaySua = LocalDate.now();
-    }
-    @PreUpdate
-    protected void onUpdateUpdate() {
-        ngaySua = LocalDate.now();
-    }
 }

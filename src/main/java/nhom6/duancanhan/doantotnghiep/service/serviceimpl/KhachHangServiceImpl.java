@@ -72,8 +72,8 @@ public class KhachHangServiceImpl implements KhachHangService {
 
     @Override
     public KhachHang findBySoDienThoaiKhachHang(String soDienThoai) {
-        List<KhachHang> khachHangs = khachHangRepository.findBySoDienThoai(soDienThoai);
-        return khachHangs.isEmpty() ? null : khachHangs.get(1);
+       List<KhachHang> khachHangs = khachHangRepository.findBySoDienThoai(soDienThoai);
+        return khachHangs.isEmpty() ? null : khachHangs.get(0);
     }
 
 
