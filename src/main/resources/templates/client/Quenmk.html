@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yagi Shop - Quên Mật Khẩu</title>
+    <link rel="stylesheet" th:href="@{/css/quenmk.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="/img/Logoyagi2.png">
+</head>
+<body>
+<div id="wrapper">
+    <form th:action="@{/login/forgot-password}" method="post">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Gửi Mã Xác Nhận</button>
+    </form>
+
+    <h2>Đặt Lại Mật Khẩu</h2>
+    <form th:action="@{/login/reset-password}" method="post">
+        <label for="resetCode">Mã Xác Thực:</label>
+        <input type="text" id="resetCode" name="code" required>
+        <label for="newPassword">Mật Khẩu Mới:</label>
+        <input type="password" id="newPassword" name="newPassword" required>
+        <button type="submit">Cập Nhật Mật Khẩu</button>
+    </form>
+
+    <!-- Hiển thị thông báo -->
+    <div th:if="${message}" th:text="${message}"></div>
+</div>
+</body>
+</html>

@@ -35,4 +35,8 @@ public class TaiKhoan {
 
     @Column(name = "trang_thai")
     private Integer trangThai;
+    @Column(name = "ngay_sua")
+    private LocalDate ngaySua;
+    @Column(name = "reset_code")
+    private String resetCode;
 }

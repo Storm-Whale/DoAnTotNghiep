@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.dto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,5 @@ public class TaiKhoanDTO {
     private String mat_khau;
 
     private Integer trangThai;
+
 }

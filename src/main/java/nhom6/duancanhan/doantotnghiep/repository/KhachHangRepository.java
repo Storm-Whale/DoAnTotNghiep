@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
@@ -25,4 +26,5 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
    KhachHang findByIdTaiKhoan(@Param("idTaiKhoan") int idTaiKhoan);
 
    List<KhachHang> findBySoDienThoai(String soDienThoai);
+   Optional<KhachHang> findByEmail(String email);
 }
