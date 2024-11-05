@@ -9,31 +9,23 @@ import nhom6.duancanhan.doantotnghiep.entity.PhuongThucThanhToan;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamGioHang;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
-import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
-import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
-import nhom6.duancanhan.doantotnghiep.repository.PhuongThucThanhToanRepository;
-import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
-import nhom6.duancanhan.doantotnghiep.repository.SanPhamGioHangRepository;
+import nhom6.duancanhan.doantotnghiep.repository.*;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/admin/taiquay")
@@ -67,8 +59,12 @@ public class TaiQuayController {
 
     @Autowired
     SanPhamChiTietRepository sanPhamChiTietRepository;
+    @Autowired
+    PhieuGiamGiaRepository phieuGiamGiaRepository;
 
     private Integer idHoaDon = 1;
+
+    private String maPhieuGiamGia = "";
 
     // Khai báo ModelAttribute toàn cục
 //    @ModelAttribute
@@ -149,7 +145,7 @@ public class TaiQuayController {
 
         List<SanPhamGioHang> sanPhamGioHangs = sanPhamGioHangRepository.findAll();
         model.addAttribute("list", sanPhamGioHangs);
-//        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAll();
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAll();
 //        model.addAttribute("listHDCT", hoaDonChiTietList);
         //
         HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
@@ -168,14 +164,16 @@ public class TaiQuayController {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         model.addAttribute("tongTienGH", tongTienGH);
 
-//        BigDecimal tongTien = hoaDonChiTietList.stream()
-//                .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
-//                .reduce(BigDecimal.ZERO, BigDecimal::add);
-//        model.addAttribute("tongTien", tongTien);
+        BigDecimal tongTien = hoaDonChiTietList.stream()
+                .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        model.addAttribute("tongTien", tongTien);
         model.addAttribute("idHoaDon", idHoaDon);
 
         KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
         redirectAttributes.addFlashAttribute("khachHang", khachHang);
+//        BigDecimal tongTienSauGiam = phieuGiamGiaService.applyDiscount(maPhieuGiamGia, tongTien);
+//        model.addAttribute("tongTienSauGiam", tongTienSauGiam);
         // Thêm vào model
         return "/admin/BanhangTaiQuay/index";
     }
@@ -216,7 +214,6 @@ public class TaiQuayController {
 //    }
 
 
-
     @GetMapping("/phieugiamgia")
     public String phieuGiamGia(@RequestParam(value = "page", defaultValue = "0") int page,
                                @RequestParam(value = "size", defaultValue = "5") int size,
@@ -241,7 +238,7 @@ public class TaiQuayController {
         model.addAttribute("ngayKetThuc", ngayKetThuc);
         model.addAttribute("kieuGiamGia", kieuGiamGia);
         model.addAttribute("trangThai", trangThai);
-        model.addAttribute("idHoaDon",idHoaDon);
+        model.addAttribute("idHoaDon", idHoaDon);
 
         return "/admin/BanhangTaiQuay/index";
     }
@@ -282,7 +279,7 @@ public class TaiQuayController {
         model.addAttribute("kichCoId", kichCoId);
         model.addAttribute("mauSacId", mauSacId);
         model.addAttribute("trangThai", trangThai);
-        model.addAttribute("idHoaDon",idHoaDon);
+        model.addAttribute("idHoaDon", idHoaDon);
         return "/admin/BanhangTaiQuay/index";
     }
 
@@ -295,6 +292,7 @@ public class TaiQuayController {
         return hoaDon;
     }
 
+    // TODO : Detail
     @GetMapping("/detail/{idHD}")
     public String detailHoaDon(@PathVariable("idHD") Integer idHD,
                                @RequestParam(value = "page", defaultValue = "0") int page,
@@ -306,7 +304,8 @@ public class TaiQuayController {
                                @RequestParam(value = "coAoId", required = false) Integer coAoId,
                                @RequestParam(value = "kichCoId", required = false) Integer kichCoId,
                                @RequestParam(value = "mauSacId", required = false) Integer mauSacId,
-                               @RequestParam(value = "trangThai", required = false) Integer trangThai,HttpSession session
+                               @RequestParam(value = "trangThai", required = false) Integer trangThai,
+                               HttpSession session
             , Model model) {
         idHoaDon = idHD;
         Page<SanPhamChiTiet> pageFind = sanPhamChiTietService.timKiemSanPham(keyword, thuongHieuId, chatLieuId, tayAoId,
@@ -332,13 +331,9 @@ public class TaiQuayController {
         model.addAttribute("kichCoId", kichCoId);
         model.addAttribute("mauSacId", mauSacId);
         model.addAttribute("trangThai", trangThai);
-
-
         HoaDon hoaDon = hoaDonRepository.findById(idHD).orElse(null);
-
         KhachHang khachHang = hoaDon.getKhachHang();
-        model.addAttribute("khachHang",khachHang);
-
+        model.addAttribute("khachHang", khachHang);
         model.addAttribute("hoaDon", hoaDon);
         // Lấy danh sách sản phẩm chi tiết và hóa đơn chi tiết
         model.addAttribute("listCTSP", listCTSP);
@@ -346,9 +341,7 @@ public class TaiQuayController {
         model.addAttribute("listHDCT", hoaDonChiTiet);
         // Lấy danh sách hóa đơn và thêm vào model
 //        List<HoaDon> listHD = hoaDonRepository.findAll();;
-//
 //        model.addAttribute("listHD", listHD);
-
         HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
 //        model.addAttribute("firstHoaDon", firstHoaDon != null ? firstHoaDon : new HoaDon());
         // Tạo danh sách hóa đơn chờ và thêm hóa đơn đầu tiên vào danh sách nếu cần
@@ -362,9 +355,17 @@ public class TaiQuayController {
         BigDecimal tongTien = hoaDonChiTiet.stream()
                 .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        model.addAttribute("tongTien", tongTien);
-        model.addAttribute("idHoaDon",idHoaDon);
 
+        BigDecimal lastTongTien = BigDecimal.ZERO;
+        System.out.println("Ma Phieu Giam Gia : " + maPhieuGiamGia);
+        if (maPhieuGiamGia != null && maPhieuGiamGia.length() != 0) {
+            lastTongTien = phieuGiamGiaService.applyDiscount(maPhieuGiamGia, tongTien);
+            System.out.println("Tong Tien : " + lastTongTien);
+            maPhieuGiamGia = "";
+        }
+        model.addAttribute("tongTien", tongTien);
+        model.addAttribute("idHoaDon", idHoaDon);
+        model.addAttribute("tongTienSauGiam", hoaDon != null ? lastTongTien : null);
         return "/admin/BanhangTaiQuay/index";
     }
 
@@ -393,36 +394,45 @@ public class TaiQuayController {
     @Autowired
     PhuongThucThanhToanRepository phuongThucThanhToanRepository;
 
+    //TODO THANH TOAN
     @GetMapping("/thanhtoan")
-    public String thanhtoan(@RequestParam("tongTien") BigDecimal tongTien,
-                            @RequestParam("ghiChu") String ghiChu,
-                            @RequestParam("phuongThucThanhToan") Integer phuongThucId
+    public String thanhtoan(
+            @RequestParam("ghiChu") String ghiChu,
+            @RequestParam("phuongThucThanhToan") Integer phuongThucId,
+            @RequestParam(value = "maPhieuGiamGia", required = false) String maPhieuGiamGiaInput
             , Model model) {
-        System.out.println("Ghi chú nhận được: " + ghiChu);
-        model.addAttribute("tongTien", tongTien);
+        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại."));
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
 
-        HoaDon hoaDon = new HoaDon();
-        if (tongTien.compareTo(BigDecimal.ZERO) == 0) {
-            hoaDon.setTrangThai(1);
-            hoaDonRepository.save(hoaDon);
-            return "redirect:/admin/taiquay";
-        } else {
-            hoaDon = hoaDonRepository.findById(idHoaDon).orElseThrow(() -> new DataNotFoundException("Product not found"));;
-
-            PhuongThucThanhToan phuongThuc = phuongThucThanhToanRepository.findById(phuongThucId).orElse(null);
-
-            hoaDon.setPhuongThucThanhToan(phuongThuc);
-            hoaDon.setTrangThai(2);
-            hoaDon.setGhiChu(ghiChu);
-            hoaDon.setTongTien(tongTien);
-            hoaDonRepository.save(hoaDon);
-            return "redirect:/admin/hoadon";
+        BigDecimal tongTien = hoaDonChiTietList.stream()
+                .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal tongTienSauGiam = tongTien;
+        System.out.println("Ma PGG Input: "+maPhieuGiamGiaInput);
+        if (maPhieuGiamGiaInput != null && !maPhieuGiamGiaInput.isEmpty()) {
+            try {
+                PhieuGiamGia phieuGiamGia = phieuGiamGiaRepository.findByMaPhieuGiamGia(maPhieuGiamGiaInput)
+                        .orElseThrow(() -> new IllegalArgumentException("Mã phiếu giảm giá không hợp lệ."));
+                tongTienSauGiam = phieuGiamGiaService.applyDiscount(maPhieuGiamGiaInput, tongTien);
+                hoaDon.setPhieuGiamGia(phieuGiamGia);
+            } catch (IllegalArgumentException e) {
+                model.addAttribute("error", e.getMessage());
+                return "redirect:/admin/taiquay/detail/" + idHoaDon;
+            }
         }
+        model.addAttribute("tongTien", tongTien);
+        PhuongThucThanhToan phuongThuc = phuongThucThanhToanRepository.findById(phuongThucId).orElse(null);
+        hoaDon.setPhuongThucThanhToan(phuongThuc);
+        hoaDon.setTrangThai(tongTienSauGiam.compareTo(BigDecimal.ZERO) == 0 ? 1 : 2);
+        hoaDon.setGhiChu(ghiChu);
+        hoaDon.setTongTien(tongTienSauGiam);
 
+        hoaDonRepository.save(hoaDon);
 
+        return "redirect:/admin/hoadon";
     }
 
-
+    //  TODO ADDSP
     @GetMapping("/add-sanpham-hdct/{id}")
     public String addSanPhamHDCT(@PathVariable("id") Integer id,
                                  @RequestParam(value = "page", defaultValue = "0") int page,
@@ -488,7 +498,7 @@ public class TaiQuayController {
             }
         }
 
-        if(!checkCongDon) {
+        if (!checkCongDon) {
             HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
                     .orElseThrow(() -> new DataNotFoundException("Không tìm thấy hóa đơn"));
 
@@ -511,11 +521,11 @@ public class TaiQuayController {
                 model.addAttribute("listHDCT", hoaDonChiTietList);
             }
         }
-        model.addAttribute("idHoaDon",idHoaDon);
+        model.addAttribute("idHoaDon", idHoaDon);
         return "redirect:/admin/taiquay/sanpham#sanpham";
     }
 
-
+    //TODO XOA SP
     @GetMapping("/xoa-sanpham-hdct/{id}")
     public String xoaSanPhamHDCT(@PathVariable("id") Integer id, Model model) {
         // Tìm sản phẩm chi tiết trong hóa đơn chi tiết theo ID
@@ -539,4 +549,55 @@ public class TaiQuayController {
         return "redirect:/admin/taiquay/detail/" + idHoaDon;
     }
 
+    // Controller
+    @DeleteMapping("/huyhoadon/{id}")
+    @ResponseBody
+    public ResponseEntity<?> huyHoaDon(@PathVariable("id") Integer id) {
+        try {
+            hoaDonService.cancelHoaDon(id);
+            return ResponseEntity.ok("Hóa đơn đã được hủy thành công.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy hóa đơn để hủy.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể hủy hóa đơn.");
+        }
+    }
+
+    //TODO: Kiem Tra Phieu Giam Gia
+    @GetMapping("/kiemtrama/{maphieugiamgia}")
+    public String kiemTraMaGiamGia(@PathVariable("maphieugiamgia") String maPhieuGiamGiaInput,
+                                   Model model) {
+        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại."));
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
+        System.out.println("Ma Phieu Giam Gia Input : " + maPhieuGiamGiaInput);
+        try {
+            BigDecimal tongTien = hoaDonChiTietList.stream()
+                    .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal tongTienSauGiam = phieuGiamGiaService.applyDiscount(maPhieuGiamGiaInput, tongTien);
+            hoaDon.setTongTien(tongTienSauGiam);
+            hoaDonRepository.save(hoaDon);
+            maPhieuGiamGia = maPhieuGiamGiaInput;
+//            model.addAttribute("tongTien", tongTien);
+            model.addAttribute("hoaDon", hoaDon);
+//            model.addAttribute("tongTienSauGiam", tongTienSauGiam);
+            model.addAttribute("message", "Mã giảm giá hợp lệ!");
+            model.addAttribute("maPhieuGiamGia", maPhieuGiamGia);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "redirect:/admin/taiquay/detail/" + idHoaDon;
+    }
+
+    @PostMapping("/kiemtrama")
+    private String maGiamGiaPost(
+            Model model, @RequestParam(name = "maphieugiamgia") String maPhieuGiamGia
+    ) {
+        try {
+            return kiemTraMaGiamGia(maPhieuGiamGia, model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
 }

@@ -2,7 +2,12 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
+import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
+import nhom6.duancanhan.doantotnghiep.entity.SanPham;
+import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
+import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
+import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,12 +21,21 @@ import java.util.Optional;
 @Service
 public class HoaDonServiceImpl implements HoaDonService {
 
-   @Autowired
-   private HoaDonRepository hoaDonRepository;
+    private final HoaDonRepository hoaDonRepository;
+    private final HoaDonChiTietRepository hoaDonChiTietRepository;
+    private final SanPhamChiTietRepository sanPhamChiTietRepository;
+
+    public HoaDonServiceImpl(HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, SanPhamChiTietRepository sanPhamChiTietRepository) {
+        this.hoaDonRepository = hoaDonRepository;
+        this.hoaDonChiTietRepository = hoaDonChiTietRepository;
+        this.sanPhamChiTietRepository = sanPhamChiTietRepository;
+    }
+
     @Override
     public List<HoaDon> getAll() {
         return hoaDonRepository.findAll();
     }
+
     @Override
     public Page<HoaDon> phanTrang(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize);
@@ -55,6 +69,34 @@ public class HoaDonServiceImpl implements HoaDonService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return hoaDonRepository.findByTenNguoiNhanContaining(keyword, pageable);
     }
+
+    //    @Override
+//    public void cancelHoaDon(Integer id) {
+//        HoaDon hoaDon = hoaDonRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với id: "+id));
+//        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findHoaDonChiTietById(id);
+//        hoaDonChiTietList.forEach(hoaDonChiTiet -> {
+//            SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
+//            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSoLuong());
+//            sanPhamChiTietRepository.save(sanPhamChiTiet);
+//        });
+//        hoaDonRepository.delete(hoaDon);
+//    }
+    @Override
+    public void cancelHoaDon(Integer id) {
+        HoaDon hoaDon = hoaDonRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với id: " + id));
+
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findHoaDonChiTietById(id);
+        for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
+            SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSoLuong());
+            sanPhamChiTietRepository.save(sanPhamChiTiet);
+        }
+        hoaDonRepository.delete(hoaDon);
+    }
+
+
 
 //    @Override
 //    public PageDTO<List<HoaDonDTO>> phanTrang(PageRequestDTO pageRequestDTO) {

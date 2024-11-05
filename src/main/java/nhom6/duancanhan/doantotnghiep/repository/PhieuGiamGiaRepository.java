@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Integer> {
@@ -27,5 +29,5 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Inte
             @Param("kieuGiamGia") Integer kieuGiamGia,
             @Param("trangThai") Integer trangThai,
             Pageable pageable);
-
+    Optional<PhieuGiamGia> findByMaPhieuGiamGia(String maPhieuGiamGia);
 }

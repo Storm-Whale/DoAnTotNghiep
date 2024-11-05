@@ -1,4 +1,5 @@
 package nhom6.duancanhan.doantotnghiep.controller;
+
 import jakarta.servlet.http.HttpSession;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
@@ -102,9 +103,9 @@ public class LoginController {
 
     @PostMapping("/login2")
     public String login2(@RequestParam String username,
-                        @RequestParam String password,
-                        RedirectAttributes redirectAttributes,
-                        HttpSession session) {
+                         @RequestParam String password,
+                         RedirectAttributes redirectAttributes,
+                         HttpSession session) {
         System.out.println("Đang thực hiện đăng nhập với tên người dùng: " + username);
 
 
@@ -148,8 +149,6 @@ public class LoginController {
     }
 
 
-
-
     @GetMapping("/add")
     public String addUser(@ModelAttribute TaiKhoan user) {
         taiKhoanService.addTaiKhoan(user);
@@ -162,11 +161,12 @@ public class LoginController {
     }
 
     @GetMapping("ad")
-    public String Hienthi () {
+    public String Hienthi() {
         return "/client/Loginadmin";
     }
+
     @GetMapping("dk")
-    public String Hienthi2 () {
+    public String Hienthi2() {
         return "/client/Dangky";
     }
 
@@ -181,7 +181,7 @@ public class LoginController {
     public String dangKy(@ModelAttribute TaiKhoan taiKhoan, @ModelAttribute KhachHang khachHang) {
         // Thiết lập trạng thái tài khoản là 1
         taiKhoan.setTrangThai(1); // Thêm dòng này
-taiKhoan.setNgayTao(LocalDate.now());
+        taiKhoan.setNgayTao(LocalDate.now());
         khachHang.setTrangThai(1);
         khachHang.setNgayTao(LocalDate.now());
         khachHang.setAnhUrl("img_1.png");

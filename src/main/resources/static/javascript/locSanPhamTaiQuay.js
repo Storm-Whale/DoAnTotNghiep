@@ -3,14 +3,16 @@ function submitForm() {
 }
 
 let debounceTimer;
+
 function submitForm() {
     clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(function() {
+    debounceTimer = setTimeout(function () {
         document.getElementById("filterForm").submit();
     }, 500);  // Trì hoãn 500ms trước khi submit form
 }
 
 let timeout = null;
+
 function submitAjaxForm() {
     clearTimeout(timeout);  // Xóa timeout nếu người dùng vẫn đang nhập
 
