@@ -34,8 +34,8 @@ public class SanPhamController {
             @RequestParam(name = "chatLieuId", required = false) Integer chatLieuId,
             @RequestParam(name = "tayAoId", required = false) Integer tayAoId,
             @RequestParam(name = "coAoId", required = false) Integer coAoId,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size, // Đặt mặc định là 10
-            @PageableDefault(size = 10) Pageable pageable, // Đặt mặc định là 10
+            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
+            @PageableDefault(size = 10) Pageable pageable,
             Model model
     ) {
         // Sử dụng size từ @RequestParam để phân trang

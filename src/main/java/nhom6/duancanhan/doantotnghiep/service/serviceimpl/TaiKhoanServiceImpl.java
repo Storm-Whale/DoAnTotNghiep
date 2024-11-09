@@ -54,17 +54,17 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
     public TaiKhoan findByTenDangNhap(String tenDangNhap) {
         return taiKhoanRepository.findByTenDangNhap(tenDangNhap);
     }
+
     @Override
     public TaiKhoan saveTaiKhoan(TaiKhoan taiKhoan) {
         return taiKhoanRepository.save(taiKhoan);
     }
 
 
-    @Override
-    public TaiKhoan findByResetCode(String resetCode) {
-        return taiKhoanRepository.findByResetCode(resetCode)
-                .orElse(null);
-    }
+//    @Override
+//    public TaiKhoan findByResetCode(String resetCode) {
+//        return taiKhoanRepository.findByResetCode(resetCode);
+//    }
 
     @Override
     public boolean checkAccount(String username, String password) {

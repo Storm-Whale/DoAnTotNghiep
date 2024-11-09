@@ -1,0 +1,134 @@
+.voucher-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 1px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+}
+
+.voucher-details {
+    margin-left: 10px;
+    flex-grow: 1;
+}
+
+.radio-container {
+    display: flex;
+    align-items: center;
+}
+
+.custom-radio {
+    transform: scale(1.325);
+    margin-left: 10px;
+}
+
+.modal-body {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(147, 147, 147, 0.7);
+    display: none;
+    z-index: 999;
+}
+
+.address-container,
+.add-address-container {
+    width: 450px;
+    max-height: 70vh;
+    overflow-y: auto;
+    margin: 10px auto;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+.address-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+.address-info {
+    flex: 4;
+    margin-left: 10px;
+}
+
+.address-info strong {
+    display: block;
+}
+
+.address-update {
+    flex: 1;
+    text-align: right;
+}
+
+.address-update .update {
+    color: blue;
+    cursor: pointer;
+}
+
+.update-btn {
+    text-align: center;
+    width: 90px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.buttons .cancel {
+    background-color: #f0f0f0;
+}
+
+.buttons .confirm {
+    background-color: #ff4500;
+    color: white;
+}
+
+.add-address {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.add-address button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+input[type="radio"] {
+    width: 15px;
+    height: 15px;
+}

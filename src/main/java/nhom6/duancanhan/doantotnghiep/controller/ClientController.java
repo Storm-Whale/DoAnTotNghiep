@@ -7,14 +7,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import nhom6.duancanhan.doantotnghiep.dto.AnhSanPhamResponse;
-import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietRequest;
-import nhom6.duancanhan.doantotnghiep.dto.SanPhamGioHangCustom;
-import nhom6.duancanhan.doantotnghiep.dto.SanPhamShowOnClient;
+import nhom6.duancanhan.doantotnghiep.dto.*;
 import nhom6.duancanhan.doantotnghiep.entity.*;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.*;
 import nhom6.duancanhan.doantotnghiep.service.service.AnhSanPhamService;
+import nhom6.duancanhan.doantotnghiep.service.service.DiaChiService;
+import nhom6.duancanhan.doantotnghiep.service.service.PhieuGiamGiaService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
 import nhom6.duancanhan.doantotnghiep.util.ChangeNumberOfDetailProduct;
 import org.springframework.http.HttpStatus;
@@ -32,12 +31,12 @@ import java.util.stream.Collectors;
 public class ClientController {
 
     //  TODO: Khai Báo Inject Rep or Component
+    private final DiaChiService diaChiService;
     private final SanPhamService sanPhamService;
     private final HoaDonRepository hoaDonRepository;
     private final GioHangRepository gioHangRepository;
     private final AnhSanPhamService anhSanPhamService;
-    private final DiaChiRepository diaChiRepossitory;
-    private final NhanVienRepository nhanVienRepository;
+    private final PhieuGiamGiaService phieuGiamGiaService;
     private final KhachHangRepository khachHangRepository;
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
@@ -46,7 +45,7 @@ public class ClientController {
     private final PhuongThucThanhToanRepository phuongThucThanhToanRepository;
 
     //  TODO: Access Home Client
-    @GetMapping()
+    @GetMapping
     private String index(
             @SessionAttribute(value = "user", required = false) KhachHang khachHang,
             HttpSession session, Model model
@@ -59,16 +58,18 @@ public class ClientController {
             model.addAttribute("user", null);
         } else {
             model.addAttribute("user", khachHang);
-            System.out.println("ID Khach Hang : " + khachHang.getId());
         }
 
-        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient());
+        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
         return "client/trangchu";
     }
 
     //  TODO: Detail Sản Phẩm Chi Tiết từ ID Sản Phẩm
     @GetMapping("/san_pham_chi_tiet/{id}")
-    private String sanPhamChiTiet(@PathVariable int id, Model model) {
+    private String sanPhamChiTiet(
+            @SessionAttribute(value = "user", required = false) KhachHang khachHang,
+            @PathVariable int id, Model model
+    ) {
         // Retrieve product details by ID
         List<SanPhamChiTiet> sanPhamChiTietList = sanPhamChiTietRepository.findSanPhamChiTietByIdSanPham(id);
 
@@ -150,13 +151,14 @@ public class ClientController {
             e.printStackTrace();
         }
 
+        model.addAttribute("user", khachHang);
         model.addAttribute("idSP", id);
         model.addAttribute("kichCoSet", sortedSizes);
         model.addAttribute("mauSacToAnhDaiDienMap", sortedColorToImageMap);
         model.addAttribute("anhSanPhamResponseList", detailImageList);
         model.addAttribute("infoSP", sanPhamShowOnClient);
         model.addAttribute("firstImageUrl", firstImage != null ? firstImage.getAnhUrl() : "img/default-image.jpg");
-
+        model.addAttribute("sp_random", sanPhamService.getAllSanPhamShowOnClient("get-random"));
         return "/client/chitiet";
     }
 
@@ -164,20 +166,21 @@ public class ClientController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/add_sp_vao_gio_hang/{idSP}")
     private void addSpVaoGioHang(
+            @SessionAttribute(value = "user") KhachHang khachHang,
             @PathVariable(name = "idSP") int idSP, @RequestParam(name = "soluong") Integer soluong,
             @RequestParam(name = "mausac") Integer idMauSac, @RequestParam(name = "kichco") Integer idKichCo,
             HttpServletRequest httpServletRequest, Model model
     ) {
-        addSPGH(idSP, idKichCo, idMauSac, soluong);
+        Integer idGioHang = gioHangRepository.findByKhachHangId(khachHang.getId()).getId();
+        addSPGH(khachHang.getId(), idGioHang, idSP, idKichCo, idMauSac, soluong);
     }
 
     //  TODO: Giỏ Hàng Sản Phẩm Chi Tiết Muốn Mua
     @GetMapping("/gio-hang")
     public String gioHang(
+            @SessionAttribute(value = "user") KhachHang khachHang,
             Model model
     ) {
-        KhachHang khachHang = khachHangRepository.findById(1)
-                .orElseThrow(() -> new DataNotFoundException("Không tìm thấy khách hàng"));
         GioHang gioHang = gioHangRepository.findByKhachHangId(khachHang.getId());
 
         List<Integer> listIDSPGH = new ArrayList<>();
@@ -208,49 +211,47 @@ public class ClientController {
                         LinkedHashMap::new
                 ));
 
+        model.addAttribute("user", khachHang);
         model.addAttribute("listIDSPGH", listIDSPGH);
         model.addAttribute("thuongHieuSPGHListHashMap", sortedMap);
         return "/client/gio_hang";
     }
 
+    //  TODO : Gio-Hang Post & Mua And Buy Quickly
     @PostMapping("/gio-hang")
-    private String gioHangPost(Model model) {
+    private String gioHangPost(
+            @SessionAttribute(value = "user") KhachHang khachHang,
+            @RequestParam(name = "buyNow", required = false) String buyNow,
+            @RequestParam(name = "idSP", required = false) Integer idSP,
+            @RequestParam(name = "mausac", required = false) Integer idMauSac,
+            @RequestParam(name = "kichco", required = false) Integer idKichCo,
+            @RequestParam(name = "soluong", required = false) Integer soluong,
+            Model model
+    ) {
         try {
-            return gioHang(model);
+            GioHang gioHang = gioHangRepository.findByKhachHangId(khachHang.getId());
+            //  What For : Chức năng mua nhanh
+            if (buyNow != null && !buyNow.isEmpty()) {
+                SanPhamGioHang sanPhamGioHang = addSPGH(khachHang.getId(), gioHang.getId(), idSP, idKichCo, idMauSac, soluong);
+            }
+            return gioHang(khachHang, model);
         } catch (Exception e) {
             e.printStackTrace();
             return e.getMessage();
         }
     }
 
-    //  TODO: Check-Out Sản Phẩm Chi Tiết & Mua And Buy Quickly
+    //  TODO: Check-Out Sản Phẩm Chi Tiết
     @PostMapping(value = "/check-out")
     @ResponseStatus(HttpStatus.OK)
     private String checkOut(
-            @RequestParam(name = "buyNow", required = false) String buyNow,
-            @RequestParam(name = "idSP", required = false) Integer idSP,
-            @RequestParam(name = "mausac", required = false) Integer idMauSac,
-            @RequestParam(name = "kichco", required = false) Integer idKichCo,
-            @RequestParam(name = "soluong", required = false) Integer soluong,
+            @SessionAttribute(value = "user") KhachHang khachHang,
             @RequestParam("productIds") List<Integer> listIDSPGHJson,
             Model model
     ) {
         List<SanPhamGioHangCustom> sanPhamGioHangCustomList = new ArrayList<>();
         List<Integer> listIDSPGH = new ArrayList<>();
-
-        //  What For : Chức năng mua nhanh
-        if (buyNow != null && !buyNow.isEmpty()) {
-            SanPhamGioHang sanPhamGioHang = addSPGH(idSP, idKichCo, idMauSac, soluong);
-            AnhSanPhamResponse anhSanPhamResponse = anhSanPhamService
-                    .getAnhSanPhamByIdSPCT(sanPhamGioHang.getSanPhamChiTiet().getId()).get(0);
-            sanPhamGioHangCustomList.add(SanPhamGioHangCustom.builder()
-                    .sanPhamGioHang(sanPhamGioHang)
-                    .anhUrl(anhSanPhamResponse.getAnhUrl())
-                    .build());
-            listIDSPGH.add(sanPhamGioHang.getId());
-            int idspct = sanPhamGioHang.getSanPhamChiTiet().getId();
-            return "redirect:/gio-hang";
-        }
+        GioHang gioHang = gioHangRepository.findByKhachHangId(khachHang.getId());
 
         //  What For : Hiển thị list các sản phẩm check out nếu không mua nhanh
         if (listIDSPGHJson != null && !listIDSPGHJson.isEmpty()) {
@@ -275,9 +276,23 @@ public class ClientController {
         //  What For : Calculate shipping fee as 10% of the total amount
         BigDecimal phiShip = tongTien.multiply(BigDecimal.valueOf(0.1));
 
+        List<DiaChi> diaChiList = diaChiService.getDiaChiByIdKhachHang(khachHang.getId());
+        List<PhieuGiamGiaResponse> phieuGiamGiaResponseList = phieuGiamGiaService.getPGGByTrangThai(1);
+        if (!phieuGiamGiaResponseList.isEmpty()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new JavaTimeModule());
+                model.addAttribute("diaChiList", objectMapper.writeValueAsString(diaChiList));
+                model.addAttribute("phieugiamgia", objectMapper.writeValueAsString(phieuGiamGiaResponseList));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        model.addAttribute("user", khachHang);
         model.addAttribute("listSP", sanPhamGioHangCustomList);
         model.addAttribute("phiShip", phiShip);
-        model.addAttribute("tongTien", tongTien.subtract(phiShip));
+        model.addAttribute("tongTien", tongTien);
         model.addAttribute("listIDSPGH", listIDSPGH);
         return "/client/check-out";
     }
@@ -285,65 +300,65 @@ public class ClientController {
     //  TODO: Thanh Toán Sản Phẩm Chi Tiết
     @PostMapping("/thanh-toan")
     private void thanhToan(
+            @SessionAttribute(value = "user") KhachHang khachHang,
             @RequestParam(name = "tongTien") BigDecimal tongTien,
             @RequestParam(name = "pttt") Integer pttt,
             @RequestParam(name = "listIDSPGH") String listIDSPGHString,
+            @RequestParam(name = "idDiaChi") String idDiaChi,
+            @RequestParam(name = "maPGG", required = false) String maPGG,
+            @RequestParam(name = "ghiChu", required = false) String ghiChu,
             Model model
     ) {
-        // Parse JSON array string to List<Integer>
+        DiaChi diaChi = diaChiService.getDiaChiById(Integer.parseInt(idDiaChi));
+        PhuongThucThanhToan phuongThucThanhToan = phuongThucThanhToanRepository.findById(pttt)
+                .orElseThrow(() -> new DataNotFoundException("Không tìm thấy phương thức thanh toán"));
+        PhieuGiamGia phieuGiamGia = (maPGG == null || maPGG.isEmpty()) ? null : phieuGiamGiaService.getByMaPhieuGiamGia(maPGG);
+
         List<Integer> listIDSPGH;
         try {
-            listIDSPGH = new ObjectMapper().readValue(listIDSPGHString, new TypeReference<>() {
-            });
+            listIDSPGH = new ObjectMapper().readValue(listIDSPGHString, new TypeReference<>() {});
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Invalid list format for listIDSPGH", e);
         }
 
-        // Fetch the customer (assuming ID 1 for this example)
-        KhachHang khachHang = khachHangRepository.findById(1)
-                .orElseThrow(() -> new DataNotFoundException("Không tìm thấy khách hàng"));
-
-        // Create a new HoaDon (invoice) object and save it
-        HoaDon hoaDon = hoaDonRepository.save(HoaDon.builder()
+        HoaDon hoaDon = HoaDon.builder()
                 .khachHang(khachHang)
-                .tenNguoiNhan(khachHang.getTen())
-                .sdt(khachHang.getSoDienThoai())
+                .tenNguoiNhan(diaChi.getTenKhachHang())
+                .sdt(diaChi.getSoDienThoai())
                 .emailNguoiNhan(khachHang.getEmail())
-                .diaChi(diaChiRepossitory.findByKhachHangId(1).get(0))
-                .phuongThucThanhToan(phuongThucThanhToanRepository.findById(pttt)
-                        .orElseThrow(() -> new DataNotFoundException("Không tìm thấy phương thức thanh toán")))
+                .diaChi(diaChi)
+                .phuongThucThanhToan(phuongThucThanhToan)
+                .phieuGiamGia(phieuGiamGia)
                 .tongTien(tongTien)
+                .ghiChu(ghiChu)
                 .trangThai(1)
-                .build());
+                .build();
+        hoaDon = hoaDonRepository.save(hoaDon);
 
-        // Loop through the product IDs and save HoaDonChiTiet (invoice details)
         for (int idSPGH : listIDSPGH) {
             SanPhamGioHang sanPhamGioHang = sanPhamGioHangRepository.findById(idSPGH)
-                    .orElseThrow(() -> new DataNotFoundException("Không thể tìm thấy sản phẩm giỏ hàng"));
+                    .orElseThrow(() -> new DataNotFoundException("Không thể tìm thấy sản phẩm giỏ hàng với ID: " + idSPGH));
             sanPhamGioHang.setTrangThai(0);
             sanPhamGioHangRepository.save(sanPhamGioHang);
-            hoaDonChiTietRepository.save(HoaDonChiTiet.builder()
+            HoaDonChiTiet hoaDonChiTiet = HoaDonChiTiet.builder()
                     .gia(sanPhamGioHang.tongTien())
                     .hoaDon(hoaDon)
                     .sanPhamChiTiet(sanPhamGioHang.getSanPhamChiTiet())
                     .soLuong(sanPhamGioHang.getSoLuong())
-                    .build());
+                    .build();
+            hoaDonChiTietRepository.save(hoaDonChiTiet);
         }
-    }
-
-    @GetMapping("/client")
-    public String home(HttpSession session, Model model) {
-        String currentUser = (String) session.getAttribute("currentUser");
-        if (currentUser == null || currentUser.isEmpty()) {
-            return "redirect:/client/LG";
-        }
-        model.addAttribute("currentUser", currentUser);
-        return "/client/trangchu";
     }
 
     //  TODO: Update Sản Phẩm Chi Tiết In Giỏ Hàng
-    private SanPhamGioHang addSPGH(Integer idSP, Integer idKichCo, Integer idMauSac, Integer soluong) {
-        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findSanPhamChiTietBySanPhamIdAndKichCoIdAndMauSacId(idSP, idKichCo, idMauSac);
+    private SanPhamGioHang addSPGH(
+            Integer idKhachHang, Integer idGioHang, Integer idSP, Integer idKichCo, Integer idMauSac, Integer soluong
+    ) {
+        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository
+                .findSanPhamChiTietBySanPhamIdAndKichCoIdAndMauSacId(idSP, idKichCo, idMauSac);
+        GioHang gioHang = gioHangRepository.findById(idGioHang)
+                .orElseThrow(() -> new DataNotFoundException("Không tìm thấy giỏ hàng"));
+
         int idspct = sanPhamChiTiet.getId();
         SanPhamGioHang sanPhamGioHang;
 
@@ -351,18 +366,15 @@ public class ClientController {
         if (!sanPhamGioHangRepository.existsBySanPhamChiTietIdAndTrangThai(idspct, 1)) {
             // Nếu sản phẩm chi tiết không tồn tại trong giỏ hàng, thêm sản phẩm mới
             changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, soluong, "-");
-            KhachHang khachHang = khachHangRepository.findById(1).orElseThrow(() -> new DataNotFoundException("Không tìm thấy khách hàng"));
-            GioHang gioHang = gioHangRepository.findById(1).orElseThrow(() -> new DataNotFoundException("Không tìm thấy giỏ hàng"));
-            sanPhamGioHang = SanPhamGioHang.builder()
-                    .gioHang(gioHang)
-                    .sanPhamChiTiet(sanPhamChiTiet)
-                    .soLuong(soluong)
-                    .trangThai(1)
-                    .build();
+            KhachHang khachHang = khachHangRepository.findById(idKhachHang)
+                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy khách hàng"));
+            sanPhamGioHang = SanPhamGioHang.builder().gioHang(gioHang).sanPhamChiTiet(sanPhamChiTiet).soLuong(soluong).trangThai(1).build();
         } else {
             // Nếu sản phẩm chi tiết đã tồn tại trong giỏ hàng, cập nhật số lượng
-            sanPhamGioHang = sanPhamGioHangRepository.findSanPhamGioHangByGioHangIdAndSanPhamChiTietIdAndTrangThai(1, idspct, 1);
-            sanPhamGioHang.setSoLuong(sanPhamGioHang.getSoLuong() + soluong);
+            sanPhamGioHang = sanPhamGioHangRepository
+                    .findSanPhamGioHangByGioHangIdAndSanPhamChiTietIdAndTrangThai(idGioHang, idspct, 1);
+            int soLuongSPGH = sanPhamGioHang.getSoLuong();
+            sanPhamGioHang.setSoLuong(soLuongSPGH + soluong);
             changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, soluong, "-");
         }
 

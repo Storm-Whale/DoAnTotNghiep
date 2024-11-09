@@ -23,11 +23,11 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Inte
             "(:kieuGiamGia IS NULL OR p.kieuGiamGia = :kieuGiamGia) AND " +
             "(:trangThai IS NULL OR p.trangThai = :trangThai)")
     Page<PhieuGiamGia> findByCriteria(
-            @Param("keyword") String keyword,
-            @Param("ngayBatDau") Date ngayBatDau,
-            @Param("ngayKetThuc") Date ngayKetThuc,
-            @Param("kieuGiamGia") Integer kieuGiamGia,
-            @Param("trangThai") Integer trangThai,
-            Pageable pageable);
+            @Param("keyword") String keyword, @Param("ngayBatDau") Date ngayBatDau,
+            @Param("ngayKetThuc") Date ngayKetThuc, @Param("kieuGiamGia") Integer kieuGiamGia,
+            @Param("trangThai") Integer trangThai, Pageable pageable);
+
     Optional<PhieuGiamGia> findByMaPhieuGiamGia(String maPhieuGiamGia);
+
+    List<PhieuGiamGia> findPhieuGiamGiaByTrangThai(Integer trangThai);
 }

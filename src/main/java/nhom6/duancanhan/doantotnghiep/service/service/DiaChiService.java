@@ -18,4 +18,8 @@ public interface DiaChiService {
     void updateDiaChi(Integer id, DiaChi diaChi);
 
     void deleteDiaChi(Integer id);
+
+    DiaChi getDiaChiById(Integer id);
+
+    List<DiaChi> getDiaChiByIdKhachHang (Integer idKhachHang);
 }

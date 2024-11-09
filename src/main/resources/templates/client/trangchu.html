@@ -73,75 +73,81 @@
 </header>
 
 <main>
-    <div class="carousel slide" id="carouselDemo" data-bs-wrap="true" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="https://www.festival.com.vn/wp-content/uploads/2022/01/banner-center.png" class="w-100">
-                <div class="carousel-caption">
-                    <h5></h5>
-                    <p></p>
-                </div>
-            </div>
+    <div class="container">
+        <div class="container my-4">
+            <div class="position-relative">
+                <!-- Carousel -->
+                <div id="carouselDemo" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="https://www.festival.com.vn/wp-content/uploads/2022/01/banner-center.png"
+                                 class="d-block w-100"
+                                 style="height: 400px; object-fit: cover;">
+                        </div>
 
-            <div class="carousel-item " data-bs-interval="2000">
-                <img src="https://aopickleballthietke.com/wp-content/uploads/2023/12/Banner-trang-chu-Ao-Pickleball-Thiet-Ke-1400x533.png"
-                     class="w-100">
-                <div class="carousel-caption">
-                    <h5></h5>
-                    <p></p>
-                </div>
-            </div>
+                        <div class="carousel-item" data-bs-interval="2000">
+                            <img src="https://aopickleballthietke.com/wp-content/uploads/2023/12/Banner-trang-chu-Ao-Pickleball-Thiet-Ke-1400x533.png"
+                                 class="d-block w-100"
+                                 style="height: 400px; object-fit: cover;">
+                        </div>
 
-            <div class="carousel-item ">
-                <img src="https://intphcm.com/data/upload/banner-thoi-trang-bi-an.jpg" class="w-100">
-                <div class="carousel-caption">
-                    <h5></h5>
-                    <p></p>
+                        <div class="carousel-item">
+                            <img src="https://intphcm.com/data/upload/banner-thoi-trang-bi-an.jpg"
+                                 class="d-block w-100"
+                                 style="height: 400px; object-fit: cover;">
+                        </div>
+                    </div>
+
+                    <!-- Carousel Controls -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselDemo" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselDemo" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
+                <!-- Half-overlapping Thumbnails -->
+                <div class="position-absolute start-50 translate-middle-x" style="bottom: -25px; z-index: 2;">
+                    <div class="d-flex justify-content-center gap-3 p-2">
+                        <button type="button" data-bs-target="#carouselDemo" data-bs-slide-to="0" class="active p-0 border-0">
+                            <img src="https://www.festival.com.vn/wp-content/uploads/2022/01/banner-center.png"
+                                 style="width: 80px; object-fit: cover; opacity: 0.5; transition: opacity 0.3s;">
+                        </button>
+                        <button type="button" data-bs-target="#carouselDemo" data-bs-slide-to="1" class="p-0 border-0">
+                            <img src="https://aopickleballthietke.com/wp-content/uploads/2023/12/Banner-trang-chu-Ao-Pickleball-Thiet-Ke-1400x533.png"
+                                 style="width: 80px; object-fit: cover; opacity: 0.5; transition: opacity 0.3s;">
+                        </button>
+                        <button type="button" data-bs-target="#carouselDemo" data-bs-slide-to="2" class="p-0 border-0">
+                            <img src="https://intphcm.com/data/upload/banner-thoi-trang-bi-an.jpg"
+                                 style="width: 80px; object-fit: cover; opacity: 0.5; transition: opacity 0.3s;">
+                        </button>
+                    </div>
                 </div>
             </div>
+            <!-- Add margin bottom to container to account for overlapping thumbnails -->
+            <div style="margin-bottom: 40px;"></div>
         </div>
 
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselDemo" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselDemo" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
-
-        <div class="carousel-indicators">
-            <button type="button" class="active" data-bs-target="#carouselDemo" data-bs-slide-to="0">
-                <img src="https://www.festival.com.vn/wp-content/uploads/2022/01/banner-center.png"/>
-            </button>
-
-            <button type="button" data-bs-target="#carouselDemo" data-bs-slide-to="1">
-                <img src="https://aopickleballthietke.com/wp-content/uploads/2023/12/Banner-trang-chu-Ao-Pickleball-Thiet-Ke-1400x533.png"/>
-            </button>
-
-            <button type="button" data-bs-target="#carouselDemo" data-bs-slide-to="2">
-                <img src="https://intphcm.com/data/upload/banner-thoi-trang-bi-an.jpg"/>
-            </button>
-        </div>
-
+        <section class="filters mt-3">
+            <button class="filter-button" onclick="toggleFilter()">Bộ lọc</button>
+            <div class="gender-selection"></div>
+            <select class="sort-options">
+                <option value="default">Sắp xếp</option>
+                <option value="price-asc">Giá: Thấp đến Cao</option>
+                <option value="price-desc">Giá: Cao đến Thấp</option>
+                <option value="newest">Sản phẩm mới nhất</option>
+            </select>
+        </section>
     </div>
-    <section class="filters">
-        <button class="filter-button" onclick="toggleFilter()">Bộ lọc</button>
-        <div class="gender-selection"></div>
-        <select class="sort-options">
-            <option value="default">Sắp xếp</option>
-            <option value="price-asc">Giá: Thấp đến Cao</option>
-            <option value="price-desc">Giá: Cao đến Thấp</option>
-            <option value="newest">Sản phẩm mới nhất</option>
-        </select>
-    </section>
-
-    <div class="product-section">
-        <a th:href="@{/client/san_pham_chi_tiet/{id}(id=${sanpham.sanPhamResponse.id})}" class="product-card-link"
-           th:each="sanpham : ${sanphams}">
+    <div class="product-section mt-3">
+        <a th:href="@{/client/san_pham_chi_tiet/{id}(id=${sanpham.sanPhamResponse.id})}" class="product-card-link" th:each="sanpham : ${sanphams}">
             <div class="product-card">
                 <img th:src="@{/img/{anhUrl}(anhUrl=${sanpham.sanPhamResponse.anhUrl})}" alt="Product Image">
                 <p th:text="${sanpham.sanPhamResponse.tenSanPham}"></p>
-                <del>1,500,000₫</del>
                 <p class="price" th:text="${#numbers.formatDecimal(sanpham.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></p>
             </div>
         </a>

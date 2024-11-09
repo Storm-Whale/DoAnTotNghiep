@@ -29,7 +29,7 @@ public interface SanPhamService {
 
     Page<SanPhamResponse> timKiemSanPham(String keyword, Integer status, Integer thuongHieuId, Integer chatLieuId, Integer tayAoId, Integer coAoId, int page, int size);
 
-    List<SanPhamShowOnClient> getAllSanPhamShowOnClient();
+    List<SanPhamShowOnClient> getAllSanPhamShowOnClient(String method);
 
     SanPhamShowOnClient getSanPhamShowOnClientById(Integer id);
 }

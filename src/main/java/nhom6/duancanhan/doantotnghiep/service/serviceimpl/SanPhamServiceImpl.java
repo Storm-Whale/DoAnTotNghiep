@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -128,20 +129,33 @@ public class SanPhamServiceImpl implements SanPhamService {
     }
 
     @Override
-    public List<SanPhamShowOnClient> getAllSanPhamShowOnClient() {
+    public List<SanPhamShowOnClient> getAllSanPhamShowOnClient(String method) {
         return DatabaseOperationHandler.handleDatabaseOperation(() -> {
-            List<SanPhamResponse> sanPhamResponses = getAllSanPham();
+            List<SanPhamResponse> sanPhamResponses = new ArrayList<>(getAllSanPham()); // Mutable copy
+
+            // If the method is "get-random", shuffle and limit the list to 8 items
+            if ("get-random".equals(method)) {
+                Collections.shuffle(sanPhamResponses); // Shuffle the list
+                if (sanPhamResponses.size() > 8) {
+                    sanPhamResponses = sanPhamResponses.subList(0, 8); // Take first 8 elements
+                }
+            } else if (!"get-all".equals(method)) {
+                return null; // Invalid method, return null
+            }
+
             List<SanPhamShowOnClient> sanPhamShowOnClients = new ArrayList<>();
             for (SanPhamResponse sanPhamResponse : sanPhamResponses) {
                 SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findFirstBySanPhamId(sanPhamResponse.getId());
                 if (sanPhamChiTiet != null) {
-                    SanPhamShowOnClient sanPhamShowOnClient = SanPhamShowOnClient.builder()
-                            .sanPhamResponse(sanPhamResponse)
-                            .gia(sanPhamChiTiet.getGia())
-                            .build();
-                    sanPhamShowOnClients.add(sanPhamShowOnClient);
+                    sanPhamShowOnClients.add(
+                            SanPhamShowOnClient.builder()
+                                    .sanPhamResponse(sanPhamResponse)
+                                    .gia(sanPhamChiTiet.getGia())
+                                    .build()
+                    );
                 }
             }
+
             return sanPhamShowOnClients;
         }, "Lỗi khi lấy thông tin từ cơ sở dữ liệu");
     }
@@ -149,11 +163,11 @@ public class SanPhamServiceImpl implements SanPhamService {
     @Override
     public SanPhamShowOnClient getSanPhamShowOnClientById(Integer id) {
         return DatabaseOperationHandler.handleDatabaseOperation(() -> {
-                SanPham sanPham = findSanPhamById(id);
-                return SanPhamShowOnClient.builder()
-                        .sanPhamResponse(sanPhamMapper.toSanPhamResponse(sanPham))
-                        .build();
-            }, "Lỗi khi lấy thông tin sản phẩm từ cơ sở dữ liệu"
+                    SanPham sanPham = findSanPhamById(id);
+                    return SanPhamShowOnClient.builder()
+                            .sanPhamResponse(sanPhamMapper.toSanPhamResponse(sanPham))
+                            .build();
+                }, "Lỗi khi lấy thông tin sản phẩm từ cơ sở dữ liệu"
         );
     }
 

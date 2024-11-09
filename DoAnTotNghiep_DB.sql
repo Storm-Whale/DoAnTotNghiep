@@ -292,3 +292,12 @@ alter table tai_khoan
     add constraint tai_khoan_vai_tro_id_fk
         foreign key (id_vai_tro) references vai_tro
 go
+
+alter table dia_chi
+    add ten_khach_hang nvarchar(50)
+go
+
+alter table dia_chi
+    add so_dien_thoai nvarchar(11)
+go
+

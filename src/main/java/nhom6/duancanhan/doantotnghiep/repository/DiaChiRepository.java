@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface DiaChiRepository extends JpaRepository<DiaChi,Integer> {
 
-    List<DiaChi> findByKhachHangId(int khachHangId);
+    List<DiaChi> findByKhachHangId(Integer khachHangId);
 }

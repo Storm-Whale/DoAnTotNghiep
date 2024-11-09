@@ -100,7 +100,7 @@
         <div class="product-info">
             <form id="cart-form" th:action="@{/client/gio-hang}" method="post">
                 <input type="hidden" name="idSP" th:value="${idSP}">
-                <h1>Áo Sơ Mi Cuban Linen</h1>
+                <h1 th:text="${infoSP.getSanPhamResponse().getTenSanPham()}"></h1>
                 <div class="price" th:text="${#numbers.formatDecimal(giaBanDau, 0, 'POINT', 0, 'POINT')} + ' đ'"></div>
                 <div class="container mt-3">
                     <div class="color-options mb-3">
@@ -203,33 +203,14 @@
     <div class="similar-products">
         <div class="container">
             <h2 class="mb-4">Sản phẩm tương tự</h2>
-            <div class="row row-cols-2 row-cols-md-4 g-4">
-                <div class="col">
-                    <div class="card position-relative">
-                        <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Sản phẩm 1">
-                        <div class="card-body">
-                            <h5 class="card-title">Thảm nỉ lau chân hình chữ nhật...</h5>
-                            <p class="card-text text-danger fw-bold">1,000 đ</p>
-                        </div>
+            <div class="product-section">
+                <a th:each="sp_rd : ${sp_random}" th:href="@{/client/san_pham_chi_tiet/{id}(id=${sp_rd.sanPhamResponse.id})}" class="product-card-link">
+                    <div class="product-card">
+                        <img th:src="@{/img/{anhUrl}(anhUrl=${sp_rd.sanPhamResponse.anhUrl})}" alt="Product Image">
+                        <p th:text="${sp_rd.sanPhamResponse.tenSanPham}"></p>
+                        <p class="price" th:text="${#numbers.formatDecimal(sp_rd.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></p>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100 position-relative">
-                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">-83%</span>
-                        <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Sản phẩm 2">
-                        <div class="card-body">
-                            <h5 class="card-title">Túi Đựng Rác Có Dây Kéo loại...</h5>
-                            <p class="text-muted text-decoration-line-through">6,000 đ</p>
-                            <p class="card-text text-danger fw-bold">1,000 đ</p>
-                            <p>Đã bán 626</p>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between align-items-center">
-                            <span class="text-success">Free Shipping</span>
-                            <a href="#" class="btn btn-primary">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Repeat similar structure for other products -->
+                </a>
             </div>
         </div>
     </div>

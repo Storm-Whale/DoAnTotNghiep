@@ -1,6 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
+import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.KhachHangRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.KhachHangService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class KhachHangServiceImpl implements KhachHangService {
 
     @Autowired
     private KhachHangRepository khachHangRepository;
-
 
     @Override
     public List<KhachHang> getAll() {
@@ -31,10 +30,10 @@ public class KhachHangServiceImpl implements KhachHangService {
     }
 
     @Override
-    public Optional<KhachHang> detail(Integer id) {
-        Optional<KhachHang> khachHang = khachHangRepository.findById(id);
-        return Optional.of(khachHang.get());
-
+    public KhachHang detail(Integer id) {
+        return khachHangRepository.findById(id).orElseThrow(
+                (() -> new DataNotFoundException("Không tìm thấy khách hàng với id : " + id))
+        );
     }
 
     @Override
@@ -61,7 +60,7 @@ public class KhachHangServiceImpl implements KhachHangService {
 
     @Override
     public KhachHang findByIdTaiKhoan(int idTaiKhoan) {
-        return khachHangRepository.findByIdTaiKhoan(idTaiKhoan);
+        return khachHangRepository.findByTaiKhoanId(idTaiKhoan);
     }
 
     @Override
@@ -69,12 +68,9 @@ public class KhachHangServiceImpl implements KhachHangService {
         return khachHangRepository.save(khachHang);
     }
 
-
     @Override
     public KhachHang findBySoDienThoaiKhachHang(String soDienThoai) {
        List<KhachHang> khachHangs = khachHangRepository.findBySoDienThoai(soDienThoai);
         return khachHangs.isEmpty() ? null : khachHangs.get(0);
     }
-
-
 }

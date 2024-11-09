@@ -17,12 +17,6 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
 
     boolean existsSanPhamByTenSanPhamAndIdNot(String tenSanPham, Integer id);
 
-//    Page<SanPham> findByTenSanPhamContainingAndTrangThai(String tenSanPham, Integer trangThai, Pageable pageable);
-//
-//    Page<SanPham> findByTenSanPhamContaining(String tenSanPham, Pageable pageable);
-//
-//    Page<SanPham> findByTrangThai(Integer trangThai, Pageable pageable);
-
     // Tìm kiếm theo nhiều tiêu chí: keyword, status, thuongHieu, chatLieu, tayAo, coAo
     @Query("SELECT sp FROM SanPham sp WHERE (:keyword IS NULL OR sp.tenSanPham LIKE CONCAT('%', :keyword, '%')) " +
             "AND (:status IS NULL OR sp.trangThai = :status) " +
@@ -39,8 +33,10 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
             @Param("coAoId") Integer coAoId,
             Pageable pageable
     );
+
     @Query("SELECT s FROM SanPham s WHERE s.coAo.id = :kieuCoAoId")
     List<SanPham> findByIdCoAo(@Param("kieuCoAoId") Integer kieuCoAoId);
+
     @Query("SELECT s FROM SanPham s WHERE s.tayAo.id = :kieuTayAoId")
     List<SanPham> findByIdTayAo(@Param("kieuTayAoId") Integer kieuTayAoId);
 }

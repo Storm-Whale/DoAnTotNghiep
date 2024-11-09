@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface KhachHangService {
@@ -14,7 +13,7 @@ public interface KhachHangService {
 
      Page<KhachHang> phanTrang(int pageNo, int pageSize);
 
-     Optional<KhachHang> detail(Integer id);
+     KhachHang detail(Integer id);
 
      void addKhachHang(KhachHang khachHang);
 
@@ -23,11 +22,10 @@ public interface KhachHangService {
      void deleteKhachHang(Integer id);
 
      Page<KhachHang> SearchandPhantrang (String keyword, Integer trangThai, int pageNo, int pageSize);
-     public KhachHang findByIdTaiKhoan(int idTaiKhoan) ;
 
-     public KhachHang saveKhachHang(KhachHang khachHang);
+     KhachHang findByIdTaiKhoan(int idTaiKhoan) ;
 
+     KhachHang saveKhachHang(KhachHang khachHang);
 
      KhachHang findBySoDienThoaiKhachHang (String soDienThoai);
-
 }

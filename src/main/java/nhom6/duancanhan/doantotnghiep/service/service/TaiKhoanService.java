@@ -25,7 +25,7 @@ public interface TaiKhoanService {
     TaiKhoan findByTenDangNhap(String tenDangNhap);
 
     TaiKhoan saveTaiKhoan(TaiKhoan taiKhoan);
-    public TaiKhoan findByResetCode(String resetCode) ;
+//    public TaiKhoan findByResetCode(String resetCode) ;
 
     boolean checkAccount(String username, String password);
 

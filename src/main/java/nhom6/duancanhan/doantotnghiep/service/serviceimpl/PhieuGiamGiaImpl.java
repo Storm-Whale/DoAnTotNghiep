@@ -1,10 +1,13 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import lombok.RequiredArgsConstructor;
+import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaResponse;
 import nhom6.duancanhan.doantotnghiep.entity.PhieuGiamGia;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
+import nhom6.duancanhan.doantotnghiep.mapper.PhieuGiamGiaMapper;
 import nhom6.duancanhan.doantotnghiep.repository.PhieuGiamGiaRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.PhieuGiamGiaService;
+import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +21,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class PhieuGiamGiaImpl implements PhieuGiamGiaService {
+
+    private final PhieuGiamGiaMapper phieuGiamGiaMapper;
     private final PhieuGiamGiaRepository phieuGiamGiaRepository;
 
     @Override
@@ -78,5 +83,15 @@ public class PhieuGiamGiaImpl implements PhieuGiamGiaService {
     public PhieuGiamGia getByMaPhieuGiamGia(String maPhieuGiamGia) {
         return phieuGiamGiaRepository.findByMaPhieuGiamGia(maPhieuGiamGia)
                 .orElseThrow(() -> new DataNotFoundException("Mã giảm giá không tồn tại."));
+    }
+
+    @Override
+    public List<PhieuGiamGiaResponse> getPGGByTrangThai(Integer trangThai) {
+        return DatabaseOperationHandler.handleDatabaseOperation(
+                () -> phieuGiamGiaRepository.findPhieuGiamGiaByTrangThai(trangThai).stream()
+                        .map(phieuGiamGiaMapper::toPhieuGiamGiaResponse)
+                        .toList()
+                ,"Lỗi khi lấy thông tin phiếu giảm giá từ cơ sở dữ liệu"
+        );
     }
 }

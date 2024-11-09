@@ -179,11 +179,6 @@ function updatePrice(mausacId) {
 // -------------------------------------------------- Start Thêm sản phẩm mới vào giỏ hàng  ---------------------------------------------------
 document.addEventListener('DOMContentLoaded', function () {
 
-    // const firstColorItem = document.querySelector('.color-item');
-    // if (firstColorItem) {
-    //     firstColorItem.click();
-    // }
-
     const addToCartBtn = document.getElementById('add-to-cart-btn');
     if (addToCartBtn) {
         addToCartBtn.addEventListener('click', function () {

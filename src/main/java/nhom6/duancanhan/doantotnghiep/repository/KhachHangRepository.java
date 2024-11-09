@@ -13,18 +13,17 @@ import java.util.Optional;
 
 @Repository
 public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
-   @Query("SELECT nv FROM KhachHang nv WHERE (:keyword IS NULL OR " +
-           "lower(nv.ten) LIKE lower(concat('%', :keyword, '%')) OR " +
-           "nv.soDienThoai LIKE concat('%', :keyword, '%') OR " +
-           "nv.email LIKE concat('%', :keyword, '%')) " +
-           "AND (:trangThai IS NULL OR nv.trangThai = :trangThai)")
-   Page<KhachHang> searchKhachHang(@Param(("keyword")) String keyword,
-                                 @Param(("trangThai")) Integer trangThai,
-                                 Pageable pageable);
 
-   @Query("SELECT k FROM KhachHang k WHERE k.id = :idTaiKhoan")
-   KhachHang findByIdTaiKhoan(@Param("idTaiKhoan") int idTaiKhoan);
+   @Query(
+           "SELECT nv FROM KhachHang nv WHERE (:keyword IS NULL OR " +
+           "lower(nv.ten) LIKE lower(concat('%', :keyword, '%')) OR " + "nv.soDienThoai LIKE concat('%', :keyword, '%') OR " +
+           "nv.email LIKE concat('%', :keyword, '%')) " + "AND (:trangThai IS NULL OR nv.trangThai = :trangThai)"
+   )
+   Page<KhachHang> searchKhachHang(@Param(("keyword")) String keyword, @Param(("trangThai")) Integer trangThai, Pageable pageable);
+
+   KhachHang findByTaiKhoanId(int idTaiKhoan);
 
    List<KhachHang> findBySoDienThoai(String soDienThoai);
+
    Optional<KhachHang> findByEmail(String email);
 }

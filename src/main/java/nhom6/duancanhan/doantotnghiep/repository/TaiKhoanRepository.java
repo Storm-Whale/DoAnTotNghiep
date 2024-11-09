@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface TaiKhoanRepository extends JpaRepository<TaiKhoan,Integer> {
     TaiKhoan findByTenDangNhap(String tenDangNhap);
 
-    Optional<TaiKhoan> findByResetCode(String resetCode);
+//    Optional<TaiKhoan> findByResetCode(String resetCode);
 
     boolean existsByTenDangNhapAndMatKhau(String tenDangNhap, String matKhau);
 

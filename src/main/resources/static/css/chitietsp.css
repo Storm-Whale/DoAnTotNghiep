@@ -313,3 +313,53 @@ body {
 .soluong{
     margin-right: 18px;
 }
+.product-section {
+    width: 100%; /* Take full width of the container */
+    padding: 0 75px; /* Adjust padding to reduce side gaps */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Four columns */
+    gap: 61px;
+    justify-content: center;
+}
+
+.product-card {
+    background-color: white;
+    width: 200px; /* Set fixed width */
+    height: 300px; /* Set fixed height for uniformity */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 2;
+}
+
+.product-card img {
+    width: 100%;
+    height: 150px; /* Fixed height for image */
+    object-fit: cover; /* Ensures image scales correctly */
+    transition: transform 0.3s ease;
+}
+
+.product-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.product-card-link .product-card {
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.product-card .price {
+    color: red;
+    font-weight: bold;
+    font-size: 18px;
+}
+

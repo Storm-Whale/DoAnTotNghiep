@@ -8,18 +8,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "dia_chi")
-public class DiaChi {
+public class DiaChi extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +26,12 @@ public class DiaChi {
     @JoinColumn(name = "id_khach_hang")
     @ManyToOne
     private KhachHang khachHang;
+
+    @Column(name = "ten_khach_hang")
+    private String tenKhachHang;
+
+    @Column(name = "so_dien_thoai")
+    private String soDienThoai;
 
     @Column(name = "xa")
     private String xa;
