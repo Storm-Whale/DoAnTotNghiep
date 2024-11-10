@@ -26,7 +26,7 @@
             <td th:text="${spct.sanPham.chatLieu.tenChatLieu}"></td>
             <td th:text="${spct.sanPham.tayAo.tenTayAo}"></td>
             <td th:text="${spct.sanPham.coAo.tenCoAo}"></td>
-            <td th:text="${spct.gia}"></td>
+            <td th:text="${#numbers.formatDecimal(spct.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
             <td th:text="${spct.soLuong}"></td>
             <td th:text="${spct.trangThai}"></td>
             <td>
