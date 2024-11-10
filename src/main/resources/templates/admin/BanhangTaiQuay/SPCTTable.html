@@ -117,39 +117,56 @@
 
     </form>
 </div>
-<!-- Phân trang -->
-<!--                <nav>-->
-<!--                    <ul class="pagination justify-content-center">-->
-<!--                        &lt;!&ndash; First button &ndash;&gt;-->
-<!--                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
-<!--                            <a class="page-link"-->
-<!--                               th:href="@{'/admin/taiquay/sanpham?page=0&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"-->
-<!--                               aria-label="First">First</a>-->
-<!--                        </li>-->
-<!--                        &lt;!&ndash; Page numbers &ndash;&gt;-->
-<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"-->
-<!--                            th:classappend="${i == currentPage + 1} ? 'active'">-->
-<!--                            <a class="page-link"-->
-<!--                               th:href="@{'/admin/taiquay/sanpham?page=' + (${i} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"-->
-<!--                               th:text="${i}"></a>-->
-<!--                        </li>-->
-<!--                        &lt;!&ndash; Last button &ndash;&gt;-->
-<!--                        <li class="page-item"-->
-<!--                            th:classappend="${currentPage == totalPages - 1} ? 'disabled'">-->
-<!--                            <a class="page-link"-->
-<!--                               th:href="@{'/admin/taiquay/sanpham?page=' + (${totalPages} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword} + '&kichCoId=' + ${kichCoId} + '&mauSacId=' + ${mauSacId} + '&thuongHieuId=' + ${thuongHieuId} + '&chatLieuId=' + ${chatLieuId} + '&tayAoId=' + ${tayAoId} + '&coAoId=' + ${coAoId} + '#sanpham'}"-->
-<!--                               aria-label="Last">Last</a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </nav>-->
+<!-- Phân trang-->
+<div th:fragments="nav">
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <!-- First button -->
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/admin/taiquay/sanpham?page=0&size=' + ${size} + '&keyword=' + ${keyword != null ? keyword : ''}
+                               + '&kichCoId=' + ${kichCoId != null ? kichCoId : ''}
+                               + '&mauSacId=' + ${mauSacId != null ? mauSacId : ''}
+                               + '&thuongHieuId=' + ${thuongHieuId != null ? thuongHieuId : ''}
+                               + '&chatLieuId=' + ${chatLieuId != null ? chatLieuId : ''}
+                               + '&tayAoId=' + ${tayAoId != null ? tayAoId : ''}
+                               + '&coAoId=' + ${coAoId != null ? coAoId : '' }
+                               + '#sanpham'}"
+                               aria-label="First">First</a>
+                        </li>
+                        <!-- Page numbers -->
+                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                            th:classappend="${i == currentPage + 1} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{'/admin/taiquay/sanpham?page=' + (${i} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword != null ? keyword : ''}
+                               + '&kichCoId=' + ${kichCoId != null ? kichCoId : ''}
+                               + '&mauSacId=' + ${mauSacId != null ? mauSacId : ''}
+                               + '&thuongHieuId=' + ${thuongHieuId != null ? thuongHieuId : ''}
+                               + '&chatLieuId=' + ${chatLieuId != null ? chatLieuId : ''}
+                               + '&tayAoId=' + ${tayAoId != null ? tayAoId : ''}
+                               + '&coAoId=' + ${coAoId != null ? coAoId : '' }
+                               + '#sanpham'}"
+                               th:text="${i}"></a>
+                        </li>
+                        <!-- Last button -->
+                        <li class="page-item"
+                            th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/admin/taiquay/sanpham?page=' + (${totalPages} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword != null ? keyword : ''}
+                               + '&kichCoId=' + ${kichCoId != null ? kichCoId : ''}
+                               + '&mauSacId=' + ${mauSacId != null ? mauSacId : ''}
+                               + '&thuongHieuId=' + ${thuongHieuId != null ? thuongHieuId : ''}
+                               + '&chatLieuId=' + ${chatLieuId != null ? chatLieuId : ''}
+                               + '&tayAoId=' + ${tayAoId != null ? tayAoId : ''}
+                               + '&coAoId=' + ${coAoId != null ? coAoId : '' }
+                               + '#sanpham'}"
+                               aria-label="Last">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+</div>
 <div th:fragments="script">
     <script>
-        // function submitForm() {
-        //     document.getElementById("filterForm").submit();
-        // }
-        //
-        // let debounceTimer;
-
         function submitForm() {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(function () {
@@ -186,4 +203,5 @@
             window.location.href = url;
         }
     </script>
+
 </div>

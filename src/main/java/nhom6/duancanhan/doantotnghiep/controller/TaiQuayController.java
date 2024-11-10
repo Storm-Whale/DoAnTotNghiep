@@ -86,7 +86,7 @@ public class TaiQuayController {
         this.kieuCoAoService = kieuCoAoService;
         this.kieuTayAoService = kieuTayAoService;
     }
-
+// TODO: SHOWINDEX
     @GetMapping("")
     public String showIndex(@RequestParam(value = "page", defaultValue = "0") int page,
                             @RequestParam(value = "size", defaultValue = "5") int size,
@@ -305,8 +305,7 @@ public class TaiQuayController {
                                @RequestParam(value = "kichCoId", required = false) Integer kichCoId,
                                @RequestParam(value = "mauSacId", required = false) Integer mauSacId,
                                @RequestParam(value = "trangThai", required = false) Integer trangThai,
-                               HttpSession session
-            , Model model) {
+             Model model) {
         idHoaDon = idHD;
         Page<SanPhamChiTiet> pageFind = sanPhamChiTietService.timKiemSanPham(keyword, thuongHieuId, chatLieuId, tayAoId,
                 coAoId, kichCoId, mauSacId, trangThai, page, size);
@@ -335,13 +334,14 @@ public class TaiQuayController {
         KhachHang khachHang = hoaDon.getKhachHang();
         model.addAttribute("khachHang", khachHang);
         model.addAttribute("hoaDon", hoaDon);
+
         // Lấy danh sách sản phẩm chi tiết và hóa đơn chi tiết
         model.addAttribute("listCTSP", listCTSP);
         List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
         model.addAttribute("listHDCT", hoaDonChiTiet);
 
         HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
-//        model.addAttribute("firstHoaDon", firstHoaDon != null ? firstHoaDon : new HoaDon());
+        // model.addAttribute("firstHoaDon", firstHoaDon != null ? firstHoaDon : new HoaDon());
         // Tạo danh sách hóa đơn chờ và thêm hóa đơn đầu tiên vào danh sách nếu cần
         List<HoaDon> listHD = hoaDonRepository.findHoaDonsWithStatusOne();
         // Kiểm tra xem hóa đơn đầu tiên đã có trong danh sách chưa
