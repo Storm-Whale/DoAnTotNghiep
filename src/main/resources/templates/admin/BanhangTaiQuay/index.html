@@ -87,6 +87,7 @@
                               style="display: flex; align-items: center; gap: 10px;">
                             <input type="text" id="soDienThoai" name="soDienThoai" required
                                    style="padding: 5px; border-radius: 5px; border: 1px solid #ddd; width: 200px;">
+                            <span th:text="${tongTienSauGiam != null ? tongTienSauGiam : tongTien}"></span>
                             <button type="submit"
                                     style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
                                 Tìm kiếm KH
@@ -109,16 +110,16 @@
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
+                        <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="post" class="discount-form">
+                            <input type="text" name="maphieugiamgia" placeholder="Nhập mã giảm giá" th:value="${maPhieuGiamGia}" />
+                            <button type="submit" class="apply-button" style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">Áp dụng</button>
+                        </form>
                         <div class="discount-code-container">
-                            <!--                            <label for="inputDiscountCode" style="font-size: 14px;">Mã PGG :</label>-->
-                            <input type="text" id="inputDiscountCode" placeholder="Nhập mã giảm giá"
-                                   style="padding: 5px; border-radius: 5px; border: 1px solid #ddd; width: 200px;">
-                            <a class="taiquay"><a th:href="@{/admin/taiquay/phieugiamgia#phieugiamgia}">
-                                <button id="choose"
-                                        style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
+                            <a class="taiquay" th:href="@{/admin/taiquay/phieugiamgia#phieugiamgia}">
+                                <button id="choose" class="discount-code-button" style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
                                     Mã PGG
                                 </button>
-                            </a></a>
+                            </a>
                         </div>
                     </div>
 
@@ -146,21 +147,15 @@
                             <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: script}"></div>
                         </div>
                     </div>
-
-
 <!--                    <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="get">-->
 <!--                        <input type="text" name="maPhieuGiamGia" th:value="${maPhieuGiamGia}"/>-->
 <!--                        &lt;!&ndash; Sử dụng thuộc tính đúng &ndash;&gt;-->
 <!--                        <button type="submit">Áp dụng</button>-->
 <!--                    </form>-->
-                    <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="post">
-                        <input type="text" name="maphieugiamgia" placeholder="Nhập mã giảm giá"/>
-                        <button type="submit">Áp dụng</button>
-                    </form>
 
 
-                    <p style="font-size: 14px; margin-top: 10px;">Tiền Tạm Tính: <span id="subtotal"
-                                                                                       th:text="${tongTien}">0</span> đ
+
+                    <p style="font-size: 14px; margin-top: 10px;">Tiền Tạm Tính: <span id="subtotal" th:text="${tongTien}">0</span> đ
                     </p>
                     <p style="font-size: 14px;">Số Tiền Giảm Giá: <span id="discount">0</span> đ</p>
 
