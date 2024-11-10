@@ -30,18 +30,14 @@
             <td th:text="${spct.soLuong}"></td>
             <td th:text="${spct.trangThai}"></td>
             <td>
-                <a th:href="@{/admin/taiquay/add-sanpham-giohang/{id}(id=${spct.id})}">
-                <button class="btn btn-success btn-sm" style="border-radius: 8px; text-align: center">+</button>
-                </a>
-            </td>
-            <td>
                 <a th:href="@{/admin/taiquay/add-sanpham-hdct/{id}(id=${spct.id})}">
-                    <button class="btn btn-success btn-sm" style="border-radius: 8px; text-align: center">+HDCT</button>
+                    <button class="btn btn-success btn-sm" style="border-radius: 8px; text-align: center">+</button>
                 </a>
             </td>
         </tr>
         </tbody>
     </table>
+
 </div>
 <div th:fragments="form">
     <form id="filterForm" action="/admin/taiquay/sanpham#sanpham" method="GET">
@@ -114,9 +110,11 @@
 
             <!-- Input tìm kiếm sản phẩm -->
             <!--                        <input type="text" id="productSearch" placeholder="Nhập tên sản phẩm" th:value="${keyword}" name="keyword" oninput="submitForm()">-->
-            <input type="text" id="productSearch" placeholder="Nhập tên sản phẩm" th:value="${keyword}" name="keyword" oninput="submitAjaxForm()">
+            <input type="text" id="productSearch" placeholder="Nhập tên sản phẩm" th:value="${keyword}" name="keyword"
+                   oninput="submitAjaxForm()">
             <button id="btnSearch">Tìm kiếm</button>
         </div>
+
     </form>
 </div>
 <!-- Phân trang -->
@@ -145,45 +143,47 @@
 <!--                    </ul>-->
 <!--                </nav>-->
 <div th:fragments="script">
-<script >
-function submitForm() {
-document.getElementById("filterForm").submit();
-}
+    <script>
+        // function submitForm() {
+        //     document.getElementById("filterForm").submit();
+        // }
+        //
+        // let debounceTimer;
 
-let debounceTimer;
-function submitForm() {
-clearTimeout(debounceTimer);
-debounceTimer = setTimeout(function() {
-document.getElementById("filterForm").submit();
-}, 500);  // Trì hoãn 500ms trước khi submit form
-}
+        function submitForm() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function () {
+                document.getElementById("filterForm").submit();
+            }, 500);  // Trì hoãn 500ms trước khi submit form
+        }
 
-let timeout = null;
-function submitAjaxForm() {
-clearTimeout(timeout);  // Xóa timeout nếu người dùng vẫn đang nhập
+        let timeout = null;
 
-timeout = setTimeout(() => {  // Đợi 300ms trước khi gửi yêu cầu
-const form = document.getElementById('filterForm');
-const formData = new FormData(form);
-const params = new URLSearchParams(formData);
+        function submitAjaxForm() {
+            clearTimeout(timeout);  // Xóa timeout nếu người dùng vẫn đang nhập
 
-fetch(`/admin/taiquay/sanpham?${params.toString()}`, {
-method: 'GET',
-})
-.then(response => response.text())
-.then(html => {
+            timeout = setTimeout(() => {  // Đợi 300ms trước khi gửi yêu cầu
+                const form = document.getElementById('filterForm');
+                const formData = new FormData(form);
+                const params = new URLSearchParams(formData);
+
+                fetch(`/admin/taiquay/sanpham?${params.toString()}`, {
+                    method: 'GET',
+                })
+                    .then(response => response.text())
+                    .then(html => {
 // Cập nhật lại phần table sản phẩm
-document.getElementById('sanphamTable').innerHTML = html;
-})
-.catch(error => console.error('Error:', error));
-}, 300);  // Chỉ gửi yêu cầu sau khi người dùng ngừng nhập trong 300ms
-}
+                        document.getElementById('sanphamTable').innerHTML = html;
+                    })
+                    .catch(error => console.error('Error:', error));
+            }, 300);  // Chỉ gửi yêu cầu sau khi người dùng ngừng nhập trong 300ms
+        }
 
-function changeItemsPerPage2() {
-const selectedSize = document.getElementById("itemsPerPage2").value;
-const currentPage = 0;
-const url = `/admin/taiquay/sanpham?page=${currentPage}&size=${selectedSize}#sanpham`;
-window.location.href = url;
-}
-</script>
+        function changeItemsPerPage2() {
+            const selectedSize = document.getElementById("itemsPerPage2").value;
+            const currentPage = 0;
+            const url = `/admin/taiquay/sanpham?page=${currentPage}&size=${selectedSize}#sanpham`;
+            window.location.href = url;
+        }
+    </script>
 </div>

@@ -339,9 +339,7 @@ public class TaiQuayController {
         model.addAttribute("listCTSP", listCTSP);
         List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
         model.addAttribute("listHDCT", hoaDonChiTiet);
-        // Lấy danh sách hóa đơn và thêm vào model
-//        List<HoaDon> listHD = hoaDonRepository.findAll();;
-//        model.addAttribute("listHD", listHD);
+
         HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
 //        model.addAttribute("firstHoaDon", firstHoaDon != null ? firstHoaDon : new HoaDon());
         // Tạo danh sách hóa đơn chờ và thêm hóa đơn đầu tiên vào danh sách nếu cần
@@ -369,16 +367,12 @@ public class TaiQuayController {
         model.addAttribute("tongTienSauGiam", hoaDon != null ? lastTongTien : null);
         return "/admin/BanhangTaiQuay/index";
     }
-// TODO : khanhhang
+// TODO : khachhang
     @GetMapping("tim-kiem")
     public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = false) String soDienThoai, HttpSession session
             , RedirectAttributes redirectAttributes) {
 
         KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
-//        if(khachHang != null) {
-//            session.setAttribute("khachHang",khachHang);
-//        }
-
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
                 .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
         // Cập nhật khách hàng cho hóa đơn
@@ -553,7 +547,7 @@ public class TaiQuayController {
         return "redirect:/admin/taiquay/detail/" + idHoaDon;
     }
 
-    // Controller
+    // TODO huyhd
     @DeleteMapping("/huyhoadon/{id}")
     @ResponseBody
     public ResponseEntity<?> huyHoaDon(@PathVariable("id") Integer id) {
@@ -566,6 +560,12 @@ public class TaiQuayController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể hủy hóa đơn.");
         }
     }
+//    @GetMapping("/xoahd/{id}")
+//    public String xoaHD(@PathVariable("id") Integer id){
+////        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).orElse(null);
+//        hoaDonService.deleteHoaDon(id);
+//        return "redirect:/admin/taiquay";
+//    }
 
     //TODO: Kiem Tra Phieu Giam Gia
     @GetMapping("/kiemtrama/{maphieugiamgia}")
