@@ -147,13 +147,18 @@ public class TaiKhoanController {
     ) {
         if (taiKhoanService.checkAccount(username, password)) {
             TaiKhoan taiKhoan = taiKhoanService.findByTTKAndMK(username, password);
-            switch (taiKhoan.getVaiTro().getId()){
+            int role = taiKhoan.getVaiTro().getId();
+            switch (role){
                 case 1, 2:
                     session.setAttribute("nhanvien", nhanVienService.getNhanVienByIdTaiKhoan(taiKhoan.getId()));
+                    session.setAttribute("account", taiKhoan);
+                    session.setAttribute("role", role);
                     session.setAttribute("loginStatus", true);  // Thêm flag
                     return "redirect:/admin";
                 case 3:
                     session.setAttribute("user", khachHangService.findByIdTaiKhoan(taiKhoan.getId()));
+                    session.setAttribute("account", taiKhoan);
+                    session.setAttribute("role", role);
                     session.setAttribute("loginStatus", true);  // Thêm flag
                     return "redirect:/client";
             }
@@ -182,7 +187,6 @@ public class TaiKhoanController {
                 response.addCookie(cookie);
             }
         }
-
         // Chuyển hướng về trang chính
         return "redirect:/client";
     }

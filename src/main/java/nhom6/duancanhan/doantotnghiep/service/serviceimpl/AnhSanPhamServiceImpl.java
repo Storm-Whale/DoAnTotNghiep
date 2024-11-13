@@ -11,11 +11,11 @@ import nhom6.duancanhan.doantotnghiep.repository.AnhSanPhamRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.AnhSanPhamService;
 import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class AnhSanPhamServiceImpl implements AnhSanPhamService {
 
@@ -41,5 +41,30 @@ public class AnhSanPhamServiceImpl implements AnhSanPhamService {
                 stream().map(productImageMapper::toAnhSanPhamResponse)
                 .toList(), "Lỗi khi lấy thông tin từ cơ sở dữ liệu"
         );
+    }
+
+    @Override
+    public AnhSanPhamResponse updateAnhSanPham(Integer id, AnhSanPhamRequest anhSanPhamRequest) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() -> {
+            AnhSanPham existingAnhSanPham = productImageRepository.findById(id)
+                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy ảnh sản phẩm với id : " + id));
+            SanPhamChiTiet sanPhamChiTiet = productDetailRepository.findById(anhSanPhamRequest.getIdSanPhamChiTiet())
+                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy sản phẩm chi tiết với id : " + anhSanPhamRequest.getIdSanPhamChiTiet()));
+
+            existingAnhSanPham.setSanPhamChiTiet(sanPhamChiTiet);
+            existingAnhSanPham.setAnhUrl(anhSanPhamRequest.getAnhUrl());
+            existingAnhSanPham.setTrangThai(anhSanPhamRequest.getTrangThai());
+
+            return productImageMapper.toAnhSanPhamResponse(productImageRepository.save(existingAnhSanPham));
+        }, "Lỗi khi thay đổi thông tin ảnh sản phẩm từ cơ sở dữ liệu");
+    }
+
+    @Override
+    public AnhSanPhamResponse getAnhSanPhamById(Integer id) {
+        return DatabaseOperationHandler.handleDatabaseOperation(
+                () -> productImageRepository.findById(id)
+                        .map(productImageMapper::toAnhSanPhamResponse)
+                        .orElseThrow(() -> new DataNotFoundException("Không tìm thấy ảnh sản phẩm với id : " + id))
+                , "Lỗi khi lấy thông tin ảnh sản phẩm từ cơ sở dữ liệu");
     }
 }

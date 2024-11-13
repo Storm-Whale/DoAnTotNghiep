@@ -171,6 +171,14 @@ public class SanPhamServiceImpl implements SanPhamService {
         );
     }
 
+    @Override
+    public Integer getIdSpFromTenSP(String tenSanPham) {
+        return DatabaseOperationHandler.handleDatabaseOperation(
+                () -> sanPhamRepository.findByTenSanPham(tenSanPham)
+                ,"Lỗi khi lấy thông tin sản phẩm từ cơ sở dữ liệu"
+        );
+    }
+
     private void validateDuplicateProductName(String tenSanPham) {
         if (sanPhamRepository.existsSanPhamByTenSanPham(tenSanPham)) {
             throw new DuplicateKeyException("Đã có sản phẩm với tên: " + tenSanPham);

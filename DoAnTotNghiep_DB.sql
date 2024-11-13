@@ -301,3 +301,5 @@ alter table dia_chi
     add so_dien_thoai nvarchar(11)
 go
 
+ALTER TABLE tai_khoan ADD reset_code VARCHAR(255);
+

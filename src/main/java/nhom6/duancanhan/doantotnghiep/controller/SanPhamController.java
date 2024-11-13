@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
+import nhom6.duancanhan.doantotnghiep.util.UploadImage;
 import nhom6.duancanhan.doantotnghiep.util.ValidationErrorHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,7 +29,9 @@ public class SanPhamController {
     private final KieuCoAoService kieuCoAoService;
     private final KieuTayAoService kieuTayAoService;
     private final SanPhamChiTietService sanPhamChiTietService;
+    private final UploadImage uploadImage;
 
+    //  TODO : INDEX Sản Phẩm
     @GetMapping("/index")
     public String index(
             @RequestParam(name = "keyword", required = false) String keyword,
@@ -77,12 +83,14 @@ public class SanPhamController {
         return "/admin/sanpham/index";
     }
 
+    //  TODO : Trang thêm sản phẩm
     @GetMapping("/create")
     public String create(Model model) {
         addSanPhamModelAttributes(model, new SanPhamRequest());
         return "/admin/sanpham/create";
     }
 
+    //   TODO : Tìm tìm kiếm theo id sản phẩm
     @GetMapping("/find_by_id/{id}")
     public String findById(@PathVariable("id") Integer id, Model model) {
         SanPhamResponse product = sanPhamService.getSanPhamById(id);
@@ -91,6 +99,7 @@ public class SanPhamController {
         return "admin/sanpham/detail";
     }
 
+    //   TODO : Thêm Sản Phẩm
     @PostMapping("/store")
     public String store(@Valid @ModelAttribute("product") SanPhamRequest productRequest, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
@@ -98,11 +107,24 @@ public class SanPhamController {
             addSanPhamModelAttributes(model, productRequest);
             return "/admin/sanpham/create";
         }
+
+        if (productRequest.getAnhSanPham() != null && !productRequest.getAnhSanPham().isEmpty()) {
+            try {
+                String imageUrl = uploadImage.saveImage(productRequest.getAnhSanPham());
+                productRequest.setAnhUrl(imageUrl);
+            } catch (IOException e) {
+                bindingResult.rejectValue("anhSanPham", "error.product", "Không thể tải ảnh lên");
+                addSanPhamModelAttributes(model, productRequest);
+                return "/admin/sanpham/create";
+            }
+        }
+
         productRequest.setTrangThai(1);
         sanPhamService.storeSanPham(productRequest);
         return "redirect:/admin/products/index";
     }
 
+    //   TODO : Trang edit Sản Phẩm
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, Model model) {
         model.addAttribute("product_old", sanPhamService.getSanPhamById(id));
@@ -110,21 +132,46 @@ public class SanPhamController {
         return "/admin/sanpham/update";
     }
 
+    //   TODO : Update sản phẩm
     @PostMapping(value = "/update/{id}")
     public String update(
             @PathVariable(name = "id") Integer id, @RequestParam("ten_sp") String tenSP,
             @RequestParam("id_thuong_hieu") Integer idThuongHieu, @RequestParam("id_chat_lieu") Integer idChatLieu,
             @RequestParam("id_co_ao") Integer idCoAo, @RequestParam("id_tay_ao") Integer idTayAo,
+            @RequestParam("anh_san_pham") MultipartFile anhSanPham,
             @RequestParam("trang_thai") Integer trangThai
     ) {
+        SanPhamResponse existingProduct = sanPhamService.getSanPhamById(id);
+        String oldImageUrl = existingProduct.getAnhUrl();
+
         SanPhamRequest sanPhamRequest = SanPhamRequest.builder()
-                .tenSanPham(tenSP).idChatLieu(idChatLieu)
-                .idThuongHieu(idThuongHieu).idCoAo(idCoAo)
-                .idTayAo(idTayAo).trangThai(trangThai).build();
+                .tenSanPham(tenSP)
+                .idChatLieu(idChatLieu)
+                .idThuongHieu(idThuongHieu)
+                .idCoAo(idCoAo)
+                .idTayAo(idTayAo)
+                .trangThai(trangThai)
+                .build();
+
+        if (!anhSanPham.isEmpty()) {
+            try {
+                if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                    uploadImage.deleteOldImage(oldImageUrl);
+                }
+
+                String newImageUrl = uploadImage.saveImage(anhSanPham);
+                sanPhamRequest.setAnhUrl(newImageUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            sanPhamRequest.setAnhUrl(oldImageUrl);
+        }
         sanPhamService.updateSanPham(id, sanPhamRequest);
         return "redirect:/admin/products/index";
     }
 
+    //   TODO : Cập Nhật Trạng Thái Sản Phẩm
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
         sanPhamService.sortDeleteSanPham(id);

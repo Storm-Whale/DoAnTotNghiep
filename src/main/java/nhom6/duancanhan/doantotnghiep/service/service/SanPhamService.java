@@ -4,11 +4,9 @@ import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamShowOnClient;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface SanPhamService {
 
     List<SanPhamResponse> getAllSanPham();
@@ -32,4 +30,6 @@ public interface SanPhamService {
     List<SanPhamShowOnClient> getAllSanPhamShowOnClient(String method);
 
     SanPhamShowOnClient getSanPhamShowOnClientById(Integer id);
+
+    Integer getIdSpFromTenSP(String tenSanPham);
 }

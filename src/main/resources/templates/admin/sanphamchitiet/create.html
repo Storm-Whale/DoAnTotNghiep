@@ -8,77 +8,35 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
-
     <!-- CSS -->
     <style>
-        .wrap {
-            width: 800px;
-            margin: 0 auto;
+        /* Căn chỉnh kích thước của select2 với input của Bootstrap */
+        .select2-container--default .select2-selection--single,
+        .select2-container--default .select2-selection--multiple {
+            height: calc(1.5em + 0.75rem + 2px);
+            padding: 0.25rem 0.5rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            border: 1px solid #ced4da;
         }
 
-        .intro {
+        /* Đảm bảo các lựa chọn trong multiple select hiển thị đúng cách */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+        }
+
+        /* Căn chỉnh chiều cao của phần tử multiple select */
+        .select2-container--default .select2-selection--multiple {
+            height: auto !important;
+            min-height: calc(1.5em + 0.75rem + 2px) !important;
+            padding: 0.25rem 0.5rem;
             display: flex;
-        }
-
-        .intro h3 {
-            color: #2857a7;
-        }
-
-        .using-select2 {
-            width: 50%;
-        }
-
-        .js-select2 {
-            width: 100%;
-            height: 42px;
-            font-size: 16px;
-        }
-
-        .install-select2 {
-            width: 100%;
-        }
-
-        .select2-container--default .select2-selection--single {
-            height: 40px; /* Chiều cao của Select2 */
-            border: 1px solid #ced4da; /* Đường viền cho Select2 */
-            font-size: 16px;
-        }
-
-        .select2-selection__rendered {
-            line-height: 38px; /* Căn giữa chữ */
-            display: flex; /* Sử dụng flexbox để căn giữa */
-            align-items: center; /* Căn giữa theo chiều dọc */
-            padding-left: 10px; /* Khoảng cách bên trái */
-        }
-
-        .select2-selection__arrow {
-            height: 38px; /* Căn chỉnh chiều cao mũi tên */
-        }
-
-        .select2-selection__placeholder {
-            line-height: 38px; /* Căn giữa chữ placeholder */
-        }
-
-        pre {
-            border-left: 4px solid #2857a7 !important;
-            display: block;
-            padding-left: 5px !important;
-            text-align: left;
-        }
-
-        /* Đảm bảo nút Thêm có kích thước phù hợp */
-        .btn-custom {
-            height: 40px; /* Đảm bảo nút có chiều cao tương đương với Select2 */
-            font-size: 16px; /* Thay đổi cỡ chữ cho nút */
-        }
-
-        .select2-container .select2-selection--single .select2-selection__rendered {
-            /*text-align: center; !* Căn giữa văn bản *!*/
-            line-height: 2; /* Điều chỉnh chiều cao của dòng để văn bản nằm giữa */
-        }
-
-        .select2-container .select2-selection--single {
-            height: auto; /* Đảm bảo chiều cao không bị cố định */
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.25rem;
         }
     </style>
 </head>
@@ -99,22 +57,20 @@
 
         <div class="container">
             <h5 class="mb-3" style="text-align: center">Thông tin sản phẩm</h5>
-            <form action="#" th:action="@{/admin/product-details/store}" method="post">
-                <div>
+            <form id="form-spct" action="#" th:action="@{/admin/product-details/store}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
                     <label for="idSP" class="form-label" style="font-size: 15px;">Sản Phẩm</label>
                     <div class="d-flex align-items-center">
-                        <select id="idSP" class="form-control js-select2" name="id_sp" required>
-                            <option th:each="product : ${products}"
-                                    th:value="${product.getId()}"
-                                    th:text="${product.getTenSanPham()}"></option>
-                        </select>
+                        <input type="hidden" name="idSP" th:value="${products.id}">
+                        <input id="idSP" class="form-control" type="text" th:value="${products.getTenSanPham()}" readonly>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="idMauSac" class="form-label" style="font-size: 15px;">Màu Sắc</label>
                     <div class="d-flex align-items-center">
-                        <select id="idMauSac" class="form-control js-select2" multiple name="id_mau_sac" required>
+                        <select id="idMauSac" class="form-control js-select2" multiple
+                                required onchange="updateColorDetails()">
                             <option th:each="color : ${mau_sacs}"
                                     th:value="${color.getId()}"
                                     th:text="${color.getTenMauSac()}"></option>
@@ -122,35 +78,12 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="idChatLieu" class="form-label" style="font-size: 15px;">Kích Cỡ</label>
-                    <div class="d-flex align-items-center">
-                        <select id="idChatLieu" class="form-control js-select2" multiple name="id_kich_co" required>
-                            <option th:each="size : ${kich_cos}"
-                                    th:value="${size.getId()}"
-                                    th:text="${size.getTenKichCo()}"></option>
-                        </select>
-                    </div>
-                </div>
+                <div id="colorDetailsContainer"></div>
 
-                <div class="mb-3">
-                    <label for="soLuong" class="form-label" style="font-size: 15px;">Số Lượng</label>
-                    <input type="number" class="form-control" id="soLuong" placeholder="Nhập số lượng"
-                           style="font-size: 15px;" name="so_luong" min="1" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="gia" class="form-label" style="font-size: 15px;">Giá</label>
-                    <input type="number" class="form-control" id="gia" placeholder="Nhập giá sản phẩm"
-                           style="font-size: 15px;" name="gia"
-                           step="any" min="0" required>
-                </div>
-
-                <div class="text-center">
+                <div class="text-center mt-3">
                     <input type="submit" class="btn btn-primary" value="Thêm mới"/>
                 </div>
             </form>
-
         </div>
     </div>
 </section>
@@ -159,15 +92,85 @@
 <script th:src="@{/javascript/admin.js}"></script>
 <!-- JavaScript của jQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 <!-- JavaScript của Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script>
+<script th:inline="javascript">
     $(document).ready(function () {
         $('.js-select2').select2({
             placeholder: "Chọn một tùy chọn",
             allowClear: true
         });
     });
+
+    const kichCoList = /*[[${kich_cos}]]*/ [];
+
+    function updateColorDetails() {
+        const colorSelect = document.getElementById("idMauSac");
+        const colorDetailsContainer = document.getElementById("colorDetailsContainer");
+        colorDetailsContainer.innerHTML = "";
+
+        Array.from(colorSelect.selectedOptions).forEach((option, index) => {
+            const colorId = option.value;
+            const colorName = option.text;
+
+            const detailContainer = document.createElement("div");
+            detailContainer.classList.add("border", "rounded", "p-3", "mb-3");
+
+            detailContainer.innerHTML = `
+                <h5 class="mb-3">Chi tiết cho ${colorName}</h5>
+                <input type="hidden" name="colorDetails[${index}].idMauSac" value="${colorId}">
+
+                <div class="mb-3">
+                    <label class="form-label">Giá</label>
+                    <input type="number"
+                           class="form-control"
+                           name="colorDetails[${index}].gia"
+                           step="any"
+                           min="0"
+                           required
+                           placeholder="Nhập giá sản phẩm">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Kích thước</label>
+                    <select class="form-control js-select2"
+                            name="colorDetails[${index}].idKichCos"
+                            multiple required>
+                        ${kichCoList.map(size => `
+                            <option value="${size.id}">${size.tenKichCo}</option>
+                        `).join('')}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Số lượng</label>
+                    <input type="number"
+                           class="form-control"
+                           name="colorDetails[${index}].soLuong"
+                           min="1"
+                           required
+                           placeholder="Nhập số lượng">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Ảnh sản phẩm</label>
+                    <input type="file"
+                           class="form-control"
+                           name="colorDetails[${index}].images"
+                           multiple
+                           accept="image/*"
+                           required>
+                </div>
+            `;
+
+            colorDetailsContainer.appendChild(detailContainer);
+
+            // Khởi tạo Select2 cho select mới thêm vào
+            $(detailContainer).find('.js-select2').select2({
+                placeholder: "Chọn kích thước",
+                allowClear: true
+            });
+        });
+    }
 </script>
 </html>

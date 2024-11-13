@@ -6,7 +6,7 @@
     <title>Bee Shirt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="icon" th:href="@{/img/Logoyagi2.png}">
+    <link rel="icon" th:href="@{/Logoyagi2.png}">
     <link rel="stylesheet" th:href="@{/css/gioHangStyle.css}">
 </head>
 <body>
@@ -15,7 +15,7 @@
         <div class="d-flex flex-wrap align-items-center justify-content-between">
             <!-- Logo Section -->
             <a th:href="@{/client}" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
-                <img th:src="@{/img/LOGOYAGI.png}" alt="Bee Shirt" width="60" height="60" class="logo-fixed-size me-2">
+                <img th:src="@{/LOGOYAGI.png}" alt="Bee Shirt" width="60" height="60" class="logo-fixed-size me-2">
             </a>
 
             <!-- Navigation Links -->
@@ -33,7 +33,7 @@
 
             <!-- Cart Icon -->
             <a th:href="@{/client/gio-hang}" class="me-4">
-                <img th:src="@{/img/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
+                <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
             </a>
 
             <!-- User Dropdown -->
@@ -42,7 +42,7 @@
                     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
                        id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                         <img id="userAvatar"
-                             th:src="@{/img/{anhUrl}(anhUrl=${user.anhUrl})}"
+                             th:src="@{/{anhUrl}(anhUrl=${user.anhUrl})}"
                              alt="User Avatar" width="40" height="40" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
@@ -58,7 +58,7 @@
                 <div class="dropdown text-end" th:unless="${session.loginStatus == true}">
                     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
                        id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="/img/nguoidung.png"
+                        <img src="/images/nguoidung.png"
                              alt="Default Avatar" width="40" height="40" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2">
@@ -91,7 +91,7 @@
                     <!-- Checkbox để chọn sản phẩm -->
                     <input id="select-product" class="form-check-input me-3 product-checkbox" type="checkbox">
                     <!-- Hình ảnh sản phẩm -->
-                    <img th:src="@{/img/{anhUrl} (anhUrl = ${spgh.anhUrl})}" alt="Sản phẩm">
+                    <img th:src="@{/{anhUrl} (anhUrl = ${spgh.anhUrl})}" alt="Sản phẩm">
                     <div class="cart-item-details">
                         <!-- Tên sản phẩm -->
                         <h5 th:text="${spgh.sanPhamGioHang.sanPhamChiTiet.sanPham.tenSanPham}"></h5>

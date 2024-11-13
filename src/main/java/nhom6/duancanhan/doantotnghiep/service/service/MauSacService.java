@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MauSacService {
+
     List<MauSac> getAll();
 
     Page<MauSac> phanTrang(int pageNo, int pageSize);
