@@ -303,3 +303,12 @@ go
 
 ALTER TABLE tai_khoan ADD reset_code VARCHAR(255);
 
+alter table hoa_don
+    add trang_thai_thanh_toan int
+go
+
+alter table hoa_don
+    add loai_hoa_don nvarchar(30)
+go
+
+

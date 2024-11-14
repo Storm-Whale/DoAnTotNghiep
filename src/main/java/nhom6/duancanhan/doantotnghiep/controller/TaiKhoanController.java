@@ -29,13 +29,8 @@ public class TaiKhoanController {
     private final NhanVienService nhanVienService;
 
     @PostMapping
-    public String login(@RequestParam String username,
-                        @RequestParam String password,
-                        RedirectAttributes redirectAttributes,
-                        HttpSession session) {
+    public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes, HttpSession session) {
         System.out.println("Đang thực hiện đăng nhập với tên người dùng: " + username);
-
-
         if (username.equalsIgnoreCase("admin") || username.equalsIgnoreCase("nhanvien")) {
             redirectAttributes.addFlashAttribute("loginStatus", "error");
             redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");
@@ -62,20 +57,13 @@ public class TaiKhoanController {
     }
 
     @PostMapping("/login2")
-    public String login2(@RequestParam String username,
-                         @RequestParam String password,
-                         RedirectAttributes redirectAttributes,
-                         HttpSession session) {
+    public String login2(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes, HttpSession session) {
         System.out.println("Đang thực hiện đăng nhập với tên người dùng: " + username);
-
-
         if (username.equalsIgnoreCase("admin") || username.equalsIgnoreCase("nhanvien")) {
             redirectAttributes.addFlashAttribute("loginStatus", "error");
             redirectAttributes.addFlashAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng");
             return "redirect:/login/ad";
         }
-
-
         TaiKhoan user = taiKhoanService.findByTenDangNhap(username);
         if (user != null && user.getMatKhau().equals(password)) {
             // Lưu tên người dùng vào session
