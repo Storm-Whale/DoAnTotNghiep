@@ -19,8 +19,8 @@ public class ThongKeController {
 
     private final HoaDonService hoaDonService;
 
-    @GetMapping
-    public String thongke(Model model) {
+    @GetMapping(value = "/thong_ke_doanh_thu_thong_hoa_don")
+    public String doanhThuTongHoaDon(Model model) {
         List<HoaDon> hoaDons = hoaDonService.getAll();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -29,6 +29,19 @@ public class ThongKeController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "/admin/thongke/index";
+        return "/admin/thongke/thong_ke_doanh_thu_tong_hoa_don";
+    }
+
+    @GetMapping(value = "/thong_ke_trang_thai_hoa_don")
+    public String trangThaiHoaDon(Model model) {
+        List<HoaDon> hoaDons = hoaDonService.getAll();
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            model.addAttribute("hoaDons", objectMapper.writeValueAsString(hoaDons));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "/admin/thongke/thong_ke_trang_thai_hoa_don";
     }
 }

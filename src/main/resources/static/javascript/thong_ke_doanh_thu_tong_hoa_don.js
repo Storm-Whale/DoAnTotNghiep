@@ -75,13 +75,13 @@ function updateChart() {
 
     const startDate = startDateInput.value ? new Date(startDateInput.value) : new Date(new Date().getFullYear(), 0, 1);
     const endDate = endDateInput.value ? new Date(endDateInput.value) : new Date(new Date().getFullYear(), 11, 31);
-    const dateRange = { start: startDate, end: endDate };
+    const dateRange = {start: startDate, end: endDate};
 
     const selectedMonth = monthInput.value ? parseInt(monthInput.value.split("-")[1]) : null;
     const selectedDay = dayInput.value || null;
 
-    const tong_so_hoa_don = tong_so_hoa_don_theo_thang(4, dateRange, selectedMonth, selectedDay);
-    const doanh_thu = doanh_thu_hoa_don_theo_thang(4, dateRange, selectedMonth, selectedDay);
+    const tong_so_hoa_don = tong_so_hoa_don_theo_thang(5, dateRange, selectedMonth, selectedDay);
+    const doanh_thu = doanh_thu_hoa_don_theo_thang(5, dateRange, selectedMonth, selectedDay);
 
     if (myChart) {
         myChart.data.labels = monthNames;
