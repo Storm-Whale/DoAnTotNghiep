@@ -4,21 +4,18 @@ import nhom6.duancanhan.doantotnghiep.entity.MauSac;
 import nhom6.duancanhan.doantotnghiep.service.service.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/mausac")
-
 public class MauSacController {
     @Autowired
     private MauSacService mauSacService;
@@ -69,5 +66,31 @@ public class MauSacController {
     public String delete(@PathVariable("id") Integer id) {
         mauSacService.deleteMauSac(id);  // Xóa bản ghi dựa trên ID
         return "redirect:/admin/mausac";  // Chuyển hướng về trang danh sách sau khi xóa thành công
+    }
+
+    @PostMapping(value = "/quick-add")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> quickAdd(@RequestParam(name = "ten") String ten) {
+        try {
+            MauSac mauSac = MauSac.builder()
+                    .tenMauSac(ten)
+                    .trangThai(1)
+                    .build();
+
+            MauSac savedMauSac = mauSacService.addMauSac(mauSac);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("id", savedMauSac.getId());
+            response.put("ten", savedMauSac.getTenMauSac());
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Thêm thất bại: " + e.getMessage());
+
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }

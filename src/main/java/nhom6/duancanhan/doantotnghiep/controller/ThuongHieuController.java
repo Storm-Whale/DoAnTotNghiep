@@ -5,18 +5,17 @@ import nhom6.duancanhan.doantotnghiep.service.service.ThuongHieuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@RestController
+@Controller
+@RequestMapping(value = "/admin/thuong-hieu")
 public class ThuongHieuController {
+
     @Autowired
     private ThuongHieuService thuongHieuService;
 
@@ -54,5 +53,33 @@ public class ThuongHieuController {
     public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
         thuongHieuService.deleteThuongHieu(id);
         return ResponseEntity.ok("Delete Thanh Cong");
+    }
+
+    @PostMapping(value = "/quick-add")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> quickAdd(@RequestParam(name = "ten") String ten) {
+        try {
+            ThuongHieu thuongHieu = ThuongHieu.builder()
+                    .tenThuongHieu(ten)
+                    .trangThai(1)
+                    .build();
+
+            // Lưu và lấy entity đã được persist
+            ThuongHieu savedThuongHieu = thuongHieuService.addThuongHieu(thuongHieu);
+
+            // Tạo response data
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("id", savedThuongHieu.getId());
+            response.put("ten", savedThuongHieu.getTenThuongHieu());
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Thêm thất bại: " + e.getMessage());
+
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }

@@ -29,13 +29,12 @@ public class MauSacServiceImpl implements MauSacService {
 
     @Override
     public Optional<MauSac> detail(Integer id) {
-        Optional<MauSac> mauSac = mauSacRepository.findById(id);
-        return Optional.of(mauSac.get());
+        return mauSacRepository.findById(id);
     }
 
     @Override
-    public void addMauSac(MauSac mauSac) {
-        mauSacRepository.save(mauSac);
+    public MauSac addMauSac(MauSac mauSac) {
+        return mauSacRepository.save(mauSac);
     }
 
     @Override

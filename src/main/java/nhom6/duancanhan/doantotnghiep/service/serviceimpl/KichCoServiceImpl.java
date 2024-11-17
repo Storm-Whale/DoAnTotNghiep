@@ -30,13 +30,12 @@ public class KichCoServiceImpl implements KichCoService {
 
     @Override
     public Optional<KichCo> detail(Integer id) {
-        Optional<KichCo> kichCo = kichCoRepository.findById(id);
-        return Optional.of(kichCo.get());
+        return kichCoRepository.findById(id);
     }
 
     @Override
-    public void addKichCo(KichCo kichCo) {
-        kichCoRepository.save(kichCo);
+    public KichCo addKichCo(KichCo kichCo) {
+        return kichCoRepository.save(kichCo);
     }
 
     @Override

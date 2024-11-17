@@ -13,7 +13,7 @@ public interface KieuCoAoService {
 
     Optional<KieuCoAo> detail(Integer id);
 
-    void addKieuCoAo(KieuCoAo kieuTayAo);
+    KieuCoAo addKieuCoAo(KieuCoAo kieuTayAo);
 
     void updateKieuCoAo(Integer id, KieuCoAo kieuCoAo);
 

@@ -15,7 +15,7 @@ public interface MauSacService {
 
     Optional<MauSac> detail(Integer id);
 
-    void addMauSac(MauSac mauSac);
+    MauSac addMauSac(MauSac mauSac);
 
     void updateMauSac(Integer id, MauSac mauSac);
 

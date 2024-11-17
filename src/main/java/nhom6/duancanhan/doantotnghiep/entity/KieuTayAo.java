@@ -1,17 +1,18 @@
 package nhom6.duancanhan.doantotnghiep.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "kieu_tay_ao")
-public class KieuTayAo {
+public class KieuTayAo extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -22,22 +23,7 @@ public class KieuTayAo {
 
     @Column(name = "trang_thai")
     private Integer trangThai;
-    @Column(name= "ngay_tao")
-    LocalDate ngayTao;
 
-    @Column(name = "ngay_sua")
-    LocalDate ngaySua;
-
-    @PrePersist
-    protected void onCreateCreate() {
-        ngayTao = LocalDate.now();
-        ngaySua = LocalDate.now();
-    }
-
-    @PreUpdate
-    protected void onUpdateUpdate() {
-        ngaySua = LocalDate.now();
-    }
     @OneToMany(mappedBy = "tayAo")
     private List<SanPham> sanPhams;
 }

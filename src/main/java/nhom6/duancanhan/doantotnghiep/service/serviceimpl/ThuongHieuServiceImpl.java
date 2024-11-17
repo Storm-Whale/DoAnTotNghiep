@@ -30,13 +30,12 @@ public class ThuongHieuServiceImpl implements ThuongHieuService {
 
     @Override
     public Optional<ThuongHieu> detail(Integer id) {
-        Optional<ThuongHieu> thuongHieu = thuongHieuRepossitory.findById(id);
-        return Optional.of(thuongHieu.get());
+        return thuongHieuRepossitory.findById(id);
     }
 
     @Override
-    public void addThuongHieu(ThuongHieu thuongHieu) {
-        thuongHieuRepossitory.save(thuongHieu);
+    public ThuongHieu addThuongHieu(ThuongHieu thuongHieu) {
+        return thuongHieuRepossitory.save(thuongHieu);
     }
 
     @Override

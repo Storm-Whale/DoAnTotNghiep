@@ -31,13 +31,12 @@ public class KieuTayAoServiceImpl implements KieuTayAoService {
 
     @Override
     public Optional<KieuTayAo> detail(Integer id) {
-        Optional<KieuTayAo> kieuTayAo = kieuTayAoRepository.findById(id);
-        return Optional.of(kieuTayAo.get());
+        return kieuTayAoRepository.findById(id);
     }
 
     @Override
-    public void addKieuTayAo(KieuTayAo kieuTayAo) {
-        kieuTayAoRepository.save(kieuTayAo);
+    public KieuTayAo addKieuTayAo(KieuTayAo kieuTayAo) {
+        return kieuTayAoRepository.save(kieuTayAo);
     }
 
     @Override

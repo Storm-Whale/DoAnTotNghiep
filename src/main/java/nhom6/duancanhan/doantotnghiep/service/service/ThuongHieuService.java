@@ -13,7 +13,7 @@ public interface ThuongHieuService {
 
     Optional<ThuongHieu> detail(Integer id);
 
-    void addThuongHieu(ThuongHieu thuongHieu);
+    ThuongHieu addThuongHieu(ThuongHieu thuongHieu);
 
     void updateThuongHieu(Integer id, ThuongHieu thuongHieu);
 

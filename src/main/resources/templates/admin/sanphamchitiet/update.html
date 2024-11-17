@@ -57,6 +57,41 @@
         .image-hover.selected:hover {
             opacity: 1; /* Độ mờ trở lại bình thường khi ảnh đã được chọn */
         }
+
+        #formThemNhanh {
+            position: fixed; /* Giữ form luôn ở giữa ngay cả khi cuộn trang */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Dịch chuyển để căn giữa */
+            z-index: 1050; /* Hiển thị lên trên các phần tử khác */
+            width: 100%;
+            max-width: 400px; /* Giới hạn chiều rộng của form */
+            background-color: white; /* Đặt màu nền để nổi bật */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Tạo bóng */
+            border-radius: 8px; /* Bo tròn góc */
+            padding: 15px; /* Khoảng cách bên trong */
+        }
+
+        #formThemNhanh .btn-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none; /* Không có viền */
+            font-size: 0.7rem; /* Kích thước nút */
+            cursor: pointer; /* Hiển thị con trỏ tay */
+            z-index: 1060;
+        }
+
+        /* Nền mờ đằng sau form */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Nền mờ */
+            z-index: 1040; /* Đặt nền mờ dưới form */
+        }
     </style>
 </head>
 <body class="container-fluid">
@@ -156,10 +191,31 @@
             </form>
         </div>
     </div>
+    <div class="overlay" id="overlay" style="display: none;"></div>
+    <div id="formThemNhanh" class="mt-3" style="display: none;">
+        <div class="card">
+            <form id="formQuick" method="post">
+                <div class="card-body">
+                    <!-- Nút X để đóng -->
+                    <button type="button" class="btn-close" onclick="anForm()" style="position: absolute; top: 10px; right: 10px;"></button>
+
+                    <!-- Tiêu đề -->
+                    <h5 class="card-title text-center">Thêm Nhanh</h5>
+
+                    <!-- Nội dung form -->
+                    <div class="mb-3">
+                        <label for="ten" class="form-label">Tên</label>
+                        <input type="text" id="ten" name="ten" class="form-control" placeholder="Nhập tên">
+                    </div>
+                    <button type="button" class="btn btn-success" onclick="themNhanh()">Thêm</button>
+                    <button type="button" class="btn btn-secondary" onclick="anForm()">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </section>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/javascript/admin.js}"></script>
 <!-- JavaScript của jQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- JavaScript của Select2 -->
@@ -169,111 +225,7 @@
 <script th:inline="javascript">
     var listAnh = /*[[${listAnh}]]*/ '{}';
 </script>
-<script>
-    $(document).ready(function () {
-        $('.js-select2').select2({
-            placeholder: "Chọn một tùy chọn",
-            allowClear: true
-        });
-    });
-
-    let selectedImages = 0;  // Số lượng ảnh đã chọn
-    // Danh sách các ID ảnh đã chọn
-    let selectedImageIds = [];  // Giả sử các ID ảnh sẽ là số nguyên
-
-    // Hàm để chọn hoặc bỏ chọn ảnh
-    function toggleBorder(imgElement, imageId) {
-        if (imgElement.classList.contains("selected")) {
-            imgElement.classList.remove("selected");
-            selectedImages--;
-            const index = selectedImageIds.indexOf(imageId);
-            if (index > -1) {
-                selectedImageIds.splice(index, 1);
-            }
-        } else {
-            imgElement.classList.add("selected");
-            selectedImageIds.push(imageId);
-            selectedImages++;
-        }
-    }
-
-    // Lắng nghe sự kiện thay đổi file
-    document.getElementById("fileUpload").addEventListener("change", function () {
-        const files = this.files;
-
-        // Kiểm tra số lượng file được tải lên với số lượng ảnh đã chọn
-        if (files.length > selectedImages) {
-            // Hiển thị cảnh báo bằng SweetAlert nếu tải lên quá số ảnh đã chọn
-            Swal.fire({
-                icon: 'error',
-                title: 'Lỗi',
-                text: `Bạn chỉ có thể tải lên tối đa ${selectedImages} ảnh.`,
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1000,
-                timerProgressBar: true,
-                customClass: {
-                    popup: 'small-toast' // Thêm lớp CSS tùy chỉnh
-                }
-            });
-
-            // Xóa các file đã chọn để người dùng chọn lại
-            this.value = "";
-        }
-    });
-
-    document.getElementById("updateForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Ngăn chặn form submit mặc định
-
-        // Lấy productId từ input hidden
-        const productId = document.getElementById("idspct").value;
-
-        // Tạo đối tượng FormData từ form
-        const formData = new FormData(this);
-
-        // Thêm các ID ảnh đã chọn vào FormData
-        selectedImageIds.forEach(id => {
-            formData.append("imageIds", id);
-        });
-
-        // Gửi yêu cầu POST lên server
-        fetch(`/admin/product-details/update/${productId}`, {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => {
-                if (response.ok) {
-                    // Chuyển hướng đến trang mới sau khi cập nhật thành công
-                    window.location.href = "/admin"; // Thay đổi đường dẫn trang mới ở đây
-                } else {
-                    // Xử lý phản hồi lỗi
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lỗi',
-                        text: 'Đã xảy ra lỗi khi cập nhật ảnh.',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 1000,
-                        timerProgressBar: true
-                    });
-                }
-            })
-            .catch(error => {
-                // Xử lý lỗi khi gửi yêu cầu
-                console.error('Lỗi:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi',
-                    text: 'Đã xảy ra lỗi khi cập nhật ảnh.',
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 1000,
-                    timerProgressBar: true
-                });
-            });
-    });
-</script>
+<script th:src="@{/javascript/admin.js}"></script>
+<script th:src="@{/javascript/san_pham_chi_tiet.js}"></script>
+<script th:src="@{/javascript/san_pham_chi_tiet_update.js}"></script>
 </html>
