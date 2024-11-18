@@ -131,16 +131,13 @@ public class SanPhamServiceImpl implements SanPhamService {
     @Override
     public List<SanPhamShowOnClient> getAllSanPhamShowOnClient(String method) {
         return DatabaseOperationHandler.handleDatabaseOperation(() -> {
-            List<SanPhamResponse> sanPhamResponses = new ArrayList<>(getAllSanPham()); // Mutable copy
+            List<SanPhamResponse> sanPhamResponses = new ArrayList<>(getAllSanPham());
 
-            // If the method is "get-random", shuffle and limit the list to 8 items
+            // Nếu phương thức là "get-random", xáo trộn danh sách
             if ("get-random".equals(method)) {
-                Collections.shuffle(sanPhamResponses); // Shuffle the list
-                if (sanPhamResponses.size() > 8) {
-                    sanPhamResponses = sanPhamResponses.subList(0, 8); // Take first 8 elements
-                }
+                Collections.shuffle(sanPhamResponses); // Xáo trộn danh sách
             } else if (!"get-all".equals(method)) {
-                return null; // Invalid method, return null
+                return null; // Nếu phương thức không hợp lệ, trả về null
             }
 
             List<SanPhamShowOnClient> sanPhamShowOnClients = new ArrayList<>();
@@ -153,6 +150,23 @@ public class SanPhamServiceImpl implements SanPhamService {
                                     .gia(sanPhamChiTiet.getGia())
                                     .build()
                     );
+                }
+            }
+
+            // Đảm bảo danh sách trả về đúng 8 phần tử
+            if ("get-random".equals(method)) {
+                while (sanPhamShowOnClients.size() < 8) {
+                    for (SanPhamShowOnClient item : new ArrayList<>(sanPhamShowOnClients)) {
+                        if (sanPhamShowOnClients.size() < 8) {
+                            sanPhamShowOnClients.add(item); // Thêm tuần hoàn từ danh sách hiện tại
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                // Nếu danh sách lớn hơn 8 (do lặp), chỉ lấy 8 phần tử đầu tiên
+                if (sanPhamShowOnClients.size() > 8) {
+                    sanPhamShowOnClients = sanPhamShowOnClients.subList(0, 8);
                 }
             }
 

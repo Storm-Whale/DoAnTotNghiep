@@ -150,15 +150,15 @@ public class ClientController {
             // Consider using a logger instead of printing the stack trace
             e.printStackTrace();
         }
-
-        model.addAttribute("user", khachHang);
         model.addAttribute("idSP", id);
+        model.addAttribute("user", khachHang);
         model.addAttribute("kichCoSet", sortedSizes);
-        model.addAttribute("mauSacToAnhDaiDienMap", sortedColorToImageMap);
-        model.addAttribute("anhSanPhamResponseList", detailImageList);
         model.addAttribute("infoSP", sanPhamShowOnClient);
-        model.addAttribute("firstImageUrl", firstImage != null ? firstImage.getAnhUrl() : "img/default-image.jpg");
+        model.addAttribute("anhSanPhamResponseList", detailImageList);
+        model.addAttribute("mauSacToAnhDaiDienMap", sortedColorToImageMap);
+        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
         model.addAttribute("sp_random", sanPhamService.getAllSanPhamShowOnClient("get-random"));
+        model.addAttribute("firstImageUrl", firstImage != null ? firstImage.getAnhUrl() : "img/default-image.jpg");
         return "/client/chitiet";
     }
 

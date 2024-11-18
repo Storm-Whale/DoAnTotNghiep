@@ -27,9 +27,12 @@
             </ul>
 
             <!-- Search Form -->
-            <form class="col-12 col-lg-auto mb-2 mb-lg-0 me-4">
-                <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-            </form>
+            <div class="col-12 col-lg-auto mb-2 mb-lg-0 me-4 position-relative">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search" id="searchInput">
+                <div class="suggestions-box" id="suggestions" style="display: none;">
+                    <ul id="suggestionList"></ul>
+                </div>
+            </div>
 
             <!-- Cart Icon -->
             <a th:if="${session.user != null}" th:href="@{/client/gio-hang}" class="me-4">
@@ -60,7 +63,7 @@
                 <div class="dropdown text-end" th:unless="${session.loginStatus == true}">
                     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
                        id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="/images/nguoidung.png"
+                        <img src="/nguoidung.png"
                              alt="Default Avatar" width="40" height="40" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2">
@@ -154,7 +157,9 @@
                                 <button class="btn btn-outline-secondary" type="button" id="button-minus">-</button>
                             </div>
                             <input type="hidden" name="buyNow" value="buyNow">
-                            <input type="number" class="form-control input-small" id="input-number" value="1" min="1" max="100" name="soluong">
+                            <div  id="input-number" >
+                                <input type="number" class="form-control" value="1" min="1" max="100" name="soluong">
+                            </div>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="button-plus">+</button>
                             </div>
@@ -214,7 +219,7 @@
                 <a th:each="sp_rd : ${sp_random}" th:href="@{/client/san_pham_chi_tiet/{id}(id=${sp_rd.sanPhamResponse.id})}" class="product-card-link">
                     <div class="product-card">
                         <img th:src="@{/{anhUrl}(anhUrl=${sp_rd.sanPhamResponse.anhUrl})}" alt="Product Image">
-                        <p th:text="${sp_rd.sanPhamResponse.tenSanPham}"></p>
+                        <p class="mt-4" th:text="${sp_rd.sanPhamResponse.tenSanPham}"></p>
                         <p class="price" th:text="${#numbers.formatDecimal(sp_rd.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></p>
                     </div>
                 </a>
@@ -232,6 +237,7 @@
 <script th:inline="javascript">
     var mauSacToKichCoJson = /*[[${mauSacToKichCoJson}]]*/ '{}';
     var spcts = /*[[${spcts}]]*/ '{}';
+    var san_phams = /*[[${sanphams}]]*/ '{}';
 </script>
 <script th:src="@{/javascript/SanPhamChiTietOnClient.js}"></script>
 </body>
