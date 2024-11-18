@@ -5,6 +5,7 @@ import nhom6.duancanhan.doantotnghiep.entity.KieuTayAo;
 
 import nhom6.duancanhan.doantotnghiep.repository.KieuTayAoRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.KieuTayAoService;
+import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 @Service
 public class KieuTayAoServiceImpl implements KieuTayAoService {
+
     @Autowired
     private KieuTayAoRepository kieuTayAoRepository;
 
@@ -52,5 +54,13 @@ public class KieuTayAoServiceImpl implements KieuTayAoService {
     @Override
     public void deleteKieuTayAo(Integer id) {
         kieuTayAoRepository.deleteById(id);
+    }
+
+    @Override
+    public List<String> getAllKieuTayAo() {
+        return DatabaseOperationHandler.handleDatabaseOperation(
+                () -> kieuTayAoRepository.findAllTenKieuTayAo()
+                , "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu"
+        );
     }
 }

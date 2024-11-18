@@ -40,8 +40,8 @@ public class SanPhamController {
             @RequestParam(name = "chatLieuId", required = false) Integer chatLieuId,
             @RequestParam(name = "tayAoId", required = false) Integer tayAoId,
             @RequestParam(name = "coAoId", required = false) Integer coAoId,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
-            @PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
+            @PageableDefault(size = 5) Pageable pageable,
             Model model
     ) {
         // Sử dụng size từ @RequestParam để phân trang
@@ -145,12 +145,8 @@ public class SanPhamController {
         String oldImageUrl = existingProduct.getAnhUrl();
 
         SanPhamRequest sanPhamRequest = SanPhamRequest.builder()
-                .tenSanPham(tenSP)
-                .idChatLieu(idChatLieu)
-                .idThuongHieu(idThuongHieu)
-                .idCoAo(idCoAo)
-                .idTayAo(idTayAo)
-                .trangThai(trangThai)
+                .tenSanPham(tenSP).idChatLieu(idChatLieu).idThuongHieu(idThuongHieu)
+                .idCoAo(idCoAo).idTayAo(idTayAo).trangThai(trangThai)
                 .build();
 
         if (!anhSanPham.isEmpty()) {

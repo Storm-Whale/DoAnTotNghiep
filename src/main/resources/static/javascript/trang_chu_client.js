@@ -1,15 +1,8 @@
 // * Chức năng hiển thị/ẩn sidebar bộ lọc
 function toggleFilter() {
     const sidebar = document.getElementById('filter-sidebar');
-    if (sidebar.classList.contains('active')) {
-        // Ẩn sidebar
-        sidebar.classList.remove('active');
-        sidebar.classList.add('hidden');
-    } else {
-        // Hiện sidebar
-        sidebar.classList.remove('hidden');
-        sidebar.classList.add('active');
-    }
+    sidebar.classList.toggle('active');
+    sidebar.classList.toggle('hidden');
 }
 
 // * Khởi tạo các accordion trong bộ lọc
@@ -21,20 +14,87 @@ document.addEventListener('DOMContentLoaded', function () {
             // Chuyển đổi trạng thái active của accordion
             this.classList.toggle('active');
 
-            // Lấy phần panel tiếp theo
+            // Lấy phần tử panel tiếp theo
             const panel = this.nextElementSibling;
 
             // Điều chỉnh chiều cao của panel
             if (panel.style.maxHeight) {
-                // Thu gọn panel
+                // Nếu panel đang mở, thu gọn lại
                 panel.style.maxHeight = null;
-                panel.style.padding = '0 10px';
+                panel.style.padding = '0 10px'; // Tùy chỉnh padding khi thu gọn
             } else {
-                // Mở rộng panel
+                // Nếu panel đang đóng, mở rộng ra
                 panel.style.maxHeight = panel.scrollHeight + "px";
-                panel.style.padding = '10px';
+                panel.style.padding = '10px'; // Tùy chỉnh padding khi mở rộng
             }
         });
+
+        // Đặt trạng thái ban đầu cho panel nếu accordion có class 'active'
+        const panel = acc.nextElementSibling;
+        if (acc.classList.contains('active')) {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+            panel.style.padding = '10px';
+        }
+    });
+});
+
+// * Gửi bộ lọc và giữ nguyên trạng thái
+function submitFilterForm() {
+    const form = document.querySelector('form');
+    const formData = new FormData(form);
+    const queryParams = new URLSearchParams();
+
+    // Lưu trạng thái các accordion đang mở
+    const activeAccordions = document.querySelectorAll('.accordion.active');
+    activeAccordions.forEach(acc => {
+        queryParams.append('activeAccordion', acc.textContent.trim());
+    });
+
+    // Thêm các tham số lọc
+    for (const [key, value] of formData.entries()) {
+        if (value) queryParams.append(key, value);
+    }
+
+    // Điều hướng lại trang với tham số
+    window.location.href = `${form.action}?${queryParams.toString()}`;
+}
+
+// * Khởi tạo bộ lọc khi tải lại trang
+document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (isFilterOpen) {
+        toggleFilter();
+    }
+
+    // Duy trì trạng thái cho các bộ lọc
+    const filterElements = document.querySelectorAll('select[name], input[name]');
+    filterElements.forEach(filter => {
+        const paramValue = urlParams.get(filter.name);
+        if (paramValue) {
+            filter.value = paramValue;
+        }
+    });
+
+    // Khởi tạo trạng thái accordion
+    const accordions = document.querySelectorAll('.accordion');
+    accordions.forEach(acc => {
+        const panel = acc.nextElementSibling;
+
+        // Kiểm tra nếu accordion có trong danh sách activeAccordions
+        if (activeAccordions && activeAccordions.includes(acc.textContent.trim())) {
+            acc.classList.add('active');
+            panel.style.maxHeight = panel.scrollHeight + 'px';
+            panel.style.padding = '10px';
+        } else {
+            // Kiểm tra nếu panel có giá trị lọc
+            const hasFilterValue = panel.querySelectorAll('select, input').some(input => input.value);
+            if (hasFilterValue) {
+                acc.classList.add('active');
+                panel.style.maxHeight = panel.scrollHeight + 'px';
+                panel.style.padding = '10px';
+            }
+        }
     });
 });
 
@@ -156,3 +216,4 @@ document.addEventListener('click', function(event) {
         suggestionsBox.style.display = 'none';
     }
 });
+

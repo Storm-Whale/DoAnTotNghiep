@@ -18,4 +18,6 @@ public interface ThuongHieuService {
     void updateThuongHieu(Integer id, ThuongHieu thuongHieu);
 
     void deleteThuongHieu(Integer id);
+
+    List<String> getAllTenThuongHieu();
 }

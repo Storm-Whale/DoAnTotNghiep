@@ -32,4 +32,6 @@ public interface SanPhamService {
     SanPhamShowOnClient getSanPhamShowOnClientById(Integer id);
 
     Integer getIdSpFromTenSP(String tenSanPham);
+
+    List<SanPhamShowOnClient> searchSanPham(String tenThuongHieu, String tenChatLieu, String tenTayAo, String tenCoAo, String sort);
 }
