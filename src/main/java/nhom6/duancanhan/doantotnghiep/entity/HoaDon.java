@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -56,4 +57,16 @@ public class HoaDon extends BaseEntity{
 
     @Column(name = "trang_thai")
     private int trangThai;
+
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL)
+    private List<HoaDonChiTiet> hoaDonChiTietList;
+
+    // Getter và Setter cho hoaDonChiTietList
+    public List<HoaDonChiTiet> getHoaDonChiTietList() {
+        return hoaDonChiTietList;
+    }
+
+    public void setHoaDonChiTietList(List<HoaDonChiTiet> hoaDonChiTietList) {
+        this.hoaDonChiTietList = hoaDonChiTietList;
+    }
 }

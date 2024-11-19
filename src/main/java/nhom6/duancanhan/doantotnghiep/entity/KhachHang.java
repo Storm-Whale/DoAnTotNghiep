@@ -23,6 +23,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nhom6.duancanhan.doantotnghiep.dto.TaiKhoanDTO;
+import org.mapstruct.Mapper;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -99,5 +101,6 @@ public class KhachHang {
     protected void onUpdateUpdate() {
         ngaySua = LocalDate.now();
     }
+
 
 }

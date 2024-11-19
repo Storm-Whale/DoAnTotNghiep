@@ -47,4 +47,14 @@ public class HoaDonChiTietServiceImpl implements HoaDonChiTietService {
     public void deleteHoaDon(Integer id) {
         hoaDonChiTietRepository.deleteById(id);
     }
+
+    @Override
+    public List<HoaDonChiTiet> getHoaDonChiTietByHoaDonId(Integer hoaDonId) {
+        return hoaDonChiTietRepository.findByHoaDonId(hoaDonId);
+    }
+
+    @Override
+    public List<HoaDonChiTiet> findByHoaDonId(Integer hoaDonId) {
+        return hoaDonChiTietRepository.findByHoaDonId(hoaDonId);
+    }
 }

@@ -1,6 +1,8 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
+import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
+import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import org.springframework.data.domain.Page;
 
 
@@ -17,6 +19,7 @@ public interface HoaDonService {
 
     Optional<HoaDon> detail(Integer id);
 
+
     void addHoaDon(HoaDon hoaDon);
 
     void updateHoaDon(Integer id, HoaDon hoaDon);
@@ -30,4 +33,5 @@ public interface HoaDonService {
 //    HoaDonDTO converToDto(HoaDon hoaDon);
 //    HoaDon converToEntity(HoaDonDTO hoaDonDTO);
     void cancelHoaDon(Integer id);
+    public HoaDon findById(Integer id);
 }

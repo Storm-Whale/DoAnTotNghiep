@@ -37,5 +37,8 @@ public class HoaDonChiTiet {
     public BigDecimal tongTien() {
         return sanPhamChiTiet.getGia().multiply(BigDecimal.valueOf(soLuong));
     }
+    public String getTenSanPham() {
+        return sanPhamChiTiet.getSanPham().getTenSanPham();
+    }
 
 }
