@@ -2,8 +2,10 @@ package nhom6.duancanhan.doantotnghiep.controller;
 
 import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
+import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepo;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
+import nhom6.duancanhan.doantotnghiep.service.service.HoaDonChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,7 +24,8 @@ import java.util.Optional;
 public class HoaDonController {
     @Autowired
     private HoaDonService hoaDonService;
-
+    @Autowired
+    private HoaDonChiTietService hoaDonChiTietService;
 
     @GetMapping("")
     public String getAll(Model model) {
@@ -46,16 +49,35 @@ public class HoaDonController {
         return "/admin/customer/hoadon";
     }
 
-    // Hiển thị chi tiết hóa đơn
     @GetMapping("/detail/{id}")
-    public String showDetail(@PathVariable("id") Integer id, Model model) {
-        Optional<HoaDon> hoaDon = hoaDonService.detail(id);
-        if (hoaDon.isPresent()) {
-            model.addAttribute("hoaDon", hoaDon.get());
-            return "/admin/hoadon/HoaDon/Detail";
-        }
-        return "redirect:/admin/hoadon";
+    public String showDetail(@PathVariable Integer id, Model model) {
+        // Lấy thông tin hóa đơn theo ID
+        HoaDon hoaDon = hoaDonService.findById(id);
+
+        // Lấy chi tiết sản phẩm của hóa đơn
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietService.findByHoaDonId(id);
+
+        // Thêm thông tin vào model
+        model.addAttribute("hoaDon", hoaDon);
+        model.addAttribute("hoaDonChiTietList", hoaDonChiTietList);
+
+        return "/admin/customer/hoadonchitiet"; // Trang hiển thị chi tiết hóa đơn
     }
+
+    // Hiển thị chi tiết hóa đơn
+//    @GetMapping("/detail/{id}")
+//    public String showDetail(@PathVariable("id") Integer id, Model model) {
+//        Optional<HoaDon> hoaDon = hoaDonService.detail(id);
+//        if (hoaDon.isPresent()) {
+//            model.addAttribute("hoaDon", hoaDon.get());
+//            return "/admin/hoadon/HoaDon/Detail";
+//        }
+//        return "redirect:/admin/hoadon";
+//    }
+
+
+
+
 
 
     @PostMapping("/add")

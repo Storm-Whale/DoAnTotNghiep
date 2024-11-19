@@ -1,6 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 
+import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPham;
@@ -42,6 +43,11 @@ public class HoaDonServiceImpl implements HoaDonService {
         return this.hoaDonRepository.findAll(pageable);
     }
 
+    @Override
+    public Optional<HoaDon> detail(Integer id) {
+        return Optional.empty();
+    }
+
 
     @Override
     public void addHoaDon(HoaDon hoaDon) {
@@ -53,11 +59,12 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDonRepository.save(hoaDon);
     }
 
-    @Override
-    public Optional<HoaDon> detail(Integer id) {
-        Optional<HoaDon> hoaDon = hoaDonRepository.findById(id);
-        return Optional.of(hoaDon.get());
-    }
+//    @Override
+//    public Optional<HoaDon> detail(Integer id) {
+//        Optional<HoaDon> hoaDon = hoaDonRepository.findById(id);
+//        return Optional.of(hoaDon.get());
+//    }
+
 
     @Override
     public void deleteHoaDon(Integer id) {
@@ -96,6 +103,10 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDonRepository.delete(hoaDon);
     }
 
+    @Override
+    public HoaDon findById(Integer id) {
+        return hoaDonRepository.findById(id).orElse(null);
+    }
 
 
 //    @Override

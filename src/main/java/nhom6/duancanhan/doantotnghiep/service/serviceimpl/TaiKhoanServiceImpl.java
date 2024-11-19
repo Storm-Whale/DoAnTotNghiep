@@ -1,6 +1,8 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
+import nhom6.duancanhan.doantotnghiep.dto.TaiKhoanDTO;
 import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
+import nhom6.duancanhan.doantotnghiep.repository.ForgotRepository;
 import nhom6.duancanhan.doantotnghiep.repository.TaiKhoanRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
 
     @Autowired
     private TaiKhoanRepository taiKhoanRepository;
+
+    @Autowired
+    private ForgotRepository forgotRepository;
 
     @Override
     public List<TaiKhoan> getAll() {
@@ -60,6 +65,12 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
         return taiKhoanRepository.save(taiKhoan);
     }
 
+
+    @Override
+    public TaiKhoan findByResetCode(String resetCode) {
+        return taiKhoanRepository.findByResetCode(resetCode);
+    }
+
     @Override
     public boolean checkAccount(String username, String password) {
         return taiKhoanRepository.existsByTenDangNhapAndMatKhau(username, password);
@@ -68,5 +79,10 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
     @Override
     public TaiKhoan findByTTKAndMK(String username, String password) {
         return taiKhoanRepository.findTaiKhoanByTenDangNhapAndMatKhau(username, password);
+    }
+
+    @Override
+    public TaiKhoanDTO saveTaiKhoan(TaiKhoanDTO taiKhoan) {
+        return forgotRepository.save(taiKhoan);
     }
 }

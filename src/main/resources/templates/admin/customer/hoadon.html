@@ -45,6 +45,7 @@
             <th scope="col">Tổng Tiền</th>
             <th scope="col">Ghi Chú</th>
             <th scope="col">Trạng Thái</th>
+            <th scope="col">Chức Năng</th>
         </tr>
         </thead>
         <tbody>
@@ -59,6 +60,11 @@
             <td th:text="${hoaDon.ghiChu}"></td>
             <td>
                 <span th:text="${hoaDon.trangThai == 1 ? 'Chưa Thanh Toán' : 'Đã Thanh Toán'}"></span>
+            </td>
+            <td>
+                <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-primary">
+                    Chi Tiết
+                </a>
             </td>
         </tr>
         </tbody>
@@ -80,6 +86,7 @@
             </ul>
         </nav>
     </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </section>

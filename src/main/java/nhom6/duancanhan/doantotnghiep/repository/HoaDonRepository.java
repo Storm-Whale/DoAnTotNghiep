@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     Page<HoaDon> findByTenNguoiNhanContaining(String keyword, Pageable pageable);
+
     // Lấy hóa đơn đầu tiên (theo thứ tự tăng dần của ID)
     HoaDon findFirstByOrderByIdAsc();
 

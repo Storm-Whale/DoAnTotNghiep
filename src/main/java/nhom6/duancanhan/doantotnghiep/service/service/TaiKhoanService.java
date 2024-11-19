@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
+import nhom6.duancanhan.doantotnghiep.dto.TaiKhoanDTO;
 import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
 import org.springframework.data.domain.Page;
 
@@ -23,9 +24,11 @@ public interface TaiKhoanService {
     TaiKhoan findByTenDangNhap(String tenDangNhap);
 
     TaiKhoan saveTaiKhoan(TaiKhoan taiKhoan);
-//    public TaiKhoan findByResetCode(String resetCode) ;
+
 
     boolean checkAccount(String username, String password);
 
     TaiKhoan findByTTKAndMK (String username, String password);
+//    Optional<TaiKhoan> findByResetCode(String resetCode);
+    TaiKhoanDTO saveTaiKhoan(TaiKhoanDTO taiKhoan);
 }
