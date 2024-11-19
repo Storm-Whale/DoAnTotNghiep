@@ -777,6 +777,19 @@ body {
 
 
 
+.z a.small {
+    font-size: 20px; /* Tăng kích thước chữ */
+    font-weight: bold; /* Chữ đậm */
+    color: #007BFF; /* Màu xanh nổi bật */
+    text-decoration: none; /* Bỏ gạch chân */
+    padding: 5px 0; /* Tăng khoảng cách trên dưới */
+    transition: color 0.3s ease, text-shadow 0.3s ease; /* Hiệu ứng mượt khi hover */
+}
+
+.z a.small:hover {
+    color: #0056b3; /* Màu xanh đậm hơn khi hover */
+    text-shadow: 0px 0px 8px rgba(0, 123, 255, 0.7); /* Hiệu ứng phát sáng nhẹ */
+}
 
 
 

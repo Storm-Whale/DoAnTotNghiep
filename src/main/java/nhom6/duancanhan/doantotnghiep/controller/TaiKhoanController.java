@@ -5,17 +5,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import nhom6.duancanhan.doantotnghiep.dto.KhachHangDTO;
+import nhom6.duancanhan.doantotnghiep.dto.TaiKhoanDTO;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
+import nhom6.duancanhan.doantotnghiep.repository.ForgotKHRepository;
+import nhom6.duancanhan.doantotnghiep.service.service.ForgotPasswordService;
 import nhom6.duancanhan.doantotnghiep.service.service.KhachHangService;
 import nhom6.duancanhan.doantotnghiep.service.service.NhanVienService;
 import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,9 +31,12 @@ public class TaiKhoanController {
     private final TaiKhoanService taiKhoanService;
 
     private final KhachHangService khachHangService;
+    @Autowired
+    private ForgotPasswordService forgotPasswordService;
 
     private final NhanVienService nhanVienService;
 
+    private final ForgotKHRepository forgotKHRepository;
     @PostMapping
     public String login(@RequestParam String username,
                         @RequestParam String password,
@@ -120,15 +129,26 @@ public class TaiKhoanController {
     }
 
     @PostMapping("dangkytk")
-    public String dangKy(@ModelAttribute TaiKhoan taiKhoan, @ModelAttribute KhachHang khachHang) {
-        // Thiết lập trạng thái tài khoản là 1
-        taiKhoan.setTrangThai(1); // Thêm dòng này
-        khachHang.setTrangThai(1);
-        khachHang.setNgayTao(LocalDate.now());
-        khachHang.setAnhUrl("img_1.png");
-        TaiKhoan savedTaiKhoan = taiKhoanService.saveTaiKhoan(taiKhoan);
-        khachHang.setTaiKhoan(savedTaiKhoan);
-        khachHangService.saveKhachHang(khachHang);
+    public String dangKy(@ModelAttribute TaiKhoanDTO taiKhoandt, @ModelAttribute KhachHangDTO khachHangdt) {
+//        // Thiết lập trạng thái tài khoản là 1
+//        taiKhoan.setTrangThai(1); // Thêm dòng này
+//        khachHang.setTrangThai(1);
+//
+//        khachHang.setNgayTao(LocalDate.now());
+//        khachHang.setAnhUrl("img_1.png");
+//        TaiKhoan savedTaiKhoan = taiKhoanService.saveTaiKhoan(taiKhoan);
+//        khachHang.setTaiKhoan(savedTaiKhoan);
+//        khachHangService.saveKhachHang(khachHang);
+        taiKhoandt.setTrangThai(1); // Thêm dòng này
+        taiKhoandt.setNgayTao(LocalDate.now());
+        taiKhoandt.setIdvt(3);
+        khachHangdt.setTrangThai(1);
+        khachHangdt.setNgayTao(LocalDate.now());
+        khachHangdt.setAnhUrl("img_1.png");
+        TaiKhoanDTO savedTaiKhoan = taiKhoanService.saveTaiKhoan(taiKhoandt);
+        khachHangdt.setTaiKhoan(savedTaiKhoan);
+       forgotKHRepository.save(khachHangdt);
+
         return "redirect:/login/ad";
     }
 
@@ -165,25 +185,74 @@ public class TaiKhoanController {
     }
 
     //   TODO : Logout
-    @GetMapping("/logout")
-    public String logout(HttpSession session, HttpServletResponse response, HttpServletRequest request) {
-        // Xóa session người dùng và trạng thái đăng nhập
-        session.removeAttribute("user");
-        session.removeAttribute("loginStatus");
-        session.invalidate();
-
-        // Xóa tất cả cookie để đảm bảo thông tin phiên được xóa hoàn toàn
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                cookie.setValue("");
-                cookie.setPath("/");
-                cookie.setMaxAge(0); // Xóa cookie ngay lập tức
-                response.addCookie(cookie);
-            }
-        }
-
-        // Chuyển hướng về trang chính
-        return "redirect:/client";
-    }
+//    @GetMapping("/logout")
+//    public String logout(HttpSession session, HttpServletResponse response, HttpServletRequest request) {
+//        // Xóa session người dùng và trạng thái đăng nhập
+//        session.removeAttribute("user");
+//        session.removeAttribute("loginStatus");
+//        session.invalidate();
+//
+//        // Xóa tất cả cookie để đảm bảo thông tin phiên được xóa hoàn toàn
+//        Cookie[] cookies = request.getCookies();
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                cookie.setValue("");
+//                cookie.setPath("/");
+//                cookie.setMaxAge(0); // Xóa cookie ngay lập tức
+//                response.addCookie(cookie);
+//            }
+//        }
+//
+//        // Chuyển hướng về trang chính
+//        return "redirect:/client";
+//    }
+//    @GetMapping("mkpas")
+//    public String quenmk () {
+//        return "/client/Quenmk";
+//    }
+//    // Hiển thị trang quên mật khẩu
+//
+//
+//
+//    @GetMapping("/forgot-password")
+//    public String showForgotPasswordPage(Model model) {
+//        return "/client/Quenmk"; // Tên file HTML (Thymeleaf)
+//    }
+//
+//    // Gửi mã xác nhận
+//    @PostMapping("/forgot-password")
+//    public String sendResetCode(@RequestParam("email") String email, Model model) {
+//        String message = forgotPasswordService.sendResetCode(email);
+//        model.addAttribute("message", message);
+//        return "/client/Quenmk"; // Trả về trang quên mật khẩu với thông báo
+//    }
+//
+//    // Hiển thị trang đặt lại mật khẩu
+//    @GetMapping("/reset-password")
+//    public String showResetPasswordPage(@RequestParam("code") String code, Model model) {
+//        model.addAttribute("resetCode", code);
+//        return "/client/Quenmk"; // Tên file HTML (Thymeleaf) cho trang đặt lại mật khẩu
+//    }
+//
+//    @PostMapping("/reset-password")
+//    public String resetPassword(@RequestParam("code") String resetCode,
+//                                @RequestParam("newPassword") String newPassword,
+//                                Model model) {
+//        // Tìm tài khoản dựa trên mã xác nhận
+//        TaiKhoanDTO user = forgotPasswordService.findByResetCode(resetCode);
+//
+//        if (user != null) {
+//            // Nếu mã xác nhận hợp lệ, cập nhật mật khẩu
+//            user.setMat_khau(newPassword); // Cập nhật mật khẩu mới
+//            user.setResetCode(null); // Xóa mã xác nhận sau khi sử dụng
+//            user.setNgaySua(LocalDate.now());
+//            forgotPasswordService.saveTaiKhoan(user); // Lưu thay đổi vào CSDL
+//
+//            model.addAttribute("message", "Mật khẩu đã được đặt lại thành công.");
+//        } else {
+//            model.addAttribute("message", "Mã xác nhận không hợp lệ.");
+//        }
+//
+//        return "/client/Quenmk"; // Trả về trang quên mật khẩu
+//    }
 }

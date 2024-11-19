@@ -31,6 +31,7 @@ public class TaiKhoan extends BaseEntity{
     @Column(name = "trang_thai")
     private Integer trangThai;
 
-//    @Column(name = "reset_code")
-//    private String resetCode;
+    @Column(name = "reset_code")
+    private String resetCode;
+
 }
