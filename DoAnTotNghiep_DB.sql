@@ -312,3 +312,12 @@ alter table hoa_don
 go
 
 
+ALTER TABLE hoa_don_chi_tiet
+DROP CONSTRAINT FK__hoa_don_c__id_ho__5535A963;
+
+ALTER TABLE hoa_don_chi_tiet
+ADD CONSTRAINT FK__hoa_don_c__id_ho__5535A963
+FOREIGN KEY (id_hoa_don) REFERENCES hoa_don(id)
+ON DELETE CASCADE;
+
+ALTER TABLE san_pham ADD qr_code_url VARCHAR(255);
