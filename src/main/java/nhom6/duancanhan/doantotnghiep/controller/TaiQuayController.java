@@ -1,6 +1,8 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
@@ -18,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -163,6 +166,7 @@ public class TaiQuayController {
 
         KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
         redirectAttributes.addFlashAttribute("khachHang", khachHang);
+        model.addAttribute("khachHangThemNhanh",new KhachHang());
 //        BigDecimal tongTienSauGiam = phieuGiamGiaService.applyDiscount(maPhieuGiamGia, tongTien);
 //        model.addAttribute("tongTienSauGiam", tongTienSauGiam);
         // Thêm vào model
@@ -230,7 +234,7 @@ public class TaiQuayController {
         model.addAttribute("kieuGiamGia", kieuGiamGia);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("idHoaDon", idHoaDon);
-
+        model.addAttribute("khachHangThemNhanh",new KhachHang());
         return "/admin/BanhangTaiQuay/index";
     }
 
@@ -271,6 +275,7 @@ public class TaiQuayController {
         model.addAttribute("mauSacId", mauSacId);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("idHoaDon", idHoaDon);
+        model.addAttribute("khachHangThemNhanh",new KhachHang());
         return "/admin/BanhangTaiQuay/index";
     }
 
@@ -356,14 +361,82 @@ public class TaiQuayController {
         model.addAttribute("tongTien", tongTien);
         model.addAttribute("idHoaDon", idHoaDon);
         model.addAttribute("tongTienSauGiam", hoaDon != null ? lastTongTien : null);
+        model.addAttribute("khachHangThemNhanh",new KhachHang());
         return "/admin/BanhangTaiQuay/index";
     }
 // TODO : khachhang
-    @GetMapping("tim-kiem")
-    public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = false) String soDienThoai, HttpSession session
-            , RedirectAttributes redirectAttributes) {
+@GetMapping("tim-kiem")
+public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = false) String soDienThoai, HttpSession session
+        , RedirectAttributes redirectAttributes,Model model) {
 
-        KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
+    KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
+    if (khachHang == null) {
+        // Tạo đối tượng khách hàng mới với số điện thoại đã nhập
+        KhachHang newKhachHang = new KhachHang();
+        newKhachHang.setSoDienThoai(soDienThoai);
+        // Gửi thông báo và form khách hàng mới đến view
+        model.addAttribute("khachHangThemNhanh", newKhachHang);
+        model.addAttribute("soDienThoaiNotFound", soDienThoai);
+//            return "redirect:/admin/taiquay";
+        return "redirect:/admin/taiquay#themnhanhkhachhang"; // View thêm khách hàng
+    }
+
+    HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
+            .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
+    // Cập nhật khách hàng cho hóa đơn
+    if (hoaDon != null || hoaDon.getKhachHang() != null) {
+        hoaDon.setKhachHang(khachHang);
+        hoaDon.setTrangThai(1);
+        hoaDonRepository.save(hoaDon);
+        redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
+        redirectAttributes.addFlashAttribute("khachHang", khachHang);
+        if (hoaDon.getDiaChi() != null) {
+            model.addAttribute("diaChi", hoaDon.getDiaChi().getDiaChiChiTiet());
+        }
+    }else {
+        System.out.println("bug ơi");
+    }
+//        model.addAttribute("khachHang", khachHang);
+//        model.addAttribute("hoaDon", hoaDon);
+//        model.addAttribute("diaChi", hoaDon.getDiaChi());
+    // Tạo ModelAndView để chuyển dữ liệu sang view Thymeleaf
+    return "redirect:/admin/taiquay/detail/" + idHoaDon; // Tên view Thymeleaf để hiển thị kết quả
+}
+    @Autowired
+    DiaChiRepository diaChiRepository;
+    @PostMapping("/cap-nhat-hoa-don")
+    public String capNhatHoaDon(@RequestParam Integer idHoaDon, @RequestParam String diaChi) {
+        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
+                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
+
+        // Tìm hoặc tạo mới địa chỉ
+        DiaChi diaChiObj = diaChiRepository.findByDiaChiChiTiet(diaChi)
+                .orElseGet(() -> {
+                    DiaChi newDiaChi = new DiaChi();
+                    newDiaChi.setDiaChiChiTiet(diaChi);
+                    diaChiRepository.save(newDiaChi);
+                    return newDiaChi;
+                });
+
+        // Cập nhật địa chỉ trong hóa đơn
+        hoaDon.setDiaChi(diaChiObj);
+        hoaDonRepository.save(hoaDon);
+
+        // Chuyển hướng về trang chi tiết hóa đơn
+        return "redirect:/admin/taiquay/detail/" + idHoaDon;
+    }
+    @PostMapping("/add")
+    public String add(@Valid @ModelAttribute("khachHangThemNhanh") KhachHang khachHang, BindingResult result, Model model,RedirectAttributes redirectAttributes) {
+//        if (result.hasErrors()) {
+//            for (FieldError error : result.getFieldErrors()) {
+//                model.addAttribute(error.getField(), error.getDefaultMessage());
+//            }
+//            model.addAttribute("alertMessage", "Vui lòng kiểm tra thông tin nhập!");
+//            return "redirect:/admin/taiquay#themnhanhkhachhang";
+////          return "redirect:/admin/khachhang/add" + "#demo-modal";
+//        }
+        khachHangService.addKhachHang(khachHang);
+
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
                 .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
         // Cập nhật khách hàng cho hóa đơn
@@ -373,13 +446,10 @@ public class TaiQuayController {
             hoaDonRepository.save(hoaDon);
             redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
             redirectAttributes.addFlashAttribute("khachHang", khachHang);
-        }else {
-            System.out.println("bug ơi");
         }
-        // Tạo ModelAndView để chuyển dữ liệu sang view Thymeleaf
-        return "redirect:/admin/taiquay/detail/" + idHoaDon; // Tên view Thymeleaf để hiển thị kết quả
+        redirectAttributes.addFlashAttribute("successMessage", "Khách hàng đã được thêm thành công!");
+        return "redirect:/admin/taiquay/detail/" + idHoaDon;
     }
-
     @Autowired
     PhuongThucThanhToanRepository phuongThucThanhToanRepository;
 
