@@ -61,7 +61,7 @@ public class ClientController {
         boolean isLoggedIn = session != null &&
                 session.getAttribute("loginStatus") != null &&
                 (Boolean) session.getAttribute("loginStatus");
-
+//        session.setAttribute("loginStatus", false);
         if (!isLoggedIn) {
             model.addAttribute("user", null);
         } else {
@@ -378,6 +378,27 @@ public class ClientController {
                     .build();
             hoaDonChiTietRepository.save(hoaDonChiTiet);
         }
+    }
+
+    //    TODO : Thông Tin Khách Hàng
+    @GetMapping(value = "/showInfoCustomer")
+    private String showInfoKhachHang(
+            @SessionAttribute(value = "user") KhachHang khachHang,
+            Model model
+    ) {
+        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
+        return "/client/customer/ThongTinKhachHang";
+    }
+
+    //    TODO : Thông Tin Address
+    @GetMapping(value = "/showInfoAddress")
+    private String showInfoAddress(
+            @SessionAttribute(value = "user") KhachHang khachHang,
+            Model model
+    ) {
+        model.addAttribute("diachi", diaChiService.getDiaChiByIdKhachHang(khachHang.getId(), 1));
+        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
+        return "/client/customer/ThongTinDiaChi";
     }
 
     //  TODO: Update Sản Phẩm Chi Tiết In Giỏ Hàng

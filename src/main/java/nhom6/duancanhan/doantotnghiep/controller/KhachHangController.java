@@ -1,23 +1,23 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.service.service.KhachHangService;
 import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
+import nhom6.duancanhan.doantotnghiep.util.UploadImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,6 +31,9 @@ public class KhachHangController {
 
     @Autowired
     private TaiKhoanService taiKhoanService;
+
+    @Autowired
+    private UploadImage uploadImage;
 
     @GetMapping("")
     public String searchKhachHang(
@@ -65,20 +68,6 @@ public class KhachHangController {
         model.addAttribute("pageNumbers", pageNumbers);
         return "/admin/customer/khachhang";
     }
-
-//    @GetMapping("{pageNo}")
-//    public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
-//        int pageSize = 3;
-//        Page<KhachHang> page = khachHangService.phanTrang(pageNo,pageSize);
-//        List<KhachHang> listKH = page.getContent();
-//        model.addAttribute("khachHang",new KhachHang());
-//        model.addAttribute("listKH",listKH);
-//        model.addAttribute("listTK",taiKhoanService.getAll());
-//        model.addAttribute("currentPage ", pageNo);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems",page.getTotalElements());
-//        return "/admin/customer/khachhang";
-//    }
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") Integer id, Model model) {
@@ -125,6 +114,30 @@ public class KhachHangController {
     public String delete(@PathVariable("id") Integer id) {
         khachHangService.deleteKhachHang(id);
         return "redirect:/admin/khachhang";
+    }
+
+    @PostMapping("/update-client/{id}")
+    public String updateClient(
+            @PathVariable("id") Integer id, @RequestParam(name = "ten", required = false) String ten,
+            @RequestParam(name = "email", required = false) String email, @RequestParam(name = "soDienThoai", required = false) String soDienThoai,
+            @RequestParam(name = "gioiTinh", required = false) Integer gioiTinh, @RequestParam(name = "ngaySinh", required = false) LocalDate ngaySinh,
+            @RequestParam(name = "image", required = false) MultipartFile image,
+            HttpSession session, Model model
+    ) throws IOException {
+        KhachHang khachHang = (KhachHang) session.getAttribute("user");
+        if (!image.isEmpty()) {
+            uploadImage.deleteOldImage(khachHang.getAnhUrl());
+            String anhUrl = uploadImage.saveImage(image);
+            khachHang.setAnhUrl(anhUrl);
+        }
+        khachHang.setTen(ten);
+        khachHang.setEmail(email);
+        khachHang.setSoDienThoai(soDienThoai);
+        khachHang.setGioiTinh(gioiTinh);
+        khachHang.setNgaySinh(ngaySinh);
+        khachHangService.updateKhachHang(khachHang);
+        session.setAttribute("user", khachHang);
+        return "redirect:/client/showInfoCustomer";
     }
 
 }

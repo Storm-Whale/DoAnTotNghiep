@@ -1,0 +1,220 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    flex: 1;
+    margin-bottom: 0 !important;
+}
+
+.custom-header .form-control {
+    width: 300px;
+}
+
+.suggestions-box {
+    border: 1px solid #ccc;
+    background: white;
+    position: absolute;
+    z-index: 1000;
+    width: 105%;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.suggestions-box ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.suggestions-box li {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    cursor: pointer;
+}
+
+.suggestions-box li:hover {
+    background-color: #f0f0f0;
+}
+
+.suggestions-box img {
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+/* Product Info in Search */
+.product-info {
+    display: flex;
+    flex-direction: column; /* Thay đổi thành column để tên và giá xếp dọc */
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    padding: 5px 0; /* Thêm padding trên dưới */
+}
+
+.product-info span:first-child {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px; /* Khoảng cách giữa tên và giá */
+    color: #333; /* Màu chữ cho tên sản phẩm */
+}
+
+.product-info span:nth-child(2) {
+    color: red;
+    font-weight: bold;
+    font-size: 13px;
+    display: block; /* Đảm bảo giá tiền nằm trên một dòng riêng */
+}
+
+/* Style cho thẻ a trong suggestions */
+.suggestions-box li a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 0;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.footer-section {
+    width: 22%;
+    margin-bottom: 20px;
+}
+
+.footer-section ul{
+    list-style: none;
+}
+
+.footer-section ul li{
+    margin-right: 30px;
+}
+
+.footer-section h3 {
+    color: #f39c12;
+    margin-bottom: 10px;
+}
+
+.footer-section a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section a:hover {
+    color: #f39c12;
+}
+
+.social-icons a {
+    margin: 0 10px;
+}
+
+.list-group-item.active {
+    background-color: #f8f9fa !important; /* Màu xám nhạt */
+    color: #000 !important; /* Đặt màu chữ đen */
+    border-color: #ddd !important; /* Màu viền */
+}
+
+/* Màu khi accordion mở (expanded) */
+.accordion-button:not(.collapsed) {
+    background-color: #cccccc !important; /* Màu xám đậm */
+    color: #000000 !important; /* Màu chữ trắng */
+    border-color: #5c636a !important; /* Màu viền */
+}
+
+/* Màu khi accordion đóng (collapsed) */
+.accordion-button.collapsed {
+    background-color: #fff !important; /* Màu trắng */
+    color: #000 !important; /* Màu chữ đen */
+    border-color: #ddd !important; /* Màu viền */
+}
+
+/* Hiệu ứng hover */
+.accordion-button:hover {
+    background-color: #cccccc !important; /* Màu xám đậm hơn */
+    color: #000000 !important;
+}
+
+/* Đổi màu viền khi nút được focus */
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(92, 99, 106, 0.5);
+}
+
+/* Lớp phủ mờ bên ngoài form */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Màu đen với độ mờ */
+    z-index: 999;
+    display: none; /* Ẩn lớp phủ khi không cần thiết */
+}
+
+.add-address-container {
+    width: 500px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    border-radius: 8px; /* Rounded corners */
+    display: none; /* Hide initially */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
+    opacity: 0; /* Initially hidden */
+}
+
+.add-address-container.show {
+    display: block; /* Display when added to the class 'show' */
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05); /* Slight scale effect when shown */
+}
+
+.add-address-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+#backButton {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+#saveAddressButton {
+    background-color: #007bff;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+

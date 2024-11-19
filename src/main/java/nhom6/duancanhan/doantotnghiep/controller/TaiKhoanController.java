@@ -15,8 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/login")
@@ -112,7 +110,6 @@ public class TaiKhoanController {
         // Thiết lập trạng thái tài khoản là 1
         taiKhoan.setTrangThai(1); // Thêm dòng này
         khachHang.setTrangThai(1);
-        khachHang.setNgayTao(LocalDate.now());
         khachHang.setAnhUrl("img_1.png");
         TaiKhoan savedTaiKhoan = taiKhoanService.saveTaiKhoan(taiKhoan);
         khachHang.setTaiKhoan(savedTaiKhoan);
@@ -141,13 +138,13 @@ public class TaiKhoanController {
                     session.setAttribute("nhanvien", nhanVienService.getNhanVienByIdTaiKhoan(taiKhoan.getId()));
                     session.setAttribute("account", taiKhoan);
                     session.setAttribute("role", role);
-                    session.setAttribute("loginStatus", true);  // Thêm flag
+                    session.setAttribute("loginStatus", true);
                     return "redirect:/admin";
                 case 3:
                     session.setAttribute("user", khachHangService.findByIdTaiKhoan(taiKhoan.getId()));
                     session.setAttribute("account", taiKhoan);
                     session.setAttribute("role", role);
-                    session.setAttribute("loginStatus", true);  // Thêm flag
+                    session.setAttribute("loginStatus", true);
                     return "redirect:/client";
             }
         } else {

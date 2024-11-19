@@ -44,4 +44,7 @@ public class DiaChi extends BaseEntity{
 
     @Column(name = "dia_chi_chi_tiet")
     private String diaChiChiTiet;
+
+    @Column(name = "trang_thai")
+    private Integer trangThai;
 }

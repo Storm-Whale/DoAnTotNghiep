@@ -1,24 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +16,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "khach_hang")
-public class KhachHang {
+public class KhachHang extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -76,28 +60,9 @@ public class KhachHang {
     @ManyToOne
     private TaiKhoan taiKhoan;
 
-
     @Column(name = "trang_thai")
     @NotNull(message = "Trạng thái không trống")
     @Min(value = 0, message = "Invalid gender value")
     @Max(value = 1, message = "Invalid gender value")
     private Integer trangThai;
-
-    @Column(name= "ngay_tao")
-    LocalDate ngayTao;
-
-    @Column(name = "ngay_sua")
-    LocalDate ngaySua;
-
-    @PrePersist
-    protected void onCreateCreate() {
-        ngayTao = LocalDate.now();
-        ngaySua = LocalDate.now();
-    }
-
-    @PreUpdate
-    protected void onUpdateUpdate() {
-        ngaySua = LocalDate.now();
-    }
-
 }

@@ -49,10 +49,11 @@
                        id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                         <img id="userAvatar"
                              th:src="@{/{anhUrl}(anhUrl=${user.anhUrl})}"
-                             alt="User Avatar" width="40" height="40" class="rounded-circle">
+                             alt="User Avatar" width="40" height="40" class="rounded-circle"
+                             style="object-fit: cover">
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                        <li><a class="dropdown-item" th:href="@{/client/profile}">Tài Khoản Của Tôi</a></li>
+                        <li><a class="dropdown-item" th:href="@{/client/showInfoCustomer}">Tài Khoản Của Tôi</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>

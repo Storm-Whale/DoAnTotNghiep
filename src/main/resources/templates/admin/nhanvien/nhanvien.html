@@ -14,30 +14,24 @@
 
 <section class="page-content">
     <h1>Quản Lý Nhân Viên</h1>
-
     <form th:action="@{/admin/nhanvien}" method="get">
-    <div class="col-5" style="margin: 10px 10px 10px 10px">
-        <div class="input-group" style="width: 800px">
-            <input class="form-control" style="width: 400px" name="keyword" th:value="${keyword}" placeholder="Nhập tên nhân viên để tìm..." type="text"/>
-<!--            <span th:if="${#fields.hasErrors('keyword')}" th:errors="*{keyword}"></span>-->
-            <button type="submit" class="btn btn-dark"><i class="bi bi-search"></i> Search</button>
-            <select style="margin-left: 30px" class="form-select col-sm-12" aria-label="Default select example" name="trangThai">
-                <option value="">Chọn trạng thái</option>
-                <option type="submit" value="1" th:selected="${trangThai == 1}">Hoạt động</option>
-                <option type="submit" value="0" th:selected="${trangThai == 0}">Không hoạt động</option>
-            </select>
+        <div class="col-5" style="margin: 10px 10px 10px 10px">
+            <div class="input-group" style="width: 800px">
+                <input class="form-control" style="width: 400px" name="keyword" th:value="${keyword}" placeholder="Nhập tên nhân viên để tìm..." type="text"/>
+                <button type="submit" class="btn btn-dark"><i class="bi bi-search"></i> Search</button>
+                <select style="margin-left: 30px" class="form-select col-sm-12" aria-label="Default select example" name="trangThai">
+                    <option value="">Chọn trạng thái</option>
+                    <option type="submit" value="1" th:selected="${trangThai == 1}">Hoạt động</option>
+                    <option type="submit" value="0" th:selected="${trangThai == 0}">Không hoạt động</option>
+                </select>
+            </div>
         </div>
-
-    </div>
-
     </form>
-
     <a class="wrapper">
         <a href="#dialog">
             <button class="btn btn-light" style="margin-bottom: 20px"><i class="bi bi-plus-circle-fill"></i>Thêm Nhân Viên</button>
         </a>
     </a>
-
     <table class="table table-bordered table-hover text-center">
         <thead class="table-dark">
         <tr>
@@ -61,8 +55,6 @@
             <td th:text="${nv.gioiTinh == 1 ? 'Nam' : 'Nữ'}"></td>
             <td th:text="${nv.sdt}"></td>
             <td th:text="${nv.email}"></td>
-<!--            <td th:text="${nv.taiKhoan.id}"></td>-->
-<!--            <td th:text="${nv.vaiTro.tenVaiTro}"></td>-->
             <td th:text="${nv.trangThai == 1 ? 'Hoạt Động' : 'Không Hoạt Động'}"></td>
             <td>
                 <a th:href="@{/admin/nhanvien/delete/{id}(id=${nv.id})}"><button class="btn btn-light" onclick="return confirm('Bạn có chắc chắn muốn xóa?');"><i class="bi bi-trash-fill fs3"></i></button></a>
@@ -71,16 +63,12 @@
         </tr>
         </tbody>
     </table>
-
-
     <div id="dialog" class="modal">
         <div class="modal__content">
             <h2>Thêm Khách Hàng</h2>
             <div th:replace="~{admin/nhanvien/adNhanVien :: form}"></div>
         </div>
     </div>
-
-
     <nav>
         <ul class="pagination">
             <li th:classappend="${currentPage == 0} ? 'disabled'">
@@ -94,13 +82,10 @@
             </li>
         </ul>
     </nav>
-
-    <!--</section>-->
 </section>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>
-<!--<script th:src="@{/javascrip/khachhang.js}"></script>-->
 </html>
 
 

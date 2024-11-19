@@ -27,6 +27,7 @@ import java.util.stream.IntStream;
 @Controller
 @RequestMapping("/admin/nhanvien")
 public class NhanVienController {
+
     @Autowired
     private NhanVienService nhanVienService;
 
@@ -46,7 +47,7 @@ public class NhanVienController {
         if (keyword != null) {
             keyword = keyword.trim();
             if (keyword.isEmpty()) {
-                keyword = null; // Đặt thành null để khớp với logic xử lý trong service
+                keyword = null;
             }
         }
         if(page < 0) {
@@ -55,8 +56,8 @@ public class NhanVienController {
         Page<NhanVien> listNV = nhanVienService.SearchandPhantrang(keyword, trangThai, page, size);
         int totalPages = listNV.getTotalPages();
         if(page >= totalPages) {
-            page = totalPages > 0 ? totalPages - 1 : 0; // Go to the last page if out of bounds or reset to 0 if no pages exist
-            listNV = nhanVienService.SearchandPhantrang(keyword, trangThai, page, size); // Fetch the last page data
+            page = totalPages > 0 ? totalPages - 1 : 0;
+            listNV = nhanVienService.SearchandPhantrang(keyword, trangThai, page, size);
         }
         List<Integer> pageNumbers = IntStream.range(0, totalPages).boxed().collect(Collectors.toList());
         model.addAttribute("listNV", listNV);
@@ -66,31 +67,6 @@ public class NhanVienController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageNumbers", pageNumbers);
-        return "/admin/nhanvien/nhanvien";
-    }
-
-//    @GetMapping("{pageNo}")
-//    public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
-//        int pageSize = 3;
-//        Page<NhanVien> page = nhanVienService.phanTrang(pageNo,pageSize);
-//        List<NhanVien> listNV = page.getContent();
-//        model.addAttribute("nhanVien",new NhanVien());
-//        model.addAttribute("listNV",listNV);
-//        model.addAttribute("listTK",taiKhoanService.getAll());
-//        model.addAttribute("listVT",vaiTroService.getAll());
-//        model.addAttribute("currentPage ", pageNo);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems",page.getTotalElements());
-//        return "/admin/nhanvien/nhanvien";
-//    }
-
-
-    @GetMapping("/detail/{id}")
-    public String detail(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("nhanVien", nhanVienService.detail(id));
-        model.addAttribute("listTK", taiKhoanService.getAll());
-        model.addAttribute("listNV", nhanVienService.getAll());
-        model.addAttribute("listVT", vaiTroService.getAll());
         return "/admin/nhanvien/nhanvien";
     }
 
@@ -137,38 +113,4 @@ public class NhanVienController {
         nhanVienService.deleteNhanVien(id);
         return "redirect:/admin/nhanvien";
     }
-//    @GetMapping("/search")
-//    public String searchNhanVien(
-//            @RequestParam(value = "keyword", required = false) String keyword,
-//            @RequestParam(value = "trangThai", required = false) Integer trangThai,
-//            @RequestParam(value = "page", defaultValue = "0") int page,
-//            @RequestParam(value = "size", defaultValue = "2") int size,
-//            Model model) {
-//        Page<NhanVien> listNV = nhanVienService.SearchandPhantrang(keyword,trangThai, page, size);
-//        model.addAttribute("listNV", listNV);
-//        model.addAttribute("nhanVien",new NhanVien());
-//        model.addAttribute("currentPage", page);
-//        model.addAttribute("totalPages", listNV.getTotalPages());
-//        model.addAttribute("keyword", keyword);
-//        model.addAttribute("trangThai", trangThai);
-//        return "/admin/nhanvien/nhanvien";
-//    }
-//    @GetMapping("/search")
-//    public String search(@Valid @ModelAttribute, BindingResult result, Model model) {
-//        if(result.hasErrors()) {
-//            for(FieldError error : result.getFieldErrors()) {
-//              model.addAttribute(error.getField(),error.getDefaultMessage());
-//            }
-//            phanTrang(1,model);
-//            return "/admin/nhanvien/nhanvien";
-//        }
-//        List<NhanVien> nv = nhanVienService.findSearch(searchDTO.getKeyword());
-//      if(nv.isEmpty()) {
-//          model.addAttribute("message", "No results found");
-//      }else{
-//          model.addAttribute("nhanVien",new NhanVien());
-//          model.addAttribute("listNV",nv);
-//      }
-//        return "/admin/nhanvien/nhanvien";
-//    }
 }

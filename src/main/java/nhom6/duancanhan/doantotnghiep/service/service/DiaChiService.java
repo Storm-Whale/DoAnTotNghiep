@@ -22,4 +22,6 @@ public interface DiaChiService {
     DiaChi getDiaChiById(Integer id);
 
     List<DiaChi> getDiaChiByIdKhachHang (Integer idKhachHang);
+
+    List<DiaChi> getDiaChiByIdKhachHang (Integer idKhachHang, Integer trangThai);
 }
