@@ -32,4 +32,6 @@ public interface SanPhamService {
     SanPhamShowOnClient getSanPhamShowOnClientById(Integer id);
 
     Integer getIdSpFromTenSP(String tenSanPham);
+
+    void generateQRCodeForAllProducts();
 }

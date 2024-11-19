@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -65,13 +63,6 @@ public class TaiQuayController {
     private Integer idHoaDon = 1;
 
     private String maPhieuGiamGia = "";
-
-    // Khai báo ModelAttribute toàn cục
-//    @ModelAttribute
-//    public void addAttributes(Model model) {
-//        idHoaDon = 1; // Gán giá trị cho biến toàn cục
-//        model.addAttribute("idHoaDon", idHoaDon); // Thêm vào model
-//    }
 
     public TaiQuayController(SanPhamChiTietService sanPhamChiTietService, SanPhamService sanPhamService, MauSacService mauSacService, KichCoService kichCoService, HoaDonService hoaDonService, KhachHangService khachHangService, PhieuGiamGiaService phieuGiamGiaService, ThuongHieuService thuongHieuService, ChatLieuService chatLieuService, KieuCoAoService kieuCoAoService, KieuTayAoService kieuTayAoService) {
         this.sanPhamChiTietService = sanPhamChiTietService;
@@ -148,14 +139,14 @@ public class TaiQuayController {
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAll();
 //        model.addAttribute("listHDCT", hoaDonChiTietList);
         //
-        HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
+//        HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
 //        model.addAttribute("firstHoaDon", firstHoaDon != null ? firstHoaDon : new HoaDon());
         // Tạo danh sách hóa đơn chờ và thêm hóa đơn đầu tiên vào danh sách nếu cần
         List<HoaDon> listHD = hoaDonRepository.findHoaDonsWithStatusOne();
         // Kiểm tra xem hóa đơn đầu tiên đã có trong danh sách chưa
-        if (firstHoaDon != null && !listHD.contains(firstHoaDon)) {
-            listHD.add(0, firstHoaDon); // Thêm hóa đơn đầu tiên vào đầu danh sách
-        }
+//        if (firstHoaDon != null && !listHD.contains(firstHoaDon)) {
+//            listHD.add(0, firstHoaDon); // Thêm hóa đơn đầu tiên vào đầu danh sách
+//        }
         model.addAttribute("listHD", listHD.stream().limit(5).collect(Collectors.toList())); // Giới hạn danh sách về 5 hóa đơn
 
 
@@ -340,14 +331,14 @@ public class TaiQuayController {
         List<HoaDonChiTiet> hoaDonChiTiet = hoaDonChiTietRepository.findAllByHoaDonId(idHD);
         model.addAttribute("listHDCT", hoaDonChiTiet);
 
-        HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
+//        HoaDon firstHoaDon = hoaDonRepository.findFirstByOrderByIdAsc();
         // model.addAttribute("firstHoaDon", firstHoaDon != null ? firstHoaDon : new HoaDon());
         // Tạo danh sách hóa đơn chờ và thêm hóa đơn đầu tiên vào danh sách nếu cần
         List<HoaDon> listHD = hoaDonRepository.findHoaDonsWithStatusOne();
         // Kiểm tra xem hóa đơn đầu tiên đã có trong danh sách chưa
-        if (firstHoaDon != null && !listHD.contains(firstHoaDon)) {
-            listHD.add(0, firstHoaDon); // Thêm hóa đơn đầu tiên vào đầu danh sách
-        }
+//        if (firstHoaDon != null && !listHD.contains(firstHoaDon)) {
+//            listHD.add(0, firstHoaDon); // Thêm hóa đơn đầu tiên vào đầu danh sách
+//        }
         model.addAttribute("listHD", listHD.stream().limit(5).collect(Collectors.toList())); // Giới hạn danh sách về 5 hóa đơn
 
         BigDecimal tongTien = hoaDonChiTiet.stream()
@@ -548,23 +539,35 @@ public class TaiQuayController {
     }
 
     // TODO huyhd
-    @DeleteMapping("/huyhoadon/{id}")
-    @ResponseBody
-    public ResponseEntity<?> huyHoaDon(@PathVariable("id") Integer id) {
+    @PostMapping("/huyhoadon/{id}")
+    public String huyHoaDon(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        String message;
         try {
             hoaDonService.cancelHoaDon(id);
-            return ResponseEntity.ok("Hóa đơn đã được hủy thành công.");
+            idHoaDon = null;
+            message = "Hóa đơn đã được hủy thành công.";
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy hóa đơn để hủy.");
+            message = "Không tìm thấy hóa đơn để hủy.";
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể hủy hóa đơn.");
+            message = "Không thể hủy hóa đơn.";
         }
+        // Thêm thông báo vào RedirectAttributes
+        redirectAttributes.addFlashAttribute("message", message);
+        return "redirect:/admin/taiquay"; // Chuyển hướng về trang chủ
     }
-//    @GetMapping("/xoahd/{id}")
-//    public String xoaHD(@PathVariable("id") Integer id){
-////        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).orElse(null);
-//        hoaDonService.deleteHoaDon(id);
-//        return "redirect:/admin/taiquay";
+
+//    @DeleteMapping("/huyhoadon/{id}")
+//    @ResponseBody
+//    public ResponseEntity<?> huyHoaDon(@PathVariable("id") Integer id) {
+//        try {
+//            hoaDonService.cancelHoaDon(id);
+//            idHoaDon = null;
+//            return ResponseEntity.ok("Hóa đơn đã được hủy thành công.");
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy hóa đơn để hủy.");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể hủy hóa đơn.");
+//        }
 //    }
 
     //TODO: Kiem Tra Phieu Giam Gia
@@ -604,4 +607,72 @@ public class TaiQuayController {
             return e.getMessage();
         }
     }
+// TODO: ADD SP TO HDCT FOR QR
+    @GetMapping("/add-sanpham-hdctqr/{id}")
+    public ResponseEntity<Map<String, String>> addSanPhamHDCT(@PathVariable("id") String idRaw,
+                                                              @RequestParam(value = "quantity") int quantity,
+                                                              @RequestParam(value = "idHoaDon") Integer idHoaDon
+                                                              ) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            System.out.println("Received ID: " + idRaw);
+            Integer id = Integer.parseInt(idRaw);
+//            if (!id.equals("\\d+")) { // Kiểm tra nếu không phải số
+//                response.put("error", "ID sản phẩm không hợp lệ.");
+//                return ResponseEntity.badRequest().body(response);
+//            }
+            // Tìm sản phẩm chi tiết từ id
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(id)
+                    .orElseThrow(() -> new DataNotFoundException("Sản phẩm không tồn tại"));
+
+            // Kiểm tra xem sản phẩm còn hàng không
+            if (sanPhamChiTiet.getSoLuong() < quantity) {
+                response.put("errorSoLuong", "Sản phẩm không đủ số lượng.");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Cập nhật số lượng sản phẩm trong kho
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - quantity);
+            sanPhamChiTietRepository.save(sanPhamChiTiet);
+
+            // Tìm hóa đơn theo idHoaDon (cần lấy idHoaDon từ nơi khác)
+            HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
+                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy hóa đơn"));
+
+            // Kiểm tra nếu sản phẩm đã có trong hóa đơn, cộng dồn số lượng
+            List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
+            boolean productExistsInBill = false;
+            for (HoaDonChiTiet hdct : hoaDonChiTietList) {
+                if (hdct.getSanPhamChiTiet().getId().equals(id)) {
+                    hdct.setSoLuong(hdct.getSoLuong() + quantity);
+                    hoaDonChiTietRepository.save(hdct);
+                    productExistsInBill = true;
+                    break;
+                }
+            }
+
+            // Nếu sản phẩm chưa có trong hóa đơn, tạo mới
+            if (!productExistsInBill) {
+                HoaDonChiTiet hoaDonChiTiet = HoaDonChiTiet.builder()
+                        .hoaDon(hoaDon)
+                        .sanPhamChiTiet(sanPhamChiTiet)
+                        .soLuong(quantity)
+                        .build();
+                hoaDonChiTietRepository.save(hoaDonChiTiet);
+            }
+
+            // Tính tổng tiền và trả về
+            hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
+            BigDecimal tongTien = hoaDonChiTietList.stream()
+                    .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            response.put("tongTien", tongTien.toString());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("error", "Có lỗi xảy ra: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
 }

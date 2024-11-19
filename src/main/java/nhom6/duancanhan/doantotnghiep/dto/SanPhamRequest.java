@@ -31,4 +31,5 @@ public class SanPhamRequest {
     String moTa;
 
     MultipartFile anhSanPham;
+    String qrCodeUrl;
 }

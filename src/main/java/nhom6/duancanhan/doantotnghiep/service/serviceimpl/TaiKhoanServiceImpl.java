@@ -66,10 +66,10 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
     }
 
 
-    @Override
-    public TaiKhoan findByResetCode(String resetCode) {
-        return taiKhoanRepository.findByResetCode(resetCode);
-    }
+//    @Override
+//    public TaiKhoan findByResetCode(String resetCode) {
+//        return taiKhoanRepository.findByResetCode(resetCode);
+//    }
 
     @Override
     public boolean checkAccount(String username, String password) {

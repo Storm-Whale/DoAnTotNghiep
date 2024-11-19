@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
+import nhom6.duancanhan.doantotnghiep.service.serviceimpl.QRGeneratorCode;
 import nhom6.duancanhan.doantotnghiep.util.UploadImage;
 import nhom6.duancanhan.doantotnghiep.util.ValidationErrorHandler;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 
@@ -30,6 +32,7 @@ public class SanPhamController {
     private final KieuTayAoService kieuTayAoService;
     private final SanPhamChiTietService sanPhamChiTietService;
     private final UploadImage uploadImage;
+    private final QRGeneratorCode qrGeneratorCode;
 
     //  TODO : INDEX Sản Phẩm
     @GetMapping("/index")
@@ -121,6 +124,9 @@ public class SanPhamController {
 
         productRequest.setTrangThai(1);
         sanPhamService.storeSanPham(productRequest);
+        //set image QrCode cho sp mới tạo
+        System.out.println("Bắt đầu tạo mã QR cho sản phẩm: " + productRequest.getTenSanPham());
+        qrGeneratorCode.generateQRCodeForProduct(productRequest);
         return "redirect:/admin/products/index";
     }
 
@@ -193,4 +199,16 @@ public class SanPhamController {
         model.addAttribute("kieuCoAos", kieuCoAoService.getAll());
         model.addAttribute("kieuTayAos", kieuTayAoService.getAll());
     }
+    //  TODO: CREATE IMAGE QR FOR SP
+    @GetMapping("/generate-qrcodes")
+    public String generateQRCodesForAllProducts(RedirectAttributes redirectAttributes) {
+        try {
+            sanPhamService.generateQRCodeForAllProducts();
+            redirectAttributes.addFlashAttribute("message", "Tạo mã QR cho tất cả sản phẩm thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra khi tạo mã QR: " + e.getMessage());
+        }
+        return "redirect:/admin/products/index";
+    }
+
 }
