@@ -43,31 +43,51 @@ public class NhanVienController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "5") int size,
             Model model) {
+        // Kiểm tra và xử lý giá trị keyword nếu có
         if (keyword != null) {
             keyword = keyword.trim();
             if (keyword.isEmpty()) {
-                keyword = null; // Đặt thành null để khớp với logic xử lý trong service
+                keyword = null; // Đặt thành null nếu keyword rỗng
             }
         }
-        if(page < 0) {
+
+        // Đảm bảo trang không âm
+        if (page < 0) {
             page = 0;
         }
+
+        // Đảm bảo kích thước trang hợp lệ
+        if (size < 1) {
+            size = 5;
+        }
+
+        // Lấy danh sách nhân viên đã phân trang
         Page<NhanVien> listNV = nhanVienService.SearchandPhantrang(keyword, trangThai, page, size);
         int totalPages = listNV.getTotalPages();
-        if(page >= totalPages) {
-            page = totalPages > 0 ? totalPages - 1 : 0; // Go to the last page if out of bounds or reset to 0 if no pages exist
-            listNV = nhanVienService.SearchandPhantrang(keyword, trangThai, page, size); // Fetch the last page data
+
+        // Nếu trang yêu cầu lớn hơn tổng số trang, chuyển sang trang cuối
+        if (page >= totalPages) {
+            page = totalPages > 0 ? totalPages - 1 : 0;
+            listNV = nhanVienService.SearchandPhantrang(keyword, trangThai, page, size); // Lấy dữ liệu trang cuối
         }
+
+        // Tạo danh sách các số trang để phân trang
         List<Integer> pageNumbers = IntStream.range(0, totalPages).boxed().collect(Collectors.toList());
-        model.addAttribute("listNV", listNV);
-        model.addAttribute("nhanVien", new NhanVien());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages",totalPages);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("trangThai", trangThai);
-        model.addAttribute("pageNumbers", pageNumbers);
+
+        // Thêm các thuộc tính vào model để hiển thị trên view
+        model.addAttribute("listNV", listNV); // Danh sách nhân viên đã phân trang
+        model.addAttribute("nhanVien", new NhanVien()); // Đối tượng nhân viên mới để thêm vào form
+        model.addAttribute("currentPage", page); // Trang hiện tại
+        model.addAttribute("totalPages", totalPages); // Tổng số trang
+        model.addAttribute("keyword", keyword); // Từ khóa tìm kiếm
+        model.addAttribute("trangThai", trangThai); // Trạng thái lọc
+        model.addAttribute("pageNumbers", pageNumbers); // Số trang phân trang
+
+        // Trả về view với tên tương ứng
         return "/admin/nhanvien/nhanvien";
     }
+
+
 
 //    @GetMapping("{pageNo}")
 //    public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
@@ -93,7 +113,10 @@ public class NhanVienController {
         model.addAttribute("listVT", vaiTroService.getAll());
         return "/admin/nhanvien/nhanvien";
     }
-
+    @GetMapping("/view_add")
+    public String viewadd( @ModelAttribute("nhanVien") NhanVien nhanVien) {
+        return "/admin/nhanvien/adNhanVien";
+    }
     @PostMapping("/add")
     public String add(@Valid @ModelAttribute("nhanVien") NhanVien nhanVien, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -101,7 +124,7 @@ public class NhanVienController {
                 model.addAttribute(error.getField(), error.getDefaultMessage());
             }
             model.addAttribute("error", "Kiểm tra lại");
-            return "redirect:/admin/khachhang/add#demo-modal";
+            return "/admin/nhanvien/adNhanVien";
         }
         model.addAttribute("nhanVien", nhanVien);
         nhanVienService.addNhanVien(nhanVien);

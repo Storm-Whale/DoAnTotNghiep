@@ -29,11 +29,11 @@
         </div>
     </form>
 
-    <a class="wrapper">
-        <a href="#demo-modal">
+
+
+        <a th:href="@{/admin/khachhang/view_add}">
             <button class="btn btn-light" style="margin-bottom: 20px"><i class="bi bi-plus-circle-fill"></i>Thêm Khách Hàng</button>
         </a>
-    </a>
 
     <table class="table table-bordered table-hover text-center">
         <thead class="table-dark">
@@ -67,13 +67,13 @@
         </tr>
         </tbody>
     </table>
-    <div id="demo-modal" class="modal">
-        <div class="modal__content">
-            <h2>Thêm Khách Hàng</h2>
-            <div th:replace="~{admin/customer/adKhachHang :: form}">
-            </div>
-        </div>
-    </div>
+<!--    <div id="demo-modal" class="modal">-->
+<!--        <div class="modal__content">-->
+<!--            <h2>Thêm Khách Hàng</h2>-->
+<!--            <div th:replace="~{admin/customer/adKhachHang :: form}">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
         <nav>
             <ul class="pagination">

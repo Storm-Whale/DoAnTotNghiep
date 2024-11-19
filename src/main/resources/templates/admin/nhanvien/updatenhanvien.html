@@ -59,8 +59,24 @@
             </div>
             <span style="color: red" th:if="${#fields.hasErrors('gioiTinh')}" th:errors="*{gioiTinh}"></span>
         </div>
-
         <div class="col-sm-6">
+        <label class="form-label">Trạng Thái</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="" value="0" th:field="*{trangThai}">
+            <label class="form-check-label">
+                Không Hoạt Động
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name=""  value="1" th:field="*{trangThai}">
+            <label class="form-check-label">
+                Hoạt Động
+            </label>
+        </div>
+        <span style="color: red" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"></span>
+    </div>
+
+        <div>
             <label class="form-label">Email</label>
             <input type="text" class="form-control"  th:field="*{email}">
             <span style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
@@ -80,24 +96,9 @@
 <!--            </select>-->
 <!--        </div>-->
 
-        <div class="col-sm-6">
-            <label class="form-label">Trạng Thái</label>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="" value="0" th:field="*{trangThai}">
-                <label class="form-check-label">
-                    Không Hoạt Động
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name=""  value="1" th:field="*{trangThai}">
-                <label class="form-check-label">
-                    Hoạt Động
-                </label>
-            </div>
-            <span style="color: red" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"></span>
-        </div>
-        <button class="btn btn-danger">Submit</button>
+
     </div>
+    <button  style="width: 100px; float: left; margin-left: 20px; text-align: center" class="btn btn-light">Submit</button>
 </form>
 </section>
 </body>
