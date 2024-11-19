@@ -5,11 +5,14 @@ import nhom6.duancanhan.doantotnghiep.entity.KieuCoAo;
 import nhom6.duancanhan.doantotnghiep.service.service.KieuCoAoService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -98,5 +101,29 @@ public class KieuCoAoController {
         return "redirect:/admin/kieu-co-ao";
     }
 
+    @PostMapping(value = "/quick-add")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> quickAdd(@RequestParam(name = "ten") String ten) {
+        try {
+            KieuCoAo kieuCoAo = KieuCoAo.builder()
+                    .tenCoAo(ten)
+                    .trangThai(1)
+                    .build();
 
+            KieuCoAo savedKieuCoAo = kieuCoAoService.addKieuCoAo(kieuCoAo);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("id", savedKieuCoAo.getId());
+            response.put("ten", savedKieuCoAo.getTenCoAo());
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Thêm thất bại: " + e.getMessage());
+
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 }

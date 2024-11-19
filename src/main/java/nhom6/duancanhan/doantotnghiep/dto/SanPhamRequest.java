@@ -3,6 +3,7 @@ package nhom6.duancanhan.doantotnghiep.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -28,4 +29,7 @@ public class SanPhamRequest {
     Integer trangThai;
 
     String moTa;
+
+    MultipartFile anhSanPham;
+    String qrCodeUrl;
 }

@@ -19,6 +19,7 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
 
     @Autowired
     private TaiKhoanRepository taiKhoanRepository;
+
     @Autowired
     private ForgotRepository forgotRepository;
 
@@ -65,10 +66,8 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
     }
 
 
-
-
 //    @Override
-//    public TaiKhoanDTO findByResetCode(String resetCode) {
+//    public TaiKhoan findByResetCode(String resetCode) {
 //        return taiKhoanRepository.findByResetCode(resetCode);
 //    }
 
@@ -81,11 +80,6 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
     public TaiKhoan findByTTKAndMK(String username, String password) {
         return taiKhoanRepository.findTaiKhoanByTenDangNhapAndMatKhau(username, password);
     }
-
-//    @Override
-//    public TaiKhoanDTO findByResetCode(String resetCode) {
-//        return forgotRepository.findByResetCode(resetCode).orElse(null);
-//    }
 
     @Override
     public TaiKhoanDTO saveTaiKhoan(TaiKhoanDTO taiKhoan) {

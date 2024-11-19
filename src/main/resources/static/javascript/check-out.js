@@ -16,11 +16,17 @@ document.getElementById('openModalButton').addEventListener('click', function ()
 
         voucherContainer.innerHTML = `
             <div class="p-2">
-                <img src="/img/37.jpg" alt="Voucher Image" width="80px">
+                <img src="/images/37.jpg" alt="Voucher Image" width="80px">
             </div>
             <div class="voucher-details">
-                <div>Giảm tới đa ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(voucher.giaTriMax)}</div>
-                <div>Đơn Tối Thiểu ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(voucher.dieuKien)}</div>
+                <div>Giảm tới đa ${new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(voucher.giaTriMax)}</div>
+                <div>Đơn Tối Thiểu ${new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(voucher.dieuKien)}</div>
                 <div>Sắp hết hạn: Còn ${ngayConLai} ngày</div>
             </div>
             <div class="radio-container p-2">

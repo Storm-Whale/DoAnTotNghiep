@@ -39,4 +39,9 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
 
     @Query("SELECT s FROM SanPham s WHERE s.tayAo.id = :kieuTayAoId")
     List<SanPham> findByIdTayAo(@Param("kieuTayAoId") Integer kieuTayAoId);
+
+    @Query("""
+        select sp.id from SanPham sp where sp.tenSanPham = :tenSP
+    """)
+    Integer findByTenSanPham(@Param("tenSP") String tenSanPham);
 }

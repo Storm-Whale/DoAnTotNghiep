@@ -1,18 +1,23 @@
 package nhom6.duancanhan.doantotnghiep.controller;
+
 import nhom6.duancanhan.doantotnghiep.entity.ChatLieu;
 import nhom6.duancanhan.doantotnghiep.service.service.ChatLieuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/chatlieu")
 public class ChatLieuController {
+
     @Autowired
     private ChatLieuService chatLieuService;
 
@@ -58,16 +63,42 @@ public class ChatLieuController {
         return "redirect:/admin/chatlieu";
     }
 
-//    @PostMapping("/delete/{id}")
+    //    @PostMapping("/delete/{id}")
 //    public String delete(@PathVariable("id") Integer id, @RequestParam("_method") String method) {
 //        if ("delete".equals(method)) {
 //            chatLieuService.deleteChatLieu(id);
 //        }
 //        return "redirect:/admin/chatlieu";
 //    }
-@DeleteMapping("/delete/{id}")
-public String delete(@PathVariable("id") Integer id) {
-    chatLieuService.deleteChatLieu(id);
-    return "redirect:/admin/chatlieu";
-}
+    @DeleteMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Integer id) {
+        chatLieuService.deleteChatLieu(id);
+        return "redirect:/admin/chatlieu";
+    }
+
+    @PostMapping(value = "/quick-add")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> quickAdd(@RequestParam(name = "ten") String ten) {
+        try {
+            ChatLieu chatLieu = ChatLieu.builder()
+                    .tenChatLieu(ten)
+                    .trangThai(1)
+                    .build();
+
+            ChatLieu saveChatLieu = chatLieuService.addChatLieu(chatLieu);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("id", saveChatLieu.getId());
+            response.put("ten", saveChatLieu.getTenChatLieu());
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Thêm thất bại: " + e.getMessage());
+
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 }

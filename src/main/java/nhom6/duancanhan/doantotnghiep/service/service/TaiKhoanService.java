@@ -3,12 +3,10 @@ package nhom6.duancanhan.doantotnghiep.service.service;
 import nhom6.duancanhan.doantotnghiep.dto.TaiKhoanDTO;
 import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public interface TaiKhoanService {
 
     List<TaiKhoan> getAll();

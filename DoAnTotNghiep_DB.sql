@@ -301,3 +301,23 @@ alter table dia_chi
     add so_dien_thoai nvarchar(11)
 go
 
+ALTER TABLE tai_khoan ADD reset_code VARCHAR(255);
+
+alter table hoa_don
+    add trang_thai_thanh_toan int
+go
+
+alter table hoa_don
+    add loai_hoa_don nvarchar(30)
+go
+
+
+ALTER TABLE hoa_don_chi_tiet
+DROP CONSTRAINT FK__hoa_don_c__id_ho__5535A963;
+
+ALTER TABLE hoa_don_chi_tiet
+ADD CONSTRAINT FK__hoa_don_c__id_ho__5535A963
+FOREIGN KEY (id_hoa_don) REFERENCES hoa_don(id)
+ON DELETE CASCADE;
+
+ALTER TABLE san_pham ADD qr_code_url VARCHAR(255);

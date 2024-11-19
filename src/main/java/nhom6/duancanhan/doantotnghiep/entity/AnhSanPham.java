@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "anh_san_pham")
-public class AnhSanPham {
+public class AnhSanPham extends BaseEntity{
 
     public static final int MAXIMUM_IMAGES_PER_PRODUCT = 5;
 

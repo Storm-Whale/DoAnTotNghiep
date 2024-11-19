@@ -23,29 +23,27 @@
                 type="button"><i class="bi bi-align-center">Tạo Hóa Đơn</i></button>
     </form>
     <div class="container">
-        <!-- Tạo Hóa Đơn và Hiển Thị Hóa Đơn -->
-        <!--        <div class="sectionhoadon">-->
-<!--        <div id="invoiceList" style="margin-top: 20px;">-->
-<!--            <ul style="list-style-type: none; padding: 0; display: flex; flex-wrap: wrap;">-->
-<!--                <li class="invoice-item" th:each="hoaDon : ${listHD}"-->
-<!--                    style="margin-right: 15px;">-->
-<!--                    <a th:href="@{/admin/taiquay/detail/{id}(id=${hoaDon.id})}"-->
-<!--                       th:text="'Hóa đơn ' + ${hoaDon.id}" style="text-decoration: none;" class="invoice-link"></a>-->
-<!--                    <span class="invoice-close-btn" data-invoice-id="${hoaDon.id}">&times;</span>-->
-<!--&lt;!&ndash;                    <span class="invoice-id" th:text="${hoaDon.id}" style="display: none;"></span>&ndash;&gt;-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
+
         <div id="invoiceList" style="margin-top: 20px;">
             <ul style="list-style-type: none; padding: 0; display: flex; flex-wrap: wrap;">
-                <li class="invoice-item" th:each="hoaDon : ${listHD}" th:attr="data-id=${hoaDon.id}" style="margin-right: 15px;">
+                <li class="invoice-item" th:each="hoaDon : ${listHD}" th:attr="data-id=${hoaDon.id}"
+                    style="margin-right: 15px;">
                     <a th:href="@{/admin/taiquay/detail/{id}(id=${hoaDon.id})}"
-                       th:text="'Hóa đơn ' + ${hoaDon.id}" style="text-decoration: none;" class="invoice-link"></a>
+                       th:text="'Hóa đơn ' + ${hoaDon.id}" style="text-decoration: none;" class="invoice-link"
+                       th:attr="data-id=${hoaDon.id}"
+                    ></a>
                     <span class="invoice-close-btn">&times;</span>
                 </li>
             </ul>
         </div>
-
+        <!--        <script>-->
+        <!--            document.addEventListener("DOMContentLoaded", function () {-->
+        <!--                const message = /*[[${message}]]*/ "";-->
+        <!--                if (message) {-->
+        <!--                    alert(message);-->
+        <!--                }-->
+        <!--            });-->
+        <!--        </script>-->
 
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -53,7 +51,17 @@
 
         <div class="section">
             <div>
-                <button class="btn btn-light" id="btnQR">Quét Mã QR</button>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <button class="btn btn-dark" onclick="toggleCamera()">Quét QR</button>
+                        <div style="margin-bottom: 20px; margin-top: 20px">
+                            <video id="qr-video" width="240" height="160" style="display: none" autoplay></video>
+                            <canvas id="qr-canvas" width="400" height="300" style="display:none;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+
                 <a class="taiquay"><a th:href="@{/admin/taiquay/sanpham#sanpham}">
                     <button class="btn btn-light">Thêm Sản Phẩm</button>
                 </a></a>
@@ -78,7 +86,7 @@
                                 <td th:text="${hdct.sanPhamChiTiet.sanPham.tenSanPham}"></td>
                                 <td th:text="${hdct.soLuong}"></td>
                                 <td th:text="${#numbers.formatDecimal(hdct.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
-<!--                                <p class="price" th:text="${#numbers.formatDecimal(sanpham.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></p>-->
+                                <!--                                <p class="price" th:text="${#numbers.formatDecimal(sanpham.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></p>-->
                                 <td th:text="${#numbers.formatDecimal(hdct.sanPhamChiTiet.gia.multiply(hdct.soLuong),1, 'COMMA', 0, 'POINT')}+ 'đ'"></td>
                                 <td><a th:href="@{/admin/taiquay/xoa-sanpham-hdct/{id}(id=${hdct.id})}"
                                        class="btn btn-light" title="Xóa"><i class="bi bi-trash-fill fs-5"></i></a></td>
@@ -88,11 +96,13 @@
                     </div>
                     <div class="custom-note-row">
                         <span class="note">Tổng tiền đơn hàng : </span>
-                        <span class="total" th:text="${#numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT')}"></span> vnđ
+                        <span class="total"
+                              th:text="${#numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT')}"></span> vnđ
                     </div>
                 </div>
                 <div class="payment-info">
-                    <p style="margin-top: 7px;margin-bottom: 7px;"><b><i class="bi bi-diamond-fill fs3">Thông tin thanh toán</i></b></p>
+                    <p style="margin-top: 7px;margin-bottom: 7px;"><b><i class="bi bi-diamond-fill fs3">Thông tin thanh
+                        toán</i></b></p>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <form th:action="@{/admin/taiquay/tim-kiem}" method="get"
@@ -121,13 +131,19 @@
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
-                        <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="post" class="discount-form">
-                            <input type="text" name="maphieugiamgia" placeholder="Nhập mã giảm giá" th:value="${maPhieuGiamGia}" />
-                            <button type="submit" class="apply-button" style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">Áp dụng</button>
+                        <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="post"
+                              class="discount-form">
+                            <input type="text" name="maphieugiamgia" placeholder="Nhập mã giảm giá"
+                                   th:value="${maPhieuGiamGia}"/>
+                            <button type="submit" class="apply-button"
+                                    style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
+                                Áp dụng
+                            </button>
                         </form>
                         <div class="discount-code-container">
                             <a class="taiquay" th:href="@{/admin/taiquay/phieugiamgia#phieugiamgia}">
-                                <button id="choose" class="discount-code-button" style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
+                                <button id="choose" class="discount-code-button"
+                                        style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
                                     Mã PGG
                                 </button>
                             </a>
@@ -140,7 +156,9 @@
                             <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: table}"></div>
 
 
-                            <a th:href="@{/admin/taiquay/detail/{id}(id=${idHoaDon})}" class="modal__close">&times;</a>
+                            <!--                            <a th:href="@{/admin/taiquay/detail/{id}(id=${idHoaDon})}" class="modal__close">&times;</a>-->
+                            <a th:href="@{${idHoaDon != null ? '/admin/taiquay/detail/' + idHoaDon : '/admin/taiquay'}}"
+                               class="modal__close">&times;</a>
                             <div>
                                 <div class="d-flex align-items-center">
                                     <label for="itemsPerPage" class="me-2">Xem</label>
@@ -158,20 +176,20 @@
                             <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: script}"></div>
                         </div>
                     </div>
-<!--                    <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="get">-->
-<!--                        <input type="text" name="maPhieuGiamGia" th:value="${maPhieuGiamGia}"/>-->
-<!--                        &lt;!&ndash; Sử dụng thuộc tính đúng &ndash;&gt;-->
-<!--                        <button type="submit">Áp dụng</button>-->
-<!--                    </form>-->
+                    <!--                    <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="get">-->
+                    <!--                        <input type="text" name="maPhieuGiamGia" th:value="${maPhieuGiamGia}"/>-->
+                    <!--                        &lt;!&ndash; Sử dụng thuộc tính đúng &ndash;&gt;-->
+                    <!--                        <button type="submit">Áp dụng</button>-->
+                    <!--                    </form>-->
 
 
-
-                    <p style="font-size: 14px; margin-top: 10px;">Tiền Tạm Tính: <span id="subtotal" th:text="${#numbers.formatDecimal((tongTien != null ? tongTien : 0), 1, 'COMMA', 0, 'POINT')} + 'đ'">0</span>
+                    <p style="font-size: 14px; margin-top: 10px;">Tiền Tạm Tính: <span id="subtotal"
+                                                                                       th:text="${#numbers.formatDecimal((tongTien != null ? tongTien : 0), 1, 'COMMA', 0, 'POINT')} + 'đ'">0</span>
                     </p>
                     <p style="font-size: 14px;">Số Tiền Giảm Giá: <span id="discount">0</span> đ</p>
 
                     <p>Tổng tiền sau khi áp dụng mã giảm giá:
-<!--                        <span th:text="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : tongTien), 1, 'COMMA', 0, 'POINT')} + 'đ'"></span>-->
+                        <!--                        <span th:text="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : tongTien), 1, 'COMMA', 0, 'POINT')} + 'đ'"></span>-->
                         <span th:text="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"></span>
 
 
@@ -194,8 +212,10 @@
                                 <div class="mb-3">
                                     <label class="col-3" style="font-size: 14px;margin-top: 10px;">Khách cần
                                         trả:</label>
-                                    <b><span id="tongTien" style="font-size: 14px;" th:text="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"></span></b>
-                                    <input type="hidden" name="tongTien" th:value="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"/>
+                                    <b><span id="tongTien" style="font-size: 14px;"
+                                             th:text="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"></span></b>
+                                    <input type="hidden" name="tongTien"
+                                           th:value="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"/>
                                 </div>
 
                                 <div class="received">
@@ -261,11 +281,14 @@
             <div th:replace="~{admin/BanhangTaiQuay/SPCTTable :: form}"></div>
             <!-- Table Sản phẩm -->
             <div th:replace="~{admin/BanhangTaiQuay/SPCTTable :: table}"></div>
-            <a th:href="@{/admin/taiquay/detail/{id}(id=${idHoaDon})}" class="modal__close">&times;</a>
+            <!--            <a th:href="@{/admin/taiquay/detail/{id}(id=${idHoaDon})}" class="modal__close">&times;</a>-->
+            <a th:href="@{${idHoaDon != null ? '/admin/taiquay/detail/' + idHoaDon : '/admin/taiquay'}}"
+               class="modal__close">&times;</a>
 
             <div style="margin-top: 15px" class="d-flex align-items-center">
                 <label for="itemsPerPage" class="me-2">Xem</label>
-                <select class="form-select form-select-sm" id="itemsPerPage2" name="size" onchange="changeItemsPerPage2()" style="width: 80px;">
+                <select class="form-select form-select-sm" id="itemsPerPage2" name="size"
+                        onchange="changeItemsPerPage2()" style="width: 80px;">
                     <option value="5" th:selected="${size == 5}">5</option>
                     <option value="10" th:selected="${size == 10}">10</option>
                     <option value="15" th:selected="${size == 15}">15</option>
@@ -281,9 +304,210 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </section>
 </body>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>
 <script th:src="@{/javascript/thanhtoan.js}"></script>
 <script th:src="@{/javascript/taiquay.js}"></script>
+<!--<script>-->
+<!--    const video = document.getElementById('qr-video');-->
+<!--    const canvas = document.getElementById('qr-canvas');-->
+<!--    const context = canvas.getContext('2d');-->
+<!--    let isCameraOn = false;-->
+<!--    // let selectedInvoiceId = null;-->
+
+<!--    // Xác định hóa đơn được chọn-->
+<!--    document.addEventListener('DOMContentLoaded', function () {-->
+<!--        // Hàm xử lý sự kiện chọn hóa đơn-->
+<!--        function selectInvoice(invoiceId) {-->
+<!--            console.log("Selected invoice ID:", invoiceId);-->
+
+<!--            // Bỏ chọn tất cả các hóa đơn-->
+<!--            const allInvoices = document.querySelectorAll("#invoiceList .invoice-item");-->
+<!--            allInvoices.forEach(invoice => invoice.classList.remove("selected"));-->
+
+<!--            // Chọn hóa đơn hiện tại-->
+<!--            const selectedInvoice = document.querySelector(`#invoiceList .invoice-item[data-id='${invoiceId}']`);-->
+<!--            if (selectedInvoice) {-->
+<!--                selectedInvoice.classList.add("selected");-->
+<!--                sessionStorage.setItem("selectedInvoiceId", invoiceId);-->
+<!--            }-->
+
+<!--            // Cập nhật ID của hóa đơn được chọn-->
+<!--            // selectedInvoiceId = invoiceId;-->
+<!--            // localStorage.setItem('selectedInvoiceId', invoiceId);-->
+<!--            // Cập nhật URL của trình duyệt-->
+<!--            window.history.pushState({}, '', `/admin/taiquay/detail/${invoiceId}`);-->
+<!--        }-->
+
+<!--        // Gán sự kiện chọn hóa đơn cho các phần tử-->
+<!--        const invoiceLinks = document.querySelectorAll('.invoice-link');-->
+<!--        invoiceLinks.forEach(link => {-->
+<!--            link.addEventListener('click', function (event) {-->
+<!--                const invoiceId = event.target.getAttribute('data-id');-->
+<!--                console.log("Invoice ID from link:", invoiceId);-->
+<!--                selectInvoice(invoiceId);-->
+<!--            });-->
+<!--        });-->
+<!--        // Kiểm tra trạng thái đã chọn khi tải lại trang-->
+<!--        // let selectedInvoiceId = sessionStorage.getItem("selectedInvoiceId");-->
+<!--        // if (selectedInvoiceId) {-->
+<!--        //     selectInvoice(selectedInvoiceId);-->
+<!--        // }-->
+<!--        const selectedInvoiceId = sessionStorage.getItem("selectedInvoiceId");-->
+<!--        if (selectedInvoiceId) {-->
+<!--            selectInvoice(selectedInvoiceId);-->
+<!--        }-->
+<!--    });-->
+
+<!--    // Hàm toggle camera khi nhấn nút Quét QR-->
+<!--    function toggleCamera() {-->
+<!--        // const selectedInvoice = document.querySelector("#invoiceList .invoice-item.selected");-->
+<!--        if (selectedInvoice) {-->
+<!--            const billId = selectedInvoice.getAttribute("data-id");-->
+<!--            console.log("Selected Invoice ID:", billId);-->
+
+<!--            // Thực hiện logic mở camera hoặc xử lý tiếp với billId-->
+<!--            if (isCameraOn) {-->
+<!--                document.getElementById("qr-video").style.display = "none";-->
+<!--                document.getElementById("qr-canvas").style.display = "none";-->
+<!--                isCameraOn = false;-->
+<!--                sessionStorage.removeItem('selectedInvoiceId')-->
+<!--            } else {-->
+<!--                startCamera(); // Hàm bạn đã định nghĩa để khởi động camera-->
+<!--                isCameraOn = true;-->
+<!--            }-->
+<!--        } else {-->
+<!--            console.log("No invoice selected");-->
+<!--            alert("Vui lòng chọn hóa đơn trước khi quét QR.");-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Hàm khởi động camera-->
+<!--    function startCamera() {-->
+<!--        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })-->
+<!--            .then(stream => {-->
+<!--                video.srcObject = stream;-->
+<!--                video.play();-->
+<!--                requestAnimationFrame(tick);-->
+<!--            })-->
+<!--            .catch(error => {-->
+<!--                console.error('Unable to access the camera/webcam.', error);-->
+<!--            });-->
+<!--        video.style.display = 'block';-->
+<!--        canvas.style.display = 'none';-->
+<!--    }-->
+<!--</script>-->
+<script>
+    // Gán giá trị idHoaDon từ server qua Thymeleaf
+    let idHoaDon = [[${idHoaDon}]];
+    console.log("idHoaDon: " + idHoaDon);
+
+    // Khởi tạo các biến cần thiết cho camera
+    const video = document.getElementById('qr-video');
+    const canvas = document.getElementById('qr-canvas');
+    const context = canvas.getContext('2d');
+    let isCameraOn = false;
+
+    // Hàm toggle camera khi nhấn nút Quét QR
+    function toggleCamera() {
+        const currentUrl = window.location.href;
+        if (currentUrl.includes("http://localhost:8080/admin/taiquay")) {
+            // Kiểm tra nếu idHoaDon chưa được chọn hoặc là giá trị mặc định (1)
+            if (!idHoaDon || idHoaDon === 1) {
+                alert("Vui lòng chọn hóa đơn trước khi quét QR.");
+                return;
+            }
+            // Thực hiện mở/tắt camera
+            if (isCameraOn) {
+                // Tắt camera
+                video.style.display = "none";
+                canvas.style.display = "none";
+                isCameraOn = false;
+                console.log("Camera closed");
+            } else {
+                // Bật camera
+                startCamera();
+                isCameraOn = true;
+                console.log("Camera opened");
+            }
+        }
+    }
+    // Hàm khởi động camera
+    function startCamera() {
+        navigator.mediaDevices.getUserMedia({video: {facingMode: 'environment'}})
+            .then(stream => {
+                video.srcObject = stream;
+                video.play();
+                requestAnimationFrame(tick);
+            })
+            .catch(error => {
+                console.error('Unable to access the camera/webcam.', error);
+                alert("Không thể truy cập camera.");
+            });
+
+        video.style.display = 'block';
+        canvas.style.display = 'none';
+    }
+    // get qr scan to controller
+    async function tick() {
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            console.log("Tick function is running...");
+            canvas.height = video.videoHeight;
+            canvas.width = video.videoWidth;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+            if (code) {
+                const qrData = code.data;
+                console.log("Dữ liệu mã QR: ", qrData);
+                const decodedData = decodeURIComponent(escape(qrData));  // Giải mã nếu cần thiết
+                console.log("Dữ liệu đã giải mã: ", decodedData);
+                //
+                const idMatch = decodedData.match(/ID:\s*(\d+)/); // Lấy ra ID từ chuỗi
+                const productId = idMatch ? idMatch[1] : null;
+                //
+                if (!productId) {
+                    alert("Mã QR không hợp lệ. Không tìm thấy ID sản phẩm.");
+                    return;
+                }
+                console.log("Product ID:", productId);
+                // Tạo prompt nhập số lượng sản phẩm muốn thêm
+                var input = prompt("Nhập số lượng sản phẩm muốn thêm:");
+                var quantity = parseInt(input);
+
+                if (isNaN(quantity) || quantity <= 0) {
+                    alert("Vui lòng nhập số hợp lệ.");
+                    return;
+                }
+                console.log("idHoaDon:", idHoaDon);
+
+                // Gửi yêu cầu thêm sản phẩm vào giỏ hàng
+                await axios.get(`/admin/taiquay/add-sanpham-hdctqr/${productId}`, {
+                    params: {
+                        // id: code.data,
+                        quantity: quantity, // Gửi số lượng đã nhập
+                        idHoaDon: idHoaDon //get id hd hiện tại từ fe để gửi về be
+                    }
+                }).then(response => {
+                    if (response.data.errorSoLuong) {
+                        alert(response.data.errorSoLuong); // Thông báo lỗi nếu có
+                    } else {
+                        alert("Sản phẩm đã được thêm vào giỏ hàng.");
+                        console.log("Sản phẩm đã được thêm thành công vào giỏ hàng.");
+                    }
+                }).catch(error => {
+                    console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+                    alert("Có lỗi xảy ra, vui lòng thử lại.");
+                });
+            }
+        }
+        if (isCameraOn) {
+            requestAnimationFrame(tick);
+        }
+    }
+</script>
+<script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <!--<script th:src="@{/javascript/locSanPhamTaiQuay.js}"></script>-->
 </html>

@@ -31,13 +31,12 @@ public class ChatLieuServiceImpl implements ChatLieuService {
 
     @Override
     public Optional<ChatLieu> detail(Integer id) {
-        Optional<ChatLieu> chatLieu = chatLieuRepository.findById(id);
-        return Optional.of(chatLieu.get());
+        return chatLieuRepository.findById(id);
     }
 
     @Override
-    public void addChatLieu(ChatLieu chatLieu) {
-        chatLieuRepository.save(chatLieu);
+    public ChatLieu addChatLieu(ChatLieu chatLieu) {
+        return chatLieuRepository.save(chatLieu);
     }
 
     @Override

@@ -107,19 +107,40 @@ $(document).ready(function () {
     });
 
 // Xử lý khi bấm vào nút X để hủy hóa đơn
+//     $('#invoiceList').on('click', '.invoice-close-btn', function () {
+//         const $invoiceItem = $(this).closest('.invoice-item');
+//         const invoiceId = $invoiceItem.data('id');
+//         console.log("Invoice ID:", invoiceId); // Kiểm tra ID được lấy từ HTML
+//         if (invoiceId !== undefined) {
+//             $.ajax({
+//                 url: '/admin/taiquay/huyhoadon/' + invoiceId,
+//                 type: 'DELETE',
+//                 success: function (response) {
+//                     // Xóa hóa đơn khỏi giao diện nếu hủy thành công
+//                     $invoiceItem.remove();
+//                     invoiceCount--;
+//                     alert(response); // Hiển thị thông báo từ server
+//                 },
+//                 error: function (xhr) {
+//                     alert(xhr.responseText || "Không thể hủy hóa đơn. Vui lòng kiểm tra lại!");
+//                 }
+//             });
+//         } else {
+//             alert("ID hóa đơn không hợp lệ.");
+//         }
+//     });
     $('#invoiceList').on('click', '.invoice-close-btn', function () {
         const $invoiceItem = $(this).closest('.invoice-item');
         const invoiceId = $invoiceItem.data('id');
-        console.log("Invoice ID:", invoiceId); // Kiểm tra ID được lấy từ HTML
         if (invoiceId !== undefined) {
             $.ajax({
                 url: '/admin/taiquay/huyhoadon/' + invoiceId,
-                type: 'DELETE',
-                success: function (response) {
-                    // Xóa hóa đơn khỏi giao diện nếu hủy thành công
-                    $invoiceItem.remove();
-                    invoiceCount--;
-                    alert(response); // Hiển thị thông báo từ server
+                type: 'POST',
+                // data: { _method: 'DELETE' },
+                success: function () {
+                    alert("Hóa đơn đã được hủy thành công.");
+                    // Chuyển hướng về trang admin/taiquay
+                    window.location.href = "/admin/taiquay";
                 },
                 error: function (xhr) {
                     alert(xhr.responseText || "Không thể hủy hóa đơn. Vui lòng kiểm tra lại!");
@@ -129,7 +150,6 @@ $(document).ready(function () {
             alert("ID hóa đơn không hợp lệ.");
         }
     });
-
 });
 
 

@@ -14,11 +14,11 @@ public interface KieuTayAoService {
 
     Optional<KieuTayAo> detail(Integer id);
 
-    void addKieuTayAo(KieuTayAo kieuTayAo);
+    KieuTayAo addKieuTayAo(KieuTayAo kieuTayAo);
 
     void updateKieuTayAo(Integer id, KieuTayAo kieuTayAo);
-    void updateKieuTayAoById(Integer id, KieuTayAo kieuTayAo);
 
+    void updateKieuTayAoById(Integer id, KieuTayAo kieuTayAo);
 
     void deleteKieuTayAo(Integer id);
 }

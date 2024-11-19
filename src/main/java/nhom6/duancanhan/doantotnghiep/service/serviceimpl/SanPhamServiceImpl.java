@@ -1,5 +1,9 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
@@ -16,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +38,8 @@ public class SanPhamServiceImpl implements SanPhamService {
     private final KieuTayAoRepository kieuTayAoRepository;
     private final KieuCoAoRepository kieuCoAoRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
+    private static final String QR_CODE_IMAGE_PATH = "D:/FALL_2024/DATN/DoAnTotNghiep/upload/";
+
 
     @Override
     public List<SanPhamResponse> getAllSanPham() {
@@ -171,6 +179,14 @@ public class SanPhamServiceImpl implements SanPhamService {
         );
     }
 
+    @Override
+    public Integer getIdSpFromTenSP(String tenSanPham) {
+        return DatabaseOperationHandler.handleDatabaseOperation(
+                () -> sanPhamRepository.findByTenSanPham(tenSanPham)
+                ,"Lỗi khi lấy thông tin sản phẩm từ cơ sở dữ liệu"
+        );
+    }
+
     private void validateDuplicateProductName(String tenSanPham) {
         if (sanPhamRepository.existsSanPhamByTenSanPham(tenSanPham)) {
             throw new DuplicateKeyException("Đã có sản phẩm với tên: " + tenSanPham);
@@ -239,5 +255,36 @@ public class SanPhamServiceImpl implements SanPhamService {
     private KieuCoAo findKieuCoAoById(Integer idCoAo) {
         return kieuCoAoRepository.findById(idCoAo)
                 .orElseThrow(() -> new DataNotFoundException("Không tìm thấy kiểu cổ áo với id: " + idCoAo));
+    }
+
+    // create qr cho các sp đã tồn tại
+    @Override
+    public void generateQRCodeForAllProducts() {
+        List<SanPham> sanPhams = sanPhamRepository.findAll(); // Lấy tất cả sản phẩm từ CSDL
+
+        for (SanPham sanPham : sanPhams) {
+            try {
+                // Tạo dữ liệu mã QR
+                String qrCodeData = "Product ID: " + sanPham.getId() + ", Name: " + sanPham.getTenSanPham();
+
+                String filePath = QR_CODE_IMAGE_PATH + "product_" + sanPham.getId() + ".png"; // Đường dẫn file QR code
+                // Tạo mã QR
+                QRCodeWriter qrCodeWriter = new QRCodeWriter();
+                BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeData, BarcodeFormat.QR_CODE, 200, 200);
+
+                // Lưu mã QR vào file
+                Path path = FileSystems.getDefault().getPath(filePath);
+                MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
+
+                // Cập nhật URL mã QR vào sản phẩm
+                sanPham.setQrCodeUrl(filePath);
+                sanPhamRepository.save(sanPham); // Lưu cập nhật vào CSDL
+
+                System.out.println("Đã tạo mã QR cho sản phẩm ID: " + sanPham.getId() + " tại " + filePath);
+            } catch (Exception e) {
+                System.err.println("Lỗi khi tạo QR cho sản phẩm ID: " + sanPham.getId());
+                e.printStackTrace();
+            }
+        }
     }
 }

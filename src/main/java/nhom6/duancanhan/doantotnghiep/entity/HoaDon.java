@@ -55,6 +55,12 @@ public class HoaDon extends BaseEntity{
     @JoinColumn(name = "id_nguoi_tao", referencedColumnName = "id")
     private NhanVien nguoiTao;
 
+    @Column(name = "loai_hoa_don")
+    private String loaiHoaDon;
+
+    @Column(name = "trang_thai_thanh_toan")
+    private Integer trangThaiThanhToan;
+
     @Column(name = "trang_thai")
     private int trangThai;
 

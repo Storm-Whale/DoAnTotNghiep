@@ -14,7 +14,7 @@ public interface KichCoService {
 
     Optional<KichCo> detail(Integer id);
 
-    void addKichCo(KichCo kichCo);
+    KichCo addKichCo(KichCo kichCo);
 
     void updateKichCo(Integer id, KichCo kichCo);
 

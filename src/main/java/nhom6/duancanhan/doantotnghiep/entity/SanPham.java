@@ -40,4 +40,7 @@ public class SanPham extends BaseEntity{
 
     @Column(name = "trang_thai")
     private Integer trangThai;
+
+    @Column(name = "qr_code_url")
+    private String qrCodeUrl;
 }

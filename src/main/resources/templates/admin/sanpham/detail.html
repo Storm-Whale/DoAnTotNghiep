@@ -23,43 +23,58 @@
         </div>
 
         <div class="container">
-            <h5 class="mb-3" style="text-align: center">Thông tin sản phẩm</h5>
+            <h3 class="mb-3" style="text-align: center">Thông tin sản phẩm</h3>
             <div th:object="${product}">
-                <div>
-                    <div class="mb-3">
-                        <label for="tenSanPham" class="form-label" style="font-size: 15px;">Tên sản phẩm</label>
-                        <input type="text" class="form-control" id="tenSanPham" style="font-size: 15px;"
-                               th:field="*{tenSanPham}" readonly>
-                    </div>
-                </div>
                 <div class="row">
-                    <div class="mb-3 col-6">
-                        <label for="tenThuongHieu" class="form-label" style="font-size: 15px;">Tên sản phẩm</label>
-                        <input type="text" class="form-control" id="tenThuongHieu" style="font-size: 15px;"
-                               th:field="*{tenThuongHieu}" readonly>
+                    <div class="col-4">
+                        <div class="text-center">
+                            <div th:if="${anhUrl != null}">
+                                <img th:src="@{${anhUrl}}" class="rounded" alt="Không tìm thấy ảnh"
+                                     style="border: 2px solid #cccccc; border-radius: 10px; width: 400px; height: 400px;">
+                            </div>
+                            <div th:unless="${anhUrl != null}">
+                                <h4>Chưa có ảnh</h4>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3 col-6">
-                        <label for="tenChatLieu" class="form-label" style="font-size: 15px;">Tên sản phẩm</label>
-                        <input type="text" class="form-control" id="tenChatLieu" style="font-size: 15px;"
-                               th:field="*{tenChatLieu}" readonly>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="mb-3 col-6">
-                        <label for="tenTayAo" class="form-label" style="font-size: 15px;">Tên sản phẩm</label>
-                        <input type="text" class="form-control" id="tenTayAo" style="font-size: 15px;"
-                               th:field="*{tenTayAo}" readonly>
-                    </div>
-                    <div class="mb-3 col-6">
-                        <label for="tenCoAo" class="form-label" style="font-size: 15px;">Tên sản phẩm</label>
-                        <input type="text" class="form-control" id="tenCoAo" style="font-size: 15px;"
-                               th:field="*{tenCoAo}" readonly>
+                    <div class="col-8 mt-5">
+                        <div class="mb-4">
+                            <label for="tenSanPham" class="form-label" style="font-size: 17px;">Tên sản phẩm</label>
+                            <input type="text" class="form-control" id="tenSanPham" style="font-size: 15px;"
+                                   th:field="*{tenSanPham}" readonly>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="mb-3 col-6">
+                                <label for="tenThuongHieu" class="form-label" style="font-size: 17px;">Tên sản
+                                    phẩm</label>
+                                <input type="text" class="form-control" id="tenThuongHieu" style="font-size: 15px;"
+                                       th:field="*{tenThuongHieu}" readonly>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="tenChatLieu" class="form-label" style="font-size: 17px;">Tên sản
+                                    phẩm</label>
+                                <input type="text" class="form-control" id="tenChatLieu" style="font-size: 15px;"
+                                       th:field="*{tenChatLieu}" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-3 col-6">
+                                <label for="tenTayAo" class="form-label" style="font-size: 17px;">Tên sản phẩm</label>
+                                <input type="text" class="form-control" id="tenTayAo" style="font-size: 15px;"
+                                       th:field="*{tenTayAo}" readonly>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="tenCoAo" class="form-label" style="font-size: 17px;">Tên sản phẩm</label>
+                                <input type="text" class="form-control" id="tenCoAo" style="font-size: 15px;"
+                                       th:field="*{tenCoAo}" readonly>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="text-end">
                 <button class="btn btn-primary">
-                    <a th:href="@{/admin/product-details/create}">Thêm sản phẩm chi tiết</a>
+                    <a th:href="@{/admin/product-details/create/{idsp} (idsp = ${product.id})}">Thêm sản phẩm chi tiết</a>
                 </button>
             </div>
             <div>
@@ -68,7 +83,6 @@
                     <thead>
                     <tr>
                         <th>STT</th>
-                        <!--                        <th>Tên sản phẩm</th>-->
                         <th>Kích Cỡ</th>
                         <th>Màu Sắc</th>
                         <th>Giá</th>

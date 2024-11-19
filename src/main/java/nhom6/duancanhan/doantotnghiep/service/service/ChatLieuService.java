@@ -14,7 +14,7 @@ public interface ChatLieuService {
 
     Optional<ChatLieu> detail(Integer id);
 
-    void addChatLieu(ChatLieu chatLieu);
+    ChatLieu addChatLieu(ChatLieu chatLieu);
 
     void updateChatLieu(Integer id, ChatLieu chatLieu);
 

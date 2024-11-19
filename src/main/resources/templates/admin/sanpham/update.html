@@ -11,74 +11,68 @@
 
     <!-- CSS -->
     <style>
-        .wrap {
-            width: 800px;
-            margin: 0 auto;
+        /* Căn chỉnh kích thước của select2 với input của Bootstrap */
+        .select2-container--default .select2-selection--single,
+        .select2-container--default .select2-selection--multiple {
+            height: calc(1.5em + 0.75rem + 2px);
+            padding: 0.25rem 0.5rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            border: 1px solid #ced4da;
         }
 
-        .intro {
+        /* Đảm bảo các lựa chọn trong multiple select hiển thị đúng cách */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+        }
+
+        /* Căn chỉnh chiều cao của phần tử multiple select */
+        .select2-container--default .select2-selection--multiple {
+            height: auto !important;
+            min-height: calc(1.5em + 0.75rem + 2px) !important;
+            padding: 0.25rem 0.5rem;
             display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.25rem;
         }
 
-        .intro h3 {
-            color: #2857a7;
-        }
-
-        .using-select2 {
-            width: 50%;
-        }
-
-        .js-select2 {
+        #formThemNhanh {
+            position: fixed; /* Giữ form luôn ở giữa ngay cả khi cuộn trang */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Dịch chuyển để căn giữa */
+            z-index: 1050; /* Hiển thị lên trên các phần tử khác */
             width: 100%;
-            height: 42px;
-            font-size: 16px;
+            max-width: 400px; /* Giới hạn chiều rộng của form */
+            background-color: white; /* Đặt màu nền để nổi bật */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Tạo bóng */
+            border-radius: 8px; /* Bo tròn góc */
+            padding: 15px; /* Khoảng cách bên trong */
         }
 
-        .install-select2 {
+        #formThemNhanh .btn-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none; /* Không có viền */
+            font-size: 0.7rem; /* Kích thước nút */
+            cursor: pointer; /* Hiển thị con trỏ tay */
+            z-index: 1060;
+        }
+
+        /* Nền mờ đằng sau form */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-        }
-
-        .select2-container--default .select2-selection--single {
-            height: 42px; /* Chiều cao của Select2 */
-            border: 1px solid #ced4da; /* Đường viền cho Select2 */
-            font-size: 16px;
-        }
-
-        .select2-selection__rendered {
-            line-height: 38px; /* Căn giữa chữ */
-            display: flex; /* Sử dụng flexbox để căn giữa */
-            align-items: center; /* Căn giữa theo chiều dọc */
-            padding-left: 10px; /* Khoảng cách bên trái */
-        }
-
-        .select2-selection__arrow {
-            height: 38px; /* Căn chỉnh chiều cao mũi tên */
-        }
-
-        .select2-selection__placeholder {
-            line-height: 38px; /* Căn giữa chữ placeholder */
-        }
-
-        pre {
-            border-left: 4px solid #2857a7 !important;
-            display: block;
-            padding-left: 5px !important;
-            text-align: left;
-        }
-
-        /* Đảm bảo nút Thêm có kích thước phù hợp */
-        .btn-custom {
-            height: 40px; /* Đảm bảo nút có chiều cao tương đương với Select2 */
-            font-size: 16px; /* Thay đổi cỡ chữ cho nút */
-        }
-
-        .select2-container .select2-selection--single .select2-selection__rendered {
-            /*text-align: center; !* Căn giữa văn bản *!*/
-            line-height: 2; /* Điều chỉnh chiều cao của dòng để văn bản nằm giữa */
-        }
-
-        .select2-container .select2-selection--single {
-            height: auto; /* Đảm bảo chiều cao không bị cố định */
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Nền mờ */
+            z-index: 1040; /* Đặt nền mờ dưới form */
         }
     </style>
 </head>
@@ -98,104 +92,135 @@
         </div>
 
         <div class="container">
-            <h5 class="mb-3" style="text-align: center">Thông tin sản phẩm</h5>
-            <form action="#" th:action="@{/admin/products/update/{id}(id=${product_old.id})}" th:object="${product_old}" method="post">
-                <!-- Tên sản phẩm -->
-                <div>
+            <h3 class="mb-3" style="text-align: center">Thông tin sản phẩm</h3>
+            <form action="#" th:action="@{/admin/products/update/{id}(id=${product_old.id})}" th:object="${product_old}" method="post"
+                  enctype="multipart/form-data">
+                <div class="row">
+                    <!-- Left Column: Product Image -->
+                    <div class="col-md-4 text-center">
+                        <div class="mb-3">
+                            <label for="anhSanPham" style="font-size: 15px;">Cập nhật ảnh sản phẩm:</label>
+                            <input type="file" name="anh_san_pham" id="anhSanPham" class="form-control" accept="image/*">
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div class="mb-3">
+                            <img id="previewImage" th:src="@{/{anhUrl} (anhUrl = ${product_old.anhUrl})}" alt="Ảnh sản phẩm hiện tại" width="200">
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Product Information -->
+                    <div class="col-md-8">
+
+                        <!-- Tên sản phẩm -->
+                        <div class="mb-3">
+                            <label for="tenSanPham" class="form-label" style="font-size: 15px;">Tên sản phẩm</label>
+                            <input type="text" class="form-control" id="tenSanPham" placeholder="Nhập tên sản phẩm" style="font-size: 15px;" name="ten_sp"
+                                   th:value="${product_old != null ? product_old.tenSanPham : ''}">
+                        </div>
+
+                        <!-- Thương Hiệu -->
+                        <div class="mb-3">
+                            <label for="idThuongHieu" class="form-label" style="font-size: 15px;">Thương Hiệu</label>
+                            <div class="d-flex align-items-center">
+                                <select id="idThuongHieu" class="form-control js-select2" name="id_thuong_hieu">
+                                    <option value="" selected>Chọn thương hiệu</option>
+                                    <option th:each="thuonghieu : ${thuongHieus}" th:value="${thuonghieu.getId()}"
+                                            th:text="${thuonghieu.getTenThuongHieu()}"
+                                            th:selected="${product_old != null and product_old.tenThuongHieu == thuonghieu.getTenThuongHieu()}"></option>
+                                </select>
+                                <button type="button" class="btn btn-primary btn-btnQuickAddThuongHieu ms-2" onclick="hienForm('/admin/thuong-hieu/quick-add')">Thêm</button>
+                            </div>
+                        </div>
+
+                        <!-- Chất Liệu -->
+                        <div class="mb-3">
+                            <label for="idChatLieu" class="form-label" style="font-size: 15px;">Chất liệu</label>
+                            <div class="d-flex align-items-center">
+                                <select id="idChatLieu" class="form-control js-select2" name="id_chat_lieu">
+                                    <option value="" selected>Chọn chất liệu</option>
+                                    <option th:each="chatlieu : ${chatLieus}" th:value="${chatlieu.getId()}" th:text="${chatlieu.getTenChatLieu()}"
+                                            th:selected="${product_old != null and product_old.tenChatLieu == chatlieu.getTenChatLieu()}"></option>
+                                </select>
+                                <button type="button" class="btn btn-primary btn-btnQuickAddChatLieu ms-2" onclick="hienForm('/admin/chatlieu/quick-add')">Thêm</button>
+                            </div>
+                        </div>
+
+                        <!-- Cổ Áo -->
+                        <div class="mb-3">
+                            <label for="idCoAo" class="form-label" style="font-size: 15px;">Cổ áo</label>
+                            <div class="d-flex align-items-center">
+                                <select id="idCoAo" class="form-control js-select2" name="id_co_ao">
+                                    <option value="" selected>Chọn kiểu cổ áo</option>
+                                    <option th:each="coao : ${kieuCoAos}" th:value="${coao.getId()}" th:text="${coao.getTenCoAo()}"
+                                            th:selected="${product_old != null and product_old.tenCoAo == coao.tenCoAo}"></option>
+                                </select>
+                                <button type="button" class="btn btn-primary btn-btnQuickAddKieuCoAo ms-2" onclick="hienForm('/admin/kieu-co-ao/quick-add')">Thêm</button>
+                            </div>
+                        </div>
+
+                        <!-- Tay Áo -->
+                        <div class="mb-3">
+                            <label for="idTayAo" class="form-label" style="font-size: 15px;">Tay áo</label>
+                            <div class="d-flex align-items-center">
+                                <select id="idTayAo" class="form-control js-select2" name="id_tay_ao">
+                                    <option value="" selected>Chọn kiểu tay áo</option>
+                                    <option th:each="tayao : ${kieuTayAos}" th:value="${tayao.getId()}" th:text="${tayao.getTenTayAo()}"
+                                            th:selected="${product_old != null and product_old.tenTayAo == tayao.getTenTayAo()}"></option>
+                                </select>
+                                <button type="button" class="btn btn-primary btn-btnQuickAddKieuTayAo ms-2" onclick="hienForm('/admin/kieu-tay-ao/quick-add')">Thêm</button>
+                            </div>
+                        </div>
+
+                        <!-- Status Radio Buttons -->
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 15px;">Trạng Thái : </label>
+                            <div class="form-check form-check-inline" style="margin-left: 10px;">
+                                <input class="form-check-input" type="radio" name="trang_thai" id="dangHoatDong" value="1"
+                                       th:checked="${product_old.trangThai == 1}" style="font-size: 15px;">
+                                <label class="form-check-label" for="dangHoatDong" style="font-size: 15px;">Đang Hoạt Động</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="trang_thai" id="ngungHoatDong" value="0"
+                                       th:checked="${product_old.trangThai == 0}" style="font-size: 15px;">
+                                <label class="form-check-label" for="ngungHoatDong" style="font-size: 15px;">Ngưng Hoạt Động</label>
+                            </div>
+                        </div>
+
+                        <!-- Description Textarea -->
+                        <div class="mb-3">
+                            <label for="moTaSanPham" class="form-label" style="font-size: 15px;">Mô tả sản phẩm</label>
+                            <textarea class="form-control" id="moTaSanPham" name="mo_ta" rows="4" placeholder="Nhập mô tả sản phẩm"
+                                      style="font-size: 15px;">[[${product_old.moTa}]]</textarea>
+                        </div>
+
+                        <!-- Submit Button for Product Information -->
+                        <div class="text-center mt-3">
+                            <input type="submit" class="btn btn-primary" value="Cập nhật thông tin sản phẩm"/>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="overlay" id="overlay" style="display: none;"></div>
+    <div id="formThemNhanh" class="mt-3" style="display: none;">
+        <div class="card">
+            <form id="formQuick" method="post">
+                <div class="card-body">
+                    <!-- Nút X để đóng -->
+                    <button type="button" class="btn-close" onclick="anForm()" style="position: absolute; top: 10px; right: 10px;"></button>
+
+                    <!-- Tiêu đề -->
+                    <h5 class="card-title text-center">Thêm Nhanh</h5>
+
+                    <!-- Nội dung form -->
                     <div class="mb-3">
-                        <label for="tenSanPham" class="form-label" style="font-size: 15px;">Tên sản phẩm</label>
-                        <input type="text" class="form-control" id="tenSanPham" placeholder="Nhập tên sản phẩm"
-                               style="font-size: 15px;" name="ten_sp"
-                               th:value="${product_old != null ? product_old.tenSanPham : ''}">
+                        <label for="ten" class="form-label">Tên</label>
+                        <input type="text" id="ten" name="ten" class="form-control" placeholder="Nhập tên">
                     </div>
-                </div>
-
-                <!-- Thương Hiệu -->
-                <div class="mb-3">
-                    <label for="idThuongHieu" class="form-label" style="font-size: 15px;">Thương Hiệu</label>
-                    <div class="d-flex align-items-center">
-                        <select id="idThuongHieu" class="form-control js-select2" name="id_thuong_hieu">
-                            <option value="" selected>Chọn thương hiệu</option>
-                            <option th:each="thuonghieu : ${thuongHieus}"
-                                    th:value="${thuonghieu.getId()}"
-                                    th:text="${thuonghieu.getTenThuongHieu()}"
-                                    th:selected="${product_old != null and product_old.tenThuongHieu == thuonghieu.getTenThuongHieu()}">
-                            </option>
-                        </select>
-                        <button type="button" class="btn btn-primary btn-custom ms-2">Thêm</button>
-                    </div>
-                </div>
-
-                <!-- Chất liệu -->
-                <div class="mb-3">
-                    <label for="idChatLieu" class="form-label" style="font-size: 15px;">Chất liệu</label>
-                    <div class="d-flex align-items-center">
-                        <select id="idChatLieu" class="form-control js-select2" name="id_chat_lieu">
-                            <option value="" selected>Chọn chất liệu</option>
-                            <option th:each="chatlieu : ${chatLieus}"
-                                    th:value="${chatlieu.getId()}"
-                                    th:text="${chatlieu.getTenChatLieu()}"
-                                    th:selected="${product_old != null and product_old.tenChatLieu == chatlieu.getTenChatLieu()}">
-                            </option>
-                        </select>
-                        <button type="button" class="btn btn-primary btn-custom ms-2">Thêm</button>
-                    </div>
-                </div>
-
-                <!-- Cổ áo -->
-                <div class="mb-3">
-                    <label for="idCoAo" class="form-label" style="font-size: 15px;">Kiểu cổ áo</label>
-                    <div class="d-flex align-items-center">
-                        <select id="idCoAo" class="form-control js-select2" name="id_co_ao">
-                            <option value="" selected>Chọn Cổ Áo</option>
-                            <option th:each="coao : ${kieuCoAos}"
-                                    th:value="${coao.getId()}"
-                                    th:text="${coao.getTenCoAo()}"
-                                    th:selected="${product_old != null and product_old.tenCoAo == coao.getTenCoAo()}">
-                            </option>
-                        </select>
-                        <button type="button" class="btn btn-primary btn-custom ms-2">Thêm</button>
-                    </div>
-                </div>
-
-                <!-- Tay áo -->
-                <div class="mb-3">
-                    <label for="idTayAo" class="form-label" style="font-size: 15px;">Kiểu tay áo</label>
-                    <div class="d-flex align-items-center">
-                        <select id="idTayAo" class="form-control js-select2" name="id_tay_ao">
-                            <option value="" selected>Chọn kiểu tay áo</option>
-                            <option th:each="tayao : ${kieuTayAos}"
-                                    th:value="${tayao.getId()}"
-                                    th:text="${tayao.getTenTayAo()}"
-                                    th:selected="${product_old != null and product_old.tenTayAo == tayao.tenTayAo}">
-                            </option>
-                        </select>
-                        <button type="button" class="btn btn-primary btn-custom ms-2">Thêm</button>
-                    </div>
-                </div>
-
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="trang_thai" id="dangHoatDong" value="1"
-                        th:checked="${product_old.trangThai == 1}"
-                           style="font-size: 15px;"
-                    >
-                    <label class="form-check-label" for="dangHoatDong"
-                           style="font-size: 15px;"
-                    >Đang Hoạt Động</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="trang_thai" id="ngungHoatDong" value="0"
-                           th:checked="${product_old.trangThai == 0}"
-                           style="font-size: 15px;"
-                    >
-                    <label class="form-check-label" for="ngungHoatDong"
-                           style="font-size: 15px;"
-                    >Ngưng Hoạt Động</label>
-                </div>
-
-                <!-- Submit button -->
-                <div class="text-center">
-                    <input type="submit" class="btn btn-primary" value="Cập nhật sản phẩm"/>
+                    <button type="button" class="btn btn-success" onclick="themNhanh()">Thêm</button>
+                    <button type="button" class="btn btn-secondary" onclick="anForm()">Hủy</button>
                 </div>
             </form>
         </div>
@@ -206,15 +231,19 @@
 <script th:src="@{/javascript/admin.js}"></script>
 <!-- JavaScript của jQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 <!-- JavaScript của Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script>
-    $(document).ready(function () {
-        $('.js-select2').select2({
-            placeholder: "Chọn một tùy chọn",
-            allowClear: true
-        });
+    document.getElementById('anhSanPham').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('previewImage').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
     });
 </script>
+<script th:src="@{/javascript/san_pham.js}"></script>
 </html>

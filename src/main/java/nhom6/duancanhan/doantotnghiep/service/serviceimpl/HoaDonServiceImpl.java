@@ -1,7 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 
-import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPham;
@@ -43,15 +42,14 @@ public class HoaDonServiceImpl implements HoaDonService {
         return this.hoaDonRepository.findAll(pageable);
     }
 
-    @Override
-    public Optional<HoaDon> detail(Integer id) {
-        return Optional.empty();
-    }
-
 
     @Override
     public void addHoaDon(HoaDon hoaDon) {
         hoaDonRepository.save(hoaDon);
+    }
+    @Override
+    public Optional<HoaDon> detail(Integer id) {
+        return Optional.empty();
     }
 
     @Override
@@ -65,7 +63,6 @@ public class HoaDonServiceImpl implements HoaDonService {
 //        return Optional.of(hoaDon.get());
 //    }
 
-
     @Override
     public void deleteHoaDon(Integer id) {
         hoaDonRepository.deleteById(id);
@@ -77,28 +74,24 @@ public class HoaDonServiceImpl implements HoaDonService {
         return hoaDonRepository.findByTenNguoiNhanContaining(keyword, pageable);
     }
 
-    //    @Override
-//    public void cancelHoaDon(Integer id) {
-//        HoaDon hoaDon = hoaDonRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với id: "+id));
-//        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findHoaDonChiTietById(id);
-//        hoaDonChiTietList.forEach(hoaDonChiTiet -> {
-//            SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
-//            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSoLuong());
-//            sanPhamChiTietRepository.save(sanPhamChiTiet);
-//        });
-//        hoaDonRepository.delete(hoaDon);
-//    }
     @Override
     public void cancelHoaDon(Integer id) {
         HoaDon hoaDon = hoaDonRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với id: " + id));
-
+        // Lấy danh sách các chi tiết hóa đơn liên quan
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findHoaDonChiTietById(id);
+        // Lặp qua từng chi tiết hóa đơn và cập nhật số lượng sản phẩm tồn
         for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
             SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
-            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSoLuong());
-            sanPhamChiTietRepository.save(sanPhamChiTiet);
+            if (sanPhamChiTiet != null) {
+                int newQuantity = sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSoLuong();
+                sanPhamChiTiet.setSoLuong(newQuantity);
+                System.out.println("Cập nhật sản phẩm: " + sanPhamChiTiet.getId() + " với số lượng mới: " + newQuantity);
+                sanPhamChiTietRepository.save(sanPhamChiTiet);
+            } else {
+                System.out.println("Sản phẩm không tồn tại.");
+            }
+            hoaDonChiTietRepository.delete(hoaDonChiTiet);
         }
         hoaDonRepository.delete(hoaDon);
     }
@@ -107,46 +100,4 @@ public class HoaDonServiceImpl implements HoaDonService {
     public HoaDon findById(Integer id) {
         return hoaDonRepository.findById(id).orElse(null);
     }
-
-
-//    @Override
-//    public PageDTO<List<HoaDonDTO>> phanTrang(PageRequestDTO pageRequestDTO) {
-//        pageRequestDTO.setPage(pageRequestDTO.getPage() == null ? 0 : pageRequestDTO.getPage());
-//        pageRequestDTO.setSize(pageRequestDTO.getSize() == null ? 5 : pageRequestDTO.getSize());
-//
-//        Page<HoaDon> pageEntity = hoaDonRepository.findAll(
-//                PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize())
-//        );
-//
-//        // Kiểm tra xem có dữ liệu nào trong pageEntity không
-//        System.out.println("Total elements in HoaDon: " + pageEntity.getTotalElements());
-//
-//        List<HoaDonDTO> listDto = pageEntity.get().map(this::converToDto).collect(Collectors.toList());
-//
-//        // Kiểm tra danh sách DTO
-//        System.out.println("Total DTOs: " + listDto.size());
-//
-//        return PageDTO.<List<HoaDonDTO>>builder()
-//                .data(listDto)
-//                .totalElements(pageEntity.getTotalElements())
-//                .totalPages(pageEntity.getTotalPages())
-//                .build();
-//    }
-//    @Override
-//    public HoaDon themHoaDon(HoaDonDTO hoaDonDTO) {
-//        HoaDon hoaDon = converToEntity(hoaDonDTO);
-//        return hoaDonRepository.save(hoaDon);
-//    }
-//
-//    @Override
-//    public HoaDonDTO converToDto(HoaDon hoaDon) {
-//        ModelMapper modelMapper = new ModelMapper();
-//        return modelMapper.map(hoaDon, HoaDonDTO.class);
-//    }
-//
-//    @Override
-//    public HoaDon converToEntity(HoaDonDTO hoaDonDTO) {
-//        ModelMapper modelMapper = new ModelMapper();
-//        return modelMapper.map(hoaDonDTO, HoaDon.class);
-//    }
 }

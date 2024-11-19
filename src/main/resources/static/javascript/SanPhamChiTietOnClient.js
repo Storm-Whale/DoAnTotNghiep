@@ -244,4 +244,9 @@ function showErrorAlert() {
         title: "Có lỗi xảy ra khi thêm sản phẩm"
     });
 }
+
+function logout() {
+    window.location.href = '/login/logout';
+    window.location.reload();
+}
 // -------------------------------------------------- End Alert  ---------------------------------------------------

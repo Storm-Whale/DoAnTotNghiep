@@ -36,13 +36,12 @@ public class KieuCoAoServiceImpl implements KieuCoAoService {
 
     @Override
     public Optional<KieuCoAo> detail(Integer id) {
-        Optional<KieuCoAo> kieuCoAo = kieuCoAoRepository.findById(id);
-        return Optional.of(kieuCoAo.get());
+        return  kieuCoAoRepository.findById(id);
     }
 
     @Override
-    public void addKieuCoAo(KieuCoAo kieuCoAo) {
-        kieuCoAoRepository.save(kieuCoAo);
+    public KieuCoAo addKieuCoAo(KieuCoAo kieuCoAo) {
+        return kieuCoAoRepository.save(kieuCoAo);
     }
 
     @Override

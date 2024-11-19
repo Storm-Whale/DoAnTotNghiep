@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MauSacService {
+
     List<MauSac> getAll();
 
     Page<MauSac> phanTrang(int pageNo, int pageSize);
 
     Optional<MauSac> detail(Integer id);
 
-    void addMauSac(MauSac mauSac);
+    MauSac addMauSac(MauSac mauSac);
 
     void updateMauSac(Integer id, MauSac mauSac);
 
