@@ -105,6 +105,32 @@ public class SanPhamController {
     //   TODO : Thêm Sản Phẩm
     @PostMapping("/store")
     public String store(@Valid @ModelAttribute("product") SanPhamRequest productRequest, BindingResult bindingResult, Model model) {
+        if (sanPhamService.existTenSanPham(productRequest.getTenSanPham())) {
+            model.addAttribute("trungTenSanPham", "Bạn đã có sản phẩm với tên này");
+            return "/admin/sanpham/create";
+        }
+
+        if (productRequest.getTenSanPham().startsWith(" ")) {
+            model.addAttribute("loiDeCachHaiDau", "Không bắt đầu bằng dấu cách");
+            return "/admin/sanpham/create";
+        }
+
+        if (productRequest.getAnhSanPham() != null && productRequest.getAnhSanPham().isEmpty()) {
+            model.addAttribute("chuaTaiFile", "Bạn chưa có tải ảnh lên");
+            return "/admin/sanpham/create";
+        }
+
+        long maxFileSize = 2 * 1024 * 1024;
+        if (maxFileSize < productRequest.getAnhSanPham().getSize()) {
+            model.addAttribute("loiSizeAnh", "Kích thước của ảnh không được vượt quá 2MB");
+            return "/admin/sanpham/create";
+        }
+
+        if (!uploadImage.isImageFile(productRequest.getAnhSanPham())) {
+            model.addAttribute("loiTypeAnh", "Chỉ có thể tải file ảnh");
+            return "/admin/sanpham/create";
+        }
+
         if (bindingResult.hasErrors()) {
             ValidationErrorHandler.handleValidationErrors(bindingResult);
             addSanPhamModelAttributes(model, productRequest);
@@ -141,12 +167,83 @@ public class SanPhamController {
     //   TODO : Update sản phẩm
     @PostMapping(value = "/update/{id}")
     public String update(
-            @PathVariable(name = "id") Integer id, @RequestParam("ten_sp") String tenSP,
-            @RequestParam("id_thuong_hieu") Integer idThuongHieu, @RequestParam("id_chat_lieu") Integer idChatLieu,
-            @RequestParam("id_co_ao") Integer idCoAo, @RequestParam("id_tay_ao") Integer idTayAo,
-            @RequestParam("anh_san_pham") MultipartFile anhSanPham,
-            @RequestParam("trang_thai") Integer trangThai
+            @PathVariable(name = "id") Integer id,
+            @RequestParam(value = "ten_sp", required = false) String tenSP,
+            @RequestParam(value = "id_thuong_hieu", required = false) Integer idThuongHieu,
+            @RequestParam(value = "id_chat_lieu", required = false) Integer idChatLieu,
+            @RequestParam(value = "id_co_ao", required = false) Integer idCoAo,
+            @RequestParam(value = "id_tay_ao", required = false) Integer idTayAo,
+            @RequestParam(value = "anh_san_pham", required = false) MultipartFile anhSanPham,
+            @RequestParam(value = "trang_thai", required = false) Integer trangThai,
+            Model model
     ) {
+        boolean hasErrors = false;
+
+        // Kiểm tra tên sản phẩm không rỗng
+        if (tenSP == null || tenSP.trim().isEmpty()) {
+            model.addAttribute("productNameError", "Tên sản phẩm không được để trống");
+            hasErrors = true;
+        } else {
+            // Kiểm tra trùng tên sản phẩm
+            if (sanPhamService.existTenSanPham(tenSP)) {
+                model.addAttribute("productNameError", "Bạn đã có sản phẩm với tên này");
+                hasErrors = true;
+            }
+
+            // Kiểm tra dấu cách ở đầu hoặc cuối
+            if (tenSP.startsWith(" ") || tenSP.endsWith(" ")) {
+                model.addAttribute("productNameError", "Tên sản phẩm không được có dấu cách ở đầu hoặc cuối");
+                hasErrors = true;
+            }
+        }
+
+        // Kiểm tra các thuộc tính khác không được null
+        if (idThuongHieu == null) {
+            model.addAttribute("loiThuongHieu", "Thương hiệu không được để trống");
+            hasErrors = true;
+        }
+
+        if (idChatLieu == null) {
+            model.addAttribute("loiChatLieu", "Chất liệu không được để trống");
+            hasErrors = true;
+        }
+
+        if (idCoAo == null) {
+            model.addAttribute("loiCoAo", "Kiểu cổ không được để trống");
+            hasErrors = true;
+        }
+
+        if (idTayAo == null) {
+            model.addAttribute("loiTayAo", "Kiểu tay áo không được để trống");
+            hasErrors = true;
+        }
+
+        if (trangThai == null) {
+            model.addAttribute("loiTrangThai", "Trạng thái không được để trống");
+            hasErrors = true;
+        }
+
+
+        long maxFileSize = 2 * 1024 * 1024;
+        if (anhSanPham != null && !anhSanPham.isEmpty() && maxFileSize < anhSanPham.getSize()) {
+            model.addAttribute("loiSizeAnh", "Kích thước của ảnh không được vượt quá 2MB");
+            hasErrors = true;
+        }
+
+        if (anhSanPham != null && !anhSanPham.isEmpty() && !uploadImage.isImageFile(anhSanPham)) {
+            model.addAttribute("loiTypeAnh", "Chỉ có thể tải file ảnh");
+            hasErrors = true;
+        }
+
+        // Nếu có lỗi, trả về trang chỉnh sửa và hiển thị lỗi
+        if (hasErrors) {
+            // Thêm thông tin sản phẩm cũ vào Model
+            model.addAttribute("product_old", sanPhamService.getSanPhamById(id));
+            addSanPhamModelAttributes(model, new SanPhamRequest());
+            return "/admin/sanpham/update";  // Quay lại trang chỉnh sửa với lỗi
+        }
+
+        // Xử lý logic cập nhật sản phẩm
         SanPhamResponse existingProduct = sanPhamService.getSanPhamById(id);
         String oldImageUrl = existingProduct.getAnhUrl();
 
@@ -164,7 +261,6 @@ public class SanPhamController {
                 if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
                     uploadImage.deleteOldImage(oldImageUrl);
                 }
-
                 String newImageUrl = uploadImage.saveImage(anhSanPham);
                 sanPhamRequest.setAnhUrl(newImageUrl);
             } catch (IOException e) {
@@ -173,8 +269,9 @@ public class SanPhamController {
         } else {
             sanPhamRequest.setAnhUrl(oldImageUrl);
         }
+
         sanPhamService.updateSanPham(id, sanPhamRequest);
-        return "redirect:/admin/products/index";
+        return "redirect:/admin/products/index";  // Chuyển hướng về trang sản phẩm sau khi cập nhật thành công
     }
 
     //   TODO : Cập Nhật Trạng Thái Sản Phẩm

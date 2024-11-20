@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
@@ -142,7 +141,7 @@ public class TaiKhoanController {
         khachHangdt.setTaiKhoan(savedTaiKhoan);
        forgotKHRepository.save(khachHangdt);
 
-        return "redirect:/login/ad";
+        return "redirect:login/check-login";
     }
 
     //  TODO : Vào Trang Đăng nhập

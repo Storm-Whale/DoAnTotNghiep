@@ -18,4 +18,6 @@ public interface KieuCoAoService {
     void updateKieuCoAo(Integer id, KieuCoAo kieuCoAo);
 
     void updateKieuCoAoById(Integer id, KieuCoAo kieuCoAo);
+
+    List<String> getAllTenKieuCoAo();
 }

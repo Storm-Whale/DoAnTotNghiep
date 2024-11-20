@@ -41,7 +41,21 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
     List<SanPham> findByIdTayAo(@Param("kieuTayAoId") Integer kieuTayAoId);
 
     @Query("""
-        select sp.id from SanPham sp where sp.tenSanPham = :tenSP
-    """)
+                select sp.id from SanPham sp where sp.tenSanPham = :tenSP
+            """)
     Integer findByTenSanPham(@Param("tenSP") String tenSanPham);
+
+    @Query("""
+            select sp from SanPham sp where
+                (:tenThuongHieu is null or :tenThuongHieu = '' or sp.thuongHieu.tenThuongHieu like :tenThuongHieu) and
+                (:tenChatLieu is null or :tenChatLieu = '' or sp.chatLieu.tenChatLieu like :tenChatLieu) and
+                (:tenKieuCoAo is null or :tenKieuCoAo = '' or sp.coAo.tenCoAo like :tenKieuCoAo) and
+                (:tenKieuTayAo is null or :tenKieuTayAo = '' or sp.tayAo.tenTayAo like :tenKieuTayAo)
+            """)
+    List<SanPham> searchSanPham(
+            @Param("tenThuongHieu") String tenThuongHieu,
+            @Param("tenChatLieu") String tenChatLieu,
+            @Param("tenKieuCoAo") String tenKieuCoAo,
+            @Param("tenKieuTayAo") String tenKieuTayAo
+    );
 }

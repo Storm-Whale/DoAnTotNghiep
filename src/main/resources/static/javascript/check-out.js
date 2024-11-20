@@ -16,7 +16,7 @@ document.getElementById('openModalButton').addEventListener('click', function ()
 
         voucherContainer.innerHTML = `
             <div class="p-2">
-                <img src="/images/37.jpg" alt="Voucher Image" width="80px">
+                <img src="/37.jpg" alt="Voucher Image" width="80px">
             </div>
             <div class="voucher-details">
                 <div>Giảm tới đa ${new Intl.NumberFormat('vi-VN', {

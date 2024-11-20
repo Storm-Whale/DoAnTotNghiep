@@ -98,6 +98,9 @@
                         <label for="tenSanPham" class="form-label" style="font-size: 15px;">Tên sản phẩm</label>
                         <input type="text" class="form-control" id="tenSanPham" placeholder="Nhập tên sản phẩm"
                                style="font-size: 15px;" th:field="*{tenSanPham}">
+                        <p class="text-danger" th:if="${#fields.hasErrors('tenSanPham')}" th:errorclass="error" th:errors="*{tenSanPham}"></p>
+                        <p class="text-danger" th:if="${trungTenSanPham != null}" th:text="${trungTenSanPham}"></p>
+                        <p class="text-danger" th:if="${loiDeCachHaiDau != null}" th:text="${loiDeCachHaiDau}"></p>
                     </div>
                 </div>
                 <div class="row">
@@ -112,6 +115,7 @@
                             </select>
                             <button type="button" class="btn btn-primary btn-btnQuickAddThuongHieu ms-2" onclick="hienForm('/admin/thuong-hieu/quick-add')">Thêm</button>
                         </div>
+                        <p class="text-danger" th:if="${#fields.hasErrors('idThuongHieu')}" th:errorclass="error" th:errors="*{idThuongHieu}"></p>
                     </div>
 
                     <div class="col-6 mb-3">
@@ -125,6 +129,7 @@
                             </select>
                             <button type="button" class="btn btn-primary btn-btnQuickAddChatLieu ms-2" onclick="hienForm('/admin/chatlieu/quick-add')">Thêm</button>
                         </div>
+                        <p class="text-danger" th:if="${#fields.hasErrors('idChatLieu')}" th:errorclass="error" th:errors="*{idChatLieu}"></p>
                     </div>
                 </div>
 
@@ -140,7 +145,9 @@
                             </select>
                             <button type="button" class="btn btn-primary btn-btnQuickAddKieuCoAo ms-2" onclick="hienForm('/admin/kieu-co-ao/quick-add')">Thêm</button>
                         </div>
+                        <p class="text-danger" th:if="${#fields.hasErrors('idCoAo')}" th:errorclass="error" th:errors="*{idCoAo}"></p>
                     </div>
+
                     <div class="col-6 mb-3">
                         <label for="idTayAo" class="form-label" style="font-size: 15px;">Kiểu tay áo</label>
                         <div class="d-flex align-items-center">
@@ -152,6 +159,7 @@
                             </select>
                             <button type="button" class="btn btn-primary btn-btnQuickAddKieuTayAo ms-2" onclick="hienForm('/admin/kieu-tay-ao/quick-add')">Thêm</button>
                         </div>
+                        <p class="text-danger" th:if="${#fields.hasErrors('idTayAo')}" th:errorclass="error" th:errors="*{idTayAo}"></p>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -163,6 +171,12 @@
                 <div class="mb-3">
                     <label for="images" class="form-label" style="font-size: 15px;">Upload Ảnh</label>
                     <input type="file" th:field="*{anhSanPham}" name="imageFiles" id="images" class="form-control" accept="image/*">
+                    <p class="text-danger" th:if="${#fields.hasErrors('anhSanPham')}" th:errorclass="error" th:errors="*{anhSanPham}"></p>
+
+
+                    <p class="text-danger" th:if="${chuaTaiFile != null}" th:text="${chuaTaiFile}"></p>
+                    <p class="text-danger" th:if="${loiSizeAnh != null}" th:text="${loiSizeAnh}"></p>
+                    <p class="text-danger" th:if="${loiTypeAnh != null}" th:text="${loiTypeAnh}"></p>
                 </div>
 
                 <div class="text-center">

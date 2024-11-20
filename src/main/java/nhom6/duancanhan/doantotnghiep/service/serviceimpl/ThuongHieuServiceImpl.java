@@ -3,6 +3,7 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
 import nhom6.duancanhan.doantotnghiep.repository.ThuongHieuRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.ThuongHieuService;
+import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @Service
 public class ThuongHieuServiceImpl implements ThuongHieuService {
+
     @Autowired
     private ThuongHieuRepository thuongHieuRepossitory;
 
@@ -46,5 +48,13 @@ public class ThuongHieuServiceImpl implements ThuongHieuService {
     @Override
     public void deleteThuongHieu(Integer id) {
         thuongHieuRepossitory.deleteById(id);
+    }
+
+    @Override
+    public List<String> getAllTenThuongHieu() {
+        return DatabaseOperationHandler.handleDatabaseOperation(
+                () -> thuongHieuRepossitory.findAllTenThuongHieu()
+                , "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu"
+        );
     }
 }

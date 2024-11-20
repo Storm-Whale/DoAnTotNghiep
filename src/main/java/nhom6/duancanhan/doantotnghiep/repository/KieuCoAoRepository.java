@@ -18,4 +18,9 @@ public interface KieuCoAoRepository extends JpaRepository<KieuCoAo, Integer> {
 //    List<KieuCoAo> findKieuCoAoById(@Param("id") Integer id);
     @Query("SELECT k FROM KieuCoAo k JOIN k.sanPhams s WHERE k.id = :id")
     List<KieuCoAo> findKieuCoAoById(@Param("id") Integer id);
+
+    @Query(value = """
+            select kca.tenCoAo from KieuCoAo kca 
+        """)
+    List<String> findAllTenKieuCoAo();
 }

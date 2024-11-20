@@ -36,11 +36,8 @@ public class SanPhamChiTietController {
 
     //    TODO : Thêm sản phẩm chi tiết
     @PostMapping(value = "/store")
-    public String store(@ModelAttribute SanPhamChiTietCustom dto) {
-        // Validate input
-        if (dto.getColorDetails() == null || dto.getColorDetails().isEmpty()) {
-            return "redirect:/admin/product-details";
-        }
+    @ResponseStatus(HttpStatus.CREATED)
+    public void store(@ModelAttribute SanPhamChiTietCustom dto) {
         try {
             // Lưu sản phẩm chi tiết và hình ảnh tương ứng
             for (SanPhamChiTietMauSacDTO colorDetail : dto.getColorDetails()) {
@@ -51,50 +48,35 @@ public class SanPhamChiTietController {
                 // Lưu cho từng kích thước của màu
                 for (Integer idKichCo : colorDetail.getIdKichCos()) {
                     storeSanPhamChiTietWithImages(
-                            dto.getIdSP(),
-                            colorDetail.getIdMauSac(),
-                            idKichCo,
-                            colorDetail.getSoLuong(),
-                            colorDetail.getGia(),  // Using price from colorDetail
-                            colorDetail.getImages()
+                            dto.getIdSP(), colorDetail.getIdMauSac(), idKichCo,
+                            colorDetail.getSoLuong(), colorDetail.getGia(), colorDetail.getImages()
                     );
                 }
             }
-
-            return "redirect:admin/products/index";
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:admin/products/index";
         }
     }
 
     //    TODO : Hiển thị trang edit
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, Model model) {
-        SanPhamChiTietResponse sanPhamChiTietResponse = sanPhamChiTietService.getSanPhamChiTietById(id);
-        addSanPhamChiTietModelAttributes(model, new SanPhamChiTietRequest());
-        model.addAttribute("idSP", sanPhamService.getIdSpFromTenSP(sanPhamChiTietResponse.getTenSanPham()));
-        model.addAttribute("old_product_details", sanPhamChiTietResponse);
-        model.addAttribute("listAnh", anhSanPhamService.getAnhSanPhamByIdSPCT(id));
-        return "/admin/sanphamchitiet/update";
+        return checkValidate(id, model);
     }
 
     //    TODO : Update sản phẩm chi tiết
     @PostMapping("/update/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateProductDetails(
-            @PathVariable(value = "id") Integer id,
-            @RequestParam(value = "id_sp") Integer idSp,
-            @RequestParam(value = "id_mau_sac") Integer idMauSac,
-            @RequestParam(value = "id_kich_co") Integer idKichCo,
-            @RequestParam(value = "so_luong") Integer soLuong,
-            @RequestParam(value = "gia") Double gia,
-            @RequestParam(value = "trang_thai") Integer trangThai,
-            @RequestParam(value = "images", required = false) MultipartFile[] images,
+            @PathVariable(value = "id") Integer id, @RequestParam(value = "id_sp") Integer idSp,
+            @RequestParam(value = "id_mau_sac") Integer idMauSac, @RequestParam(value = "id_kich_co") Integer idKichCo,
+            @RequestParam(value = "so_luong") Integer soLuong, @RequestParam(value = "gia") Double gia,
+            @RequestParam(value = "trang_thai") Integer trangThai, @RequestParam(value = "images", required = false) MultipartFile[] images,
             @RequestParam(value = "imageIds", required = false) List<Integer> imageIds
     ) throws IOException {
         // Tạo DTO cho chi tiết sản phẩm
         SanPhamChiTietRequest sanPhamChiTietRequest = buildSanPhamChiTietRequest(idSp, idMauSac, idKichCo, soLuong, gia);
+        sanPhamChiTietRequest.setTrangThai(trangThai);
 
         // Cập nhật chi tiết sản phẩm
         SanPhamChiTietResponse sanPhamChiTietResponse = sanPhamChiTietService.updateSanPhamChiTiet(id, sanPhamChiTietRequest);
@@ -118,9 +100,8 @@ public class SanPhamChiTietController {
 
                         // Tạo AnhSanPhamRequest mới để cập nhật ảnh
                         AnhSanPhamRequest anhSanPhamRequest = AnhSanPhamRequest.builder()
-                                .idSanPhamChiTiet(sanPhamChiTietResponse.getId()) // ID sản phẩm chi tiết
-                                .anhUrl(newImageUrl) // URL ảnh mới
-                                .trangThai(1) // Trạng thái ảnh (có thể thay đổi tùy theo logic)
+                                .idSanPhamChiTiet(sanPhamChiTietResponse.getId())
+                                .anhUrl(newImageUrl).trangThai(1)
                                 .build();
 
                         // Cập nhật ảnh mới vào cơ sở dữ liệu
@@ -187,5 +168,14 @@ public class SanPhamChiTietController {
         } catch (IOException e) {
             throw new RuntimeException("Lỗi khi lưu ảnh sản phẩm", e);
         }
+    }
+
+    private String checkValidate(int id, Model model) {
+        SanPhamChiTietResponse sanPhamChiTietResponse = sanPhamChiTietService.getSanPhamChiTietById(id);
+        addSanPhamChiTietModelAttributes(model, new SanPhamChiTietRequest());
+        model.addAttribute("idSP", sanPhamService.getIdSpFromTenSP(sanPhamChiTietResponse.getTenSanPham()));
+        model.addAttribute("old_product_details", sanPhamChiTietResponse);
+        model.addAttribute("listAnh", anhSanPhamService.getAnhSanPhamByIdSPCT(id));
+        return "/admin/sanphamchitiet/update";
     }
 }

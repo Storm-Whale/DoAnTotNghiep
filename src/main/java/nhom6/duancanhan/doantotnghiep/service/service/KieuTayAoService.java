@@ -21,4 +21,6 @@ public interface KieuTayAoService {
     void updateKieuTayAoById(Integer id, KieuTayAo kieuTayAo);
 
     void deleteKieuTayAo(Integer id);
+
+    List<String> getAllKieuTayAo();
 }
