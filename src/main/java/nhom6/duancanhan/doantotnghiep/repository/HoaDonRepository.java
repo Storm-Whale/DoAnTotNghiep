@@ -18,15 +18,23 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
 
     // Lấy 4 hóa đơn mới nhất (theo thứ tự giảm dần của ID)
     List<HoaDon> findTop4ByOrderByIdDesc();
+
     @Query(value = "SELECT * FROM hoa_don ORDER BY id DESC LIMIT 4", nativeQuery = true)
     List<HoaDon> findTop4ByOrderByIdDescNative();
+
     @Query(value = "(SELECT * FROM hoa_don WHERE id = 1) " +
             "UNION " +
             "(SELECT * FROM hoa_don WHERE id != 1 ORDER BY id DESC LIMIT 4)",
             nativeQuery = true)
     List<HoaDon> findHoaDonWithId1AndTop4Newest();
+
     @Query("SELECT h FROM HoaDon h WHERE h.trangThai = 1")
     List<HoaDon> findHoaDonsWithStatusOne();
+
     @Query("SELECT COUNT(h) FROM HoaDon h")
     long demSoLuongHoaDon();
+
+    List<HoaDon> findHoaDonByKhachHangId(Integer khachHangId);
+
+    List<HoaDon> findHoaDonByKhachHangIdAndTrangThai(Integer khachHangId, int trangThai);
 }

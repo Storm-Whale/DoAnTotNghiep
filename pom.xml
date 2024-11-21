@@ -95,7 +95,7 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
         </dependency>
-<!--        import qr scan video-->
+        <!--        import qr scan video-->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>

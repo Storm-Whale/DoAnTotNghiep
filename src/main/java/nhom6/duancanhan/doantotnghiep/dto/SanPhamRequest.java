@@ -42,5 +42,6 @@ public class SanPhamRequest {
 
     @NotNull(message = "Ảnh sản phẩm không được để trống")
     private MultipartFile anhSanPham;
+
     String qrCodeUrl;
 }

@@ -39,6 +39,7 @@ public class ClientController {
     private final ThuongHieuService thuongHieuService;
     private final PhieuGiamGiaService phieuGiamGiaService;
     private final KhachHangRepository khachHangRepository;
+    private final LichSuHoaDonRepository lichSuHoaDonRepository;
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
     private final SanPhamGioHangRepository sanPhamGioHangRepository;
@@ -48,14 +49,10 @@ public class ClientController {
     //  TODO: Access Home Client
     @GetMapping
     private String index(
-            @SessionAttribute(value = "user", required = false) KhachHang khachHang,
-            @RequestParam(name = "thuonghieu", required = false) String tenThuongHieu,
-            @RequestParam(name = "chatlieu", required = false) String tenChatLieu,
-            @RequestParam(name = "kieucoao", required = false) String tenKieuCoAo,
-            @RequestParam(name = "kieutayao", required = false) String tenKieuTayAo,
-            @RequestParam(name = "sort", required = false) String sort,
-            @RequestParam(name = "activeAccordion", required = false) List<String> activeAccordions,
-            HttpSession session, Model model
+            @SessionAttribute(value = "user", required = false) KhachHang khachHang, @RequestParam(name = "thuonghieu", required = false) String tenThuongHieu,
+            @RequestParam(name = "chatlieu", required = false) String tenChatLieu, @RequestParam(name = "kieucoao", required = false) String tenKieuCoAo,
+            @RequestParam(name = "kieutayao", required = false) String tenKieuTayAo, @RequestParam(name = "sort", required = false) String sort,
+            @RequestParam(name = "activeAccordion", required = false) List<String> activeAccordions, HttpSession session, Model model
     ) {
         // Kiểm tra trạng thái đăng nhập
         boolean isLoggedIn = session != null &&
@@ -106,10 +103,7 @@ public class ClientController {
 
     //  TODO: Detail Sản Phẩm Chi Tiết từ ID Sản Phẩm
     @GetMapping("/san_pham_chi_tiet/{id}")
-    private String sanPhamChiTiet(
-            @SessionAttribute(value = "user", required = false) KhachHang khachHang,
-            @PathVariable int id, Model model
-    ) {
+    private String sanPhamChiTiet(@SessionAttribute(value = "user", required = false) KhachHang khachHang, @PathVariable int id, Model model) {
         // Retrieve product details by ID
         List<SanPhamChiTiet> sanPhamChiTietList = sanPhamChiTietRepository.findSanPhamChiTietByIdSanPham(id);
 
@@ -203,10 +197,9 @@ public class ClientController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/add_sp_vao_gio_hang/{idSP}")
     private void addSpVaoGioHang(
-            @SessionAttribute(value = "user") KhachHang khachHang,
-            @PathVariable(name = "idSP") int idSP, @RequestParam(name = "soluong") Integer soluong,
-            @RequestParam(name = "mausac") Integer idMauSac, @RequestParam(name = "kichco") Integer idKichCo,
-            HttpServletRequest httpServletRequest, Model model
+            @SessionAttribute(value = "user") KhachHang khachHang, @PathVariable(name = "idSP") int idSP,
+            @RequestParam(name = "soluong") Integer soluong, @RequestParam(name = "mausac") Integer idMauSac,
+            @RequestParam(name = "kichco") Integer idKichCo, HttpServletRequest httpServletRequest, Model model
     ) {
         Integer idGioHang = gioHangRepository.findByKhachHangId(khachHang.getId()).getId();
         addSPGH(khachHang.getId(), idGioHang, idSP, idKichCo, idMauSac, soluong);
@@ -214,10 +207,7 @@ public class ClientController {
 
     //  TODO: Giỏ Hàng Sản Phẩm Chi Tiết Muốn Mua
     @GetMapping("/gio-hang")
-    public String gioHang(
-            @SessionAttribute(value = "user") KhachHang khachHang,
-            Model model
-    ) {
+    public String gioHang(@SessionAttribute(value = "user") KhachHang khachHang, Model model) {
         GioHang gioHang = gioHangRepository.findByKhachHangId(khachHang.getId());
 
         List<Integer> listIDSPGH = new ArrayList<>();
@@ -257,12 +247,9 @@ public class ClientController {
     //  TODO : Gio-Hang Post & Mua And Buy Quickly
     @PostMapping("/gio-hang")
     private String gioHangPost(
-            @SessionAttribute(value = "user") KhachHang khachHang,
-            @RequestParam(name = "buyNow", required = false) String buyNow,
-            @RequestParam(name = "idSP", required = false) Integer idSP,
-            @RequestParam(name = "mausac", required = false) Integer idMauSac,
-            @RequestParam(name = "kichco", required = false) Integer idKichCo,
-            @RequestParam(name = "soluong", required = false) Integer soluong,
+            @SessionAttribute(value = "user") KhachHang khachHang, @RequestParam(name = "buyNow", required = false) String buyNow,
+            @RequestParam(name = "idSP", required = false) Integer idSP, @RequestParam(name = "mausac", required = false) Integer idMauSac,
+            @RequestParam(name = "kichco", required = false) Integer idKichCo, @RequestParam(name = "soluong", required = false) Integer soluong,
             Model model
     ) {
         try {
@@ -281,11 +268,7 @@ public class ClientController {
     //  TODO: Check-Out Sản Phẩm Chi Tiết
     @PostMapping(value = "/check-out")
     @ResponseStatus(HttpStatus.OK)
-    private String checkOut(
-            @SessionAttribute(value = "user") KhachHang khachHang,
-            @RequestParam("productIds") List<Integer> listIDSPGHJson,
-            Model model
-    ) {
+    private String checkOut(@SessionAttribute(value = "user") KhachHang khachHang, @RequestParam("productIds") List<Integer> listIDSPGHJson, Model model) {
         List<SanPhamGioHangCustom> sanPhamGioHangCustomList = new ArrayList<>();
         List<Integer> listIDSPGH = new ArrayList<>();
         GioHang gioHang = gioHangRepository.findByKhachHangId(khachHang.getId());
@@ -310,7 +293,7 @@ public class ClientController {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         //  What For : Calculate shipping fee as 10% of the total amount
-        BigDecimal phiShip = BigDecimal.TEN;
+        BigDecimal phiShip = BigDecimal.valueOf(10000);
 
         List<DiaChi> diaChiList = diaChiService.getDiaChiByIdKhachHang(khachHang.getId());
         List<PhieuGiamGiaResponse> phieuGiamGiaResponseList = phieuGiamGiaService.getPGGByTrangThai(1);
@@ -336,14 +319,10 @@ public class ClientController {
     //  TODO: Thanh Toán Sản Phẩm Chi Tiết
     @PostMapping("/thanh-toan")
     private void thanhToan(
-            @SessionAttribute(value = "user") KhachHang khachHang,
-            @RequestParam(name = "tongTien") BigDecimal tongTien,
-            @RequestParam(name = "pttt") Integer pttt,
-            @RequestParam(name = "listIDSPGH") String listIDSPGHString,
-            @RequestParam(name = "idDiaChi") String idDiaChi,
-            @RequestParam(name = "maPGG", required = false) String maPGG,
-            @RequestParam(name = "ghiChu", required = false) String ghiChu,
-            Model model
+            @SessionAttribute(value = "user") KhachHang khachHang, @RequestParam(name = "tongTien") BigDecimal tongTien,
+            @RequestParam(name = "pttt") Integer pttt, @RequestParam(name = "listIDSPGH") String listIDSPGHString,
+            @RequestParam(name = "idDiaChi") String idDiaChi, @RequestParam(name = "maPGG", required = false) String maPGG,
+            @RequestParam(name = "ghiChu", required = false) String ghiChu, Model model
     ) {
         DiaChi diaChi = diaChiService.getDiaChiById(Integer.parseInt(idDiaChi));
         PhuongThucThanhToan phuongThucThanhToan = phuongThucThanhToanRepository.findById(pttt)
@@ -364,6 +343,7 @@ public class ClientController {
                 .diaChi(diaChi).phuongThucThanhToan(phuongThucThanhToan)
                 .phieuGiamGia(phieuGiamGia).tongTien(tongTien)
                 .ghiChu(ghiChu).trangThai(1)
+                .loaiHoaDon("Trực Tuyến")
                 .build();
         hoaDon = hoaDonRepository.save(hoaDon);
 
@@ -382,23 +362,80 @@ public class ClientController {
 
     //    TODO : Thông Tin Khách Hàng
     @GetMapping(value = "/showInfoCustomer")
-    private String showInfoKhachHang(
-            @SessionAttribute(value = "user") KhachHang khachHang,
-            Model model
-    ) {
+    private String showInfoKhachHang(@SessionAttribute(value = "user") KhachHang khachHang, Model model) {
         model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
         return "/client/customer/ThongTinKhachHang";
     }
 
     //    TODO : Thông Tin Address
     @GetMapping(value = "/showInfoAddress")
-    private String showInfoAddress(
-            @SessionAttribute(value = "user") KhachHang khachHang,
-            Model model
-    ) {
+    private String showInfoAddress(@SessionAttribute(value = "user") KhachHang khachHang, Model model) {
         model.addAttribute("diachi", diaChiService.getDiaChiByIdKhachHang(khachHang.getId(), 1));
         model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
         return "/client/customer/ThongTinDiaChi";
+    }
+
+    //    TODO : Thông Tin Hóa Đơn
+    @GetMapping(value = "/showInfoBill")
+    private String showInfoBill(@SessionAttribute(value = "user") KhachHang khachHang, Model model) {
+        List<HoaDon> hoaDons = hoaDonRepository.findHoaDonByKhachHangId(khachHang.getId());
+        model.addAttribute("hoaDons", hoaDons);
+        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
+        return "/client/customer/ThongTinHoaDon";
+    }
+
+    //    TODO : Thông Tin Hóa Đơn
+    @GetMapping(value = "/showInfoBill/type/{type}")
+    private String showInfoBill(
+            @SessionAttribute(value = "user") KhachHang khachHang, Model model, @PathVariable(name = "type") Integer type
+    ) {
+        List<HoaDon> hoaDons = hoaDonRepository.findHoaDonByKhachHangIdAndTrangThai(khachHang.getId(), type);
+        model.addAttribute("hoaDons", hoaDons);
+        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
+        model.addAttribute("type", type);
+        return "/client/customer/ThongTinHoaDon";
+    }
+
+    //    TODO : Thông Tin Chi Tiết Hóa Đơn
+    @GetMapping(value = "/showDetailInfoBill/idHD/{idHD}/loai/{loai}")
+    private String showDetailInfoBill(Model model, @PathVariable(name = "idHD") Integer idHD, @PathVariable(name = "loai") Integer loai) {
+        HoaDon hoaDon = hoaDonRepository.findById(idHD)
+                .orElseThrow(() -> new DataNotFoundException("Không tìm thấy hóa đơn với id: " + idHD));
+        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
+
+        BigDecimal tongTien = hoaDon.getHoaDonChiTietList().stream()
+                .map(HoaDonChiTiet::tongTien)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal tienGG = null;
+
+        PhieuGiamGia phieuGiamGia = hoaDon.getPhieuGiamGia() != null ? hoaDon.getPhieuGiamGia() : null;
+
+        if (phieuGiamGia != null) {
+            if (phieuGiamGia.getKieuGiamGia() == 1) {
+                // Giảm giá theo phần trăm (10, 20 -> 0.1, 0.2)
+                BigDecimal phanTramGiam = phieuGiamGia.getGiaTriGiam().divide(BigDecimal.valueOf(100));
+                tienGG = tongTien.multiply(phanTramGiam);
+            } else {
+                // Giảm giá theo số tiền cố định
+                tienGG = phieuGiamGia.getGiaTriGiam();
+            }
+        }
+
+        model.addAttribute("tienShip", BigDecimal.valueOf(10000));
+        model.addAttribute("tienGG", tienGG == null ? BigDecimal.ZERO : tienGG);
+        model.addAttribute("tongTien", tongTien);
+
+        if (loai == 6) {
+            model.addAttribute("hd", hoaDon);
+            return "/client/customer/ThongTinHoaDonHuy";
+        } else {
+            List<LichSuHoaDon> lichSuHoaDons = lichSuHoaDonRepository.findByHoaDonId(idHD);
+
+            model.addAttribute("hd", hoaDon);
+            model.addAttribute("lshd", lichSuHoaDons);
+            return "/client/customer/ThongTinHoaDonHT";
+        }
     }
 
     //  TODO: Update Sản Phẩm Chi Tiết In Giỏ Hàng

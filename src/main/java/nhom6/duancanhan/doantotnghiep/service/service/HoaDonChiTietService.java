@@ -18,6 +18,8 @@ public interface HoaDonChiTietService {
     void updateHoaDon(Integer id, HoaDonChiTiet hoaDon);
 
     void deleteHoaDon(Integer id);
+
     public List<HoaDonChiTiet> getHoaDonChiTietByHoaDonId(Integer hoaDonId);
+
     public List<HoaDonChiTiet> findByHoaDonId(Integer hoaDonId);
 }

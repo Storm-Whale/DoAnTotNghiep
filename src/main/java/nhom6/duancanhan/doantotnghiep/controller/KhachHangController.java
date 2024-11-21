@@ -43,14 +43,6 @@ public class KhachHangController {
             @RequestParam(value = "size", defaultValue = "5") int size,
             Model model
     ) {
-        // Xử lý tham số tìm kiếm, loại bỏ khoảng trắng thừa
-        if (keyword != null) {
-            keyword = keyword.trim();
-            if (keyword.isEmpty()) {
-                keyword = null; // Đặt thành null nếu keyword rỗng
-            }
-        }
-
         // Kiểm tra valid cho page và size
         if (page < 0) {
             page = 0; // Đảm bảo không có trang âm
@@ -61,6 +53,7 @@ public class KhachHangController {
 
         // Lấy danh sách khách hàng với phân trang và tìm kiếm
         Page<KhachHang> listKH = khachHangService.SearchandPhantrang(keyword, trangThai, page, size);
+        System.out.println("ListKH : " + listKH.getSize());
         int totalPages = listKH.getTotalPages();
 
         // Kiểm tra nếu trang hiện tại vượt quá tổng số trang

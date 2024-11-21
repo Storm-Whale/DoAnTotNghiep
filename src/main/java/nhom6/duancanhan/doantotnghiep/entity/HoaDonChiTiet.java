@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
 @Builder
 @Entity
 @Table(name = "hoa_don_chi_tiet")
-public class HoaDonChiTiet {
+public class HoaDonChiTiet extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,6 +28,7 @@ public class HoaDonChiTiet {
     private BigDecimal gia;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_hoa_don")
     private HoaDon hoaDon;
 
@@ -37,6 +39,7 @@ public class HoaDonChiTiet {
     public BigDecimal tongTien() {
         return sanPhamChiTiet.getGia().multiply(BigDecimal.valueOf(soLuong));
     }
+
     public String getTenSanPham() {
         return sanPhamChiTiet.getSanPham().getTenSanPham();
     }

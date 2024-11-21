@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class LichSuHoaDonImpl implements LichSuHoaDonService {
+
     private final LichSuHoaDonRepository lichSuHoaDonRepository;
     private final LichSuHoaDonMapper lichSuHoaDonMapper;
 
