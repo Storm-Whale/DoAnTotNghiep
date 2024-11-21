@@ -28,9 +28,12 @@
             </ul>
 
             <!-- Search Form -->
-            <form class="col-12 col-lg-auto mb-2 mb-lg-0 me-4">
-                <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-            </form>
+            <div class="col-12 col-lg-auto mb-2 mb-lg-0 me-4 position-relative">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search" id="searchInput">
+                <div class="suggestions-box" id="suggestions" style="display: none;">
+                    <ul id="suggestionList"></ul>
+                </div>
+            </div>
 
             <!-- Cart Icon -->
             <a th:if="${session.user != null}" th:href="@{/client/gio-hang}" class="me-4">
@@ -46,10 +49,11 @@
                        id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                         <img id="userAvatar"
                              th:src="@{/{anhUrl}(anhUrl=${user.anhUrl})}"
-                             alt="User Avatar" width="40" height="40" class="rounded-circle">
+                             alt="User Avatar" width="40" height="40" class="rounded-circle"
+                             style="object-fit: cover">
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                        <li><a class="dropdown-item" th:href="@{/client/profile}">Tài Khoản Của Tôi</a></li>
+                        <li><a class="dropdown-item" th:href="@{/client/showInfoCustomer}">Tài Khoản Của Tôi</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -61,7 +65,7 @@
                 <div class="dropdown text-end" th:unless="${session.loginStatus == true}">
                     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
                        id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="/images/nguoidung.png"
+                        <img th:src="@{/nguoidung.png}"
                              alt="Default Avatar" width="40" height="40" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2">
@@ -136,19 +140,12 @@
 
         <section class="filters mt-3">
             <button class="filter-button" onclick="toggleFilter()">Bộ lọc</button>
-            <div class="gender-selection"></div>
-            <select class="sort-options">
-                <option value="default">Sắp xếp</option>
-                <option value="price-asc">Giá: Thấp đến Cao</option>
-                <option value="price-desc">Giá: Cao đến Thấp</option>
-                <option value="newest">Sản phẩm mới nhất</option>
-            </select>
         </section>
     </div>
     <div class="product-section mt-3">
         <a th:href="@{/client/san_pham_chi_tiet/{id}(id=${sanpham.sanPhamResponse.id})}" class="product-card-link" th:each="sanpham : ${sanphams}">
             <div class="product-card">
-                <img th:src="@{/{anhUrl}(anhUrl=${sanpham.sanPhamResponse.anhUrl})}" alt="Product Image">
+                <img id="img_product" th:src="@{/{anhUrl}(anhUrl=${sanpham.sanPhamResponse.anhUrl})}" alt="Product Image">
                 <p th:text="${sanpham.sanPhamResponse.tenSanPham}"></p>
                 <p class="price" th:text="${#numbers.formatDecimal(sanpham.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></p>
             </div>
@@ -162,48 +159,76 @@
 <div id="filter-sidebar" class="filter-sidebar hidden">
     <div class="filter-header">
         <span>Bộ lọc</span>
-        <button class="close-btn" onclick="toggleFilter()">X</button>
+        <button class="close-btn" onclick="toggleFilter()">x</button>
     </div>
     <div class="filter-options">
-        <div class="filter-group">
-            <button class="accordion">THIẾT KẾ</button>
-            <div class="panel">
-                <button class="tag-button">Thiết kế 1</button>
-                <button class="tag-button">Thiết kế 2</button>
-                <button class="tag-button">Thiết kế 3</button>
+        <form th:action="@{/client}" method="get">
+            <div class="filter-group">
+                <button type="button" class="accordion">Giá tiền</button>
+                <div class="panel">
+                    <select name="sort" class="mb-3 form-select">
+                        <option value="" th:selected="${selectedSort == null or selectedSort == ''}">Sắp xếp</option>
+                        <option value="price-asc" th:selected="${selectedSort == 'price-asc'}">Giá: Thấp đến Cao</option>
+                        <option value="price-desc" th:selected="${selectedSort == 'price-desc'}">Giá: Cao đến Thấp</option>
+                        <option value="newest" th:selected="${selectedSort == 'newest'}">Sản phẩm mới nhất</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="filter-group">
-            <button class="accordion">SIZE</button>
-            <div class="panel">
-                <button class="tag-button">S</button>
-                <button class="tag-button">M</button>
-                <button class="tag-button">L</button>
-                <button class="tag-button">XL</button>
-                <button class="tag-button">XXL</button>
+            <div class="filter-group">
+                <button type="button" class="accordion">Thương hiệu</button>
+                <div class="panel">
+                    <select name="thuonghieu" class="mb-3 form-select">
+                        <option value="" th:selected="${selectedThuongHieu == null or selectedThuongHieu == ''}">Thương hiệu</option>
+                        <option th:each="th : ${thuonghieus}"
+                                th:text="${th}"
+                                th:value="${th}"
+                                th:selected="${selectedThuongHieu == th}">
+                        </option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="filter-group">
-            <button class="accordion">FORM DÁNG</button>
-            <div class="panel">
-                <button class="tag-button">Form dáng 1</button>
-                <button class="tag-button">Form dáng 2</button>
+            <div class="filter-group">
+                <button type="button" class="accordion">Chất liệu</button>
+                <div class="panel">
+                    <select name="chatlieu" class="mb-3 form-select">
+                        <option value="" th:selected="${selectedChatLieu == null or selectedChatLieu == ''}">Chất liệu</option>
+                        <option th:each="cl : ${chatlieus}"
+                                th:text="${cl}"
+                                th:value="${cl}"
+                                th:selected="${selectedChatLieu == cl}">
+                        </option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="filter-group">
-            <button class="accordion">GIỚI TÍNH</button>
-            <div class="panel">
-                <button class="tag-button">Nam</button>
-                <button class="tag-button">Nữ</button>
+            <div class="filter-group">
+                <button type="button" class="accordion">Kiểu cổ áo</button>
+                <div class="panel">
+                    <select name="kieucoao" class="mb-3 form-select">
+                        <option value="" th:selected="${selectedKieuCoAo == null or selectedKieuCoAo == ''}">Kiểu cổ áo</option>
+                        <option th:each="kca : ${kieucoaos}"
+                                th:text="${kca}"
+                                th:value="${kca}"
+                                th:selected="${selectedKieuCoAo == kca}">
+                        </option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="filter-group">
-            <button class="accordion">NHÓM SẢN PHẨM</button>
-            <div class="panel">
-                <button class="tag-button">Nhóm 1</button>
-                <button class="tag-button">Nhóm 2</button>
+            <div class="filter-group">
+                <button type="button" class="accordion">Kiểu tay áo</button>
+                <div class="panel">
+                    <select name="kieutayao" class="mb-3 form-select">
+                        <option value="" th:selected="${selectedKieuTayAo == null or selectedKieuTayAo == ''}">Kiểu tay áo</option>
+                        <option th:each="kta : ${kieutayaos}"
+                                th:text="${kta}"
+                                th:value="${kta}"
+                                th:selected="${selectedKieuTayAo == kta}">
+                        </option>
+                    </select>
+                </div>
             </div>
-        </div>
+            <hr style="color: black">
+            <button type="button" class="btn btn-secondary btn-float-end" onclick="submitFilterForm()">Lọc</button>
+        </form>
     </div>
 </div>
 
@@ -242,6 +267,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    const isFilterOpen = /*[[${isFilterOpen}]]*/ false;
+    const activeAccordions = /*[[${activeAccordions}]]*/ [];
+    var san_phams = /*[[${listSanPhamTimKiemHeader}]]*/ '{}';
+</script>
 <script th:src="@{/javascript/trang_chu_client.js}"></script>
 </body>
 </html>

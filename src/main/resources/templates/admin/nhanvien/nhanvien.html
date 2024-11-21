@@ -32,11 +32,10 @@
 
     </form>
 
-    <a class="wrapper">
-        <a href="#dialog">
+
+        <a th:href="@{/admin/nhanvien/view_add}">
             <button class="btn btn-light" style="margin-bottom: 20px"><i class="bi bi-plus-circle-fill"></i>Thêm Nhân Viên</button>
         </a>
-    </a>
 
     <table class="table table-bordered table-hover text-center">
         <thead class="table-dark">
@@ -73,12 +72,12 @@
     </table>
 
 
-    <div id="dialog" class="modal">
-        <div class="modal__content">
-            <h2>Thêm Khách Hàng</h2>
-            <div th:replace="~{admin/nhanvien/adNhanVien :: form}"></div>
-        </div>
-    </div>
+<!--    <div id="dialog" class="modal">-->
+<!--        <div class="modal__content">-->
+<!--            <h2>Thêm Khách Hàng</h2>-->
+<!--            <div th:replace="~{admin/nhanvien/adNhanVien :: form}"></div>-->
+<!--        </div>-->
+<!--    </div>-->
 
 
     <nav>

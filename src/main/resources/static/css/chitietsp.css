@@ -363,3 +363,6 @@ body {
     font-size: 18px;
 }
 
+.custom-header .form-control {
+    width: 300px;
+}

@@ -3,6 +3,7 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 import nhom6.duancanhan.doantotnghiep.entity.KieuCoAo;
 import nhom6.duancanhan.doantotnghiep.repository.KieuCoAoRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.KieuCoAoService;
+import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class KieuCoAoServiceImpl implements KieuCoAoService {
+
     private final KieuCoAoRepository kieuCoAoRepository;
 
     public KieuCoAoServiceImpl(KieuCoAoRepository kieuCoAoRepository) {
@@ -23,11 +26,6 @@ public class KieuCoAoServiceImpl implements KieuCoAoService {
         return kieuCoAoRepository.findAll();
     }
 
-//    @Override
-//    public Page<KieuCoAo> getAll(int page, int size) {
-//        return null;
-//    }
-
     @Override
     public Page<KieuCoAo> phanTrang(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
@@ -36,7 +34,7 @@ public class KieuCoAoServiceImpl implements KieuCoAoService {
 
     @Override
     public Optional<KieuCoAo> detail(Integer id) {
-        return  kieuCoAoRepository.findById(id);
+        return kieuCoAoRepository.findById(id);
     }
 
     @Override
@@ -52,5 +50,13 @@ public class KieuCoAoServiceImpl implements KieuCoAoService {
     @Override
     public void updateKieuCoAoById(Integer id, KieuCoAo kieuCoAo) {
         kieuCoAoRepository.save(kieuCoAo);
+    }
+
+    @Override
+    public List<String> getAllTenKieuCoAo() {
+        return DatabaseOperationHandler.handleDatabaseOperation(
+                kieuCoAoRepository::findAllTenKieuCoAo
+                , "Lỗi khi lấy dữ liêu từ cơ sở dữ liệu"
+        );
     }
 }

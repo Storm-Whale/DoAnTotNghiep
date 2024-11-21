@@ -34,4 +34,8 @@ public interface SanPhamService {
     Integer getIdSpFromTenSP(String tenSanPham);
 
     void generateQRCodeForAllProducts();
+
+    List<SanPhamShowOnClient> searchSanPham(String tenThuongHieu, String tenChatLieu, String tenTayAo, String tenCoAo, String sort);
+
+    boolean existTenSanPham(String tenSanPham);
 }

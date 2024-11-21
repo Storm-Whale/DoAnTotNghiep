@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yagi Shop</title>
+    <link rel="icon" th:href="@{/Logoyagi2.png}">
+    <link rel="stylesheet" th:href="@{/css/showInfoCustomer.css}">
+    <link rel="stylesheet" th:href="@{/css/alertStyle.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header class="p-2 mb-2 border-bottom custom-header">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <!-- Logo Section -->
+            <a th:href="@{/client}" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+                <img th:src="@{/LOGOYAGI.png}" alt="Bee Shirt" width="60" height="60" class="logo-fixed-size me-2">
+            </a>
+
+            <!-- Navigation Links -->
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
+                <li><a href="#" class="nav-link px-2 link-dark">Inventory</a></li>
+                <li><a href="#" class="nav-link px-2 link-dark">Customers</a></li>
+                <li><a href="#" class="nav-link px-2 link-dark">Products</a></li>
+            </ul>
+
+            <!-- Search Form -->
+            <div class="col-12 col-lg-auto mb-2 mb-lg-0 me-4 position-relative">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search" id="searchInput">
+                <div class="suggestions-box" id="suggestions" style="display: none;">
+                    <ul id="suggestionList"></ul>
+                </div>
+            </div>
+
+            <!-- Cart Icon -->
+            <a th:if="${session.user != null}" th:href="@{/client/gio-hang}" class="me-4">
+                <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
+            </a>
+            <a th:if="${session.user == null}" th:href="@{/login/login-client}" class="me-4">
+                <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
+            </a>
+            <!-- User Dropdown -->
+            <div id="avatarContainer">
+                <div class="dropdown text-end" th:if="${session.loginStatus == true}">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
+                       id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img id="userAvatar"
+                             th:src="@{/{anhUrl}(anhUrl=${session.user.anhUrl})}"
+                             alt="User Avatar" width="40" height="40" class="rounded-circle" style="object-fit: cover">
+                    </a>
+                    <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                        <li><a class="dropdown-item" th:href="@{/client/showInfoCustomer}">Tài Khoản Của Tôi</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" th:href="@{/login/logout}">Đăng Xuất</a></li>
+                    </ul>
+                </div>
+
+                <!-- Hiển thị ảnh mặc định nếu không đăng nhập -->
+                <div class="dropdown text-end" th:unless="${session.loginStatus == true}">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
+                       id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img th:src="@{/nguoidung.png}"
+                             alt="Default Avatar" width="40" height="40" class="rounded-circle">
+                    </a>
+                    <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2">
+                        <li><a class="dropdown-item" th:href="@{/login/login-client}">Đăng nhập</a></li>
+                        <li><a class="dropdown-item" th:href="@{/client/register}">Đăng ký</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="accordion" id="sidebarAccordion">
+                <!-- Tài Khoản Của Tôi -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingAccount">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accountCollapse" aria-expanded="true"
+                                aria-controls="accountCollapse">
+                            Tài Khoản Của Tôi
+                        </button>
+                    </h2>
+                    <div id="accountCollapse" class="accordion-collapse collapse show" aria-labelledby="headingAccount" data-bs-parent="#sidebarAccordion">
+                        <div class="accordion-body">
+                            <div class="list-group">
+                                <a th:href="@{/client/showInfoCustomer}" class="list-group-item list-group-item-action active">Hồ Sơ</a>
+                                <a th:href="@{/client/showInfoAddress}" class="list-group-item list-group-item-action active">Địa Chỉ</a>
+                                <a href="#" class="list-group-item list-group-item-action">Đổi Mật Khẩu</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Đơn Mua -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOrders">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ordersCollapse"
+                                aria-expanded="false" aria-controls="ordersCollapse">
+                            Mua Hàng
+                        </button>
+                    </h2>
+                    <div id="ordersCollapse" class="accordion-collapse collapse" aria-labelledby="headingOrders" data-bs-parent="#sidebarAccordion">
+                        <div class="accordion-body">
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action">Đơn Mua</a>
+                                <a href="#" class="list-group-item list-group-item-action">Kho Voucher</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <h4>Hồ Sơ Của Tôi</h4>
+            <p>Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
+            <hr>
+            <form th:action="@{/admin/khachhang/update-client/{id}(id=${session.user.id})}" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <!-- Form thông tin -->
+                    <div class="col-md-8" style="position: relative;">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Tên</label>
+                            <input type="text" id="name" class="form-control" name="ten" th:value="${session.user.ten}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" class="form-control" name="email" th:value="${session.user.email}" placeholder="Thêm Email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Số điện thoại</label>
+                            <input type="text" id="phone" class="form-control" name="soDienThoai" th:value="${session.user.soDienThoai}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Giới tính</label>
+                            <div>
+                                <input type="radio" id="male" name="gioiTinh" value="1" th:checked="${session.user.gioiTinh == 1}">
+                                <label for="male">Nam</label>
+                                <input type="radio" id="female" name="gioiTinh" value="0" th:checked="${session.user.gioiTinh == 0}">
+                                <label for="female">Nữ</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dob" class="form-label">Ngày sinh</label>
+                            <input type="date" id="dob" class="form-control" name="ngaySinh" th:value="${session.user.ngaySinh}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+
+                        <!-- Horizontal line positioned on the right -->
+                        <hr class="my-4" style="position: absolute; top: 0; right: -20px; height: 100%; border: 1px solid #c7c8c9; margin: 0;">
+                    </div>
+                    <!-- Ảnh đại diện -->
+                    <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
+                        <div class="mb-3">
+                            <img id="profileImage" th:src="@{/{anhUrl} (anhUrl=${session.user.anhUrl})}" alt="Ảnh đại diện" class="rounded-circle img-thumbnail"
+                                 style="width: 150px; height: 150px; object-fit: cover; cursor: pointer;"
+                                 onclick="document.getElementById('imageInput').click();">
+                        </div>
+                        <!-- Input for selecting an image -->
+                        <input type="file" id="imageInput" class="d-none" name="image" accept="image/**" onchange="previewImage(event)">
+                        <!-- Button to trigger file input -->
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('imageInput').click();">Chọn Ảnh</button>
+                        <p class="text-muted mt-2">Dung lượng tối đa: 1 MB<br>Định dạng: .JPEG, .PNG</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>FPT POLY</h3>
+            <p>Chuyên cung cấp các sản phẩm thời trang chất lượng.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Liên kết nhanh</h3>
+            <ul>
+                <li><a href="#">Trang Chủ</a></li>
+                <li><a href="#">Sản Phẩm</a></li>
+                <li><a href="#">Về Chúng Tôi</a></li>
+                <li><a href="#">Liên Hệ</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Liên Hệ</h3>
+            <p>Địa chỉ: 123 Đường ABC, Hà Nội</p>
+            <p>Email: yagi.shop@example.com</p>
+            <p>SĐT: 0123456789</p>
+        </div>
+        <div class="footer-section">
+            <h3>Social</h3>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+    <p>&copy; 2024 Yagi Shop. All rights reserved.</p>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    var san_phams = /*[[${sanphams}]]*/ '{}';
+</script>
+<script th:src="@{/javascript/showInfoCustomer.js}"></script>
+</body>
+</html>

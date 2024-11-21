@@ -18,51 +18,74 @@ function updateColorDetails() {
         detailContainer.classList.add("border", "rounded", "p-3", "mb-3");
 
         detailContainer.innerHTML = `
-                <h5 class="mb-3">Chi tiết cho ${colorName}</h5>
-                <input type="hidden" name="colorDetails[${index}].idMauSac" value="${colorId}">
-
-                <div class="mb-3">
-                    <label class="form-label">Giá</label>
-                    <input type="number"
-                           class="form-control"
-                           name="colorDetails[${index}].gia"
-                           step="any"
-                           min="0"
-                           required
-                           placeholder="Nhập giá sản phẩm">
-                </div>
-
-                <div class="mb-3 d-flex align-items-center">
-                    <label class="form-label">Kích thước</label>
-                    <select class="form-control js-select2"
-                            id="idKichCo"
-                            name="colorDetails[${index}].idKichCos"
-                            multiple required>
-                        ${kichCoList.map(size => `
-                            <option value="${size.id}">${size.tenKichCo}</option>
-                        `).join('')}
-                    </select>
-                    <button type="button" class="btn btn-primary btn-btnQuickAddKichCo ms-2" onclick="hienForm('/admin/kichco/quick-add')">Thêm</button>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Số lượng</label>
-                    <input type="number"
-                           class="form-control"
-                           name="colorDetails[${index}].soLuong"
-                           min="1"
-                           required
-                           placeholder="Nhập số lượng">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Ảnh sản phẩm</label>
-                    <input type="file"
-                           class="form-control"
-                           name="colorDetails[${index}].images"
-                           multiple
-                           accept="image/*"
-                           required>
+                <!-- Color Detail Section (Assuming this is within a loop with a unique index) -->
+                <div class="color-detail" data-index="${index}">
+                    <h5 class="mb-3">Chi tiết cho ${colorName}</h5>
+                    <input type="hidden" name="colorDetails[${index}].idMauSac" value="${colorId}">
+                
+                    <!-- Giá (Price) -->
+                    <div class="mb-3">
+                        <label class="form-label">Giá</label>
+                        <input type="number"
+                               class="form-control gia-input"
+                               name="colorDetails[${index}].gia"
+                               step="any"
+                               min="0"
+                               required
+                               placeholder="Nhập giá sản phẩm"
+                               oninput="removeWarning(this)">
+                        <div class="text-danger warning-text gia-warning mt-1" style="display: none;">
+                            Vui lòng nhập giá hợp lệ!
+                        </div>
+                    </div>
+                
+                    <!-- Kích thước (Size) -->
+                    <div class="mb-3">
+                        <label class="form-label">Kích thước</label>
+                        <div class="d-flex align-items-center">
+                            <select class="form-control js-select2 kichCo-select"
+                                    name="colorDetails[${index}].idKichCos"
+                                    multiple required
+                                    onchange="removeWarning(this)">
+                                ${kichCoList.map(size => `
+                                    <option value="${size.id}">${size.tenKichCo}</option>
+                                `).join('')}
+                            </select>
+                            <button type="button" class="btn btn-primary btn-btnQuickAddKichCo ms-2" onclick="hienForm('/admin/kichco/quick-add')">Thêm</button>
+                        </div>
+                        <div class="text-danger warning-text kichCo-warning mt-2" style="display: none;">
+                            Vui lòng chọn ít nhất một kích thước!
+                        </div>
+                    </div>     
+                    <!-- Số lượng (Quantity) -->
+                    <div class="mb-3">
+                        <label class="form-label">Số lượng</label>
+                        <input type="number"
+                               class="form-control soLuong-input"
+                               name="colorDetails[${index}].soLuong"
+                               min="1"
+                               required
+                               placeholder="Nhập số lượng"
+                               oninput="removeWarning(this)">
+                        <div class="text-danger warning-text soLuong-warning mt-1" style="display: none;">
+                            Vui lòng nhập số lượng ít nhất là 1!
+                        </div>
+                    </div>
+                
+                    <!-- Ảnh sản phẩm (Product Images) -->
+                    <div class="mb-3">
+                        <label class="form-label">Ảnh sản phẩm</label>
+                        <input type="file"
+                               class="form-control images-input"
+                               name="colorDetails[${index}].images"
+                               multiple
+                               accept="image/*"
+                               required
+                               onchange="removeWarning(this)">
+                        <div class="text-danger warning-text images-warning mt-1" style="display: none;">
+                            Vui lòng tải lên ít nhất một ảnh sản phẩm!
+                        </div>
+                    </div>
                 </div>
             `;
 
@@ -75,3 +98,154 @@ function updateColorDetails() {
         });
     });
 }
+
+// Function to validate the entire form
+function validateForm() {
+    let isValid = true;
+
+    // Validate main color selection
+    const colorSelect = document.getElementById("idMauSac");
+    const colorWarning = document.getElementById("colorWarning");
+
+    if (colorSelect.selectedOptions.length === 0) {
+        colorWarning.style.display = "block";
+        isValid = false;
+    } else {
+        colorWarning.style.display = "none";
+    }
+
+    // Validate each color detail section
+    const colorDetails = document.querySelectorAll('.color-detail');
+    colorDetails.forEach(function (detail) {
+        // Validate Giá (Price)
+        const giaInput = detail.querySelector('.gia-input');
+        const giaWarning = detail.querySelector('.gia-warning');
+        if (!giaInput.value || giaInput.value < 0) {
+            giaWarning.style.display = "block";
+            giaWarning.textContent = "Giá phải lớn hơn 0!";
+            isValid = false;
+        } else if (giaInput.value.startsWith(" ")) {
+            giaWarning.style.display = "block";
+            giaWarning.textContent = "Giá không được bắt đầu bằng dấu cách!";
+            isValid = false;
+        } else {
+            giaWarning.style.display = "none";
+        }
+
+        // Validate Kích thước (Size)
+        const kichCoSelect = detail.querySelector('.kichCo-select');
+        const kichCoWarning = detail.querySelector('.kichCo-warning');
+        if (kichCoSelect.selectedOptions.length === 0) {
+            kichCoWarning.style.display = "block";
+            isValid = false;
+        } else {
+            kichCoWarning.style.display = "none";
+        }
+
+        // Validate Số lượng (Quantity)
+        const soLuongInput = detail.querySelector('.soLuong-input');
+        const soLuongWarning = detail.querySelector('.soLuong-warning');
+        if (!soLuongInput.value || soLuongInput.value < 1) {
+            soLuongWarning.style.display = "block";
+            soLuongWarning.textContent = "Số lượng phải lớn hơn hoặc bằng 1!";
+            isValid = false;
+        } else if (soLuongInput.value.startsWith(" ")) {
+            soLuongWarning.style.display = "block";
+            soLuongWarning.textContent = "Số lượng không được bắt đầu bằng dấu cách!";
+            isValid = false;
+        } else {
+            soLuongWarning.style.display = "none";
+        }
+
+        // Validate Ảnh sản phẩm (Images)
+        const imagesInput = detail.querySelector('.images-input');
+        const imagesWarning = detail.querySelector('.images-warning');
+        if (!imagesInput.files || imagesInput.files.length === 0) {
+            imagesWarning.style.display = "block";
+            isValid = false;
+        } else {
+            imagesWarning.style.display = "none";
+        }
+    });
+
+    return isValid;
+}
+
+// Real-time validation for main color selection
+document.getElementById("idMauSac").addEventListener("change", function () {
+    const colorSelect = document.getElementById("idMauSac");
+    const colorWarning = document.getElementById("colorWarning");
+    if (colorSelect.selectedOptions.length > 0) {
+        colorWarning.style.display = "none";
+    }
+});
+
+// Real-time validation for dynamically added color detail sections
+document.addEventListener('input', function (e) {
+    // Handle Giá (Price) inputs
+    if (e.target.classList.contains('gia-input')) {
+        const giaWarning = e.target.parentElement.querySelector('.gia-warning');
+        if (e.target.value && e.target.value >= 0) {
+            giaWarning.style.display = "none";
+        }
+    }
+
+    // Handle Số lượng (Quantity) inputs
+    if (e.target.classList.contains('soLuong-input')) {
+        const soLuongWarning = e.target.parentElement.querySelector('.soLuong-warning');
+        if (e.target.value && e.target.value >= 1) {
+            soLuongWarning.style.display = "none";
+        }
+    }
+});
+
+document.addEventListener('change', function (e) {
+    // Handle Kích thước (Size) selects
+    if (e.target.classList.contains('kichCo-select')) {
+        const kichCoWarning = e.target.parentElement.querySelector('.kichCo-warning');
+        if (e.target.selectedOptions.length > 0) {
+            kichCoWarning.style.display = "none";
+        }
+    }
+
+    // Handle Ảnh sản phẩm (Images) inputs
+    if (e.target.classList.contains('images-input')) {
+        const imagesWarning = e.target.parentElement.querySelector('.images-warning');
+        if (e.target.files && e.target.files.length > 0) {
+            imagesWarning.style.display = "none";
+        }
+    }
+});
+
+function removeWarning(element) {
+    const parent = element.closest('.mb-3'); // Tìm phần tử cha chứa input
+    const warning = parent.querySelector('.warning-text'); // Tìm phần tử thông báo
+    if (warning) {
+        warning.style.display = "none"; // Chỉ ẩn đi thay vì xóa
+    }
+}
+
+document.getElementById('form-spct').addEventListener('submit', function(e) {
+    e.preventDefault(); // Ngăn form submit mặc định
+
+    if (validateForm()) {
+        // Lấy id từ input hidden
+        const productId = document.querySelector('input[name="idSP"]').value;
+
+        // Submit form bằng AJAX để có thể xử lý chuyển hướng sau khi submit
+        fetch(this.action, {
+            method: 'POST',
+            body: new FormData(this)
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Nếu submit thành công, chuyển hướng đến trang mới
+                    window.location.href = `/admin/products/find_by_id/${productId}`;
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                window.location.href = `admin/product-details/create/${productId}`;
+            });
+    }
+});

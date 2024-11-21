@@ -19,4 +19,6 @@ public interface ChatLieuService {
     void updateChatLieu(Integer id, ChatLieu chatLieu);
 
     void deleteChatLieu(Integer id);
+
+    List<String> getAllTenChatLieu();
 }

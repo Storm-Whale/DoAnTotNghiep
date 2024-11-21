@@ -4,6 +4,7 @@ import nhom6.duancanhan.doantotnghiep.entity.ChatLieu;
 import nhom6.duancanhan.doantotnghiep.repository.ChatLieuRepository;
 
 import nhom6.duancanhan.doantotnghiep.service.service.ChatLieuService;
+import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @Service
 public class ChatLieuServiceImpl implements ChatLieuService {
+
     @Autowired
     private ChatLieuRepository chatLieuRepository;
 
@@ -47,5 +49,12 @@ public class ChatLieuServiceImpl implements ChatLieuService {
     @Override
     public void deleteChatLieu(Integer id) {
         chatLieuRepository.deleteById(id);
+    }
+
+    @Override
+    public List<String> getAllTenChatLieu() {
+        return DatabaseOperationHandler.handleDatabaseOperation(() ->
+                        chatLieuRepository.findAllTenChatLieu()
+                , "Lỗi khi lấy dữ liêu từ cơ sở dữ liệu");
     }
 }

@@ -73,6 +73,15 @@
             background: rgba(0, 0, 0, 0.5); /* Nền mờ */
             z-index: 1040; /* Đặt nền mờ dưới form */
         }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+        .warning-message {
+            display: none;
+            font-size: 0.875em;
+        }
     </style>
 </head>
 <body class="container-fluid">
@@ -104,20 +113,22 @@
                 <div class="mb-3">
                     <label for="idMauSac" class="form-label" style="font-size: 15px;">Màu Sắc</label>
                     <div class="d-flex align-items-center">
-                        <select id="idMauSac" class="form-control js-select2" multiple
-                                required onchange="updateColorDetails()">
+                        <select id="idMauSac" class="form-control js-select2" multiple required onchange="updateColorDetails(); removeWarning(this)">
                             <option th:each="color : ${mau_sacs}"
                                     th:value="${color.getId()}" th:text="${color.getTenMauSac()}">
                             </option>
                         </select>
                         <button type="button" class="btn btn-primary btn-btnQuickAddMauSac ms-2" onclick="hienForm('/admin/mausac/quick-add')">Thêm</button>
                     </div>
+                    <div id="colorWarning" class="text-danger warning-text mt-2" style="display: none;">
+                        Vui lòng chọn ít nhất một màu sắc!
+                    </div>
                 </div>
 
                 <div id="colorDetailsContainer"></div>
 
                 <div class="text-center mt-3">
-                    <input type="submit" class="btn btn-primary" value="Thêm mới"/>
+                    <input type="submit" class="btn btn-primary" value="Thêm mới" onclick="return validateForm()"/>
                 </div>
             </form>
         </div>

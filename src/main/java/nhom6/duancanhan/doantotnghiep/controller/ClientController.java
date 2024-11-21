@@ -11,10 +11,7 @@ import nhom6.duancanhan.doantotnghiep.dto.*;
 import nhom6.duancanhan.doantotnghiep.entity.*;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.*;
-import nhom6.duancanhan.doantotnghiep.service.service.AnhSanPhamService;
-import nhom6.duancanhan.doantotnghiep.service.service.DiaChiService;
-import nhom6.duancanhan.doantotnghiep.service.service.PhieuGiamGiaService;
-import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
+import nhom6.duancanhan.doantotnghiep.service.service.*;
 import nhom6.duancanhan.doantotnghiep.util.ChangeNumberOfDetailProduct;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -33,9 +30,13 @@ public class ClientController {
     //  TODO: Khai Báo Inject Rep or Component
     private final DiaChiService diaChiService;
     private final SanPhamService sanPhamService;
+    private final KieuCoAoService kieuCoAoService;
+    private final ChatLieuService chatLieuService;
     private final HoaDonRepository hoaDonRepository;
+    private final KieuTayAoService kieuTayAoService;
     private final GioHangRepository gioHangRepository;
     private final AnhSanPhamService anhSanPhamService;
+    private final ThuongHieuService thuongHieuService;
     private final PhieuGiamGiaService phieuGiamGiaService;
     private final KhachHangRepository khachHangRepository;
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
@@ -48,19 +49,58 @@ public class ClientController {
     @GetMapping
     private String index(
             @SessionAttribute(value = "user", required = false) KhachHang khachHang,
+            @RequestParam(name = "thuonghieu", required = false) String tenThuongHieu,
+            @RequestParam(name = "chatlieu", required = false) String tenChatLieu,
+            @RequestParam(name = "kieucoao", required = false) String tenKieuCoAo,
+            @RequestParam(name = "kieutayao", required = false) String tenKieuTayAo,
+            @RequestParam(name = "sort", required = false) String sort,
+            @RequestParam(name = "activeAccordion", required = false) List<String> activeAccordions,
             HttpSession session, Model model
     ) {
+        // Kiểm tra trạng thái đăng nhập
         boolean isLoggedIn = session != null &&
                 session.getAttribute("loginStatus") != null &&
                 (Boolean) session.getAttribute("loginStatus");
-
+//        session.setAttribute("loginStatus", false);
         if (!isLoggedIn) {
             model.addAttribute("user", null);
         } else {
             model.addAttribute("user", khachHang);
         }
 
-        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
+        // Lấy danh sách sản phẩm
+        List<SanPhamShowOnClient> listSanPham;
+
+        // Lưu trạng thái bảng lọc (true nếu có tham số lọc nào được gửi)
+        boolean isFilterOpen = tenThuongHieu != null || tenChatLieu != null || tenKieuCoAo != null || tenKieuTayAo != null || sort != null;
+
+        if (isFilterOpen) {
+            listSanPham = sanPhamService.searchSanPham(tenThuongHieu, tenChatLieu, tenKieuTayAo, tenKieuCoAo, sort);
+        } else {
+            listSanPham = sanPhamService.getAllSanPhamShowOnClient("get-all");
+        }
+
+        // Thêm dữ liệu vào Model
+        model.addAttribute("kieutayaos", kieuTayAoService.getAllKieuTayAo());
+        model.addAttribute("kieucoaos", kieuCoAoService.getAllTenKieuCoAo());
+        model.addAttribute("chatlieus", chatLieuService.getAllTenChatLieu());
+        model.addAttribute("thuonghieus", thuongHieuService.getAllTenThuongHieu());
+        model.addAttribute("sanphams", listSanPham);
+        model.addAttribute("listSanPhamTimKiemHeader", sanPhamService.getAllSanPhamShowOnClient("get-all"));
+
+        // Thêm các giá trị lọc vào Model để trả về giao diện
+        model.addAttribute("selectedThuongHieu", tenThuongHieu);
+        model.addAttribute("selectedChatLieu", tenChatLieu);
+        model.addAttribute("selectedKieuCoAo", tenKieuCoAo);
+        model.addAttribute("selectedKieuTayAo", tenKieuTayAo);
+        model.addAttribute("selectedSort", sort);
+        model.addAttribute("isFilterOpen", isFilterOpen);
+
+        // Thêm trạng thái accordion
+        if (activeAccordions != null && !activeAccordions.isEmpty()) {
+            model.addAttribute("activeAccordions", activeAccordions);
+        }
+
         return "client/trangchu";
     }
 
@@ -104,12 +144,9 @@ public class ClientController {
 
             // Build and add product detail request
             productDetailRequests.add(SanPhamChiTietRequest.builder()
-                    .idSanPham(sanPhamChiTiet.getSanPham().getId())
-                    .idKichCo(sanPhamChiTiet.getKichCo().getId())
-                    .idMauSac(sanPhamChiTiet.getMauSac().getId())
-                    .gia(sanPhamChiTiet.getGia())
-                    .soLuong(sanPhamChiTiet.getSoLuong())
-                    .trangThai(sanPhamChiTiet.getTrangThai())
+                    .idSanPham(sanPhamChiTiet.getSanPham().getId()).idKichCo(sanPhamChiTiet.getKichCo().getId())
+                    .idMauSac(sanPhamChiTiet.getMauSac().getId()).gia(sanPhamChiTiet.getGia())
+                    .soLuong(sanPhamChiTiet.getSoLuong()).trangThai(sanPhamChiTiet.getTrangThai())
                     .build());
         }
 
@@ -150,15 +187,15 @@ public class ClientController {
             // Consider using a logger instead of printing the stack trace
             e.printStackTrace();
         }
-
-        model.addAttribute("user", khachHang);
         model.addAttribute("idSP", id);
+        model.addAttribute("user", khachHang);
         model.addAttribute("kichCoSet", sortedSizes);
-        model.addAttribute("mauSacToAnhDaiDienMap", sortedColorToImageMap);
-        model.addAttribute("anhSanPhamResponseList", detailImageList);
         model.addAttribute("infoSP", sanPhamShowOnClient);
-        model.addAttribute("firstImageUrl", firstImage != null ? firstImage.getAnhUrl() : "img/default-image.jpg");
+        model.addAttribute("anhSanPhamResponseList", detailImageList);
+        model.addAttribute("mauSacToAnhDaiDienMap", sortedColorToImageMap);
+        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
         model.addAttribute("sp_random", sanPhamService.getAllSanPhamShowOnClient("get-random"));
+        model.addAttribute("firstImageUrl", firstImage != null ? firstImage.getAnhUrl() : "img/default-image.jpg");
         return "/client/chitiet";
     }
 
@@ -261,8 +298,7 @@ public class ClientController {
                 AnhSanPhamResponse anhSanPhamResponse = anhSanPhamService
                         .getAnhSanPhamByIdSPCT(sanPhamGioHang.getSanPhamChiTiet().getId()).get(0);
                 sanPhamGioHangCustomList.add(SanPhamGioHangCustom.builder()
-                        .sanPhamGioHang(sanPhamGioHang)
-                        .anhUrl(anhSanPhamResponse.getAnhUrl())
+                        .sanPhamGioHang(sanPhamGioHang).anhUrl(anhSanPhamResponse.getAnhUrl())
                         .build());
                 listIDSPGH.add(idspgh);
             });
@@ -274,7 +310,7 @@ public class ClientController {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         //  What For : Calculate shipping fee as 10% of the total amount
-        BigDecimal phiShip = tongTien.multiply(BigDecimal.valueOf(0.1));
+        BigDecimal phiShip = BigDecimal.TEN;
 
         List<DiaChi> diaChiList = diaChiService.getDiaChiByIdKhachHang(khachHang.getId());
         List<PhieuGiamGiaResponse> phieuGiamGiaResponseList = phieuGiamGiaService.getPGGByTrangThai(1);
@@ -316,22 +352,18 @@ public class ClientController {
 
         List<Integer> listIDSPGH;
         try {
-            listIDSPGH = new ObjectMapper().readValue(listIDSPGHString, new TypeReference<>() {});
+            listIDSPGH = new ObjectMapper().readValue(listIDSPGHString, new TypeReference<>() {
+            });
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Invalid list format for listIDSPGH", e);
         }
 
         HoaDon hoaDon = HoaDon.builder()
-                .khachHang(khachHang)
-                .tenNguoiNhan(diaChi.getTenKhachHang())
-                .sdt(diaChi.getSoDienThoai())
-                .emailNguoiNhan(khachHang.getEmail())
-                .diaChi(diaChi)
-                .phuongThucThanhToan(phuongThucThanhToan)
-                .phieuGiamGia(phieuGiamGia)
-                .tongTien(tongTien)
-                .ghiChu(ghiChu)
-                .trangThai(1)
+                .khachHang(khachHang).tenNguoiNhan(diaChi.getTenKhachHang())
+                .sdt(diaChi.getSoDienThoai()).emailNguoiNhan(khachHang.getEmail())
+                .diaChi(diaChi).phuongThucThanhToan(phuongThucThanhToan)
+                .phieuGiamGia(phieuGiamGia).tongTien(tongTien)
+                .ghiChu(ghiChu).trangThai(1)
                 .build();
         hoaDon = hoaDonRepository.save(hoaDon);
 
@@ -341,13 +373,32 @@ public class ClientController {
             sanPhamGioHang.setTrangThai(0);
             sanPhamGioHangRepository.save(sanPhamGioHang);
             HoaDonChiTiet hoaDonChiTiet = HoaDonChiTiet.builder()
-                    .gia(sanPhamGioHang.tongTien())
-                    .hoaDon(hoaDon)
-                    .sanPhamChiTiet(sanPhamGioHang.getSanPhamChiTiet())
-                    .soLuong(sanPhamGioHang.getSoLuong())
+                    .gia(sanPhamGioHang.tongTien()).hoaDon(hoaDon)
+                    .sanPhamChiTiet(sanPhamGioHang.getSanPhamChiTiet()).soLuong(sanPhamGioHang.getSoLuong())
                     .build();
             hoaDonChiTietRepository.save(hoaDonChiTiet);
         }
+    }
+
+    //    TODO : Thông Tin Khách Hàng
+    @GetMapping(value = "/showInfoCustomer")
+    private String showInfoKhachHang(
+            @SessionAttribute(value = "user") KhachHang khachHang,
+            Model model
+    ) {
+        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
+        return "/client/customer/ThongTinKhachHang";
+    }
+
+    //    TODO : Thông Tin Address
+    @GetMapping(value = "/showInfoAddress")
+    private String showInfoAddress(
+            @SessionAttribute(value = "user") KhachHang khachHang,
+            Model model
+    ) {
+        model.addAttribute("diachi", diaChiService.getDiaChiByIdKhachHang(khachHang.getId(), 1));
+        model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
+        return "/client/customer/ThongTinDiaChi";
     }
 
     //  TODO: Update Sản Phẩm Chi Tiết In Giỏ Hàng

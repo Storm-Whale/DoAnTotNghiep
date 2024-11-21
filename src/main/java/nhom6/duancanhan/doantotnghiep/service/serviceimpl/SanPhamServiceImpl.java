@@ -24,6 +24,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -139,16 +140,12 @@ public class SanPhamServiceImpl implements SanPhamService {
     @Override
     public List<SanPhamShowOnClient> getAllSanPhamShowOnClient(String method) {
         return DatabaseOperationHandler.handleDatabaseOperation(() -> {
-            List<SanPhamResponse> sanPhamResponses = new ArrayList<>(getAllSanPham()); // Mutable copy
+            List<SanPhamResponse> sanPhamResponses = new ArrayList<>(getAllSanPham());
 
-            // If the method is "get-random", shuffle and limit the list to 8 items
             if ("get-random".equals(method)) {
-                Collections.shuffle(sanPhamResponses); // Shuffle the list
-                if (sanPhamResponses.size() > 8) {
-                    sanPhamResponses = sanPhamResponses.subList(0, 8); // Take first 8 elements
-                }
+                Collections.shuffle(sanPhamResponses);
             } else if (!"get-all".equals(method)) {
-                return null; // Invalid method, return null
+                return null;
             }
 
             List<SanPhamShowOnClient> sanPhamShowOnClients = new ArrayList<>();
@@ -161,6 +158,22 @@ public class SanPhamServiceImpl implements SanPhamService {
                                     .gia(sanPhamChiTiet.getGia())
                                     .build()
                     );
+                }
+            }
+
+            if ("get-random".equals(method)) {
+                while (sanPhamShowOnClients.size() < 8) {
+                    for (SanPhamShowOnClient item : new ArrayList<>(sanPhamShowOnClients)) {
+                        if (sanPhamShowOnClients.size() < 8) {
+                            sanPhamShowOnClients.add(item);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                if (sanPhamShowOnClients.size() > 8) {
+                    sanPhamShowOnClients = sanPhamShowOnClients.subList(0, 8);
                 }
             }
 
@@ -183,8 +196,49 @@ public class SanPhamServiceImpl implements SanPhamService {
     public Integer getIdSpFromTenSP(String tenSanPham) {
         return DatabaseOperationHandler.handleDatabaseOperation(
                 () -> sanPhamRepository.findByTenSanPham(tenSanPham)
-                ,"Lỗi khi lấy thông tin sản phẩm từ cơ sở dữ liệu"
+                , "Lỗi khi lấy thông tin sản phẩm từ cơ sở dữ liệu"
         );
+    }
+
+    @Override
+    public List<SanPhamShowOnClient> searchSanPham(String tenThuongHieu, String tenChatLieu, String tenTayAo, String tenCoAo, String sort) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() -> {
+                    List<SanPhamShowOnClient> listSanPhamShowOnClients = new ArrayList<>();
+                    List<SanPhamResponse> listSanPham = sanPhamRepository.searchSanPham(tenThuongHieu, tenChatLieu, tenCoAo, tenTayAo)
+                            .stream().map(sanPhamMapper::toSanPhamResponse).toList();
+                    for (SanPhamResponse sanPhamResponse : listSanPham) {
+                        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findFirstBySanPhamId(sanPhamResponse.getId());
+                        if (sanPhamChiTiet != null) {
+                            listSanPhamShowOnClients.add(
+                                    SanPhamShowOnClient.builder()
+                                            .sanPhamResponse(sanPhamResponse)
+                                            .gia(sanPhamChiTiet.getGia())
+                                            .build()
+                            );
+                        }
+                    }
+                    switch (sort) {
+                        case "price-asc":
+                            listSanPhamShowOnClients.sort(Comparator.comparing(SanPhamShowOnClient::getGia));
+                            break;
+                        case "price-desc":
+                            listSanPhamShowOnClients.sort(Comparator.comparing(SanPhamShowOnClient::getGia).reversed());
+                            break;
+                        case "newest":
+                            listSanPhamShowOnClients.sort((sp1, sp2)
+                                    -> sp2.getSanPhamResponse().getNgayTao().compareTo(sp1.getSanPhamResponse().getNgayTao()));
+                            break;
+                    }
+                    return listSanPhamShowOnClients;
+                }, "Lỗi khi lấy thông tin từ cơ sở dữ liệu"
+        );
+    }
+
+    @Override
+    public boolean existTenSanPham(String tenSanPham) {
+        return DatabaseOperationHandler.handleDatabaseOperation(
+                () -> sanPhamRepository.existsSanPhamByTenSanPham(tenSanPham)
+                , "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu");
     }
 
     private void validateDuplicateProductName(String tenSanPham) {

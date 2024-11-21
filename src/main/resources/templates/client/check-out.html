@@ -29,26 +29,31 @@
             </ul>
 
             <!-- Search Form -->
-            <form class="col-12 col-lg-auto mb-2 mb-lg-0 me-4">
-                <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-            </form>
+            <div class="col-12 col-lg-auto mb-2 mb-lg-0 me-4 position-relative">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search" id="searchInput">
+                <div class="suggestions-box" id="suggestions" style="display: none;">
+                    <ul id="suggestionList"></ul>
+                </div>
+            </div>
 
             <!-- Cart Icon -->
-            <a th:href="@{/client/gio-hang}" class="me-4">
+            <a th:if="${session.user != null}" th:href="@{/client/gio-hang}" class="me-4">
                 <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
             </a>
-
+            <a th:if="${session.user == null}" th:href="@{/login/login-client}" class="me-4">
+                <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
+            </a>
             <!-- User Dropdown -->
             <div id="avatarContainer">
                 <div class="dropdown text-end" th:if="${session.loginStatus == true}">
                     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
                        id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                         <img id="userAvatar"
-                             th:src="@{/{anhUrl}(anhUrl=${user.anhUrl})}"
-                             alt="User Avatar" width="40" height="40" class="rounded-circle">
+                             th:src="@{/{anhUrl}(anhUrl=${session.user.anhUrl})}"
+                             alt="User Avatar" width="40" height="40" class="rounded-circle" style="object-fit: cover">
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                        <li><a class="dropdown-item" th:href="@{/client/profile}">Tài Khoản Của Tôi</a></li>
+                        <li><a class="dropdown-item" th:href="@{/client/showInfoCustomer}">Tài Khoản Của Tôi</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -60,7 +65,7 @@
                 <div class="dropdown text-end" th:unless="${session.loginStatus == true}">
                     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
                        id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="/images/nguoidung.png"
+                        <img th:src="@{/nguoidung.png}"
                              alt="Default Avatar" width="40" height="40" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2">
@@ -293,7 +298,7 @@
         </div>
         <div class="buttons">
             <button class="btn btn-secondary" id="backButton" type="button">Trở về</button>
-<!--            <button class="btn btn-primary" id="saveAddressButton" type="button" onclick="submitForm()">Lưu địa chỉ</button>-->
+            <button class="btn btn-primary" id="saveAddressButton" type="button" onclick="submitForm()">Lưu địa chỉ</button>
         </div>
     </form>
 </div>

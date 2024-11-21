@@ -37,6 +37,7 @@ public class DiaChiController {
                 .huyen(district)
                 .thanhPho(city)
                 .diaChiChiTiet(detailAddress)
+                .trangThai(1)
                 .build();
         diaChiService.addDiaChi(diaChi);
     }
@@ -54,16 +55,22 @@ public class DiaChiController {
             @RequestParam(name = "detailAddress") String detailAddress
     ) {
         KhachHang khachHang = khachHangService.detail(idKhachHang);
-        DiaChi diaChi = DiaChi.builder()
-                .id(idDiaChi)
-                .khachHang(khachHang)
-                .tenKhachHang(name)
-                .soDienThoai(phone)
-                .xa(ward)
-                .huyen(district)
-                .thanhPho(city)
-                .diaChiChiTiet(detailAddress)
-                .build();
-        diaChiService.addDiaChi(diaChi);
+        DiaChi diaChi = diaChiService.getDiaChiById(idDiaChi);
+        diaChi.setDiaChiChiTiet(detailAddress);
+        diaChi.setKhachHang(khachHang);
+        diaChi.setTenKhachHang(name);
+        diaChi.setSoDienThoai(phone);
+        diaChi.setXa(district);
+        diaChi.setHuyen(ward);
+        diaChi.setThanhPho(city);
+        diaChiService.updateDiaChi(idDiaChi, diaChi);
+    }
+
+    @PostMapping("/delete-address/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    private void deleteAddress(@PathVariable(name = "id") Integer id) {
+        DiaChi diaChi = diaChiService.getDiaChiById(id);
+        diaChi.setTrangThai(0);
+        diaChiService.updateDiaChi(id, diaChi);
     }
 }

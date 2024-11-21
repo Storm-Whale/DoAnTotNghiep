@@ -83,3 +83,7 @@
     100% { transform: rotate(360deg); }
 }
 /* ------------------------------------------- loading spinner -------------------------------------------*/
+
+.custom-header .form-control {
+    width: 300px;
+}

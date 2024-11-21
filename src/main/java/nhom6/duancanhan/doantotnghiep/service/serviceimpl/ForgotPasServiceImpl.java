@@ -2,12 +2,9 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
-
 import jakarta.mail.internet.MimeMessage;
 import nhom6.duancanhan.doantotnghiep.dto.KhachHangDTO;
 import nhom6.duancanhan.doantotnghiep.dto.TaiKhoanDTO;
-import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
-import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
 import nhom6.duancanhan.doantotnghiep.repository.ForgotKHRepository;
 import nhom6.duancanhan.doantotnghiep.repository.ForgotRepository;
 import nhom6.duancanhan.doantotnghiep.repository.KhachHangRepository;
@@ -24,6 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 @Service
 public class ForgotPasServiceImpl implements ForgotPasswordService {
+
     @Autowired
     private JavaMailSender mailSender;
 
