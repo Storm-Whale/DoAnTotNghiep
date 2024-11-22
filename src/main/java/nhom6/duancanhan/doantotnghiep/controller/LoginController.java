@@ -246,4 +246,15 @@ import java.util.List;
 
             return "/client/Quenmk"; // Trả về trang quên mật khẩu
         }
-}
+        @GetMapping("donhang")
+        public String DonHang () {
+            return "/client/DonHang";
+        }
+
+        @GetMapping("donhangad")
+        public String DonHang2 () {
+            return "/client/DHadmin";
+        }
+
+
+    }

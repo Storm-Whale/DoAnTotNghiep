@@ -2,6 +2,7 @@ package nhom6.duancanhan.doantotnghiep.repository;
 
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
+import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,5 +41,16 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     List<PhieuGiamGiaHoaDonDTO> findHoaDonByPhieuGiamGia(@Param("phieuGiamGiaId") Integer phieuGiamGiaId);
     List<HoaDon> findHoaDonByKhachHangId(Integer khachHangId);
     List<HoaDon> findHoaDonByKhachHangIdAndTrangThai(Integer khachHangId, int trangThai);
+
+    @Query("SELECT h FROM HoaDon h " +
+            "WHERE (LOWER(h.tenNguoiNhan) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(h.sdt) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(h.emailNguoiNhan) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(h.diaChi.diaChiChiTiet) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(h.phuongThucThanhToan.tenPhuongThuc) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "CAST(h.tongTien AS string) LIKE :keyword OR " +  // Chuyển đổi tongTien thành chuỗi
+            "LOWER(h.ghiChu) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "CAST(h.trangThai AS string) LIKE :keyword)") // Chuyển đổi trangThai thành chuỗi
+    Page<HoaDon> findByKeywordInAllFields(@Param("keyword") String keyword, Pageable pageable);
 
 }
