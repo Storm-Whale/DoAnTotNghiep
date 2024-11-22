@@ -49,7 +49,7 @@ public class SanPhamController {
     ) {
         // Sử dụng size từ @RequestParam để phân trang
         Page<SanPhamResponse> products = sanPhamService.timKiemSanPham(
-                keyword, status, thuongHieuId, chatLieuId, tayAoId, coAoId, pageable.getPageNumber(), size);
+                keyword.trim(), status, thuongHieuId, chatLieuId, tayAoId, coAoId, pageable.getPageNumber(), size);
 
         model.addAttribute("products", products.getContent());
 
@@ -69,7 +69,7 @@ public class SanPhamController {
         }
 
         // Truyền các giá trị vào model
-        model.addAttribute("keyword", keyword);
+        model.addAttribute("keyword", keyword.trim());
         model.addAttribute("status", status);
         model.addAttribute("thuongHieuId", thuongHieuId);
         model.addAttribute("chatLieuId", chatLieuId);
@@ -147,7 +147,8 @@ public class SanPhamController {
                 return "/admin/sanpham/create";
             }
         }
-
+        String tenSP = productRequest.getTenSanPham();
+        productRequest.setTenSanPham(tenSP);
         productRequest.setTrangThai(1);
         sanPhamService.storeSanPham(productRequest);
         //set image QrCode cho sp mới tạo
@@ -248,7 +249,7 @@ public class SanPhamController {
         String oldImageUrl = existingProduct.getAnhUrl();
 
         SanPhamRequest sanPhamRequest = SanPhamRequest.builder()
-                .tenSanPham(tenSP)
+                .tenSanPham(tenSP.trim())
                 .idChatLieu(idChatLieu)
                 .idThuongHieu(idThuongHieu)
                 .idCoAo(idCoAo)

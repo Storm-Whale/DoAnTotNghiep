@@ -241,7 +241,19 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>
+<!-- JavaScript của jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- JavaScript của Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script>
+    $(document).ready(function () {
+        $('.js-select2').select2({
+            placeholder: "Chọn một tùy chọn",
+            allowClear: true
+        });
+    });
+
     function changeItemsPerPage() {
         var size = document.getElementById("itemsPerPage").value;
 
@@ -264,21 +276,5 @@
         // Điều hướng đến URL mới
         window.location.href = newUrl;
     }
-</script>
-
-
-
-<!-- JavaScript của jQuery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-<!-- JavaScript của Select2 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('.js-select2').select2({
-            placeholder: "Chọn một tùy chọn",
-            allowClear: true
-        });
-    });
 </script>
 </html>

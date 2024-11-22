@@ -31,12 +31,12 @@ public class DiaChiController {
         KhachHang khachHang = khachHangService.detail(idKhachHang);
         DiaChi diaChi = DiaChi.builder()
                 .khachHang(khachHang)
-                .tenKhachHang(name)
-                .soDienThoai(phone)
-                .xa(ward)
-                .huyen(district)
-                .thanhPho(city)
-                .diaChiChiTiet(detailAddress)
+                .tenKhachHang(name.trim())
+                .soDienThoai(phone.trim())
+                .xa(ward.trim())
+                .huyen(district.trim())
+                .thanhPho(city.trim())
+                .diaChiChiTiet(detailAddress.trim())
                 .trangThai(1)
                 .build();
         diaChiService.addDiaChi(diaChi);
@@ -56,13 +56,13 @@ public class DiaChiController {
     ) {
         KhachHang khachHang = khachHangService.detail(idKhachHang);
         DiaChi diaChi = diaChiService.getDiaChiById(idDiaChi);
-        diaChi.setDiaChiChiTiet(detailAddress);
+        diaChi.setDiaChiChiTiet(detailAddress.trim());
         diaChi.setKhachHang(khachHang);
-        diaChi.setTenKhachHang(name);
-        diaChi.setSoDienThoai(phone);
-        diaChi.setXa(district);
-        diaChi.setHuyen(ward);
-        diaChi.setThanhPho(city);
+        diaChi.setTenKhachHang(name.trim());
+        diaChi.setSoDienThoai(phone.trim());
+        diaChi.setXa(district.trim());
+        diaChi.setHuyen(ward.trim());
+        diaChi.setThanhPho(city.trim());
         diaChiService.updateDiaChi(idDiaChi, diaChi);
     }
 

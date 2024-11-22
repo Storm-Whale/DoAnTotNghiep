@@ -151,23 +151,37 @@ document.querySelectorAll('.cancel, .confirm').forEach(button => {
         document.getElementById('addressContainer').style.display = 'none';
         document.getElementById('addAddressContainer').style.display = 'none';
     });
+
+    resetErrorMessages()
 });
 
 // * Hiển thị form thêm địa chỉ mới
 document.getElementById('addAddressButton').addEventListener('click', function () {
     document.getElementById('addressContainer').style.display = 'none';
     document.getElementById('addAddressContainer').style.display = 'block';
+    const form = document.getElementById('addressForm')
+    form.reset()
+
+    resetErrorMessages()
 });
 
 // * Xử lý sự kiện quay lại từ form thêm địa chỉ
 document.getElementById('backButton').addEventListener('click', function () {
     document.getElementById('addressContainer').style.display = 'block';
     document.getElementById('addAddressContainer').style.display = 'none';
+
+    resetErrorMessages()
 });
 
 // What For : Gửi dữ liệu về trang địa chỉ để thêm mới
 async function submitForm() {
     const form = document.getElementById('addressForm');
+
+    // Validate trước khi gửi
+    if (!validateAddressForm()) {
+        return;
+    }
+
     const formData = new FormData(form);
 
     try {
@@ -177,6 +191,7 @@ async function submitForm() {
         });
 
         if (response.ok) {
+            // Lưu trạng thái và reload trang
             localStorage.setItem('shouldTriggerShow', 'true');
             window.location.reload();
         } else {
@@ -186,6 +201,80 @@ async function submitForm() {
         console.log('Có lỗi xảy ra: ' + error.message);
     }
 }
+
+// Hàm validate form
+function validateAddressForm() {
+    let isValid = true;
+
+    // Lấy giá trị các input
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
+    const cityInput = document.getElementById('city');
+    const districtInput = document.getElementById('district');
+    const wardInput = document.getElementById('ward');
+    const detailAddressInput = document.getElementById('detailAddress');
+
+    // Reset lỗi trước khi kiểm tra
+    resetErrorMessages();
+
+    // Kiểm tra Họ và Tên
+    if (nameInput.value.trim() === '' || nameInput.value.startsWith(' ')) {
+        showError(nameInput, 'Họ và tên không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    }
+
+    // Kiểm tra Số điện thoại
+    const phoneRegex = /^[0-9]{10,11}$/;
+    if (!phoneRegex.test(phoneInput.value.trim()) || phoneInput.value.trim() === '' || phoneInput.value.startsWith(' ')) {
+        showError(phoneInput, 'Số điện thoại không hợp lệ! Phải chứa 10-11 chữ số.');
+        isValid = false;
+    }
+
+    // Kiểm tra Thành phố
+    if (cityInput.value.trim() === '' || cityInput.value.startsWith(' ')) {
+        showError(cityInput, 'Thành phố không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    }
+
+    // Kiểm tra Quận/Huyện
+    if (districtInput.value.trim() === '' || districtInput.value.startsWith(' ')) {
+        showError(districtInput, 'Quận/Huyện không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    }
+
+    // Kiểm tra Xã/Phường
+    if (wardInput.value.trim() === '' || wardInput.value.startsWith(' ')) {
+        showError(wardInput, 'Xã/Phường không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    }
+
+    // Kiểm tra Địa chỉ cụ thể
+    if (detailAddressInput.value.trim() === '' || detailAddressInput.value.startsWith(' ')) {
+        showError(detailAddressInput, 'Địa chỉ cụ thể không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+// Hiển thị lỗi
+function showError(input, message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'text-danger mt-1';
+    errorDiv.textContent = message;
+    input.parentElement.appendChild(errorDiv);
+    input.classList.add('is-invalid');
+}
+
+// Reset thông báo lỗi
+function resetErrorMessages() {
+    const errorMessages = document.querySelectorAll('.text-danger');
+    errorMessages.forEach((error) => error.remove());
+
+    const invalidInputs = document.querySelectorAll('.is-invalid');
+    invalidInputs.forEach((input) => input.classList.remove('is-invalid'));
+}
+
 
 // * Hàm hiển thị form cập nhật và lưu idDiaChi
 function showUpdateForm(idDiaChi) {
@@ -215,6 +304,11 @@ function showUpdateForm(idDiaChi) {
 
 // * Hàm xử lý cập nhật địa chỉ
 async function updateAddress() {
+    // Validate trước khi gửi
+    if (!validateAddressForm()) {
+        return;
+    }
+
     const form = document.getElementById('addressForm');
     const formData = new FormData(form);
     const idDiaChi = form.getAttribute('data-id-dia-chi');

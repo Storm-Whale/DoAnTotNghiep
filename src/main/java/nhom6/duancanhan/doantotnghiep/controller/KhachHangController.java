@@ -144,9 +144,9 @@ public class KhachHangController {
             String anhUrl = uploadImage.saveImage(image);
             khachHang.setAnhUrl(anhUrl);
         }
-        khachHang.setTen(ten);
-        khachHang.setEmail(email);
-        khachHang.setSoDienThoai(soDienThoai);
+        khachHang.setTen(ten.trim());
+        khachHang.setEmail(email.trim());
+        khachHang.setSoDienThoai(soDienThoai.trim());
         khachHang.setGioiTinh(gioiTinh);
         khachHang.setNgaySinh(ngaySinh);
         khachHangService.updateKhachHang(khachHang);

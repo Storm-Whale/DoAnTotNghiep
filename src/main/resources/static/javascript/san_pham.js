@@ -17,6 +17,7 @@ function anForm() {
     // Ẩn form và overlay
     document.getElementById('formThemNhanh').style.display = 'none';
     document.getElementById('overlay').style.display = 'none';
+    document.getElementById('errorTen').style.display = 'none';
 
     // Reset form
     const form = document.getElementById('formQuick');
@@ -26,6 +27,37 @@ function anForm() {
 }
 
 function themNhanh() {
+    const tenInput = document.getElementById('ten');
+    const errorTen = document.getElementById('errorTen');
+
+    // Reset lỗi trước khi kiểm tra
+    errorTen.style.display = 'none';
+
+    const tenValue = tenInput.value;
+
+    // Kiểm tra giá trị nhập
+    if (!tenValue.trim()) {
+        errorTen.textContent = 'Tên không được để trống!';
+        errorTen.style.display = 'block';
+        tenInput.focus();
+        return false;
+    }
+
+    if (tenValue.startsWith(' ')) {
+        errorTen.textContent = 'Tên không được bắt đầu bằng dấu cách!';
+        errorTen.style.display = 'block';
+        tenInput.focus();
+        return false;
+    }
+
+    if (tenValue.length < 3) {
+        errorTen.textContent = 'Tên phải có ít nhất 3 ký tự!';
+        errorTen.style.display = 'block';
+        tenInput.focus();
+        return false;
+    }
+
+    // Nếu kiểm tra thành công, tiếp tục xử lý dữ liệu
     const dataForm = document.querySelector('#formQuick');
     if (!dataForm) {
         console.error('Form không tồn tại!');
@@ -36,15 +68,15 @@ function themNhanh() {
 
     fetch(targetUrl, {
         method: 'POST',
-        body: formData
+        body: formData,
     })
-        .then(response => {
+        .then((response) => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             return response.json();
         })
-        .then(data => {
+        .then((data) => {
             if (data.success) {
                 // Xác định select2 cần cập nhật
                 let selectElement;
@@ -74,3 +106,4 @@ function themNhanh() {
             console.error('Lỗi:', error);
         });
 }
+

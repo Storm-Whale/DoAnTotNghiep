@@ -147,3 +147,9 @@ footer {
 .accordion-button:focus {
     box-shadow: 0 0 0 0.25rem rgba(92, 99, 106, 0.5);
 }
+
+.error-message {
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: block;
+}
