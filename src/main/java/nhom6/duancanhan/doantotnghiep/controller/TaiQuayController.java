@@ -13,6 +13,7 @@ import nhom6.duancanhan.doantotnghiep.entity.SanPhamGioHang;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.*;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
+import nhom6.duancanhan.doantotnghiep.service.serviceimpl.InvoidPdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,7 +25,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,6 +54,7 @@ public class TaiQuayController {
     private final ChatLieuService chatLieuService;
     private final KieuCoAoService kieuCoAoService;
     private final KieuTayAoService kieuTayAoService;
+    private final InvoidPdfService invoidPdfService;
 
     @Autowired
     SanPhamGioHangRepository sanPhamGioHangRepository;
@@ -67,7 +73,7 @@ public class TaiQuayController {
 
     private String maPhieuGiamGia = "";
 
-    public TaiQuayController(SanPhamChiTietService sanPhamChiTietService, SanPhamService sanPhamService, MauSacService mauSacService, KichCoService kichCoService, HoaDonService hoaDonService, KhachHangService khachHangService, PhieuGiamGiaService phieuGiamGiaService, ThuongHieuService thuongHieuService, ChatLieuService chatLieuService, KieuCoAoService kieuCoAoService, KieuTayAoService kieuTayAoService) {
+    public TaiQuayController(SanPhamChiTietService sanPhamChiTietService, SanPhamService sanPhamService, MauSacService mauSacService, KichCoService kichCoService, HoaDonService hoaDonService, KhachHangService khachHangService, PhieuGiamGiaService phieuGiamGiaService, ThuongHieuService thuongHieuService, ChatLieuService chatLieuService, KieuCoAoService kieuCoAoService, KieuTayAoService kieuTayAoService, InvoidPdfService invoidPdfService) {
         this.sanPhamChiTietService = sanPhamChiTietService;
         this.sanPhamService = sanPhamService;
         this.mauSacService = mauSacService;
@@ -79,6 +85,7 @@ public class TaiQuayController {
         this.chatLieuService = chatLieuService;
         this.kieuCoAoService = kieuCoAoService;
         this.kieuTayAoService = kieuTayAoService;
+        this.invoidPdfService = invoidPdfService;
     }
 // TODO: SHOWINDEX
     @GetMapping("")
@@ -237,7 +244,7 @@ public class TaiQuayController {
         model.addAttribute("khachHangThemNhanh",new KhachHang());
         return "/admin/BanhangTaiQuay/index";
     }
-
+// TODO: SAN PHAM
     @GetMapping("/sanpham")
     public String sanpham(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "size", defaultValue = "5") int size,
@@ -390,11 +397,11 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
         hoaDonRepository.save(hoaDon);
         redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
         redirectAttributes.addFlashAttribute("khachHang", khachHang);
-        if (hoaDon.getDiaChi() != null) {
-            model.addAttribute("diaChi", hoaDon.getDiaChi().getDiaChiChiTiet());
-        }
-    }else {
-        System.out.println("bug ơi");
+//        if (hoaDon.getDiaChi() != null) {
+//            model.addAttribute("diaChi", hoaDon.getDiaChi().getDiaChiChiTiet());
+//        }
+//    }else {
+//        System.out.println("bug ơi");
     }
 //        model.addAttribute("khachHang", khachHang);
 //        model.addAttribute("hoaDon", hoaDon);
@@ -402,64 +409,65 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
     // Tạo ModelAndView để chuyển dữ liệu sang view Thymeleaf
     return "redirect:/admin/taiquay/detail/" + idHoaDon; // Tên view Thymeleaf để hiển thị kết quả
 }
-    @Autowired
-    DiaChiRepository diaChiRepository;
-    @PostMapping("/cap-nhat-hoa-don")
-    public String capNhatHoaDon(@RequestParam Integer idHoaDon, @RequestParam String diaChi) {
-        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
-                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
-
-        // Tìm hoặc tạo mới địa chỉ
-        DiaChi diaChiObj = diaChiRepository.findByDiaChiChiTiet(diaChi)
-                .orElseGet(() -> {
-                    DiaChi newDiaChi = new DiaChi();
-                    newDiaChi.setDiaChiChiTiet(diaChi);
-                    diaChiRepository.save(newDiaChi);
-                    return newDiaChi;
-                });
-
-        // Cập nhật địa chỉ trong hóa đơn
-        hoaDon.setDiaChi(diaChiObj);
-        hoaDonRepository.save(hoaDon);
-
-        // Chuyển hướng về trang chi tiết hóa đơn
-        return "redirect:/admin/taiquay/detail/" + idHoaDon;
-    }
-    @PostMapping("/add")
-    public String add(@Valid @ModelAttribute("khachHangThemNhanh") KhachHang khachHang, BindingResult result, Model model,RedirectAttributes redirectAttributes) {
-//        if (result.hasErrors()) {
-//            for (FieldError error : result.getFieldErrors()) {
-//                model.addAttribute(error.getField(), error.getDefaultMessage());
-//            }
-//            model.addAttribute("alertMessage", "Vui lòng kiểm tra thông tin nhập!");
-//            return "redirect:/admin/taiquay#themnhanhkhachhang";
-////          return "redirect:/admin/khachhang/add" + "#demo-modal";
+//    @Autowired
+//    DiaChiRepository diaChiRepository;
+//    @PostMapping("/cap-nhat-hoa-don")
+//    public String capNhatHoaDon(@RequestParam Integer idHoaDon, @RequestParam String diaChi) {
+//        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
+//                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
+//
+//        // Tìm hoặc tạo mới địa chỉ
+//        DiaChi diaChiObj = diaChiRepository.findByDiaChiChiTiet(diaChi)
+//                .orElseGet(() -> {
+//                    DiaChi newDiaChi = new DiaChi();
+//                    newDiaChi.setDiaChiChiTiet(diaChi);
+//                    diaChiRepository.save(newDiaChi);
+//                    return newDiaChi;
+//                });
+//
+//        // Cập nhật địa chỉ trong hóa đơn
+//        hoaDon.setDiaChi(diaChiObj);
+//        hoaDonRepository.save(hoaDon);
+//
+//        // Chuyển hướng về trang chi tiết hóa đơn
+//        return "redirect:/admin/taiquay/detail/" + idHoaDon;
+//    }
+//    @PostMapping("/add")
+//    public String add(@Valid @ModelAttribute("khachHangThemNhanh") KhachHang khachHang, BindingResult result, Model model,RedirectAttributes redirectAttributes) {
+////        if (result.hasErrors()) {
+////            for (FieldError error : result.getFieldErrors()) {
+////                model.addAttribute(error.getField(), error.getDefaultMessage());
+////            }
+////            model.addAttribute("alertMessage", "Vui lòng kiểm tra thông tin nhập!");
+////            return "redirect:/admin/taiquay#themnhanhkhachhang";
+//////          return "redirect:/admin/khachhang/add" + "#demo-modal";
+////        }
+//        khachHangService.addKhachHang(khachHang);
+//
+//        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
+//                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
+//        // Cập nhật khách hàng cho hóa đơn
+//        if (hoaDon != null || hoaDon.getKhachHang() != null) {
+//            hoaDon.setKhachHang(khachHang);
+//            hoaDon.setTrangThai(1);
+//            hoaDonRepository.save(hoaDon);
+//            redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
+//            redirectAttributes.addFlashAttribute("khachHang", khachHang);
 //        }
-        khachHangService.addKhachHang(khachHang);
-
-        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
-                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
-        // Cập nhật khách hàng cho hóa đơn
-        if (hoaDon != null || hoaDon.getKhachHang() != null) {
-            hoaDon.setKhachHang(khachHang);
-            hoaDon.setTrangThai(1);
-            hoaDonRepository.save(hoaDon);
-            redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
-            redirectAttributes.addFlashAttribute("khachHang", khachHang);
-        }
-        redirectAttributes.addFlashAttribute("successMessage", "Khách hàng đã được thêm thành công!");
-        return "redirect:/admin/taiquay/detail/" + idHoaDon;
-    }
+//        redirectAttributes.addFlashAttribute("successMessage", "Khách hàng đã được thêm thành công!");
+//        return "redirect:/admin/taiquay/detail/" + idHoaDon;
+//    }
     @Autowired
     PhuongThucThanhToanRepository phuongThucThanhToanRepository;
 
     //TODO THANH TOAN
     @GetMapping("/thanhtoan")
+    @ResponseBody
     public String thanhtoan(
             @RequestParam("ghiChu") String ghiChu,
             @RequestParam("phuongThucThanhToan") Integer phuongThucId,
             @RequestParam(value = "maPhieuGiamGia", required = false) String maPhieuGiamGiaInput
-            , Model model) {
+            , Model model) throws IOException {
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại."));
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
 
@@ -488,7 +496,20 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
         hoaDon.setTrangThai(tongTienSauGiam.compareTo(BigDecimal.ZERO) == 0 ? 1 : 2);
         hoaDon.setGhiChu(ghiChu);
         hoaDonRepository.save(hoaDon);
-        return "redirect:/admin/hoadon";
+
+        byte[] pdfData = invoidPdfService.generateInvoicePdf(hoaDon);
+
+        String fileName = "invoice_" + hoaDon.getId() + ".pdf";
+        Path path = Paths.get("D://FALL_2024//DATN//DoAnTotNghiep//upload/" + fileName);
+        Files.write(path, pdfData);
+
+        // Return the file URL to the frontend
+        String fileUrl = "D://FALL_2024//DATN//DoAnTotNghiep//upload/" + fileName;
+        model.addAttribute("pdfUrl", fileUrl);
+
+//        return "redirect:/admin/taiquay";
+        return "/uploads/" + fileName;
+//        return "redirect:/admin/hoadon";
     }
 
     //  TODO ADDSP
@@ -580,6 +601,7 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
                 model.addAttribute("listHDCT", hoaDonChiTietList);
             }
         }
+
         model.addAttribute("idHoaDon", idHoaDon);
         return "redirect:/admin/taiquay/sanpham#sanpham";
     }

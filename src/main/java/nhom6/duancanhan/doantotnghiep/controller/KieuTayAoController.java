@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
+import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.entity.KieuTayAo;
 import nhom6.duancanhan.doantotnghiep.service.service.KieuTayAoService;
@@ -8,7 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,16 +31,28 @@ public class KieuTayAoController {
     }
 
     @GetMapping("")
-    public String getAll(Model model) {
+    public String getAll(@RequestParam(value = "tenTayAo", required = false, defaultValue = "") String tenTayAo,
+                         @RequestParam(value = "trangThai", required = false) Integer trangThai,
+                         Model model) {
+        int defaultPageNo = 1;
         int defaultPageSize = 5;
-        return phanTrang(1, defaultPageSize, model);
+        return phanTrangKieuTayAo(defaultPageNo, defaultPageSize, tenTayAo, trangThai, model);
     }
 
     @GetMapping("/{pageNo}")
-    public String phanTrang(@PathVariable(value = "pageNo") int pageNo,
-                            @RequestParam(value = "size", required = false, defaultValue = "5") int pageSize,
-                            Model model) {
-        Page<KieuTayAo> page = kieuTayAoService.phanTrang(pageNo, pageSize);
+    public String phanTrangKieuTayAo(@PathVariable(value = "pageNo") int pageNo,
+                                     @RequestParam(value = "size", required = false, defaultValue = "5") int pageSize,
+                                     @RequestParam(value = "tenTayAo", required = false, defaultValue = "") String tenTayAo,
+                                     @RequestParam(value = "trangThai", required = false) Integer trangThai,
+                                     Model model) {
+        Page<KieuTayAo> page;
+        if (trangThai != null) {
+            page = kieuTayAoService.phanTrangTheoTrangThai(trangThai, pageNo, pageSize);
+        } else if (!tenTayAo.isEmpty()) {
+            page = kieuTayAoService.phanTrangTheoTen(tenTayAo, pageNo, pageSize);
+        } else {
+            page = kieuTayAoService.phanTrang(pageNo, pageSize);
+        }
         List<KieuTayAo> listKTA = page.getContent();
         model.addAttribute("kieuTayAo", new KieuTayAo());
         model.addAttribute("listKTA", listKTA);
@@ -45,6 +60,9 @@ public class KieuTayAoController {
         model.addAttribute("size", pageSize);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("tenTayAo", tenTayAo);
+        model.addAttribute("trangThai", trangThai);
+
         return "/admin/sanpham/KieuTayAo/KieuTayAo";
     }
 
@@ -52,7 +70,7 @@ public class KieuTayAoController {
     public String detail(@PathVariable("id") Integer id, Model model) {
         Optional<KieuTayAo> kieuTayAo = kieuTayAoService.detail(id);
         List<SanPhamResponse> sanPhams = sanPhamService.getSanPhamByKieuTayAoId(id);
-        if (kieuTayAo.isPresent()){
+        if (kieuTayAo.isPresent()) {
             model.addAttribute("kieuTayAo", kieuTayAo.get());
             model.addAttribute("sanPhams", sanPhams);
             return "/admin/sanpham/KieuTayAo/Detail";
@@ -61,8 +79,20 @@ public class KieuTayAoController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("kieuTayAo") KieuTayAo kieuTayAo) {
-        kieuTayAo.setTrangThai(0);
+    public String add(@ModelAttribute("kieuTayAo") @Valid KieuTayAo kieuTayAo,
+                      BindingResult bindingResult, RedirectAttributes redirectAttributes
+                      ) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên kiểu tay áo!");
+            if(kieuTayAo.getTenTayAo().length() > 20){
+                redirectAttributes.addFlashAttribute("error", "Tên kiểu tay áo không được quá 20 kí tự!");
+            }
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.kieuCoAo", bindingResult);
+            redirectAttributes.addFlashAttribute("kieuTayAo", kieuTayAo);
+            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+            return "redirect:/admin/kieu-tay-ao";
+        }
+        kieuTayAo.setTrangThai(1);
         kieuTayAoService.addKieuTayAo(kieuTayAo);
         return "redirect:/admin/kieu-tay-ao";
     }
@@ -77,18 +107,29 @@ public class KieuTayAoController {
         return "redirect:/admin/kieu-tay-ao";
     }
 
-    @PutMapping("/update/{id}")
-    public String update(@PathVariable("id") Integer id, @ModelAttribute("kieuCoAo") KieuTayAo kieuTayAo) {
+    @PostMapping("/update/{id}")
+    public String update(@PathVariable("id") Integer id,
+                         @ModelAttribute("kieuTayAo") @Valid KieuTayAo kieuTayAo,
+                         BindingResult bindingResult,
+                         Model model) {
         Optional<KieuTayAo> existingKieuTayAoOpt = kieuTayAoService.detail(id);
-        if (existingKieuTayAoOpt.isPresent()) {
-            KieuTayAo existingKieuTayAo = existingKieuTayAoOpt.get();
-            kieuTayAo.setNgayTao(existingKieuTayAo.getNgayTao());
-            kieuTayAo.setId(existingKieuTayAo.getId());
-            kieuTayAoService.updateKieuTayAo(id, kieuTayAo);
-            return "redirect:/admin/kieu-tay-ao";
+
+        // Kiểm tra lỗi hoặc không tìm thấy đối tượng
+        if (bindingResult.hasErrors() || existingKieuTayAoOpt.isEmpty()) {
+            model.addAttribute("kieuTayAo", kieuTayAo); // Đưa lại đối tượng vào model
+            return "/admin/sanpham/KieuTayAo/Update"; // Trả về form sửa
         }
+
+        // Lấy thông tin từ đối tượng cũ
+        KieuTayAo existingKieuTayAo = existingKieuTayAoOpt.get();
+        kieuTayAo.setNgayTao(existingKieuTayAo.getNgayTao());
+        kieuTayAo.setId(existingKieuTayAo.getId());
+
+        // Cập nhật và chuyển hướng
+        kieuTayAoService.updateKieuTayAo(id, kieuTayAo);
         return "redirect:/admin/kieu-tay-ao";
     }
+
 
 
     @PostMapping("/updatett/{id}")
@@ -96,7 +137,7 @@ public class KieuTayAoController {
         Optional<KieuTayAo> optionalKieuTayAo = kieuTayAoService.detail(id);
         if (optionalKieuTayAo.isPresent()) {
             KieuTayAo kieuTayAo = optionalKieuTayAo.get();
-            kieuTayAo.setTrangThai(1);
+            kieuTayAo.setTrangThai(0);
             kieuTayAoService.updateKieuTayAoById(id, kieuTayAo);
         }
         return "redirect:/admin/kieu-tay-ao";

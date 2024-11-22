@@ -33,7 +33,7 @@
                 </div>
                 <div class="card-body">
 
-                    <form th:action="@{'/admin/kieu-co-ao/update/' + ${kieuCoAo.id}}" method="post" class="d-inline-block">
+                    <form th:action="@{'/admin/kieu-co-ao/update/' + ${kieuCoAo.id}}" th:object="${kieuCoAo}" method="post" class="d-inline-block">
                         <input type="hidden" name="_method" value="put">
                         <div class="mb-3">
                             <label for="id" class="form-label">ID:</label>
@@ -42,20 +42,22 @@
                         <div class="mb-3">
                             <label class="form-label">Tên Cổ Áo:</label>
                             <input type="text" class="form-control" id="tenCoAo" name="tenCoAo"
-                                   th:value="${kieuCoAo.tenCoAo}" required>
-<!--                            <span th:if="${#fields.hasErrors('tenCoAo')}" th:errors="*{kieuCoAo.tenCoAo}"></span>-->
-                        </div>
+                                   th:value="${kieuCoAo.tenCoAo}">
+                            <div th:if="${#fields.hasErrors('tenCoAo')}" class="text-danger">
+                                <span th:errors="*{tenCoAo}"></span>
+                            </div>
+                     </div>
 
                         <div class="mb-3">
                             <label class="form-label">Trạng Thái:</label>
                             <div class="form-check form-check-inline" style="margin-left: 20px">
-                                <input class="form-check-input" type="radio" name="trangThai" id="dangHoatDong" value="0" sty
-                                       th:checked="${kieuCoAo.trangThai == 0}" style="font-size: 15px;">
+                                <input class="form-check-input" type="radio" name="trangThai" id="dangHoatDong" value="1" sty
+                                       th:checked="${kieuCoAo.trangThai == 1}" style="font-size: 15px;">
                                 <label class="form-check-label" for="dangHoatDong" style="font-size: 15px;">Hoạt Động</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="trangThai" id="ngungHoatDong" value="1"
-                                       th:checked="${kieuCoAo.trangThai == 1}" style="font-size: 15px;">
+                                <input class="form-check-input" type="radio" name="trangThai" id="ngungHoatDong" value="0"
+                                       th:checked="${kieuCoAo.trangThai == 0}" style="font-size: 15px;">
                                 <label class="form-check-label" for="ngungHoatDong" style="font-size: 15px;">Ngừng Hoạt Động</label>
                             </div>
                         </div>

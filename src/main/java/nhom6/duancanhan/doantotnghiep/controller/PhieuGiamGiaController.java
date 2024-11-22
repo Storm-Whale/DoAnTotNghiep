@@ -1,15 +1,22 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.entity.PhieuGiamGia;
+import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
 import nhom6.duancanhan.doantotnghiep.service.service.PhieuGiamGiaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,25 +25,12 @@ import java.util.Optional;
 @RequestMapping("/admin/phieu-giam-gia")
 public class PhieuGiamGiaController {
     private final PhieuGiamGiaService phieuGiamGiaService;
+    private final HoaDonService hoaDonService;
 
-    public PhieuGiamGiaController(PhieuGiamGiaService phieuGiamGiaService) {
+    public PhieuGiamGiaController(PhieuGiamGiaService phieuGiamGiaService, HoaDonService hoaDonService) {
         this.phieuGiamGiaService = phieuGiamGiaService;
+        this.hoaDonService = hoaDonService;
     }
-
-//    @GetMapping("/{pageNo}")
-//    public String getAll(@PathVariable(value = "pageNo") int pageNo,
-//                            @RequestParam(value = "size", required = false, defaultValue = "5") int pageSize,
-//                            Model model) {
-//        Page<PhieuGiamGia> page = phieuGiamGiaService.phanTrang(pageNo, pageSize);
-//        List<PhieuGiamGia> listPGG = page.getContent();
-//        model.addAttribute("phieuGiamGia", new PhieuGiamGia());
-//        model.addAttribute("listPGG", listPGG);
-//        model.addAttribute("currentPage", pageNo);
-//        model.addAttribute("size", pageSize);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems",page.getTotalElements());
-//        return "/admin/PhieuGiamGia/PhieuGiamGia";
-//    }
 
     @GetMapping("/index")
     public String getAll(
@@ -54,7 +48,7 @@ public class PhieuGiamGiaController {
 
         System.out.println("Total Elements: " + pageFind.getTotalElements());
         List<PhieuGiamGia> listPGG = pageFind.getContent();
-        model.addAttribute("phieuGiamGia", new PhieuGiamGia());
+//        model.addAttribute("phieuGiamGia", new PhieuGiamGia());
         model.addAttribute("listPGG", listPGG);
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
@@ -63,7 +57,6 @@ public class PhieuGiamGiaController {
 
         // Thêm các tham số tìm kiếm vào model để hiển thị lại trên trang
         model.addAttribute("keyword", keyword);
-//        model.addAttribute("tenPhieuGiamGia", tenPhieuGiamGia);
         model.addAttribute("ngayBatDau", ngayBatDau);
         model.addAttribute("ngayKetThuc", ngayKetThuc);
         model.addAttribute("kieuGiamGia", kieuGiamGia);
@@ -77,6 +70,8 @@ public class PhieuGiamGiaController {
         Optional<PhieuGiamGia> phieuGiamGia = phieuGiamGiaService.getById(id);
         if (phieuGiamGia.isPresent()) {
             model.addAttribute("phieuGiamGia", phieuGiamGia.get());
+            List<PhieuGiamGiaHoaDonDTO> hoaDonList = hoaDonService.getHoaDonByPhieuGiamGia(id);
+            model.addAttribute("hoaDonList", hoaDonList);
             return "/admin/PhieuGiamGia/Detail";
         }
         return "redirect:/admin/phieu-giam-gia/index";
@@ -86,21 +81,72 @@ public class PhieuGiamGiaController {
     public String add(@ModelAttribute("phieuGiamGia") PhieuGiamGia phieuGiamGia) {
         return "/admin/PhieuGiamGia/Add";
     }
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable("id") Integer id, Model model) {
+        Optional<PhieuGiamGia> phieuGiamGia = phieuGiamGiaService.getById(id);
+        if (phieuGiamGia.isPresent()) {
+            model.addAttribute("phieuGiamGia", phieuGiamGia.get());
+            return "/admin/PhieuGiamGia/Update";
+        }
+        return "redirect:/admin/phieu-giam-gia/index";
+    }
 
     @PostMapping("/update/{id}")
-    public String update(@PathVariable("id") Integer id, @ModelAttribute("phieuGiamGia") PhieuGiamGia phieuGiamGia) {
+    public String update(
+            @PathVariable("id") Integer id,
+            @Valid @ModelAttribute("phieuGiamGia") PhieuGiamGia phieuGiamGia,
+            BindingResult bindingResult,
+            Model model) {
+        // Kiểm tra ngày kết thúc phải sau hoặc bằng ngày bắt đầu
+        if (phieuGiamGia.getNgayBatDau() != null
+                && phieuGiamGia.getNgayKetThuc() != null
+                && phieuGiamGia.getNgayKetThuc().before(phieuGiamGia.getNgayBatDau())) {
+            bindingResult.rejectValue("ngayKetThuc", "error.phieuGiamGia", "Ngày kết thúc phải sau hoặc bằng ngày bắt đầu");
+        }
+        // Kiểm tra giá trị giảm khi kiểu giảm giá là 1 (%)
+        if (phieuGiamGia.getKieuGiamGia() == 1 && phieuGiamGia.getGiaTriGiam() != null
+                && phieuGiamGia.getGiaTriGiam().compareTo(BigDecimal.valueOf(100)) > 0) {
+            bindingResult.rejectValue("giaTriGiam", "error.phieuGiamGia", "Giá trị giảm không được lớn hơn 100% khi giảm theo phần trăm.");
+        }
+        // Nếu có lỗi, trả về lại form sửa và hiển thị lỗi
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("phieuGiamGia", phieuGiamGia);
+            return "/admin/PhieuGiamGia/Update"; // Đảm bảo đường dẫn đúng với file HTML
+        }
+        // Cập nhật thông tin nếu không có lỗi
         phieuGiamGiaService.update(id, phieuGiamGia);
         return "redirect:/admin/phieu-giam-gia/index";
     }
 
-    @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer id) {
-        phieuGiamGiaService.delete(id);
+    @PostMapping("/update-status/{id}")
+    @Transactional
+    public String updateStatus(@PathVariable("id") Integer id) {
+        Optional<PhieuGiamGia> phieuGiamGiaOptional = phieuGiamGiaService.getById(id);
+        if (phieuGiamGiaOptional.isPresent()) {
+            PhieuGiamGia phieuGiamGia = phieuGiamGiaOptional.get();
+            phieuGiamGia.setTrangThai(0);
+            phieuGiamGiaService.updateStatus(id, phieuGiamGia);
+        }
         return "redirect:/admin/phieu-giam-gia/index";
     }
 
+
     @PostMapping("/addpg")
-    public String addpg(@ModelAttribute("phieuGiamGia") PhieuGiamGia phieuGiamGia) {
+    public String addpg(@Valid @ModelAttribute("phieuGiamGia") PhieuGiamGia phieuGiamGia,
+                        BindingResult bindingResult, Model model) {
+        // Kiểm tra ngày kết thúc phải sau hoặc trùng ngày bắt đầu
+        if (phieuGiamGia.getNgayBatDau() != null
+                && phieuGiamGia.getNgayKetThuc() != null
+                && phieuGiamGia.getNgayKetThuc().before(phieuGiamGia.getNgayBatDau())) {
+            bindingResult.rejectValue("ngayKetThuc", "error.phieuGiamGia", "Ngày kết thúc phải sau hoặc trùng với ngày bắt đầu");
+        }
+        if (phieuGiamGia.getKieuGiamGia() == 1 && phieuGiamGia.getGiaTriGiam() != null
+                && phieuGiamGia.getGiaTriGiam().compareTo(BigDecimal.valueOf(100)) > 0) {
+            bindingResult.rejectValue("giaTriGiam", "error.phieuGiamGia", "Giá trị giảm không được lớn hơn 100% khi giảm theo phần trăm.");
+        }
+        if (bindingResult.hasErrors()) {
+            return "/admin/PhieuGiamGia/Add";
+        }
         phieuGiamGiaService.create(phieuGiamGia);
         return "redirect:/admin/phieu-giam-gia/index";
     }

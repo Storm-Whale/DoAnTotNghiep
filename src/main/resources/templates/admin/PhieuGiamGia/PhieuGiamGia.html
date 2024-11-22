@@ -22,31 +22,31 @@
     </div>
     <div class="row mb-4">
         <div class="col-md-12">
-            <form method="get" action="/admin/phieu-giam-gia/index" class="row g-3">
+            <form id="filterForm2" method="get" action="/admin/phieu-giam-gia/index" class="row g-3">
                 <div class="col-md-6 d-flex">
                     <input name="keyword" th:value="${keyword}" type="text" class="form-control me-2" style="height: 35px; line-height: 1;" placeholder="Search...">
                     <button type="submit" class="btn btn-outline-primary me-2" style="height: 35px; line-height: 1;">Search</button>
                 </div>
                 <div class="col-md-6 d-flex">
                     <div class="ms-auto">
-                        <a class="btn btn-outline-warning btn-sm" th:href="@{'/admin/phieu-giam-gia/add'}">
-                            <i class="fas fa-info-circle"></i> Thêm mới
+                        <a class="btn btn-outline-info btn-sm" th:href="@{'/admin/phieu-giam-gia/add'}">
+                            <i class="fas fa-info-circle"></i> + Thêm mới
                         </a>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <label for="startDate" class="form-label">Ngày bắt đầu</label>
-                    <input type="date" id="startDate" name="ngayBatDau" class="form-control">
+                    <input type="date" id="startDate" name="ngayBatDau" class="form-control" th:value="${ngayBatDau != null ? ngayBatDau : ''}" onchange="submitForm2()">
                 </div>
                 <div class="col-md-3">
                     <label for="endDate" class="form-label">Ngày kết thúc</label>
-                    <input type="date" id="endDate" name="ngayKetThuc" class="form-control">
+                    <input type="date" id="endDate" name="ngayKetThuc" class="form-control" th:value="${ngayKetThuc != null ? ngayKetThuc : ''}"  onchange="submitForm2()">
                 </div>
 
                 <!-- Loại giảm giá -->
                 <div class="col-md-3">
                     <label for="kieuGiamGia" class="form-label">Loại giảm giá</label>
-                    <select id="kieuGiamGia" name="kieuGiamGia" class="form-select">
+                    <select id="kieuGiamGia" name="kieuGiamGia" class="form-select" th:value="${kieuGiamGia}" onchange="submitForm2()">
                         <option value="">Chọn</option>
                         <option value="1" th:selected="${trangThai == 1}">%</option>
                         <option value="0" th:selected="${trangThai == 0}">VND</option>
@@ -56,10 +56,10 @@
                 <!-- Trạng thái -->
                 <div class="col-md-3">
                     <label for="trangThai" class="form-label">Trạng thái</label>
-                    <select id="trangThai" name="trangThai" class="form-select">
+                    <select id="trangThai" name="trangThai" class="form-select" th:value="${trangThai}" onchange="submitForm2()">
                         <option value="">Chọn</option>
-                        <option value="0" th:selected="${trangThai == 0}">Active</option>
-                        <option value="1" th:selected="${trangThai == 1}">Inactive</option>
+                        <option value="1" th:selected="${trangThai == 1}">Active</option>
+                        <option value="0" th:selected="${trangThai == 0}">Inactive</option>
                     </select>
                 </div>
 
@@ -91,23 +91,28 @@
             <td th:text="${phieuGiamGia.maPhieuGiamGia}"></td>
             <td th:text="${phieuGiamGia.tenPhieuGiamGia}"></td>
             <td th:text="${phieuGiamGia.soLuong}"></td>
-            <td th:text="${phieuGiamGia.dieuKien}"></td>
+            <td th:text="${#numbers.formatDecimal(phieuGiamGia.dieuKien, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
             <td th:text="${phieuGiamGia.kieuGiamGia == 1 ? 'Phần trăm' : 'Giá tiền'}"></td>
-            <td th:text="${phieuGiamGia.ngayBatDau}"></td>
-            <td th:text="${phieuGiamGia.ngayKetThuc}"></td>
-            <td th:text="${phieuGiamGia.kieuGiamGia == 1 ? phieuGiamGia.giaTriGiam + ' %' : phieuGiamGia.giaTriGiam + ' VND'}"></td>
-            <td th:text="${phieuGiamGia.giaTriMax}"></td>
-            <td th:text="${phieuGiamGia.trangThai == 0 ? 'Active' : 'Inactive'}"></td>
+            <td th:text="${#dates.format(phieuGiamGia.ngayBatDau, 'yyyy-MM-dd')}"></td>
+            <td th:text="${#dates.format(phieuGiamGia.ngayKetThuc, 'yyyy-MM-dd')}"></td>
+            <td th:text="${phieuGiamGia.kieuGiamGia == 1 ? phieuGiamGia.giaTriGiam + ' %' : #numbers.formatDecimal(phieuGiamGia.giaTriGiam, 1, 'COMMA', 0, 'POINT') + ' đ'}"></td>
+            <td th:text="${#numbers.formatDecimal(phieuGiamGia.giaTriMax, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
+            <td th:text="${phieuGiamGia.trangThai == 1 ? 'Active' : 'Inactive'}"></td>
             <td>
                 <form class="d-inline-block">
                     <a class="btn btn-info btn-sm" th:href="@{'/admin/phieu-giam-gia/detail/' + ${phieuGiamGia.id}}">
-                        <i class="fas fa-info-circle"></i> Chi Tiết
+                        <i class="fas fa-info-circle"></i> Detail
                     </a>
                 </form>
-                <form class="d-inline-block" th:action="@{'/admin/phieu-giam-gia/delete/' + ${phieuGiamGia.id}}" method="post">
+                <form class="d-inline-block">
+                    <a class="btn btn-warning btn-sm" th:href="@{'/admin/phieu-giam-gia/edit/' + ${phieuGiamGia.id}}">
+                        <i class="fas fa-info-circle"></i> Update
+                    </a>
+                </form>
+                <form class="d-inline-block" th:action="@{'/admin/phieu-giam-gia/update-status/' + ${phieuGiamGia.id}}" method="post">
                     <input type="hidden" name="_method" value="delete"/>
                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Xác nhận dừng hoạt động phiếu giảm giá?');">
-                        <i class="fas fa-trash-alt"></i> Xóa
+                        <i class="fas fa-trash-alt"></i> Delete
                     </button>
                 </form>
             </td>
@@ -151,30 +156,14 @@
             const url = `/admin/phieu-giam-gia/index?page=${currentPage}&size=${selectedSize}`;
             window.location.href = url;
         }
-    </script>
-<script>
-    $(document).ready(function () {
-        $('#kieuGiamGia, #trangThai').on('change', function () {
-            var kieuGiamGia = $('#kieuGiamGia').val();
-            var trangThai = $('#trangThai').val();
-            filterResults(kieuGiamGia, trangThai);
-        });
-        function filterResults(kieuGiamGia, trangThai) {
-            $.ajax({
-                url: '/admin/phieu-giam-gia/filter',
-                method: 'GET',
-                data: {
-                    kieuGiamGia: kieuGiamGia,
-                    trangThai: trangThai
-                },
-                success: function (response) {
-                },
-                error: function () {
-                    alert('Lỗi khi lấy dữ liệu!');
-                }
-            });
+
+        let debounceTimer;
+        function submitForm2() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() {
+                document.getElementById("filterForm2").submit();
+            }, 200);  // Trì hoãn 500ms trước khi submit form
         }
-    });
 </script>
 </section>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

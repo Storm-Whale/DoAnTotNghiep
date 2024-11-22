@@ -28,8 +28,8 @@
                     <label for="trangThai" class="form-label">Trạng thái</label>
                     <select id="trangThai" name="trangThai" class="form-select" onchange="submitForm2()">
                         <option value="">Chọn</option>
-                        <option value="0" th:selected="${trangThai == 0}">Active</option>
-                        <option value="1" th:selected="${trangThai == 1}">Inactive</option>
+                        <option value="1" th:selected="${trangThai == 1}">Active</option>
+                        <option value="0" th:selected="${trangThai == 0}">Inactive</option>
                     </select>
                 </div>
             </form>
@@ -106,16 +106,12 @@
 </div>
 <div th:fragments="script">
 <script>
-    function submitForm2() {
-        document.getElementById("filterForm2").submit();
-    }
-
     let debounceTimer;
     function submitForm2() {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(function() {
             document.getElementById("filterForm2").submit();
-        }, 500);  // Trì hoãn 500ms trước khi submit form
+        });  // Trì hoãn 500ms trước khi submit form
     }
     function changeItemsPerPage() {
         const selectedSize = document.getElementById("itemsPerPage").value;

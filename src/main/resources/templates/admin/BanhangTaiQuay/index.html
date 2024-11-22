@@ -198,16 +198,16 @@
                               th:text="${#numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT')}"></span> vnđ
                     </div>
 
-                    <div class="diaChiCheck">
-                        <form id="addressForm" style="display: none;" th:action="@{/admin/taiquay/cap-nhat-hoa-don}" method="post">
-                            <label style="margin: 15px;">Địa chỉ: <span th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></span></label>
-                                    <div class="input-group">
-                                        <input type="hidden" name="idHoaDon" th:value="${hoaDon.id}" />
-                                        <input type="text" id="diaChi" name="diaChi" th:value="${diaChi}" />
-                                        <button type="submit">Cập nhật địa chỉ</button>
-                                    </div>
-                        </form>
-                    </div>
+<!--                    <div class="diaChiCheck">-->
+<!--                        <form id="addressForm" style="display: none;" th:action="@{/admin/taiquay/cap-nhat-hoa-don}" method="post">-->
+<!--                            <label style="margin: 15px;">Địa chỉ: <span th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></span></label>-->
+<!--                                    <div class="input-group">-->
+<!--                                        <input type="hidden" name="idHoaDon" th:value="${hoaDon.id}" />-->
+<!--                                        <input type="text" id="diaChi" name="diaChi" th:value="${diaChi}" />-->
+<!--                                        <button type="submit">Cập nhật địa chỉ</button>-->
+<!--                                    </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
                 </div>
                 <div class="payment-info">
                     <p style="margin-top: 7px;margin-bottom: 7px;"><b><i class="bi bi-diamond-fill fs3">Thông tin thanh
@@ -414,13 +414,15 @@
 
 
                     <p style="font-size: 14px; margin-top: 10px;">Tiền Tạm Tính: <span id="subtotal"
-                                                                                       th:text="${#numbers.formatDecimal((tongTien != null ? tongTien : 0), 1, 'COMMA', 0, 'POINT')} + 'đ'">0</span>
+                               th:text="${#numbers.formatDecimal((tongTien != null ? tongTien : 0), 1, 'COMMA', 0, 'POINT')} + 'đ'">0</span>
                     </p>
                     <p style="font-size: 14px;">Số Tiền Giảm Giá: <span id="discount">0</span> đ</p>
 
                     <p>Tổng tiền sau khi áp dụng mã giảm giá:
+
                         <!--                        <span th:text="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : tongTien), 1, 'COMMA', 0, 'POINT')} + 'đ'"></span>-->
-                        <span th:text="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"></span>
+<!--                        <span th:text="${tongTienSauGiam != null ? tongTienSauGiam : (tongTien != null ? tongTien : 0)}"></span>-->
+                        <span th:text="${tongTienSauGiam == null || tongTienSauGiam == 0 ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT')}"></span>
 
 
                     </p>
@@ -436,14 +438,13 @@
                     </a>
                     <div id="thanhtoan" class="modalthanhtoan">
                         <div class="modal__centerthanhtoan">
-
-
-                            <form action="/admin/taiquay/thanhtoan" method="get" class="thanhtoan">
+                            <form action="/admin/taiquay/thanhtoan" method="get" id="paymentForm" target="pdfWindow"
+                                  class="thanhtoan">
                                 <div class="mb-3">
                                     <label class="col-3" style="font-size: 14px;margin-top: 10px;">Khách cần
                                         trả:</label>
                                     <b><span id="tongTien" style="font-size: 14px;"
-                                             th:text="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"></span></b>
+                                             th:text="${tongTienSauGiam == null || tongTienSauGiam == 0 ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT') +' đ'}"></span></b>
                                     <input type="hidden" name="tongTien"
                                            th:value="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"/>
                                 </div>
@@ -457,7 +458,7 @@
                                 </div>
                                 <div class="change">
                                     <label>Tiền thừa:</label>
-                                    <span id="tienThua">0</span> đ
+                                    <span id="tienThua">0</span>
                                 </div>
 
                                 <div style="display: flex; align-items: center; gap: 10px;">
@@ -539,95 +540,6 @@
 <script th:src="@{/javascript/admin.js}"></script>
 <script th:src="@{/javascript/thanhtoan.js}"></script>
 <script th:src="@{/javascript/taiquay.js}"></script>
-<!--<script>-->
-<!--    const video = document.getElementById('qr-video');-->
-<!--    const canvas = document.getElementById('qr-canvas');-->
-<!--    const context = canvas.getContext('2d');-->
-<!--    let isCameraOn = false;-->
-<!--    // let selectedInvoiceId = null;-->
-
-<!--    // Xác định hóa đơn được chọn-->
-<!--    document.addEventListener('DOMContentLoaded', function () {-->
-<!--        // Hàm xử lý sự kiện chọn hóa đơn-->
-<!--        function selectInvoice(invoiceId) {-->
-<!--            console.log("Selected invoice ID:", invoiceId);-->
-
-<!--            // Bỏ chọn tất cả các hóa đơn-->
-<!--            const allInvoices = document.querySelectorAll("#invoiceList .invoice-item");-->
-<!--            allInvoices.forEach(invoice => invoice.classList.remove("selected"));-->
-
-<!--            // Chọn hóa đơn hiện tại-->
-<!--            const selectedInvoice = document.querySelector(`#invoiceList .invoice-item[data-id='${invoiceId}']`);-->
-<!--            if (selectedInvoice) {-->
-<!--                selectedInvoice.classList.add("selected");-->
-<!--                sessionStorage.setItem("selectedInvoiceId", invoiceId);-->
-<!--            }-->
-
-<!--            // Cập nhật ID của hóa đơn được chọn-->
-<!--            // selectedInvoiceId = invoiceId;-->
-<!--            // localStorage.setItem('selectedInvoiceId', invoiceId);-->
-<!--            // Cập nhật URL của trình duyệt-->
-<!--            window.history.pushState({}, '', `/admin/taiquay/detail/${invoiceId}`);-->
-<!--        }-->
-
-<!--        // Gán sự kiện chọn hóa đơn cho các phần tử-->
-<!--        const invoiceLinks = document.querySelectorAll('.invoice-link');-->
-<!--        invoiceLinks.forEach(link => {-->
-<!--            link.addEventListener('click', function (event) {-->
-<!--                const invoiceId = event.target.getAttribute('data-id');-->
-<!--                console.log("Invoice ID from link:", invoiceId);-->
-<!--                selectInvoice(invoiceId);-->
-<!--            });-->
-<!--        });-->
-<!--        // Kiểm tra trạng thái đã chọn khi tải lại trang-->
-<!--        // let selectedInvoiceId = sessionStorage.getItem("selectedInvoiceId");-->
-<!--        // if (selectedInvoiceId) {-->
-<!--        //     selectInvoice(selectedInvoiceId);-->
-<!--        // }-->
-<!--        const selectedInvoiceId = sessionStorage.getItem("selectedInvoiceId");-->
-<!--        if (selectedInvoiceId) {-->
-<!--            selectInvoice(selectedInvoiceId);-->
-<!--        }-->
-<!--    });-->
-
-<!--    // Hàm toggle camera khi nhấn nút Quét QR-->
-<!--    function toggleCamera() {-->
-<!--        // const selectedInvoice = document.querySelector("#invoiceList .invoice-item.selected");-->
-<!--        if (selectedInvoice) {-->
-<!--            const billId = selectedInvoice.getAttribute("data-id");-->
-<!--            console.log("Selected Invoice ID:", billId);-->
-
-<!--            // Thực hiện logic mở camera hoặc xử lý tiếp với billId-->
-<!--            if (isCameraOn) {-->
-<!--                document.getElementById("qr-video").style.display = "none";-->
-<!--                document.getElementById("qr-canvas").style.display = "none";-->
-<!--                isCameraOn = false;-->
-<!--                sessionStorage.removeItem('selectedInvoiceId')-->
-<!--            } else {-->
-<!--                startCamera(); // Hàm bạn đã định nghĩa để khởi động camera-->
-<!--                isCameraOn = true;-->
-<!--            }-->
-<!--        } else {-->
-<!--            console.log("No invoice selected");-->
-<!--            alert("Vui lòng chọn hóa đơn trước khi quét QR.");-->
-<!--        }-->
-<!--    }-->
-
-<!--    // Hàm khởi động camera-->
-<!--    function startCamera() {-->
-<!--        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })-->
-<!--            .then(stream => {-->
-<!--                video.srcObject = stream;-->
-<!--                video.play();-->
-<!--                requestAnimationFrame(tick);-->
-<!--            })-->
-<!--            .catch(error => {-->
-<!--                console.error('Unable to access the camera/webcam.', error);-->
-<!--            });-->
-<!--        video.style.display = 'block';-->
-<!--        canvas.style.display = 'none';-->
-<!--    }-->
-<!--</script>-->
 <script>
     // Gán giá trị idHoaDon từ server qua Thymeleaf
     let idHoaDon = [[${idHoaDon}]];
@@ -663,6 +575,7 @@
             }
         }
     }
+
     // Hàm khởi động camera
     function startCamera() {
         navigator.mediaDevices.getUserMedia({video: {facingMode: 'environment'}})
@@ -679,6 +592,7 @@
         video.style.display = 'block';
         canvas.style.display = 'none';
     }
+
     // get qr scan to controller
     async function tick() {
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -736,6 +650,34 @@
             requestAnimationFrame(tick);
         }
     }
+</script>
+<script>
+    document.getElementById("paymentForm").onsubmit = function (event) {
+        event.preventDefault(); // Ngăn hành vi submit mặc định của form
+
+        // Lấy dữ liệu form
+        const form = document.getElementById("paymentForm");
+        const formData = new FormData(form);
+
+        // Thực hiện submit form qua fetch API
+        fetch(form.action + "?" + new URLSearchParams(formData), {
+            method: "GET"
+        })
+            .then(response => response.text()) // Lấy URL file PDF từ server
+            .then(pdfUrl => {
+                // Mở file PDF trong tab mới
+                if (pdfUrl) {
+                    window.open(pdfUrl, "_blank");
+                    window.location.href = "/admin/taiquay";
+                } else {
+                    alert("Không thể tạo file PDF!");
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi khi xử lý thanh toán:", error);
+                alert("Đã xảy ra lỗi trong quá trình thanh toán!");
+            });
+    };
 </script>
 <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

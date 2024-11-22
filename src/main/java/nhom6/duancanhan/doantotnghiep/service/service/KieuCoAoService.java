@@ -19,5 +19,15 @@ public interface KieuCoAoService {
 
     void updateKieuCoAoById(Integer id, KieuCoAo kieuCoAo);
 
+    List<KieuCoAo> getKieuCoAoByTrangThai(int trangThai);
+
+    Page<KieuCoAo> phanTrangTheoTrangThai(int trangThai, int pageNo, int pageSize);
+
+    List<KieuCoAo> getKieuCoAoByTen(String tenCoAo);
+
+    Page<KieuCoAo> phanTrangTheoTen(String tenCoAo, int pageNo, int pageSize);
+    Page<KieuCoAo> timKiemVaPhanTrang(String tenCoAo, Integer trangThai, int page, int size);
+
+    List<KieuCoAo> searchByTenCoAo(String tenCoAo);
     List<String> getAllTenKieuCoAo();
 }

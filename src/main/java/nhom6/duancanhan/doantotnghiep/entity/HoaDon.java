@@ -63,7 +63,7 @@ public class HoaDon extends BaseEntity{
     private Integer trangThaiThanhToan;
 
     @Column(name = "trang_thai")
-    private int trangThai;
+    private Integer trangThai;
 
     @JsonIgnore
     @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL)

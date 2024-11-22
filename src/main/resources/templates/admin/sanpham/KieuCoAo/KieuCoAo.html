@@ -20,13 +20,20 @@
             <h2>Quản Lý Kiểu Cổ Áo</h2>
         </div>
     </div>
+    <div th:if="${error != null}" class="alert alert-danger" role="alert">
+        <span th:text="${error}"></span>
+    </div>
     <div class="row mb-4">
         <div class="col-md-12">
+            <!-- Form to add 'Kieu Co Ao' -->
             <form th:action="@{/admin/kieu-co-ao/add}" th:object="${kieuCoAo}" method="post" class="row g-3">
                 <div class="col-md-4">
-                    <label for="tenChatLieu" class="form-label">Tên Kiểu Cổ Áo</label>
-                    <input type="text" class="form-control" th:field="*{tenCoAo}" placeholder="Nhập tên kiểu cổ áo">
-<!--                    <span th:if="${#fields.hasErrors('tenCoAo')}" th:errors="*{tenCoAo}">Tên không được để trống</span>-->
+                    <label class="form-label">Tên Kiểu Cổ Áo</label>
+                    <input type="text" name="tenCoAo" class="form-control" th:field="*{tenCoAo}" id="tenCoAo" placeholder="Nhập tên kiểu cổ áo">
+                    <div th:if="${#fields.hasErrors('tenCoAo')}" class="text-danger">
+                        <span th:errors="*{tenCoAo}"></span>
+                    </div>
+<!--                    <div id="tenCoAoError" class="text-danger" style="display: none;"></div> &lt;!&ndash; Thông báo lỗi &ndash;&gt;-->
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
                     <button type="submit" class="btn btn-success">
@@ -35,9 +42,13 @@
                 </div>
             </form>
 
-
+<!--            <form th:action="@{/admin/kieu-co-ao/search}" method="get" class="d-flex">-->
+<!--                <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm tên kiểu cổ áo" class="form-control me-2">-->
+<!--                <button type="submit" class="btn btn-primary">Tìm kiếm</button>-->
+<!--            </form>-->
         </div>
     </div>
+
 
     <table class="table table-bordered table-hover text-center">
         <thead class="table-dark">
@@ -50,10 +61,10 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="kieuCoAo, index : ${listKCA}">
-            <td th:text="${index.index + 1}"></td>
+        <tr th:each="kieuCoAo : ${listKCA}">
+            <td th:text="${kieuCoAo.id}"></td>
             <td th:text="${kieuCoAo.tenCoAo}"></td>
-            <td th:text="${kieuCoAo.trangThai == 0 ? 'Hoạt động' : 'Ngừng hoạt động'}"></td>
+            <td th:text="${kieuCoAo.trangThai == 1 ? 'Hoạt động' : 'Ngừng hoạt động'}"></td>
             <td th:text="${kieuCoAo.ngayTao}"></td>
             <td>
                 <form class="d-inline-block">
@@ -102,43 +113,29 @@
                 </li>
             </ul>
         </nav>
+
+
     </div>
     <script>
         function changeItemsPerPage() {
             const selectedSize = document.getElementById("itemsPerPage").value;
-            const currentPage = [[${currentPage}]];
+            const currentPage = [[${currentPage}]]; // Truyền currentPage từ Thymeleaf
             const url = `/admin/kieu-co-ao/${currentPage}?size=${selectedSize}`;
             window.location.href = url;
         }
     </script>
-</section>
 
-<!-- Add KCA -->
-<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form th:action="@{/admin/kieu-co-ao/add}" th:object="${kieuCoAo}" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel">Thêm Kiểu Cổ Áo</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="tenChatLieu" class="form-label">Tên Cổ Áo</label>
-                        <input type="text" class="form-control" id="tenChatLieu" th:field="*{tenCoAo}" placeholder="Nhập tên kiểu cổ áo">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="submit" class="btn btn-primary">Lưu</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+</section>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script th:src="@{/javascript/admin.js}"></script>
+<!--    &lt;!&ndash; Kiểm tra xem có thông báo lỗi từ server không &ndash;&gt;-->
+<!--    <script th:inline="javascript">-->
+<!--        /*<![CDATA[*/-->
+<!--        if ([[${error}]] != null) {-->
+<!--        alert([[${error}]]);-->
+<!--    }-->
+<!--        /*]]>*/-->
+<!--</script>-->
 </html>

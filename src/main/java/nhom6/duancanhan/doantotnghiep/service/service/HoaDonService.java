@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
+import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
@@ -28,4 +29,6 @@ public interface HoaDonService {
 
     void cancelHoaDon(Integer id);
     public HoaDon findById(Integer id);
+
+    List<PhieuGiamGiaHoaDonDTO> getHoaDonByPhieuGiamGia(Integer phieuGiamGiaId);
 }

@@ -1,15 +1,14 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 
+import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
-import nhom6.duancanhan.doantotnghiep.entity.SanPham;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -99,5 +98,9 @@ public class HoaDonServiceImpl implements HoaDonService {
     @Override
     public HoaDon findById(Integer id) {
         return hoaDonRepository.findById(id).orElse(null);
+    }
+    @Override
+    public List<PhieuGiamGiaHoaDonDTO> getHoaDonByPhieuGiamGia(Integer phieuGiamGiaId) {
+        return hoaDonRepository.findHoaDonByPhieuGiamGia(phieuGiamGiaId);
     }
 }

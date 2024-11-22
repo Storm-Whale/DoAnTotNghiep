@@ -40,7 +40,7 @@
                             <div class="col-md-6">
                                 <label for="trangThai" class="form-label">Trạng Thái:</label>
                                 <input type="text" id="trangThai" name="trangThai" class="form-control"
-                                       th:value="${kieuTayAo.trangThai == 0 ? 'Hoạt động' : 'Ngừng hoạt động'}" readonly>
+                                       th:value="${kieuTayAo.trangThai == 1 ? 'Hoạt động' : 'Ngừng hoạt động'}" readonly>
                             </div>
                         </div>
 
@@ -89,7 +89,7 @@
                                 <td>
                                     <span th:text="${sanPham.tenSanPham}"></span>
                                 </td>
-                                <td th:text="${kieuTayAo.trangThai == 0 ? 'Hoạt động' : 'Ngừng hoạt động'}"></td>
+                                <td th:text="${kieuTayAo.trangThai == 1 ? 'Hoạt động' : 'Ngừng hoạt động'}"></td>
                                 <td th:text="${kieuTayAo.ngayTao}"></td>
                                 <td>
                                     <form class="d-inline-block">

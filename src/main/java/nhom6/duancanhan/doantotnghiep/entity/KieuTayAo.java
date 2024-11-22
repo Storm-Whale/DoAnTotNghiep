@@ -1,6 +1,8 @@
 package nhom6.duancanhan.doantotnghiep.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
@@ -17,7 +19,8 @@ public class KieuTayAo extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-
+    @NotBlank(message = "Vui lòng nhập tên tay áo!")
+    @Size(max = 19, message = "Name must be 20 characters")
     @Column(name = "ten_tay_ao")
     private String tenTayAo;
 

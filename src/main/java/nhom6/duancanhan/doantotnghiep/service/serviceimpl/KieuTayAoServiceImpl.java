@@ -63,4 +63,25 @@ public class KieuTayAoServiceImpl implements KieuTayAoService {
                 , "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu"
         );
     }
+
+    @Override
+    public List<KieuTayAo> getKieuTayAoByTrangThai(int trangThai) {
+        return null;
+    }
+
+    @Override
+    public List<KieuTayAo> getKieuTayAoByTen(String tenTayAo) {
+        return null;
+    }
+
+    @Override
+    public Page<KieuTayAo> phanTrangTheoTrangThai(int trangThai, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return kieuTayAoRepository.findKieuTayAoByTrangThai(trangThai, pageable);
+    }
+    @Override
+    public Page<KieuTayAo> phanTrangTheoTen(String tenTayAo, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return kieuTayAoRepository.findKieuTayAoByTen(tenTayAo, pageable);
+    }
 }
