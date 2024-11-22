@@ -38,5 +38,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
             "JOIN hd.phieuGiamGia pgg " +
             "WHERE pgg.id = :phieuGiamGiaId")
     List<PhieuGiamGiaHoaDonDTO> findHoaDonByPhieuGiamGia(@Param("phieuGiamGiaId") Integer phieuGiamGiaId);
+    List<HoaDon> findHoaDonByKhachHangId(Integer khachHangId);
+    List<HoaDon> findHoaDonByKhachHangIdAndTrangThai(Integer khachHangId, int trangThai);
 
 }
