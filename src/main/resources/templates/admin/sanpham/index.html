@@ -173,8 +173,33 @@
                 </tr>
                 </thead>
                 <tbody>
+                <tr th:if="${sp_moi != null && sp_moi.getId() != null}">
+                    <td>1</td> <!-- Sản phẩm mới luôn có index là 1 -->
+                    <td th:text="${sp_moi.tenSanPham}"></td>
+                    <td th:text="${sp_moi.tenThuongHieu}"></td>
+                    <td th:text="${sp_moi.tenChatLieu}"></td>
+                    <td th:text="${sp_moi.tenTayAo}"></td>
+                    <td th:text="${sp_moi.tenCoAo}"></td>
+                    <td th:text="${sp_moi.ngayTao}"></td>
+                    <td>
+                        <span class="badge bg-success" th:if="${sp_moi.trangThai == 1}">Hoạt động</span>
+                        <span class="badge bg-danger" th:if="${sp_moi.trangThai == 0}">Ngưng hoạt động</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" style="border-radius: 8px;">
+                            <a th:href="@{/admin/products/find_by_id/{id}(id=${sp_moi.id})}" style="color: white;">Chi Tiết</a>
+                        </button>
+                        <button class="btn btn-success btn-sm" style="border-radius: 8px;">
+                            <a th:href="@{/admin/products/edit/{id}(id=${sp_moi.id})}" style="color: white;">Update</a>
+                        </button>
+                        <button class="btn btn-warning btn-sm" style="border-radius: 8px;">
+                            <a th:href="@{/admin/products/delete/{id}(id=${sp_moi.id})}" style="color: white;">Delete</a>
+                        </button>
+                    </td>
+                </tr>
                 <tr th:each="product, index : ${products}">
-                    <td th:text="${index.index + 1}"></td>
+                    <!-- Nếu có sp_moi, bắt đầu index từ 2 -->
+                    <td th:text="${sp_moi != null && sp_moi.getId() != null ? index.index + 2 : index.index + 1}"></td>
                     <td th:text="${product.tenSanPham}"></td>
                     <td th:text="${product.tenThuongHieu}"></td>
                     <td th:text="${product.tenChatLieu}"></td>
@@ -229,7 +254,8 @@
                     </li>
                     <!-- Last Page -->
                     <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-                        <a class="page-link" th:href="@{/admin/products/index(page=${totalPages - 1}, keyword=${keyword}, status=${status}, size=${size})}">
+                        <a class="page-link"
+                           th:href="@{/admin/products/index(page=${totalPages - 1}, keyword=${keyword}, status=${status}, size=${size})}">
                             Last
                         </a>
                     </li>
