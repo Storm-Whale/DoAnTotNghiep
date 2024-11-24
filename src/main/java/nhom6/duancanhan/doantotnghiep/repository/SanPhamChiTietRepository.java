@@ -18,6 +18,8 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
             """)
     List<SanPhamChiTiet> findSanPhamChiTietByIdSanPham(Integer idSP);
 
+    List<SanPhamChiTiet> findBySanPhamIdAndTrangThai(Integer idSP, Integer trangThai);
+
     @Query("""
        select spct from SanPhamChiTiet as spct where spct.sanPham.id = :idSP order by spct.gia asc limit 1
        """)

@@ -423,7 +423,7 @@ VALUES (1, GETDATE(), GETDATE()),
        (5, GETDATE(), GETDATE());
 
 -- Insert into san_pham_gio_hang
-INSERT INTO san_pham_gio_hang (id_gio_hang, id_spct, so_luong, ngay_tao, ngay_sua)
+INSERT INTO san_pham_gio_hang (id_gio_hang, id_spct, so_luong, ngay_tao, ngay_sua, trang_thai)
 VALUES (1, 1, 3, GETDATE(), GETDATE(), 1), -- Giỏ hàng 1, Sản phẩm 1, Số lượng 3
        (1, 2, 1, GETDATE(), GETDATE(), 1), -- Giỏ hàng 1, Sản phẩm 2, Số lượng 1
        (2, 3, 2, GETDATE(), GETDATE(), 1), -- Giỏ hàng 2, Sản phẩm 3, Số lượng 2

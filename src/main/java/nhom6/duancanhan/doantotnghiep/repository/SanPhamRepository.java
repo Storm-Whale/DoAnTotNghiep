@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
 
+    List<SanPham> findAllByTrangThai(Integer trangThai);
+
     boolean existsSanPhamByTenSanPham(String tenSanPham);
 
     boolean existsSanPhamByTenSanPhamAndIdNot(String tenSanPham, Integer id);

@@ -25,6 +25,9 @@ public class ChangeNumberOfDetailProduct {
                     throw new IllegalArgumentException("Số lượng trong kho không đủ");
                 }
                 sanPhamChiTiet.setSoLuong(soLuongInDetailProduct - soLuong);
+                if (soLuongInDetailProduct - soLuong == 0) {
+                    sanPhamChiTiet.setTrangThai(0);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Không tồn tại phương thức này");

@@ -37,5 +37,7 @@ public interface SanPhamService {
 
     List<SanPhamShowOnClient> searchSanPham(String tenThuongHieu, String tenChatLieu, String tenTayAo, String tenCoAo, String sort);
 
+    boolean existTenSanPham(String tenSanPham, Integer id);
+
     boolean existTenSanPham(String tenSanPham);
 }

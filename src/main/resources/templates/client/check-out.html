@@ -109,8 +109,10 @@
             </tr>
             </tbody>
         </table>
-        <p class="text-end fw-bold text-danger"
-           th:text="'Tổng tiền : ' + ${#numbers.formatDecimal(tongTien, 0, 'COMMA', 0, 'POINT')} + ' đ'"></p>
+        <p class="text-end fw-bold"
+           th:text="'Tổng tiền : ' + ${#numbers.formatDecimal(tongTien, 0, 'COMMA', 0, 'POINT')} + ' đ'"
+           style="color: orangered"
+        ></p>
     </div>
 
     <!-- * Form Tổng Thông Tin Hóa Đơn -->
@@ -154,9 +156,12 @@
                             <div class="col-8">
                                 <input type="text" class="form-control mb-2" id="voucherCode" value="">
                             </div>
-                            <div class="col-4">
-                                <button id="openModalButton" class="btn btn-primary" type="button">
-                                    Chọn mã giảm giá
+                            <div class="col-4 d-flex gap-2">
+                                <button id="openModalButton" class="btn btn-primary" type="button" style="height: 40px; font-size: medium">
+                                    Chọn mã
+                                </button>
+                                <button id="restPGG" class="btn btn-primary" type="button" style="height: 40px; font-size: medium">
+                                    Xóa mã
                                 </button>
                             </div>
                         </div>
@@ -180,8 +185,10 @@
                         </tr>
                         <tr>
                             <th scope="row" class="fw-bold">Tổng tiền</th>
-                            <td id="tongTien" class="fw-bold text-danger"
-                                th:text="${#numbers.formatDecimal(tongTien - phiShip, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                            <td id="tongTien" class="fw-bold"
+                                th:text="${#numbers.formatDecimal(tongTien - phiShip, 0, 'COMMA', 0, 'POINT')} + ' đ'"
+                                style="color: orangered">
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -219,7 +226,7 @@
             <div class="modal-body">
                 <div>
                     <div class="row">
-                        <div class="col-auto p-2"><strong>Mã Voucher:</strong></div>
+                        <div class="col-auto p-2"><strong>Mã Voucher: Chưa có mã giảm giá</strong></div>
                         <div class="col">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Mã Shopee Voucher"

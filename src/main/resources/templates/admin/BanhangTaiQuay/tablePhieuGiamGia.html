@@ -60,9 +60,9 @@
             <td th:text="${phieuGiamGia.soLuong}"></td>
             <td th:text="${#numbers.formatDecimal(phieuGiamGia.dieuKien, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
             <td th:text="${phieuGiamGia.kieuGiamGia == 1 ? 'Phần trăm' : 'Giá tiền'}"></td>
-            <td th:text="${phieuGiamGia.ngayBatDau}"></td>
-            <td th:text="${phieuGiamGia.ngayKetThuc}"></td>
-            <td th:text="${phieuGiamGia.kieuGiamGia == 1 ? phieuGiamGia.giaTriGiam + ' %' : phieuGiamGia.giaTriGiam + ' VND'}"></td>
+            <td th:text="${#dates.format(phieuGiamGia.ngayBatDau, 'yyyy-MM-dd')}"></td>
+            <td th:text="${#dates.format(phieuGiamGia.ngayKetThuc, 'yyyy-MM-dd')}"></td>
+            <td th:text="${phieuGiamGia.kieuGiamGia == 1 ? phieuGiamGia.giaTriGiam + ' %' : #numbers.formatDecimal(phieuGiamGia.giaTriGiam, 1, 'COMMA', 0, 'POINT') + ' đ'}"></td>
             <td th:text="${#numbers.formatDecimal(phieuGiamGia.giaTriMax, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
             <td th:text="${phieuGiamGia.trangThai == 1 ? 'Active' : 'Inactive'}"></td>
             <td>

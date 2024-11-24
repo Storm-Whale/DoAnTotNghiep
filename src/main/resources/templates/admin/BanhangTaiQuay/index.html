@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
     <link rel="stylesheet" th:href="@{/css/taiquay.css}">
+    <!-- Thêm vào head hoặc trước khi đóng body -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <style>
     .alert {
@@ -116,12 +118,12 @@
 
 <section class="page-content my-4">
     <h4 style="margin-left: 30px; margin-top: 10px; margin-bottom: 30px"><b>Bán hàng tại quầy</b></h4>
+<!--    <h5>Tên nhân viên: <span th:text="${nhanvien.ten}">Tên nhân viên</span></h5>-->
     <form id="createInvoiceForm">
         <button id="btnCreateInvoice" style="background-color: #ff6b6b; border-radius: 20px; border: 1px solid #ccc;"
                 type="button"><i class="bi bi-align-center">Tạo Hóa Đơn</i></button>
     </form>
     <div class="container">
-
         <div id="invoiceList" style="margin-top: 20px;">
             <ul style="list-style-type: none; padding: 0; display: flex; flex-wrap: wrap;">
                 <li class="invoice-item" th:each="hoaDon : ${listHD}" th:attr="data-id=${hoaDon.id}"
@@ -134,31 +136,29 @@
                 </li>
             </ul>
         </div>
-        <!--        <script>-->
-        <!--            document.addEventListener("DOMContentLoaded", function () {-->
-        <!--                const message = /*[[${message}]]*/ "";-->
-        <!--                if (message) {-->
-        <!--                    alert(message);-->
-        <!--                }-->
-        <!--            });-->
-        <!--        </script>-->
-
-
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
+        <!-- Thông báo thành công -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Thành công!</strong> <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <!-- Thông báo lỗi -->
+<!--        <div th:if="${errorSoLuong}" class="alert alert-warning alert-dismissible fade show" role="alert">-->
+<!--            <strong>Cảnh báo!</strong> <span th:text="${errorSoLuong}"></span>-->
+<!--            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--        </div>-->
         <div class="section">
             <div>
                 <div class="d-flex justify-content-between">
                     <div>
                         <button class="btn btn-dark" onclick="toggleCamera()">Quét QR</button>
                         <div style="margin-bottom: 20px; margin-top: 20px">
-                            <video id="qr-video" width="240" height="160" style="display: none" autoplay></video>
+                            <video id="qr-video" width="240" height="160" style="display: none;"></video>
                             <canvas id="qr-canvas" width="400" height="300" style="display:none;"></canvas>
                         </div>
                     </div>
                 </div>
 
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
                 <a class="taiquay"><a th:href="@{/admin/taiquay/sanpham#sanpham}">
                     <button class="btn btn-light">Thêm Sản Phẩm</button>
@@ -182,7 +182,13 @@
                             <tr th:each="hdct,stt : ${listHDCT}">
                                 <td th:text="${stt.index + 1}"></td>
                                 <td th:text="${hdct.sanPhamChiTiet.sanPham.tenSanPham}"></td>
-                                <td th:text="${hdct.soLuong}"></td>
+                                <td>
+                                    <button class="btn btn-sm btn-light" style="margin-right: 3px"
+                                            th:attr="onclick='updateQuantity(' + ${hdct.id} + ', -1)'">-</button>
+                                    <span th:text="${hdct.soLuong}"></span>
+                                    <button class="btn btn-sm btn-light" style="margin-left: 3px"
+                                            th:attr="onclick='updateQuantity(' + ${hdct.id} + ', 1)'">+</button>
+                                </td>
                                 <td th:text="${#numbers.formatDecimal(hdct.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
                                 <!--                                <p class="price" th:text="${#numbers.formatDecimal(sanpham.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></p>-->
                                 <td th:text="${#numbers.formatDecimal(hdct.sanPhamChiTiet.gia.multiply(hdct.soLuong),1, 'COMMA', 0, 'POINT')}+ 'đ'"></td>
@@ -245,7 +251,7 @@
                         <div id="themnhanhkhachhang" class="dialogmodal">
                         <div class="modal__center">
                             <div class="thongBao">
-                            <p>Hiện khoong có số điện thoại này! Bạn có muốn thêm mới không?</p>
+                            <p>Hiện không có số điện thoại này! Bạn có muốn thêm mới không?</p>
                             <a href="#themnhanhkhachhang1"><button>Có</button></a>
                             <a href=""><button>Không</button></a>
                             <a href="#" class="modal__close">&times;</a>
@@ -582,7 +588,10 @@
             .then(stream => {
                 video.srcObject = stream;
                 video.play();
+                video.onloadedmetadata = () => {
+                    console.log("Video metadata loaded");
                 requestAnimationFrame(tick);
+                };
             })
             .catch(error => {
                 console.error('Unable to access the camera/webcam.', error);
@@ -594,7 +603,173 @@
     }
 
     // get qr scan to controller
+    // async function tick() {
+    //     console.log("Video dimensions:", video.videoWidth, video.videoHeight);
+    //     if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    //         console.log("Tick function is running...");
+    //         canvas.height = video.videoHeight;
+    //         canvas.width = video.videoWidth;
+    //         context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    //         const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    //         const code = jsQR(imageData.data, imageData.width, imageData.height);
+    //
+    //         if (code) {
+    //             const qrData = code.data;
+    //             console.log("Dữ liệu mã QR: ", qrData);
+    //             const decodedData = decodeURIComponent(escape(qrData));
+    //             console.log("Dữ liệu đã giải mã: ", decodedData);
+    //
+    //             const idMatch = decodedData.match(/ID:\s*(\d+)/);
+    //             const productId = idMatch ? idMatch[1] : null;
+    //
+    //             if (!productId) {
+    //                 Swal.fire({
+    //                     icon: 'error',
+    //                     title: 'Lỗi',
+    //                     text: 'Mã QR không hợp lệ. Không tìm thấy ID sản phẩm.'
+    //                 });
+    //                 return;
+    //             }
+    //
+    //             // Hiển thị input số lượng với SweetAlert2
+    //             const { value: quantity } = await Swal.fire({
+    //                 title: 'Nhập Số Lượng Sản Phẩm',
+    //                 input: 'number',
+    //                 inputLabel: 'Số lượng',
+    //                 inputPlaceholder: 'Nhập số lượng',
+    //                 inputAttributes: {
+    //                     min: 1,
+    //                     step: 1
+    //                 },
+    //                 showCancelButton: true,
+    //                 confirmButtonText: 'Thêm',
+    //                 cancelButtonText: 'Hủy',
+    //                 inputValidator: (value) => {
+    //                     if (!value || parseInt(value) <= 0 || isNaN(value)) {
+    //                         return 'Vui lòng nhập số lượng hợp lệ!';
+    //                     }
+    //                 }
+    //             });
+    //
+    //             // Nếu người dùng nhập số lượng
+    //             // if (quantity) {
+    //             //     try {
+    //             //         const response = await axios.get(`/admin/taiquay/add-sanpham-hdctqr/${productId}`, {
+    //             //             params: {
+    //             //                 quantity: parseInt(quantity),
+    //             //                 idHoaDon: idHoaDon
+    //             //             }
+    //             //         });
+    //             //         // Kiểm tra lỗi số lượng
+    //             //         if (response.data.errorSoLuong) {
+    //             //             Swal.fire({
+    //             //                 icon: 'warning',
+    //             //                 title: 'Cảnh Báo',
+    //             //                 text: response.data.errorSoLuong,
+    //             //                 confirmButtonText: 'Nhập lại'
+    //             //             }).then(() => {
+    //             //                 // Gọi lại hàm tick để quét lại
+    //             //                 tick();
+    //             //             });
+    //             //             return;
+    //             //         }
+    //             //
+    //             //         // Kiểm tra và xử lý response an toàn
+    //             //         if (response.data && response.data.tongTien && response.data.listHDCT) {
+    //             //             // Cập nhật giỏ hàng bằng JavaScript
+    //             //             updateCartDynamically(response.data);
+    //             //
+    //             //             // Thông báo thành công
+    //             //             Swal.fire({
+    //             //                 icon: 'success',
+    //             //                 title: 'Thành Công',
+    //             //                 text: 'Sản phẩm đã được thêm vào giỏ hàng.',
+    //             //                 timer: 1000,
+    //             //                 showConfirmButton: false
+    //             //             });
+    //             //         } else {
+    //             //             // Nếu response không đúng định dạng
+    //             //             throw new Error('Dữ liệu trả về không hợp lệ');
+    //             //         }
+    //             //
+    //             //     } catch (error) {
+    //             //         console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+    //             //
+    //             //         // Log chi tiết lỗi
+    //             //         if (error.response) {
+    //             //             console.error("Response Error:", error.response.data);
+    //             //             console.error("Status:", error.response.status);
+    //             //         }
+    //             //
+    //             //         Swal.fire({
+    //             //             icon: 'error',
+    //             //             title: 'Lỗi',
+    //             //             text: error.message || 'Có lỗi xảy ra, vui lòng thử lại.'
+    //             //         });
+    //             //     }
+    //             // }
+    //             if (quantity) {
+    //                 try {
+    //                     const response = await axios.get(`/admin/taiquay/add-sanpham-hdctqr/${productId}`, {
+    //                         params: {
+    //                             quantity: parseInt(quantity),
+    //                             idHoaDon: idHoaDon
+    //                         }
+    //                     });
+    //
+    //                     // Nếu thêm sản phẩm thành công, refresh lại danh sách
+    //                     if (response.data && response.data.tongTien && response.data.listHDCT) {
+    //                         // Gọi AJAX để lấy lại toàn bộ danh sách hóa đơn chi tiết
+    //                         await refreshHoaDonChiTiet();
+    //
+    //                         Swal.fire({
+    //                             icon: 'success',
+    //                             title: 'Thành Công',
+    //                             text: 'Sản phẩm đã được thêm vào giỏ hàng.',
+    //                             timer: 1000,
+    //                             showConfirmButton: false
+    //                         });
+    //                     } else {
+    //                         throw new Error('Dữ liệu trả về không hợp lệ');
+    //                     }
+    //
+    //                 } catch (error) {
+    //                     if (error.response && error.response.data && error.response.data.errorSoLuong) {
+    //                         // Hiển thị thông báo lỗi về số lượng sản phẩm
+    //                         Swal.fire({
+    //                             icon: 'warning',
+    //                             title: 'Cảnh Báo',
+    //                             text: error.response.data.errorSoLuong,
+    //                             confirmButtonText: 'Đóng'
+    //                         });
+    //                     } else {
+    //                         // Xử lý các lỗi khác
+    //                         console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+    //                         Swal.fire({
+    //                             icon: 'error',
+    //                             title: 'Lỗi',
+    //                             text: 'Có lỗi xảy ra, vui lòng thử lại.'
+    //                         });
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         if (isCameraOn) {
+    //             requestAnimationFrame(tick);
+    //         }
+    //     } else {
+    //         console.log("Video not ready, waiting...");
+    //         setTimeout(() => {
+    //             requestAnimationFrame(tick);
+    //         }, 200);
+    //     }
+    //
+    // }
+
+
+    // tick new validation
     async function tick() {
+        console.log("Video dimensions:", video.videoWidth, video.videoHeight);
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
             console.log("Tick function is running...");
             canvas.height = video.videoHeight;
@@ -602,55 +777,206 @@
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             const code = jsQR(imageData.data, imageData.width, imageData.height);
+
             if (code) {
                 const qrData = code.data;
                 console.log("Dữ liệu mã QR: ", qrData);
-                const decodedData = decodeURIComponent(escape(qrData));  // Giải mã nếu cần thiết
+                const decodedData = decodeURIComponent(escape(qrData));
                 console.log("Dữ liệu đã giải mã: ", decodedData);
-                //
-                const idMatch = decodedData.match(/ID:\s*(\d+)/); // Lấy ra ID từ chuỗi
+
+                const idMatch = decodedData.match(/ID:\s*(\d+)/);
                 const productId = idMatch ? idMatch[1] : null;
-                //
+
                 if (!productId) {
-                    alert("Mã QR không hợp lệ. Không tìm thấy ID sản phẩm.");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Mã QR không hợp lệ. Không tìm thấy ID sản phẩm.'
+                    });
                     return;
                 }
-                console.log("Product ID:", productId);
-                // Tạo prompt nhập số lượng sản phẩm muốn thêm
-                var input = prompt("Nhập số lượng sản phẩm muốn thêm:");
-                var quantity = parseInt(input);
 
-                if (isNaN(quantity) || quantity <= 0) {
-                    alert("Vui lòng nhập số hợp lệ.");
-                    return;
-                }
-                console.log("idHoaDon:", idHoaDon);
+                // Hàm để yêu cầu nhập số lượng
+                const requestQuantity = async () => {
+                    const { value: quantity } = await Swal.fire({
+                        title: 'Nhập Số Lượng Sản Phẩm',
+                        input: 'number',
+                        inputLabel: 'Số lượng',
+                        inputPlaceholder: 'Nhập số lượng',
+                        inputAttributes: {
+                            min: 1,
+                            step: 1
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: 'Thêm',
+                        cancelButtonText: 'Hủy',
+                        inputValidator: (value) => {
+                            if (!value || parseInt(value) <= 0 || isNaN(value)) {
+                                return 'Vui lòng nhập số lượng hợp lệ!';
+                            }
+                        }
+                    });
 
-                // Gửi yêu cầu thêm sản phẩm vào giỏ hàng
-                await axios.get(`/admin/taiquay/add-sanpham-hdctqr/${productId}`, {
-                    params: {
-                        // id: code.data,
-                        quantity: quantity, // Gửi số lượng đã nhập
-                        idHoaDon: idHoaDon //get id hd hiện tại từ fe để gửi về be
+                    // Nếu người dùng nhập số lượng
+                    if (quantity) {
+                        try {
+                            const response = await axios.get(`/admin/taiquay/add-sanpham-hdctqr/${productId}`, {
+                                params: {
+                                    quantity: parseInt(quantity),
+                                    idHoaDon: idHoaDon
+                                }
+                            });
+
+                            // Nếu thêm sản phẩm thành công, refresh lại danh sách
+                            if (response.data && response.data.tongTien && response.data.listHDCT) {
+                                // Gọi AJAX để lấy lại toàn bộ danh sách hóa đơn chi tiết
+                                await refreshHoaDonChiTiet();
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Thành Công',
+                                    text: 'Sản phẩm đã được thêm vào giỏ hàng.',
+                                    timer: 1000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        } catch (error) {
+                            // Xử lý lỗi từ server
+                            if (error.response && error.response.data && error.response.data.errorSoLuong) {
+                                // Hiển thị thông báo lỗi về số lượng sản phẩm
+                                const result = await Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Cảnh Báo',
+                                    text: error.response.data.errorSoLuong,
+                                    confirmButtonText: 'Đóng'
+                                });
+
+                                // Nếu người dùng bấm "Đóng", yêu cầu nhập lại số lượng
+                                if (result.isConfirmed) {
+                                    await requestQuantity();
+                                }
+                            } else {
+                                // Xử lý các lỗi khác
+                                console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi',
+                                    text: 'Có lỗi xảy ra, vui lòng thử lại.'
+                                });
+                            }
+                        }
                     }
-                }).then(response => {
-                    if (response.data.errorSoLuong) {
-                        alert(response.data.errorSoLuong); // Thông báo lỗi nếu có
-                    } else {
-                        alert("Sản phẩm đã được thêm vào giỏ hàng.");
-                        console.log("Sản phẩm đã được thêm thành công vào giỏ hàng.");
-                    }
-                }).catch(error => {
-                    console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
-                    alert("Có lỗi xảy ra, vui lòng thử lại.");
-                });
+                };
+
+                // Gọi hàm yêu cầu nhập số lượng
+                await requestQuantity();
             }
-        }
-        if (isCameraOn) {
-            requestAnimationFrame(tick);
+
+            if (isCameraOn) {
+                requestAnimationFrame(tick);
+            }
+        } else {
+            console.log("Video not ready, waiting...");
+            setTimeout(() => {
+                requestAnimationFrame(tick);
+            }, 200);
         }
     }
+ // refresh giỏ hàng before add sp from qr
+    async function refreshHoaDonChiTiet() {
+        try {
+            const response = await axios.get(`/admin/taiquay/detail/${idHoaDon}`);
+
+            // Cập nhật bảng
+            const cartTableBody = document.getElementById("cartTable1");
+            const totalElement = document.querySelector(".total");
+
+            if (cartTableBody && response.data.listHDCT) {
+                // Xóa toàn bộ dòng hiện tại
+                cartTableBody.innerHTML = '';
+
+                // Thêm từng sản phẩm mới
+                response.data.listHDCT.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.sanPhamChiTiet.sanPham.tenSanPham}</td>
+                    <td>
+                        <button class='btn btn-sm btn-light' onclick='updateQuantity(${item.id}, -1)'>-</button>
+                        ${item.soLuong}
+                        <button class='btn btn-sm btn-light' onclick='updateQuantity(${item.id}, 1)'>+</button>
+                    </td>
+                    <td>${formatCurrency(item.sanPhamChiTiet.gia)}đ</td>
+                    <td>${formatCurrency(item.sanPhamChiTiet.gia * item.soLuong)}đ</td>
+                    <td>
+                        <a href='/admin/taiquay/xoa-sanpham-hdct/${item.id}' class='btn btn-light'>
+                            <i class='bi bi-trash-fill fs-5'></i>
+                        </a>
+                    </td>
+                `;
+                    cartTableBody.appendChild(row);
+                });
+            }
+            // Cập nhật tổng tiền
+            if (totalElement && response.data.tongTien) {
+                totalElement.textContent = formatCurrency(response.data.tongTien) + " vnđ";
+            }
+        } catch (error) {
+            console.error("Lỗi khi refresh danh sách hóa đơn chi tiết:", error);
+        }
+    }
+
+    // Hàm update giỏ hàng
+    function updateCartDynamically(responseData) {
+        // Kiểm tra và lấy phần tử an toàn
+        const totalElement = document.querySelector(".total");
+        const cartTableBody = document.getElementById("cartTable1");
+
+        // Kiểm tra từng phần tử trước khi thao tác
+        if (totalElement && responseData.tongTien) {
+            totalElement.textContent = responseData.tongTien + " vnđ";
+        }
+
+        // Kiểm tra nếu có danh sách sản phẩm
+        if (cartTableBody && responseData.listHDCT && responseData.listHDCT.length > 0) {
+            // Xóa toàn bộ dòng hiện tại
+            cartTableBody.innerHTML = '';
+
+            // Thêm từng sản phẩm mới
+            responseData.listHDCT.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.sanPhamChiTiet.sanPham.tenSanPham}</td>
+                <td>
+                    <button class='btn btn-sm btn-light' onclick='updateQuantity(${item.id}, -1)'>-</button>
+                    ${item.soLuong}
+                    <button class='btn btn-sm btn-light' onclick='updateQuantity(${item.id}, 1)'>+</button>
+                </td>
+                <td>${formatCurrency(item.sanPhamChiTiet.gia)}đ</td>
+                <td>${formatCurrency(item.sanPhamChiTiet.gia * item.soLuong)}đ</td>
+                <td>
+                    <a href='/admin/taiquay/xoa-sanpham-hdct/${item.id}' class='btn btn-light'>
+                        <i class='bi bi-trash-fill fs-5'></i>
+                    </a>
+                </td>
+            `;
+                cartTableBody.appendChild(row);
+            });
+        } else {
+            console.error('Không tìm thấy phần tử cart table hoặc danh sách rỗng', {
+                cartTableBody,
+                listHDCT: responseData.listHDCT
+            });
+        }
+    }
+
+    // Hàm format tiền tệ
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN').format(amount);
+    }
 </script>
+<!--js confirm print pdf for hd-->
 <script>
     document.getElementById("paymentForm").onsubmit = function (event) {
         event.preventDefault(); // Ngăn hành vi submit mặc định của form
@@ -665,20 +991,52 @@
         })
             .then(response => response.text()) // Lấy URL file PDF từ server
             .then(pdfUrl => {
-                // Mở file PDF trong tab mới
                 if (pdfUrl) {
-                    window.open(pdfUrl, "_blank");
-                    window.location.href = "/admin/taiquay";
+                    // Hiển thị hộp thoại xác nhận in hóa đơn
+                    Swal.fire({
+                        title: 'In Hóa Đơn',
+                        text: "Bạn có muốn in hóa đơn không?",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Có, in hóa đơn',
+                        cancelButtonText: 'Không, để sau'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Nếu người dùng chọn in
+                            window.open(pdfUrl, "_blank");
+                        }
+                        // Luôn chuyển về trang admin/taiquay sau khi xử lý
+                        window.location.href = "/admin/taiquay";
+                    });
                 } else {
-                    alert("Không thể tạo file PDF!");
+                    // Nếu không có PDF
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Không thể tạo file PDF!'
+                    }).then(() => {
+                        window.location.href = "/admin/taiquay";
+                    });
                 }
             })
             .catch(error => {
                 console.error("Lỗi khi xử lý thanh toán:", error);
-                alert("Đã xảy ra lỗi trong quá trình thanh toán!");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Đã xảy ra lỗi trong quá trình thanh toán!'
+                }).then(() => {
+                    window.location.href = "/admin/taiquay";
+                });
             });
     };
 </script>
+
+<!-- Thêm thư viện SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!--//-->
 <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <!--<script th:src="@{/javascript/locSanPhamTaiQuay.js}"></script>-->
@@ -692,5 +1050,27 @@
         }
     });
 
+</script>
+<!--UPDATE SL SAN PHAM TRONG GH-->
+<script>
+    function updateQuantity(hdctId, delta) {
+        const url = `/admin/taiquay/update-sanpham-hdct/${hdctId}?delta=${delta}`;
+
+        fetch(url, {
+            method: 'POST'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    // Cập nhật lại giao diện bảng
+                    document.getElementById('cartTable1').innerHTML = data.updatedCartHtml;
+                    // Cập nhật tổng tiền
+                    document.getElementById('tongTien').innerText = data.tongTien;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
 </script>
 </html>

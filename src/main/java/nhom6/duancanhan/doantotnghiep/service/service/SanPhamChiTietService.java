@@ -24,7 +24,7 @@ public interface SanPhamChiTietService {
 
     void deleteSanPhamChiTiet(Integer id);
 
-    void sortDeleteSanPhamChiTiet(Integer id);
+    int sortDeleteSanPhamChiTiet(Integer id);
 
     List<SanPhamChiTiet> findByIdSPCT(Integer id);
 }
