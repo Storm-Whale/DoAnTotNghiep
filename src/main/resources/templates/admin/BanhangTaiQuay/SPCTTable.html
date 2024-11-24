@@ -1,4 +1,5 @@
 <div th:fragments="table">
+
     <table>
         <thead>
         <tr>
@@ -29,15 +30,20 @@
             <td th:text="${#numbers.formatDecimal(spct.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
             <td th:text="${spct.soLuong}"></td>
             <td th:text="${spct.trangThai}"></td>
+<!--            <td>-->
+<!--                <a th:href="@{/admin/taiquay/add-sanpham-hdct/{id}(id=${spct.id})}">-->
+<!--                    <button class="btn btn-success btn-sm" style="border-radius: 8px; text-align: center">+</button>-->
+<!--                </a>-->
+<!--            <td>-->
             <td>
-                <a th:href="@{/admin/taiquay/add-sanpham-hdct/{id}(id=${spct.id})}">
-                    <button class="btn btn-success btn-sm" style="border-radius: 8px; text-align: center">+</button>
+                <a href="javascript:void(0);"
+                   th:onclick="'addSanPhamToCart(' + ${spct.id} + ', ' + ${spct.soLuong} + ')'">
+                    <button class="btn btn-success btn-sm" style="border-radius: 8px; text-align: center">Thêm</button>
                 </a>
             </td>
         </tr>
         </tbody>
     </table>
-
 </div>
 <div th:fragments="form">
     <form id="filterForm" action="/admin/taiquay/sanpham#sanpham" method="GET">
@@ -114,8 +120,10 @@
                    oninput="submitAjaxForm()">
             <button id="btnSearch">Tìm kiếm</button>
         </div>
-
     </form>
+<!--    <div th:if="${error}" style="color: red; margin-bottom: 10px;">-->
+<!--        <p th:text="${error}"></p>-->
+<!--    </div>-->
 </div>
 <!-- Phân trang-->
 <div th:fragments="nav">
@@ -202,6 +210,34 @@
             const url = `/admin/taiquay/sanpham?page=${currentPage}&size=${selectedSize}#sanpham`;
             window.location.href = url;
         }
-    </script>
 
+        //function nhập số lượng sản phẩm
+        function addSanPhamToCart(id,availableQuantity) {
+            Swal.fire({
+                title: 'Nhập Số Lượng Sản Phẩm',
+                input: 'number',
+                inputLabel: 'Số lượng',
+                inputPlaceholder: 'Nhập số lượng',
+                inputAttributes: {
+                    min: 1,
+                    step: 1
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Thêm',
+                cancelButtonText: 'Hủy',
+                inputValidator: (value) => {
+                    if (!value || parseInt(value) <= 0 || isNaN(value)) {
+                        return 'Vui lòng nhập số lượng hợp lệ!';
+                    }if (parseInt(value) > availableQuantity) {
+                        return `Số lượng không được vượt quá ${availableQuantity}!`;
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    // Chuyển hướng đến controller với số lượng
+                    window.location.href = `/admin/taiquay/add-sanpham-hdct/${id}?soLuong=${result.value}`;
+                }
+            });
+        }
+    </script>
 </div>
