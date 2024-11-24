@@ -38,7 +38,7 @@ public class HoaDonController {
     public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
 
 
-        int pageSize = 3;
+        int pageSize = 5;
 
 
         Page<HoaDon> page = hoaDonService.phanTrang(pageNo, pageSize);
@@ -105,17 +105,17 @@ public class HoaDonController {
             }
 
             // Cập nhật trạng thái tùy vào giá trị hiện tại của trạng thái
-            if (hoaDon.getTrangThai() == 1) {
+            if (hoaDon.getTrangThai() == 2) {
                 hoaDon.setTrangThai(3); // Trạng thái chuyển từ 'Chờ Xác Nhận' sang 'Đang Chuẩn Bị Hàng'
 
             } else if (hoaDon.getTrangThai() == 3) {
                 hoaDon.setTrangThai(4); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đang Vận Chuyển'
             } else if (hoaDon.getTrangThai() == 4) {
                 hoaDon.setTrangThai(5); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đã Giao'
-            }else if (hoaDon.getTrangThai() == 1) {
-                hoaDon.setTrangThai(6); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đã Giao'
-            }else if (hoaDon.getTrangThai() == 3) {
-                hoaDon.setTrangThai(6); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đã Giao'
+//            }else if (hoaDon.getTrangThai() == 2) {
+//                hoaDon.setTrangThai(6); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đã Giao'
+//            }else if (hoaDon.getTrangThai() == 3) {
+//                hoaDon.setTrangThai(6); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đã Giao'
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Trạng thái không hợp lệ để cập nhật");
             }
@@ -128,6 +128,28 @@ public class HoaDonController {
 
     }
 
+    @PutMapping("/cancel-order/{id}")
+    public ResponseEntity<?> cancelOrder(@PathVariable("id") Integer id) {
+        try {
+            HoaDon hoaDon = hoaDonService.findById(id);
+
+            if (hoaDon == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hóa đơn không hợp lệ");
+            }
+            if (hoaDon.getTrangThai() == 2) {
+                hoaDon.setTrangThai(6); // Trạng thái chuyển từ 'Chờ Xác Nhận' sang 'Đang Chuẩn Bị Hàng'
+
+            } else if (hoaDon.getTrangThai() == 3) {
+                hoaDon.setTrangThai(6); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đang Vận Chuyển'
+            }
+
+
+            hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            return ResponseEntity.ok("Đơn hàng đã được hủy thành công");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
+        }
+    }
 
 
     @PostMapping("/add")
