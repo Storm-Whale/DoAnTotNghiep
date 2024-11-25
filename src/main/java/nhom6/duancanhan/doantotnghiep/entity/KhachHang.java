@@ -71,7 +71,9 @@ public class KhachHang {
 
 
     @Column(name = "anh_url")
+//    @NotBlank(message = "Ảnh không được để trống")
     private String anhUrl;
+//          private String anhUrl;
 
 
     @JoinColumn(name = "id_tai_khoan")

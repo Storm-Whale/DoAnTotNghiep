@@ -44,6 +44,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         return this.hoaDonRepository.findAll(pageable);
     }
 
+
     @Override
     public Optional<HoaDon> detail(Integer id) {
         return Optional.empty();
@@ -103,10 +104,18 @@ public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với id: " + id));
 
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findHoaDonChiTietById(id);
+        // Lặp qua từng chi tiết hóa đơn và cập nhật số lượng sản phẩm tồn
         for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
             SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
-            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSoLuong());
-            sanPhamChiTietRepository.save(sanPhamChiTiet);
+            if (sanPhamChiTiet != null) {
+                int newQuantity = sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSoLuong();
+                sanPhamChiTiet.setSoLuong(newQuantity);
+                System.out.println("Cập nhật sản phẩm: " + sanPhamChiTiet.getId() + " với số lượng mới: " + newQuantity);
+                sanPhamChiTietRepository.save(sanPhamChiTiet);
+            } else {
+                System.out.println("Sản phẩm không tồn tại.");
+            }
+            hoaDonChiTietRepository.delete(hoaDonChiTiet);
         }
         hoaDonRepository.delete(hoaDon);
     }
@@ -115,51 +124,18 @@ public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
     public HoaDon findById(Integer id) {
         return hoaDonRepository.findById(id).orElse(null);
     }
-
     @Override
     public List<PhieuGiamGiaHoaDonDTO> getHoaDonByPhieuGiamGia(Integer phieuGiamGiaId) {
-        return null;
+        return hoaDonRepository.findHoaDonByPhieuGiamGia(phieuGiamGiaId);
     }
 
+    @Override
+    public List<HoaDon> findByKhachHangId(Integer khachHangId) {
+        return hoaDonRepository.findByKhachHangId(khachHangId);
+    }
 
-//    @Override
-//    public PageDTO<List<HoaDonDTO>> phanTrang(PageRequestDTO pageRequestDTO) {
-//        pageRequestDTO.setPage(pageRequestDTO.getPage() == null ? 0 : pageRequestDTO.getPage());
-//        pageRequestDTO.setSize(pageRequestDTO.getSize() == null ? 5 : pageRequestDTO.getSize());
-//
-//        Page<HoaDon> pageEntity = hoaDonRepository.findAll(
-//                PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize())
-//        );
-//
-//        // Kiểm tra xem có dữ liệu nào trong pageEntity không
-//        System.out.println("Total elements in HoaDon: " + pageEntity.getTotalElements());
-//
-//        List<HoaDonDTO> listDto = pageEntity.get().map(this::converToDto).collect(Collectors.toList());
-//
-//        // Kiểm tra danh sách DTO
-//        System.out.println("Total DTOs: " + listDto.size());
-//
-//        return PageDTO.<List<HoaDonDTO>>builder()
-//                .data(listDto)
-//                .totalElements(pageEntity.getTotalElements())
-//                .totalPages(pageEntity.getTotalPages())
-//                .build();
-//    }
-//    @Override
-//    public HoaDon themHoaDon(HoaDonDTO hoaDonDTO) {
-//        HoaDon hoaDon = converToEntity(hoaDonDTO);
-//        return hoaDonRepository.save(hoaDon);
-//    }
-//
-//    @Override
-//    public HoaDonDTO converToDto(HoaDon hoaDon) {
-//        ModelMapper modelMapper = new ModelMapper();
-//        return modelMapper.map(hoaDon, HoaDonDTO.class);
-//    }
-//
-//    @Override
-//    public HoaDon converToEntity(HoaDonDTO hoaDonDTO) {
-//        ModelMapper modelMapper = new ModelMapper();
-//        return modelMapper.map(hoaDonDTO, HoaDon.class);
-//    }
+    @Override
+    public List<HoaDon> findByNhanVienId(Integer nhanVienId) {
+        return hoaDonRepository.findByNhanVienId(nhanVienId);
+    }
 }

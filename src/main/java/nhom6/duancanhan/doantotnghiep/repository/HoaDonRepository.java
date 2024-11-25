@@ -2,7 +2,7 @@ package nhom6.duancanhan.doantotnghiep.repository;
 
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
-import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
+import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,6 +32,15 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findHoaDonsWithStatusOne();
     @Query("SELECT COUNT(h) FROM HoaDon h")
     long demSoLuongHoaDon();
+
+    List<HoaDon> findByKhachHangId(Integer khachHangId);
+    List<HoaDon> findByKhachHang_IdAndTrangThai(Integer khachHangId, Integer trangThai);
+
+    List<HoaDon> findByNguoiTao(NhanVien nguoiTao);
+
+    // Hoặc truy vấn theo ID của NhanVien
+    @Query("SELECT h FROM HoaDon h WHERE h.nguoiTao.id = :nhanVienId")
+    List<HoaDon> findByNhanVienId(@Param("nhanVienId") Integer nhanVienId);
     @Query("SELECT new nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO(" +
             "hd.id, hd.ngaySua, pgg.tenPhieuGiamGia, pgg.ngayBatDau, pgg.ngayKetThuc, " +
             "pgg.giaTriGiam, hd.tongTien, pgg.kieuGiamGia) " +

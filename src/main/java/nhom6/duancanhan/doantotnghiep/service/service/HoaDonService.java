@@ -31,4 +31,8 @@ public interface HoaDonService {
     public HoaDon findById(Integer id);
 
     List<PhieuGiamGiaHoaDonDTO> getHoaDonByPhieuGiamGia(Integer phieuGiamGiaId);
+
+    List<HoaDon> findByKhachHangId(Integer khachHangId);
+
+    List<HoaDon> findByNhanVienId(Integer nhanVienId);
 }

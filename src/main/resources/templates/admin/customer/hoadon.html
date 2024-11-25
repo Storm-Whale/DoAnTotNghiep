@@ -121,7 +121,7 @@
 
                 <tr th:each="hoaDon : ${listHD}">
                     <td th:text="${hoaDon.id}"></td>
-                    <td th:text="${hoaDon.tenNguoiNhan != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>
+                    <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>
 <!--                    <td th:text="${hoaDon.sdt != null ? hoaDon.khachHang.soDienThoai : 'N/A'}"></td>-->
 <!--                    <td th:text="${hoaDon.emailNguoiNhan != null ? hoaDon.emailNguoiNhan : 'N/A'}"></td>-->
 
@@ -140,7 +140,7 @@
 
                     <!-- Kiểm tra trạng thái thanh toán -->
                     <td>
-                        <span th:text="${hoaDon.trangThai == 1 ? 'Chưa Thanh Toán' : 'Đã Thanh Toán'}"></span>
+                        <span th:text="${hoaDon.trangThai == 2 ? 'Chờ Xác Nhận' : ''}"></span>
                     </td>
 
                     <td>
@@ -216,7 +216,7 @@
 
                     <!-- Kiểm tra trạng thái thanh toán -->
                     <td>
-                        <span th:text="${hoaDon.trangThai == '2' ? 'Chưa Thanh Toán' : 'Đã Thanh Toán'}"></span>
+                        <span th:text="${hoaDon.trangThai == 2 ? 'Chờ Xác Nhận' : ''}"></span>
                     </td>
 
                     <td>

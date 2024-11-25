@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.repository;
 
+import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,4 +21,12 @@ public interface NhanVienRepository extends JpaRepository<NhanVien,Integer> {
     );
 
     NhanVien findByTaiKhoanId(Integer idTaiKhoan);
+
+    @Query("SELECT k FROM NhanVien k WHERE "
+            + "(:keyword IS NULL OR k.ten LIKE %:keyword%) AND "
+            + "(:trangThai IS NULL OR k.trangThai = :trangThai) OR (:keyword IS NULL OR k.sdt LIKE %:keyword%) AND (:trangThai IS NULL OR k.trangThai = :trangThai) OR (:keyword IS NULL OR k.email LIKE %:keyword%) AND (:trangThai IS NULL OR k.trangThai = :trangThai)")
+    Page<NhanVien> findByKeywordAndTrangThai(
+            @Param("keyword") String keyword,
+            @Param("trangThai") Integer trangThai,
+            Pageable pageable);
 }
