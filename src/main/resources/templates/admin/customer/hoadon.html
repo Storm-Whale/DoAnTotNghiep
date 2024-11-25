@@ -109,7 +109,7 @@
                     <th scope="col">Tên Người Nhận</th>
                     <th scope="col">Số Điện Thoại</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Địa Chỉ</th>
+<!--                    <th scope="col">Địa Chỉ</th>-->
                     <th scope="col">Phương Thức Thanh Toán</th>
                     <th scope="col">Tổng Tiền</th>
                     <th scope="col">Ghi Chú</th>
@@ -122,11 +122,13 @@
                 <tr th:each="hoaDon : ${listHD}">
                     <td th:text="${hoaDon.id}"></td>
                     <td th:text="${hoaDon.tenNguoiNhan != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>
-                    <td th:text="${hoaDon.sdt != null ? hoaDon.khachHang.soDienThoai : 'N/A'}"></td>
-                    <td th:text="${hoaDon.emailNguoiNhan != null ? hoaDon.emailNguoiNhan : 'N/A'}"></td>
+<!--                    <td th:text="${hoaDon.sdt != null ? hoaDon.khachHang.soDienThoai : 'N/A'}"></td>-->
+<!--                    <td th:text="${hoaDon.emailNguoiNhan != null ? hoaDon.emailNguoiNhan : 'N/A'}"></td>-->
 
-                    <!-- Kiểm tra null cho địa chỉ -->
-                    <td th:text="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : 'N/A'}"></td>
+<!--                    &lt;!&ndash; Kiểm tra null cho địa chỉ &ndash;&gt;-->
+<!--                    <td th:text="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : 'N/A'}"></td>-->
+                    <td th:text="${hoaDon.khachHang == null ? 'Khách Lẻ' : hoaDon.khachHang.soDienThoai}"></td>
+                    <td th:text="${hoaDon.khachHang == null ? 'Khách Lẻ' : hoaDon.khachHang.email}"></td>
 
                     <!-- Kiểm tra null cho phương thức thanh toán -->
                     <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>
@@ -153,26 +155,26 @@
             </table>
 
             <!-- Pagination -->
-            <div th:if="${totalPages >= 1}">
-                <nav>
-                    <ul class="pagination justify-content-center">
-<!--                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage - 1}|}" aria-label="Previous">Trước</a>-->
-<!--                        </li>--><li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                        <a class="page-link" th:href="@{|/admin/hoadon/1|}" aria-label="Previous">Trước</a>
-                    </li>
-                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{|/admin/hoadon/${i}|}" th:text="${i}"></a>
-                        </li>
-<!--                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage + 1}|}" aria-label="Next">Sau</a>-->
+<!--            <div th:if="${totalPages >= 1}">-->
+<!--                <nav>-->
+<!--                    <ul class="pagination justify-content-center">-->
+<!--&lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage - 1}|}" aria-label="Previous">Trước</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </li>&ndash;&gt;<li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
+<!--                        <a class="page-link" th:href="@{|/admin/hoadon/1|}" aria-label="Previous">Trước</a>-->
+<!--                    </li>-->
+<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">-->
+<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${i}|}" th:text="${i}"></a>-->
 <!--                        </li>-->
-                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                            <a class="page-link" th:href="@{|/admin/hoadon/${totalPages}|}" aria-label="Next">Sau</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+<!--&lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage + 1}|}" aria-label="Next">Sau</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </li>&ndash;&gt;-->
+<!--                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
+<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${totalPages}|}" aria-label="Next">Sau</a>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </nav>-->
+<!--            </div>-->
         </div>
 
         <!-- Tab 2 content -->
@@ -251,6 +253,7 @@
 <!--                </nav>-->
 <!--            </div>-->
 <!--        </div>-->
+
         </div>
 
         <!-- Tab 3 content -->
@@ -450,6 +453,26 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+        <div th:if="${totalPages >= 1}">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <!--                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
+                    <!--                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage - 1}|}" aria-label="Previous">Trước</a>-->
+                    <!--                        </li>--><li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{|/admin/hoadon/1|}" aria-label="Previous">Trước</a>
+                </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{|/admin/hoadon/${i}|}" th:text="${i}"></a>
+                    </li>
+                    <!--                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
+                    <!--                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage + 1}|}" aria-label="Next">Sau</a>-->
+                    <!--                        </li>-->
+                    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                        <a class="page-link" th:href="@{|/admin/hoadon/${totalPages}|}" aria-label="Next">Sau</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 
