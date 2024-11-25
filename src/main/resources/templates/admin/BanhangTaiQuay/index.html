@@ -26,6 +26,7 @@
         background-color: #fff3cd;
         border-color: #ffeeba;
     }
+
     .switch {
         position: relative;
         display: inline-block;
@@ -69,6 +70,7 @@
     input:checked + .slider:before {
         transform: translateX(14px);
     }
+
     .diaChiCheck {
         margin-top: 20px;
     }
@@ -137,16 +139,7 @@
                 </li>
             </ul>
         </div>
-        <!-- Thông báo thành công -->
-        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Thành công!</strong> <span th:text="${successMessage}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <!-- Thông báo lỗi -->
-<!--        <div th:if="${errorSoLuong}" class="alert alert-warning alert-dismissible fade show" role="alert">-->
-<!--            <strong>Cảnh báo!</strong> <span th:text="${errorSoLuong}"></span>-->
-<!--            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
-<!--        </div>-->
+        <!--        //-->
         <div class="section">
             <div>
                 <div class="d-flex justify-content-between">
@@ -183,15 +176,41 @@
                             <tr th:each="hdct,stt : ${listHDCT}">
                                 <td th:text="${stt.index + 1}"></td>
                                 <td th:text="${hdct.sanPhamChiTiet.sanPham.tenSanPham}"></td>
+                                <!--                                <td>-->
+                                <!--                                    <button class="btn btn-sm btn-light" style="margin-right: 3px"-->
+                                <!--                                            th:attr="onclick='updateQuantity(' + ${hdct.id} + ', -1)'">-</button>-->
+                                <!--                                    <input type="number"-->
+                                <!--                                           class="quantity-input"-->
+                                <!--                                           th:id="'quantity-' + ${hdct.id}"-->
+                                <!--                                           th:value="${hdct.soLuong}"-->
+                                <!--                                           min="1"-->
+                                <!--                                           style="width: 50px; text-align: center;"-->
+                                <!--                                           th:data-current-quantity="${hdct.soLuong}"-->
+                                <!--                                           th:onchange="'updateQuantityDirectly(this, ' + ${hdct.id} + ')'">-->
+                                <!--                                    <button class="btn btn-sm btn-light" style="margin-left: 3px"-->
+                                <!--                                            th:attr="onclick='updateQuantity(' + ${hdct.id} + ', 1)'">+</button>-->
+                                <!--                                </td>-->
                                 <td>
-                                    <button class="btn btn-sm btn-light" style="margin-right: 3px"
-                                            th:attr="onclick='updateQuantity(' + ${hdct.id} + ', -1)'">-</button>
-                                    <span th:text="${hdct.soLuong}"></span>
-                                    <button class="btn btn-sm btn-light" style="margin-left: 3px"
-                                            th:attr="onclick='updateQuantity(' + ${hdct.id} + ', 1)'">+</button>
+                                    <!--                                    <span id="stock-quantity-${hdct.id}" style="display:none;" th:text="${hdct.sanPhamChiTiet.soLuong}"></span>-->
+                                    <button class="btn btn-sm btn-light"
+                                            style="margin-right: 3px; background-color: #ffecee"
+                                            th:attr="onclick='updateQuantity(' + ${hdct.id} + ', -1)'">-
+                                    </button>
+                                    <input type="number"
+                                           class="quantity-input"
+                                           th:id="'quantity-' + ${hdct.id}"
+                                           th:value="${hdct.soLuong}"
+                                           min="1"
+                                           style="width: 30px; text-align: center; background-color: #ffecee" ;
+                                           th:data-current-quantity="${hdct.soLuong}"
+                                           th:data-stock-quantity="${hdct.sanPhamChiTiet.soLuong}"
+                                           th:onchange="'updateQuantityDirectly(this, ' + ${hdct.id} + ')'">
+                                    <button class="btn btn-sm btn-light"
+                                            style="margin-left: 3px; background-color: #ffecee"
+                                            th:attr="onclick='updateQuantity(' + ${hdct.id} + ', 1)'">+
+                                    </button>
                                 </td>
                                 <td th:text="${#numbers.formatDecimal(hdct.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
-                                <!--                                <p class="price" th:text="${#numbers.formatDecimal(sanpham.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></p>-->
                                 <td th:text="${#numbers.formatDecimal(hdct.sanPhamChiTiet.gia.multiply(hdct.soLuong),1, 'COMMA', 0, 'POINT')}+ 'đ'"></td>
                                 <td><a th:href="@{/admin/taiquay/xoa-sanpham-hdct/{id}(id=${hdct.id})}"
                                        class="btn btn-light" title="Xóa"><i class="bi bi-trash-fill fs-5"></i></a></td>
@@ -221,18 +240,18 @@
                         toán</i></b></p>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
-<!--                        <script>-->
-<!--                            // Hàm hiển thị thông báo-->
-<!--                            function showPrompt(soDienThoai) {-->
-<!--                                const isAdd = confirm(-->
-<!--                                    `Không tìm thấy khách hàng với số điện thoại: ${soDienThoai}. Bạn có muốn thêm khách hàng mới không?`-->
-<!--                                );-->
-<!--                                if (isAdd) {-->
-<!--                                    // Chuyển hướng đến form thêm khách hàng-->
-<!--                                    window.location.href = '/admin/taiquay/add?soDienThoai=' + soDienThoai;-->
-<!--                                }-->
-<!--                            }-->
-<!--                        </script>-->
+                        <!--                        <script>-->
+                        <!--                            // Hàm hiển thị thông báo-->
+                        <!--                            function showPrompt(soDienThoai) {-->
+                        <!--                                const isAdd = confirm(-->
+                        <!--                                    `Không tìm thấy khách hàng với số điện thoại: ${soDienThoai}. Bạn có muốn thêm khách hàng mới không?`-->
+                        <!--                                );-->
+                        <!--                                if (isAdd) {-->
+                        <!--                                    // Chuyển hướng đến form thêm khách hàng-->
+                        <!--                                    window.location.href = '/admin/taiquay/add?soDienThoai=' + soDienThoai;-->
+                        <!--                                }-->
+                        <!--                            }-->
+                        <!--                        </script>-->
 
                         <form th:action="@{/admin/taiquay/tim-kiem}" method="get"
                               style="display: flex; align-items: center; gap: 10px;">
@@ -245,7 +264,7 @@
                         </form>
                         <div>
                             <label class="switch">
-                                <input type="checkbox" id="toggleAddress" />
+                                <input type="checkbox" id="toggleAddress"/>
                                 <span class="slider"></span>
                             </label>
                         </div>
@@ -278,18 +297,20 @@
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="post"
                               class="discount-form">
-                            <input type="text" name="maphieugiamgia" placeholder="Nhập mã giảm giá"
-                                   th:value="${maPhieuGiamGia}"/>
-                            <button type="submit" class="apply-button"
-                                    style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
-                                Áp dụng
+                            <input type="text" id="maPhieuGiamGia"
+                                   name="maPhieuGiamGia" placeholder="Nhập mã giảm giá"
+                                   th:value="${maPhieuGiamGia}" readonly/>
+                            <button type="button" id="huyPhieuGiamGiaBtn"
+                                    class="cancel-button"
+                                    style="background-color: #2c3e50; color: white; margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; ">
+                                Bỏ chọn
                             </button>
                         </form>
                         <div class="discount-code-container">
                             <a class="taiquay" th:href="@{/admin/taiquay/phieugiamgia#phieugiamgia}">
                                 <button id="choose" class="discount-code-button"
                                         style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
-                                    Mã PGG
+                                    Chọn
                                 </button>
                             </a>
                         </div>
@@ -328,18 +349,20 @@
                     <!--                    </form>-->
 
 
-                    <p style="font-size: 14px; margin-top: 10px;">Tiền Tạm Tính: <span id="subtotal"
-                               th:text="${#numbers.formatDecimal((tongTien != null ? tongTien : 0), 1, 'COMMA', 0, 'POINT')} + 'đ'">0</span>
+                    <p style="font-size: 14px; margin-top: 10px;">Tiền Tạm Tính:
+                        <span id="subtotal"
+                              th:text="${#numbers.formatDecimal((tongTien != null ? tongTien : 0), 1, 'COMMA', 0, 'POINT')} + ' đ'">0</span>
                     </p>
-                    <p style="font-size: 14px;">Số Tiền Giảm Giá: <span id="discount">0</span> đ</p>
-
+                    <p style="font-size: 14px;">
+                        Số Tiền Giảm Giá:
+                        <span id="discount"
+                              th:text="${(tongTien != null && tongTienSauGiam != null && tongTienSauGiam < tongTien)
+                    ? #numbers.formatDecimal(tongTien - tongTienSauGiam, 1, 'COMMA', 0, 'POINT') + ' đ'
+                    : '0 đ'}">0 đ</span>
+                    </p>
                     <p>Tổng tiền sau khi áp dụng mã giảm giá:
-
-                        <!--                        <span th:text="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : tongTien), 1, 'COMMA', 0, 'POINT')} + 'đ'"></span>-->
-<!--                        <span th:text="${tongTienSauGiam != null ? tongTienSauGiam : (tongTien != null ? tongTien : 0)}"></span>-->
-                        <span th:text="${tongTienSauGiam == null || tongTienSauGiam == 0 ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT')}"></span>
-
-
+                        <span id="totalAfterDiscount"
+                              th:text="${tongTienSauGiam == null || tongTienSauGiam == 0  ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') + ' đ' : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span>
                     </p>
                     <div th:if="${error}">
                         <p style="color: red;" th:text="${error}"></p>
@@ -359,9 +382,9 @@
                                     <label class="col-3" style="font-size: 14px;margin-top: 10px;">Khách cần
                                         trả:</label>
                                     <b><span id="tongTien" style="font-size: 14px;"
-                                             th:text="${tongTienSauGiam == null || tongTienSauGiam == 0 ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT') +' đ'}"></span></b>
+                                             th:text="${tongTienSauGiam == null || tongTienSauGiam == 0  ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') + ' đ' : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span></b>
                                     <input type="hidden" name="tongTien"
-                                           th:value="${#numbers.formatDecimal((tongTienSauGiam != null ? tongTienSauGiam : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"/>
+                                           th:value="${#numbers.formatDecimal((tongTienSauGiam == null ? tongTien : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"/>
                                 </div>
 
                                 <div class="received">
@@ -459,7 +482,6 @@
     // Gán giá trị idHoaDon từ server qua Thymeleaf
     let idHoaDon = [[${idHoaDon}]];
     console.log("idHoaDon: " + idHoaDon);
-
     // Khởi tạo các biến cần thiết cho camera
     const video = document.getElementById('qr-video');
     const canvas = document.getElementById('qr-canvas');
@@ -499,7 +521,7 @@
                 video.play();
                 video.onloadedmetadata = () => {
                     console.log("Video metadata loaded");
-                requestAnimationFrame(tick);
+                    requestAnimationFrame(tick);
                 };
             })
             .catch(error => {
@@ -512,6 +534,7 @@
     }
 
     // get qr scan to controller
+    // tick new validation
     async function tick() {
         console.log("Video dimensions:", video.videoWidth, video.videoHeight);
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -539,14 +562,9 @@
                     });
                     return;
                 }
-                console.log("Product ID:", productId);
-                // Tạo prompt nhập số lượng sản phẩm muốn thêm
-                var input = prompt("Nhập số lượng sản phẩm muốn thêm:");
-                var quantity = parseInt(input);
-
                 // Hàm để yêu cầu nhập số lượng
                 const requestQuantity = async () => {
-                    const { value: quantity } = await Swal.fire({
+                    const {value: quantity} = await Swal.fire({
                         title: 'Nhập Số Lượng Sản Phẩm',
                         input: 'number',
                         inputLabel: 'Số lượng',
@@ -564,7 +582,6 @@
                             }
                         }
                     });
-
                     // Nếu người dùng nhập số lượng
                     if (quantity) {
                         try {
@@ -574,18 +591,18 @@
                                     idHoaDon: idHoaDon
                                 }
                             });
-
                             // Nếu thêm sản phẩm thành công, refresh lại danh sách
                             if (response.data && response.data.tongTien && response.data.listHDCT) {
-                                // Gọi AJAX để lấy lại toàn bộ danh sách hóa đơn chi tiết
-                                await refreshHoaDonChiTiet();
-
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Thành Công',
                                     text: 'Sản phẩm đã được thêm vào giỏ hàng.',
-                                    timer: 1000,
-                                    showConfirmButton: false
+                                    confirmButtonText: 'OK'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Redirect đến trang chi tiết hóa đơn
+                                        window.location.href = `/admin/taiquay/detail/${idHoaDon}`;
+                                    }
                                 });
                             }
                         } catch (error) {
@@ -598,7 +615,6 @@
                                     text: error.response.data.errorSoLuong,
                                     confirmButtonText: 'Đóng'
                                 });
-
                                 // Nếu người dùng bấm "Đóng", yêu cầu nhập lại số lượng
                                 if (result.isConfirmed) {
                                     await requestQuantity();
@@ -615,8 +631,7 @@
                         }
                     }
                 };
-
-                // Gọi hàm yêu cầu nhập số lượng
+                // Gọi hàm yêu cầu nhập số lượng nếu số lượng chưa hợp lệ
                 await requestQuantity();
             }
 
@@ -630,94 +645,6 @@
             }, 200);
         }
     }
- // refresh giỏ hàng before add sp from qr
-    async function refreshHoaDonChiTiet() {
-        try {
-            const response = await axios.get(`/admin/taiquay/detail/${idHoaDon}`);
-
-            // Cập nhật bảng
-            const cartTableBody = document.getElementById("cartTable1");
-            const totalElement = document.querySelector(".total");
-
-            if (cartTableBody && response.data.listHDCT) {
-                // Xóa toàn bộ dòng hiện tại
-                cartTableBody.innerHTML = '';
-
-                // Thêm từng sản phẩm mới
-                response.data.listHDCT.forEach((item, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${item.sanPhamChiTiet.sanPham.tenSanPham}</td>
-                    <td>
-                        <button class='btn btn-sm btn-light' onclick='updateQuantity(${item.id}, -1)'>-</button>
-                        ${item.soLuong}
-                        <button class='btn btn-sm btn-light' onclick='updateQuantity(${item.id}, 1)'>+</button>
-                    </td>
-                    <td>${formatCurrency(item.sanPhamChiTiet.gia)}đ</td>
-                    <td>${formatCurrency(item.sanPhamChiTiet.gia * item.soLuong)}đ</td>
-                    <td>
-                        <a href='/admin/taiquay/xoa-sanpham-hdct/${item.id}' class='btn btn-light'>
-                            <i class='bi bi-trash-fill fs-5'></i>
-                        </a>
-                    </td>
-                `;
-                    cartTableBody.appendChild(row);
-                });
-            }
-            // Cập nhật tổng tiền
-            if (totalElement && response.data.tongTien) {
-                totalElement.textContent = formatCurrency(response.data.tongTien) + " vnđ";
-            }
-        } catch (error) {
-            console.error("Lỗi khi refresh danh sách hóa đơn chi tiết:", error);
-        }
-    }
-
-    // Hàm update giỏ hàng
-    function updateCartDynamically(responseData) {
-        // Kiểm tra và lấy phần tử an toàn
-        const totalElement = document.querySelector(".total");
-        const cartTableBody = document.getElementById("cartTable1");
-
-        // Kiểm tra từng phần tử trước khi thao tác
-        if (totalElement && responseData.tongTien) {
-            totalElement.textContent = responseData.tongTien + " vnđ";
-        }
-
-        // Kiểm tra nếu có danh sách sản phẩm
-        if (cartTableBody && responseData.listHDCT && responseData.listHDCT.length > 0) {
-            // Xóa toàn bộ dòng hiện tại
-            cartTableBody.innerHTML = '';
-
-            // Thêm từng sản phẩm mới
-            responseData.listHDCT.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${item.sanPhamChiTiet.sanPham.tenSanPham}</td>
-                <td>
-                    <button class='btn btn-sm btn-light' onclick='updateQuantity(${item.id}, -1)'>-</button>
-                    ${item.soLuong}
-                    <button class='btn btn-sm btn-light' onclick='updateQuantity(${item.id}, 1)'>+</button>
-                </td>
-                <td>${formatCurrency(item.sanPhamChiTiet.gia)}đ</td>
-                <td>${formatCurrency(item.sanPhamChiTiet.gia * item.soLuong)}đ</td>
-                <td>
-                    <a href='/admin/taiquay/xoa-sanpham-hdct/${item.id}' class='btn btn-light'>
-                        <i class='bi bi-trash-fill fs-5'></i>
-                    </a>
-                </td>
-            `;
-                cartTableBody.appendChild(row);
-            });
-        } else {
-            console.error('Không tìm thấy phần tử cart table hoặc danh sách rỗng', {
-                cartTableBody,
-                listHDCT: responseData.listHDCT
-            });
-        }
-    }
 
     // Hàm format tiền tệ
     function formatCurrency(amount) {
@@ -728,11 +655,9 @@
 <script>
     document.getElementById("paymentForm").onsubmit = function (event) {
         event.preventDefault(); // Ngăn hành vi submit mặc định của form
-
         // Lấy dữ liệu form
         const form = document.getElementById("paymentForm");
         const formData = new FormData(form);
-
         // Thực hiện submit form qua fetch API
         fetch(form.action + "?" + new URLSearchParams(formData), {
             method: "GET"
@@ -748,7 +673,7 @@
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Có, in hóa đơn',
+                        confirmButtonText: 'In hóa đơn',
                         cancelButtonText: 'Không, để sau'
                     }).then((result) => {
                         if (result.isConfirmed) {
@@ -785,6 +710,7 @@
 <!-- Thêm thư viện SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!--//-->
+<!--lib qr-->
 <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <!--<script th:src="@{/javascript/locSanPhamTaiQuay.js}"></script>-->
@@ -801,24 +727,258 @@
 </script>
 <!--UPDATE SL SAN PHAM TRONG GH-->
 <script>
-    function updateQuantity(hdctId, delta) {
-        const url = `/admin/taiquay/update-sanpham-hdct/${hdctId}?delta=${delta}`;
+    function updateQuantityDirectly(inputElement, hdctId) {
+        console.log(`Directly updating quantity for ID: ${hdctId}`);
+        let newQuantity = parseInt(inputElement.value);
+        const currentQuantity = parseInt(inputElement.getAttribute('data-current-quantity'));
+        console.log(`Current quantity: ${currentQuantity}, New quantity: ${newQuantity}`);
+        // Kiểm tra số lượng tồn kho
+        const stockQuantity = parseInt(inputElement.getAttribute('data-stock-quantity')); // Thêm giá trị tồn kho
+        // Kiểm tra số lượng hợp lệ
+        if (isNaN(newQuantity) || newQuantity < 1) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Số lượng không hợp lệ. Vui lòng nhập số lượng lớn hơn 0.'
+            });
+            inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
+            return;
+        }
+        // Kiểm tra số lượng tồn kho
+        if (newQuantity > stockQuantity) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: `Số lượng vượt quá số lượng tồn kho. Chỉ còn lại ${stockQuantity} sản phẩm.`
+            });
+            inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
+            return;
+        }
+        //
+        const delta = newQuantity - currentQuantity;
+        // Log delta
+        console.log(`Delta computed: ${delta}`);
 
+        if (delta !== 0) {
+            const url = `/admin/taiquay/update-sanpham-hdct/${hdctId}`;
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `delta=${delta}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Cảnh Báo',
+                            text: data.error
+                        });
+                        inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
+                    } else {
+                        // Cập nhật số lượng tồn kho
+                        if (stockQuantityElement) {
+                            stockQuantityElement.textContent = data.stockQuantity;
+                        }
+                        inputElement.setAttribute('data-current-quantity', newQuantity);
+                        document.querySelector('.total').textContent = data.tongTien + ' vnđ';
+                        data.listHDCT.forEach(hdct => {
+                            const row = document.querySelector(`tr:has(input[id='quantity-${hdct.id}'])`);
+                            if (row) {
+                                const tongTienCell = row.querySelector('td:nth-child(5)');
+                                if (tongTienCell) {
+                                    tongTienCell.textContent = hdct.tongTien + 'đ';
+                                }
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Có lỗi xảy ra, vui lòng thử lại.'
+                    });
+                    inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
+                });
+        }
+    }
+
+    function updateQuantity(hdctId, delta) {
+        console.log(`Updating quantity for ID: ${hdctId}, Delta: ${delta}`);
+        const quantityInput = document.getElementById(`quantity-${hdctId}`);
+        let currentQuantity = parseInt(quantityInput.value);
+        let newQuantity = currentQuantity + delta;
+        console.log(`Current quantity: ${currentQuantity}, New quantity: ${newQuantity}`);
+        // Kiểm tra số lượng tồn kho trước khi thay đổi
+        const stockQuantity = parseInt(quantityInput.getAttribute('data-stock-quantity')); // Lấy số lượng tồn kho
+
+        if (newQuantity < 1) {
+            Swal.fire({
+                title: 'Xóa Sản Phẩm',
+                text: 'Bạn có muốn xóa sản phẩm này khỏi giỏ hàng không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Có, xóa ngay!',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Gọi API xóa sản phẩm
+                    window.location.href = `/admin/taiquay/xoa-sanpham-hdct/${hdctId}`;
+                }
+            });
+            return;
+        }
+        //kiem tra sl ton kho
+        if (newQuantity > stockQuantity) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: `Số lượng vượt quá số lượng tồn kho. Chỉ còn lại ${stockQuantity} sản phẩm.`
+            });
+            return;
+        }
+        // Cập nhật số lượng trong input
+        quantityInput.value = newQuantity;
+        // Cập nhật lại giá trị data-current-quantity trước khi gọi hàm khác
+        quantityInput.setAttribute('data-current-quantity', newQuantity);
+
+        const url = `/admin/taiquay/update-sanpham-hdct/${hdctId}`;
+        console.log(`Sending request to update quantity for ID: ${hdctId} with delta: ${delta}`);
         fetch(url, {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `delta=${delta}`
         })
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    alert(data.error);
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cảnh Báo',
+                        text: data.error
+                    });
+                    quantityInput.value = currentQuantity; // Khôi phục lại giá trị cũ
                 } else {
-                    // Cập nhật lại giao diện bảng
-                    document.getElementById('cartTable1').innerHTML = data.updatedCartHtml;
+                    // Cập nhật giá trị hiện tại
+                    quantityInput.setAttribute('data-current-quantity', newQuantity);
                     // Cập nhật tổng tiền
-                    document.getElementById('tongTien').innerText = data.tongTien;
+                    document.querySelector('.total').textContent = data.tongTien + ' vnđ';
+                    // Cập nhật các dòng khác trong bảng
+                    data.listHDCT.forEach(hdct => {
+                        const row = document.querySelector(`tr:has(input[id='quantity-${hdct.id}'])`);
+                        if (row) {
+                            const tongTienCell = row.querySelector('td:nth-child(5)');
+                            if (tongTienCell) {
+                                tongTienCell.textContent = hdct.tongTien + 'đ';
+                            }
+                        }
+                    });
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Có lỗi xảy ra, vui lòng thử lại.'
+                });
+                quantityInput.value = currentQuantity; // Khôi phục lại giá trị cũ
+            });
     }
+</script>
+<!--hủy phiếu  giảm giá-->
+<script>
+    $(document).ready(function () {
+        // Xử lý khi nhấn nút hủy phiếu giảm giá
+        $('#huyPhieuGiamGiaBtn').on('click', function () {
+            if (idHoaDon == null || idHoaDon === undefined) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Không tìm thấy ID hóa đơn. Vui lòng thử lại.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                return;
+            }
+            Swal.fire({
+                title: 'Xác nhận hủy phiếu giảm giá',
+                text: 'Bạn có chắc chắn muốn bỏ chọn phiếu giảm giá này không?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Có, hủy ngay!',
+                cancelButtonText: 'Không, giữ lại'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/admin/taiquay/huy-phieu-giam-gia/' + idHoaDon,
+                        method: 'GET',
+                        dataType: 'json', // Thêm dataType để xử lý response
+                        success: function (response) {
+                            // Kiểm tra response trước khi sử dụng
+                            if (response && response.tongTien) {
+                                $('#tongTien').text(response.tongTien + 'đ');
+                                // Chuyển đổi giá trị về số
+                                let tongTien = parseFloat(response.tongTien.replace(/[^\d.-]/g, ''));
+                                let tongTienSauGiam = parseFloat(response.tongTienSauGiam.replace(/[^\d.-]/g, ''));
+                                // Tính số tiền giảm
+                                let soTienGiam = tongTien - tongTienSauGiam;
+                                // Cập nhật tổng tiền ban đầu
+                                $('#subtotal').text(response.tongTien + 'đ');
+                                // Cập nhật tổng tiền sau giảm
+                                $('#totalAfterDiscount').text(response.tongTien + 'đ');
+                                // Đặt lại số tiền giảm giá về 0
+                                $('#discount').text(soTienGiam > 0
+                                    ? soTienGiam.toLocaleString('vi-VN', {minimumFractionDigits: 0, maximumFractionDigits: 0}) + ' đ'
+                                    : '0 đ'
+                                );
+                                // Xóa mã phiếu giảm giá
+                                $('#maPhieuGiamGia').val('');
+                                // Ẩn nút hủy
+                                $('#huyPhieuGiamGiaBtn').hide();
+                                // Thông báo thành công
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Đã hủy phiếu giảm giá',
+                                    text: 'Tổng tiền đã được hoàn nguyên.',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                throw new Error('Phản hồi không hợp lệ');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Chi tiết lỗi:', xhr, status, error);
+                            // Xử lý lỗi chi tiết hơn
+                            let errorMessage = 'Có lỗi xảy ra';
+                            if (xhr.responseJSON && xhr.responseJSON.error) {
+                                errorMessage = xhr.responseJSON.error;
+                            } else if (xhr.statusText) {
+                                errorMessage = xhr.statusText;
+                            }
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi',
+                                text: errorMessage,
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    });
 </script>
 </html>

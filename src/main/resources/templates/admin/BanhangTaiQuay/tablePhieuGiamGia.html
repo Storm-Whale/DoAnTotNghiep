@@ -66,10 +66,6 @@
             <td th:text="${#numbers.formatDecimal(phieuGiamGia.giaTriMax, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
             <td th:text="${phieuGiamGia.trangThai == 1 ? 'Active' : 'Inactive'}"></td>
             <td>
-<!--                <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="post">-->
-<!--                    <input type="hidden" name="maPhieuGiamGia" th:value="${}" />-->
-<!--                    <button type="submit">Áp dụng</button>-->
-<!--                </form>-->
                 <a class="btn btn-primary" th:href="@{/admin/taiquay/kiemtrama/{maphieugiamgia} (maphieugiamgia = ${phieuGiamGia.maPhieuGiamGia})}">
                     Áp Dụng
                 </a>
