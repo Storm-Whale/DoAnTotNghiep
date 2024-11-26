@@ -2,6 +2,7 @@ package nhom6.duancanhan.doantotnghiep.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -45,6 +46,7 @@ public class HoaDon extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "id_thanh_toan", referencedColumnName = "id")
+
     private PhuongThucThanhToan phuongThucThanhToan;
 
     @Column(name = "tong_tien", precision = 10, scale = 2)

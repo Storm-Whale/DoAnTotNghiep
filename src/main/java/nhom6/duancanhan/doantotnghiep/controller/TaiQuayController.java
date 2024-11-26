@@ -420,6 +420,15 @@ public class TaiQuayController {
             , RedirectAttributes redirectAttributes, Model model) {
 
         KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
+        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
+                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
+
+        if (hoaDon.getKhachHang() != null) {
+            // Nếu đã có khách hàng, hiển thị thông báo lỗi
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã có khách hàng trong hóa đơn");
+            return "redirect:/admin/taiquay/detail/" + idHoaDon; // Quay lại trang chi tiết hóa đơn
+        }
+
         if (khachHang == null) {
             // Tạo đối tượng khách hàng mới với số điện thoại đã nhập
             KhachHang newKhachHang = new KhachHang();
@@ -431,8 +440,7 @@ public class TaiQuayController {
             return "redirect:/admin/taiquay#themnhanhkhachhang"; // View thêm khách hàng
         }
 
-    HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
-            .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
+
 
     // Cập nhật khách hàng cho hóa đơn
     if (hoaDon != null || hoaDon.getKhachHang() != null) {
@@ -530,10 +538,22 @@ public class TaiQuayController {
     public String thanhtoan(
             @RequestParam("ghiChu") String ghiChu,
             @RequestParam("phuongThucThanhToan") Integer phuongThucId,
-            @RequestParam(value = "maPhieuGiamGia", required = false) String maPhieuGiamGiaInput
+            @RequestParam(value = "maPhieuGiamGia", required = false) String maPhieuGiamGiaInput,
+            @RequestParam(value = "themKhachHang", required = false) Boolean themKhachHang // Thêm tham số này
             , Model model) throws IOException {
         // Lấy hóa đơn hiện tại
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại."));
+
+        // kiểm tra đã có khách hàng chưa
+        if (hoaDon.getKhachHang() == null) {
+            if (themKhachHang == null || !themKhachHang) {
+                // Nếu không có khách hàng và người dùng không muốn thêm khách hàng
+                hoaDon.setKhachHang(new KhachHang()); // Thiết lập khách hàng mặc định là khách lẻ
+            } else {
+                // Thêm logic để thêm khách hàng mới nếu người dùng chọn thêm khách hàng
+                // ...
+            }
+        }
         // Lấy chi tiết hóa đơn
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
         // Tính tổng tiền ban đầu
