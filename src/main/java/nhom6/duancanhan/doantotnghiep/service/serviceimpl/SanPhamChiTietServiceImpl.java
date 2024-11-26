@@ -103,12 +103,12 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
     }
 
     @Override
-    public void sortDeleteSanPhamChiTiet(Integer id) {
-        DatabaseOperationHandler.handleDatabaseOperation(() -> {
+    public int sortDeleteSanPhamChiTiet(Integer id) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() -> {
             SanPhamChiTiet sanPhamChiTiet = findSanPhamChiTietById(id);
             sanPhamChiTiet.setTrangThai(0);
             sanPhamChiTietRepository.save(sanPhamChiTiet);
-            return null;
+            return sanPhamChiTiet.getSanPham().getId();
         },"Lỗi khi xóa sản phẩm từ cơ sở dữ liệu");
     }
 

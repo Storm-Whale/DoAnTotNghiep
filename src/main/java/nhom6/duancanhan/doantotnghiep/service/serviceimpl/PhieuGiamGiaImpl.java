@@ -58,6 +58,16 @@ public class PhieuGiamGiaImpl implements PhieuGiamGiaService {
     public void delete(Integer id) {
         phieuGiamGiaRepository.deleteById(id);
     }
+    @Override
+    public void updateStatus(Integer id, PhieuGiamGia phieuGiamGia) {
+        Optional<PhieuGiamGia> existingPhieuGiamGia = phieuGiamGiaRepository.findById(id);
+        if (existingPhieuGiamGia.isPresent()) {
+            PhieuGiamGia updatedPhieuGiamGia = existingPhieuGiamGia.get();
+            updatedPhieuGiamGia.setTrangThai(phieuGiamGia.getTrangThai()); // Cập nhật trạng thái
+            phieuGiamGiaRepository.save(updatedPhieuGiamGia); // Lưu lại
+        }
+    }
+
 
     @Override
     public BigDecimal applyDiscount(String maPhieuGiamGia, BigDecimal tongTien) {

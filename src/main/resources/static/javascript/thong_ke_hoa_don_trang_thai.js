@@ -1,10 +1,10 @@
-const trangThaiLabels = {
-    1: 'Chờ xác nhận',
-    2: 'Đơn hàng đã xác nhận',
-    3: 'Chuẩn bị đơn hàng',
-    4: 'Giao hàng',
-    5: 'Đơn hàng hoàn thành'
-};
+    const trangThaiLabels = {
+        1: 'Chờ xác nhận',
+        2: 'Đơn hàng đã xác nhận',
+        3: 'Chuẩn bị đơn hàng',
+        4: 'Giao hàng',
+        5: 'Đơn hàng hoàn thành'
+    };
 
 // Khởi tạo biểu đồ
 const ctx = document.getElementById('orderStatusChart').getContext('2d');

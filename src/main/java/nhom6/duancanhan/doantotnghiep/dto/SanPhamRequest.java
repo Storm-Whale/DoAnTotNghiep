@@ -1,7 +1,5 @@
 package nhom6.duancanhan.doantotnghiep.dto;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -33,14 +31,12 @@ public class SanPhamRequest {
     @NotNull(message = "Cổ áo không được để trống")
     private Integer idCoAo;
 
-    @NotNull(message = "Trạng thái không được để trống")
-    @Min(value = 0, message = "Trạng thái phải lớn hơn hoặc bằng 0")
-    @Max(value = 1, message = "Trạng thái phải nhỏ hơn hoặc bằng 1")
     private Integer trangThai;
 
     private String moTa;
 
     @NotNull(message = "Ảnh sản phẩm không được để trống")
     private MultipartFile anhSanPham;
+
     String qrCodeUrl;
 }

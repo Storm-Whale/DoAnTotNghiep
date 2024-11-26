@@ -6,6 +6,7 @@ import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
+import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import nhom6.duancanhan.doantotnghiep.entity.PhieuGiamGia;
 import nhom6.duancanhan.doantotnghiep.entity.PhuongThucThanhToan;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
@@ -13,6 +14,7 @@ import nhom6.duancanhan.doantotnghiep.entity.SanPhamGioHang;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.*;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
+import nhom6.duancanhan.doantotnghiep.service.serviceimpl.InvoidPdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,10 +23,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,6 +58,7 @@ public class TaiQuayController {
     private final ChatLieuService chatLieuService;
     private final KieuCoAoService kieuCoAoService;
     private final KieuTayAoService kieuTayAoService;
+    private final InvoidPdfService invoidPdfService;
 
     @Autowired
     SanPhamGioHangRepository sanPhamGioHangRepository;
@@ -62,12 +72,14 @@ public class TaiQuayController {
     SanPhamChiTietRepository sanPhamChiTietRepository;
     @Autowired
     PhieuGiamGiaRepository phieuGiamGiaRepository;
+    @Autowired
+    HttpSession session;
 
     private Integer idHoaDon = 1;
 
     private String maPhieuGiamGia = "";
 
-    public TaiQuayController(SanPhamChiTietService sanPhamChiTietService, SanPhamService sanPhamService, MauSacService mauSacService, KichCoService kichCoService, HoaDonService hoaDonService, KhachHangService khachHangService, PhieuGiamGiaService phieuGiamGiaService, ThuongHieuService thuongHieuService, ChatLieuService chatLieuService, KieuCoAoService kieuCoAoService, KieuTayAoService kieuTayAoService) {
+    public TaiQuayController(SanPhamChiTietService sanPhamChiTietService, SanPhamService sanPhamService, MauSacService mauSacService, KichCoService kichCoService, HoaDonService hoaDonService, KhachHangService khachHangService, PhieuGiamGiaService phieuGiamGiaService, ThuongHieuService thuongHieuService, ChatLieuService chatLieuService, KieuCoAoService kieuCoAoService, KieuTayAoService kieuTayAoService, InvoidPdfService invoidPdfService) {
         this.sanPhamChiTietService = sanPhamChiTietService;
         this.sanPhamService = sanPhamService;
         this.mauSacService = mauSacService;
@@ -79,6 +91,7 @@ public class TaiQuayController {
         this.chatLieuService = chatLieuService;
         this.kieuCoAoService = kieuCoAoService;
         this.kieuTayAoService = kieuTayAoService;
+        this.invoidPdfService = invoidPdfService;
     }
 // TODO: SHOWINDEX
     @GetMapping("")
@@ -95,9 +108,19 @@ public class TaiQuayController {
                             @RequestParam(value = "mauSacId", required = false) Integer mauSacId,
                             @RequestParam(value = "kieuGiamGia", required = false) Integer kieuGiamGia,
                             @RequestParam(value = "trangThai", required = false) Integer trangThai,
-                            @RequestParam(name = "soDienThoai", required = false) String soDienThoai
+                            @RequestParam(name = "soDienThoai", required = false) String soDienThoai,
+                            @SessionAttribute(value = "nhanvien", required = false) NhanVien nhanVien
             , RedirectAttributes redirectAttributes,
                             Model model) {
+        boolean isLoggedIn = session != null &&
+                session.getAttribute("loginStatus") != null &&
+                (Boolean) session.getAttribute("loginStatus");
+        if (!isLoggedIn) {
+            model.addAttribute("nhanvien", null);
+        } else {
+            model.addAttribute("nhanvien", nhanVien);
+        }
+        ///
         model.addAttribute("hoaDon", new HoaDon());
         model.addAttribute("sanPhamChiTiet", sanPhamChiTietService.getAllSanPhamChiTiet());
         model.addAttribute("sanPham", sanPhamService.getAllSanPham());
@@ -166,10 +189,14 @@ public class TaiQuayController {
 
         KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
         redirectAttributes.addFlashAttribute("khachHang", khachHang);
-        model.addAttribute("khachHangThemNhanh",new KhachHang());
+        model.addAttribute("khachHangThemNhanh", new KhachHang());
 //        BigDecimal tongTienSauGiam = phieuGiamGiaService.applyDiscount(maPhieuGiamGia, tongTien);
 //        model.addAttribute("tongTienSauGiam", tongTienSauGiam);
         // Thêm vào model
+        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
+                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
+        model.addAttribute("hoaDon", hoaDon);
+
         return "/admin/BanhangTaiQuay/index";
     }
 
@@ -234,10 +261,14 @@ public class TaiQuayController {
         model.addAttribute("kieuGiamGia", kieuGiamGia);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("idHoaDon", idHoaDon);
-        model.addAttribute("khachHangThemNhanh",new KhachHang());
+        model.addAttribute("khachHangThemNhanh", new KhachHang());
+        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
+                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
+        model.addAttribute("hoaDon", hoaDon);
         return "/admin/BanhangTaiQuay/index";
     }
 
+    // TODO: SAN PHAM
     @GetMapping("/sanpham")
     public String sanpham(@RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "size", defaultValue = "5") int size,
@@ -275,17 +306,28 @@ public class TaiQuayController {
         model.addAttribute("mauSacId", mauSacId);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("idHoaDon", idHoaDon);
-        model.addAttribute("khachHangThemNhanh",new KhachHang());
+        model.addAttribute("khachHangThemNhanh", new KhachHang());
+        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
+                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
+        model.addAttribute("hoaDon", hoaDon);
         return "/admin/BanhangTaiQuay/index";
     }
 
+    //TODO: TẠO HÓA ĐƠN
     @PostMapping("/taohoadon")
     @ResponseBody
-    public HoaDon taoHoaDon(Model model) {
+    public ResponseEntity<?> taoHoaDon(Model model) {
+        NhanVien nhanVien = (NhanVien) session.getAttribute("nhanvien");
+        if (nhanVien.getTaiKhoan().getVaiTro() == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Bạn chưa đăng nhập, vui lòng đăng nhập để tạo hóa đơn!");
+        }
         HoaDon hoaDon = new HoaDon();
         hoaDon.setTrangThai(1); // Set trạng thái mới tạo
+        hoaDon.setLoaiHoaDon("Tại quầy");
+        hoaDon.setNguoiTao(nhanVien);
         hoaDonRepository.save(hoaDon); // Lưu vào cơ sở dữ liệu
-        return hoaDon;
+        return ResponseEntity.ok(hoaDon);
     }
 
     // TODO : Detail
@@ -301,7 +343,7 @@ public class TaiQuayController {
                                @RequestParam(value = "kichCoId", required = false) Integer kichCoId,
                                @RequestParam(value = "mauSacId", required = false) Integer mauSacId,
                                @RequestParam(value = "trangThai", required = false) Integer trangThai,
-             Model model) {
+                               Model model) {
         idHoaDon = idHD;
         Page<SanPhamChiTiet> pageFind = sanPhamChiTietService.timKiemSanPham(keyword, thuongHieuId, chatLieuId, tayAoId,
                 coAoId, kichCoId, mauSacId, trangThai, page, size);
@@ -350,39 +392,48 @@ public class TaiQuayController {
                 .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal lastTongTien = BigDecimal.ZERO;
-        System.out.println("Ma Phieu Giam Gia : " + maPhieuGiamGia);
-        if (maPhieuGiamGia != null && maPhieuGiamGia.length() != 0) {
+        // Tìm phiếu giảm giá phù hợp
+        PhieuGiamGia phieuGiamGiaAuto = timPhieuGiamGiaHopLe(tongTien);
+
+        BigDecimal lastTongTien = tongTien;
+        if (phieuGiamGiaAuto != null) {
+            // Tự động áp dụng phiếu giảm giá
+            maPhieuGiamGia = phieuGiamGiaAuto.getMaPhieuGiamGia();
             lastTongTien = phieuGiamGiaService.applyDiscount(maPhieuGiamGia, tongTien);
-            System.out.println("Tong Tien : " + lastTongTien);
-            model.addAttribute("maPhieuGiamGia",maPhieuGiamGia);
-            maPhieuGiamGia = "";
+
+            System.out.println("Tự động áp dụng PGG: " + maPhieuGiamGia);
+            System.out.println("Tổng tiền sau giảm: " + lastTongTien);
+
+            model.addAttribute("maPhieuGiamGia", maPhieuGiamGia);
         }
+
         model.addAttribute("tongTien", tongTien);
         model.addAttribute("idHoaDon", idHoaDon);
-        model.addAttribute("tongTienSauGiam", hoaDon != null ? lastTongTien : null);
-        model.addAttribute("khachHangThemNhanh",new KhachHang());
+        model.addAttribute("tongTienSauGiam", lastTongTien);
+        model.addAttribute("khachHangThemNhanh", new KhachHang());
         return "/admin/BanhangTaiQuay/index";
     }
-// TODO : khachhang
-@GetMapping("tim-kiem")
-public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = false) String soDienThoai, HttpSession session
-        , RedirectAttributes redirectAttributes,Model model) {
 
-    KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
-    if (khachHang == null) {
-        // Tạo đối tượng khách hàng mới với số điện thoại đã nhập
-        KhachHang newKhachHang = new KhachHang();
-        newKhachHang.setSoDienThoai(soDienThoai);
-        // Gửi thông báo và form khách hàng mới đến view
-        model.addAttribute("khachHangThemNhanh", newKhachHang);
-        model.addAttribute("soDienThoaiNotFound", soDienThoai);
+    // TODO : khachhang
+    @GetMapping("tim-kiem")
+    public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = false) String soDienThoai, HttpSession session
+            , RedirectAttributes redirectAttributes, Model model) {
+
+        KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
+        if (khachHang == null) {
+            // Tạo đối tượng khách hàng mới với số điện thoại đã nhập
+            KhachHang newKhachHang = new KhachHang();
+            newKhachHang.setSoDienThoai(soDienThoai);
+            // Gửi thông báo và form khách hàng mới đến view
+            model.addAttribute("khachHangThemNhanh", newKhachHang);
+            model.addAttribute("soDienThoaiNotFound", soDienThoai);
 //            return "redirect:/admin/taiquay";
-        return "redirect:/admin/taiquay#themnhanhkhachhang"; // View thêm khách hàng
-    }
+            return "redirect:/admin/taiquay#themnhanhkhachhang"; // View thêm khách hàng
+        }
 
     HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
             .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
+
     // Cập nhật khách hàng cho hóa đơn
     if (hoaDon != null || hoaDon.getKhachHang() != null) {
         hoaDon.setKhachHang(khachHang);
@@ -390,12 +441,14 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
         hoaDonRepository.save(hoaDon);
         redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
         redirectAttributes.addFlashAttribute("khachHang", khachHang);
+
         if (hoaDon.getDiaChi() != null) {
             model.addAttribute("diaChi", hoaDon.getDiaChi().getDiaChiChiTiet());
+        } else {
+            model.addAttribute("diaChi", "Địa chỉ chưa được cập nhật");
         }
-    }else {
-        System.out.println("bug ơi");
     }
+        model.addAttribute("listhoadondiachi", hoaDon);
 //        model.addAttribute("khachHang", khachHang);
 //        model.addAttribute("hoaDon", hoaDon);
 //        model.addAttribute("diaChi", hoaDon.getDiaChi());
@@ -405,7 +458,7 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
     @Autowired
     DiaChiRepository diaChiRepository;
     @PostMapping("/cap-nhat-hoa-don")
-    public String capNhatHoaDon(@RequestParam Integer idHoaDon, @RequestParam String diaChi) {
+    public String capNhatHoaDon(@RequestParam Integer idHoaDon, @RequestParam String diaChi,Model model) {
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
                 .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
 
@@ -425,16 +478,19 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
         // Chuyển hướng về trang chi tiết hóa đơn
         return "redirect:/admin/taiquay/detail/" + idHoaDon;
     }
+    @GetMapping("/themnhanhkhachhang")
+    public String addKhachHnagTaiQuay(@ModelAttribute("khachHangThemNhanh") KhachHang khachHang) {
+        return "/admin/BanhangTaiQuay/addNhanhKhachHang";
+    }
     @PostMapping("/add")
     public String add(@Valid @ModelAttribute("khachHangThemNhanh") KhachHang khachHang, BindingResult result, Model model,RedirectAttributes redirectAttributes) {
-//        if (result.hasErrors()) {
-//            for (FieldError error : result.getFieldErrors()) {
-//                model.addAttribute(error.getField(), error.getDefaultMessage());
-//            }
-//            model.addAttribute("alertMessage", "Vui lòng kiểm tra thông tin nhập!");
-//            return "redirect:/admin/taiquay#themnhanhkhachhang";
-////          return "redirect:/admin/khachhang/add" + "#demo-modal";
-//        }
+        if (result.hasErrors()) {
+            for (FieldError error : result.getFieldErrors()) {
+                model.addAttribute(error.getField(), error.getDefaultMessage());
+            }
+            return "/admin/BanhangTaiQuay/addNhanhKhachHang";
+        }
+
         khachHangService.addKhachHang(khachHang);
 
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
@@ -453,42 +509,99 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
     @Autowired
     PhuongThucThanhToanRepository phuongThucThanhToanRepository;
 
+
+    private PhieuGiamGia timPhieuGiamGiaHopLe(BigDecimal tongTien) {
+        Date now = new Date(); // Lấy thời gian hiện tại
+        return phieuGiamGiaRepository.findAll().stream()
+                .filter(pgg ->
+                        pgg.getTrangThai() == 1 &&
+                                pgg.getSoLuong() > 0 &&
+                                pgg.getDieuKien().compareTo(tongTien) <= 0 &&
+                                pgg.getNgayBatDau().before(now) && // So sánh với ngày hiện tại
+                                pgg.getNgayKetThuc().after(now) // So sánh với ngày hiện tại
+                )
+                .max(Comparator.comparing(PhieuGiamGia::getDieuKien))
+                .orElse(null);
+    }
+
     //TODO THANH TOAN
     @GetMapping("/thanhtoan")
+    @ResponseBody
     public String thanhtoan(
             @RequestParam("ghiChu") String ghiChu,
             @RequestParam("phuongThucThanhToan") Integer phuongThucId,
             @RequestParam(value = "maPhieuGiamGia", required = false) String maPhieuGiamGiaInput
-            , Model model) {
+            , Model model) throws IOException {
+        // Lấy hóa đơn hiện tại
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại."));
+        // Lấy chi tiết hóa đơn
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
-
+        // Tính tổng tiền ban đầu
         BigDecimal tongTien = hoaDonChiTietList.stream()
                 .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+        // Biến lưu tổng tiền sau giảm
         BigDecimal tongTienSauGiam = tongTien;
-        System.out.println("Ma PGG Input: "+maPhieuGiamGiaInput);
+        // Nếu không có mã nhập, tự động tìm phiếu giảm giá
+        PhieuGiamGia phieuGiamGiaAuto = timPhieuGiamGiaHopLe(tongTien);
         if (maPhieuGiamGiaInput != null && !maPhieuGiamGiaInput.isEmpty()) {
             try {
+                // Tìm phiếu giảm giá theo mã nhập
                 PhieuGiamGia phieuGiamGia = phieuGiamGiaRepository.findByMaPhieuGiamGia(maPhieuGiamGiaInput)
                         .orElseThrow(() -> new IllegalArgumentException("Mã phiếu giảm giá không hợp lệ."));
+                // Áp dụng phiếu giảm giá
                 tongTienSauGiam = phieuGiamGiaService.applyDiscount(maPhieuGiamGiaInput, tongTien);
-
+                // Cập nhật thông tin phiếu giảm giá
+                phieuGiamGia.setSoLuong(phieuGiamGia.getSoLuong() - 1);
+                phieuGiamGiaRepository.save(phieuGiamGia);
+                // Lưu phiếu giảm giá vào hóa đơn
                 hoaDon.setPhieuGiamGia(phieuGiamGia);
-                hoaDon.setTongTien(tongTienSauGiam);
-                hoaDonRepository.save(hoaDon);
+//                hoaDonRepository.save(hoaDon);
             } catch (IllegalArgumentException e) {
                 model.addAttribute("error", e.getMessage());
                 return "redirect:/admin/taiquay/detail/" + idHoaDon;
             }
+        }// Nếu không có mã nhập, tự động tìm phiếu giảm giá
+        else {
+            // Tìm phiếu giảm giá phù hợp nhất
+            if (phieuGiamGiaAuto != null) {
+                // Áp dụng phiếu giảm giá tự động
+                tongTienSauGiam = phieuGiamGiaService.applyDiscount(
+                        phieuGiamGiaAuto.getMaPhieuGiamGia(),
+                        tongTien
+                );
+                // Cập nhật thông tin phiếu giảm giá
+                phieuGiamGiaAuto.setSoLuong(phieuGiamGiaAuto.getSoLuong() - 1);
+                phieuGiamGiaRepository.save(phieuGiamGiaAuto);
+                // Lưu phiếu giảm giá vào hóa đơn
+                hoaDon.setPhieuGiamGia(phieuGiamGiaAuto);
+//                phieuGiamGiaSuDung = phieuGiamGiaAuto;
+            } else {
+                System.out.println("Không tìm thấy phiếu giảm giá phù hợp");
+            }
         }
+        hoaDon.setTongTien(tongTienSauGiam);
         model.addAttribute("tongTien", tongTien);
         PhuongThucThanhToan phuongThuc = phuongThucThanhToanRepository.findById(phuongThucId).orElse(null);
         hoaDon.setPhuongThucThanhToan(phuongThuc);
-        hoaDon.setTrangThai(tongTienSauGiam.compareTo(BigDecimal.ZERO) == 0 ? 1 : 2);
+        if (hoaDon.getKhachHang() != null) {
+            hoaDon.setTrangThai(2); // Chờ xác nhận
+        } else {
+            hoaDon.setTrangThai(5); // Đã thanh toán
+        }
         hoaDon.setGhiChu(ghiChu);
         hoaDonRepository.save(hoaDon);
-        return "redirect:/admin/hoadon";
+
+        byte[] pdfData = invoidPdfService.generateInvoicePdf(hoaDon);
+
+        String fileName = "invoice_" + hoaDon.getId() + ".pdf";
+        Path path = Paths.get("D://FALL_2024//DATN//DoAnTotNghiep//upload/" + fileName);
+        Files.write(path, pdfData);
+
+        // Return the file URL to the frontend
+        String fileUrl = "D://FALL_2024//DATN//DoAnTotNghiep//upload/" + fileName;
+        model.addAttribute("pdfUrl", fileUrl);
+        return "/uploads/" + fileName;
     }
 
     //  TODO ADDSP
@@ -504,6 +617,8 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
                                  @RequestParam(value = "kichCoId", required = false) Integer kichCoId,
                                  @RequestParam(value = "mauSacId", required = false) Integer mauSacId,
                                  @RequestParam(value = "trangThai", required = false) Integer trangThai,
+                                 @RequestParam(value = "soLuong", defaultValue = "1") Integer soLuong,
+                                 RedirectAttributes redirectAttributes,
                                  Model model) {
         Page<SanPhamChiTiet> pageFind = sanPhamChiTietService.timKiemSanPham(keyword, thuongHieuId, chatLieuId, tayAoId,
                 coAoId, kichCoId, mauSacId, trangThai, page, size);
@@ -528,17 +643,13 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
         model.addAttribute("kichCoId", kichCoId);
         model.addAttribute("mauSacId", mauSacId);
         model.addAttribute("trangThai", trangThai);
-
-
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Sản phẩm không tồn tại"));
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
         boolean checkCongDon = false;
-
         for (HoaDonChiTiet hdct : hoaDonChiTietList) {
             if (hdct.getSanPhamChiTiet().getId().equals(id)) {
                 if (sanPhamChiTiet.getSoLuong() >= 1) {
-                    System.out.println("Tìm thấy sản phẩm trong hóa đơn, cộng dồn số lượng");
                     hdct.setSoLuong(hdct.getSoLuong() + 1);
                     sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
                     sanPhamChiTietRepository.save(sanPhamChiTiet);
@@ -550,38 +661,57 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
                     hoaDonChiTietRepository.save(hdct);
                 } else {
                     return model.addAttribute("errorSoLuong", "Sản Phẩm Đã Bán Hết").toString();
-
                 }
                 checkCongDon = true;
                 break;
             }
         }
-
+//validate sp tồn kho
+        if (sanPhamChiTiet.getSoLuong() < soLuong) {
+//            redirectAttributes.addFlashAttribute("errorSoLuong", "Số lượng sản phẩm không đủ. Chỉ còn " + sanPhamChiTiet.getSoLuong() + " sản phẩm.");
+            return "redirect:/admin/taiquay/sanpham#sanpham"; // Quay lại trang sản phẩm
+        }
         if (!checkCongDon) {
             HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
                     .orElseThrow(() -> new DataNotFoundException("Không tìm thấy hóa đơn"));
 
-            if (sanPhamChiTiet.getSoLuong() > 0) {
-                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
-                sanPhamChiTietRepository.save(sanPhamChiTiet); // Lưu lại số lượng đã cập nhật trước khi thêm vào hóa đơn
+            // Kiểm tra số lượng yêu cầu
+            if (sanPhamChiTiet.getSoLuong() >= soLuong) {
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
+                sanPhamChiTietRepository.save(sanPhamChiTiet);
 
                 HoaDonChiTiet hoaDonChiTiet = HoaDonChiTiet.builder()
                         .hoaDon(hoaDon)
                         .sanPhamChiTiet(sanPhamChiTiet)
-                        .soLuong(1)
+                        .soLuong(soLuong)
                         .build();
                 hoaDonChiTietRepository.save(hoaDonChiTiet);
+
                 hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
                 BigDecimal tongTien = hoaDonChiTietList.stream()
                         .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
+                // Tìm phiếu giảm giá phù hợp
+                PhieuGiamGia phieuGiamGiaAuto = timPhieuGiamGiaHopLe(tongTien);
 
+                if (phieuGiamGiaAuto != null) {
+                    // Tự động áp dụng phiếu giảm giá
+                    maPhieuGiamGia = phieuGiamGiaAuto.getMaPhieuGiamGia();
+                    BigDecimal tongTienSauGiam = phieuGiamGiaService.applyDiscount(maPhieuGiamGia, tongTien);
+
+                    redirectAttributes.addFlashAttribute("maPhieuGiamGia", maPhieuGiamGia);
+                    redirectAttributes.addFlashAttribute("tongTienSauGiam", tongTienSauGiam);
+                }
                 model.addAttribute("tongTien", tongTien);
                 model.addAttribute("listHDCT", hoaDonChiTietList);
+            } else {
+                // Thêm thông báo lỗi nếu số lượng không đủ
+                model.addAttribute("errorSoLuong", "Số lượng sản phẩm không đủ. Chỉ còn " + sanPhamChiTiet.getSoLuong() + " sản phẩm.");
             }
         }
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm sản phẩm thành công!"); // Thêm thông báo thành công
         model.addAttribute("idHoaDon", idHoaDon);
-        return "redirect:/admin/taiquay/sanpham#sanpham";
+        return "redirect:/admin/taiquay/detail/" + idHoaDon;
     }
 
     //TODO XOA SP
@@ -626,19 +756,6 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
         return "redirect:/admin/taiquay"; // Chuyển hướng về trang chủ
     }
 
-//    @DeleteMapping("/huyhoadon/{id}")
-//    @ResponseBody
-//    public ResponseEntity<?> huyHoaDon(@PathVariable("id") Integer id) {
-//        try {
-//            hoaDonService.cancelHoaDon(id);
-//            idHoaDon = null;
-//            return ResponseEntity.ok("Hóa đơn đã được hủy thành công.");
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy hóa đơn để hủy.");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể hủy hóa đơn.");
-//        }
-//    }
 
     //TODO: Kiem Tra Phieu Giam Gia
     @GetMapping("/kiemtrama/{maphieugiamgia}")
@@ -651,15 +768,20 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
             BigDecimal tongTien = hoaDonChiTietList.stream()
                     .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
+            //
             BigDecimal tongTienSauGiam = phieuGiamGiaService.applyDiscount(maPhieuGiamGiaInput, tongTien);
             hoaDon.setTongTien(tongTienSauGiam);
+            //update so luong pgg trong db
+            PhieuGiamGia phieuGiamGia = phieuGiamGiaRepository.findByMaPhieuGiamGia(maPhieuGiamGiaInput)
+                    .orElseThrow(() -> new IllegalArgumentException("Mã giảm giá không hợp lệ"));
+            phieuGiamGia.setSoLuong(phieuGiamGia.getSoLuong() - 1);  // Giảm đi 1
+            phieuGiamGiaRepository.save(phieuGiamGia);
+            // luu thong tin hoa don
             hoaDonRepository.save(hoaDon);
-            maPhieuGiamGia = maPhieuGiamGiaInput;
-//            model.addAttribute("tongTien", tongTien);
+//            maPhieuGiamGia = maPhieuGiamGiaInput;
             model.addAttribute("hoaDon", hoaDon);
-//            model.addAttribute("tongTienSauGiam", tongTienSauGiam);
             model.addAttribute("message", "Mã giảm giá hợp lệ!");
-            model.addAttribute("maPhieuGiamGia", maPhieuGiamGia);
+            model.addAttribute("maPhieuGiamGia", maPhieuGiamGiaInput);
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
         }
@@ -677,67 +799,202 @@ public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = fa
             return e.getMessage();
         }
     }
-// TODO: ADD SP TO HDCT FOR QR
-    @GetMapping("/add-sanpham-hdctqr/{id}")
-    public ResponseEntity<Map<String, String>> addSanPhamHDCT(@PathVariable("id") String idRaw,
-                                                              @RequestParam(value = "quantity") int quantity,
-                                                              @RequestParam(value = "idHoaDon") Integer idHoaDon
-                                                              ) {
-        Map<String, String> response = new HashMap<>();
+    //TODO HỦY DISCOUNT
+    @GetMapping("/huy-phieu-giam-gia/{idHoaDon}")
+    @ResponseBody
+    public ResponseEntity<?> huyPhieuGiamGia(@PathVariable("idHoaDon") Integer idHoaDon) {
         try {
-            System.out.println("Received ID: " + idRaw);
-            Integer id = Integer.parseInt(idRaw);
-//            if (!id.equals("\\d+")) { // Kiểm tra nếu không phải số
-//                response.put("error", "ID sản phẩm không hợp lệ.");
-//                return ResponseEntity.badRequest().body(response);
-//            }
-            // Tìm sản phẩm chi tiết từ id
-            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(id)
-                    .orElseThrow(() -> new DataNotFoundException("Sản phẩm không tồn tại"));
-
-            // Kiểm tra xem sản phẩm còn hàng không
-            if (sanPhamChiTiet.getSoLuong() < quantity) {
-                response.put("errorSoLuong", "Sản phẩm không đủ số lượng.");
-                return ResponseEntity.badRequest().body(response);
-            }
-
-            // Cập nhật số lượng sản phẩm trong kho
-            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - quantity);
-            sanPhamChiTietRepository.save(sanPhamChiTiet);
-
-            // Tìm hóa đơn theo idHoaDon (cần lấy idHoaDon từ nơi khác)
+            // Định dạng tiền tệ
+            NumberFormat currencyFormat = NumberFormat.getInstance(new Locale("vi", "VN"));
+            // Tìm hóa đơn
             HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
                     .orElseThrow(() -> new DataNotFoundException("Không tìm thấy hóa đơn"));
-
-            // Kiểm tra nếu sản phẩm đã có trong hóa đơn, cộng dồn số lượng
+            // Lấy chi tiết hóa đơn
             List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
-            boolean productExistsInBill = false;
-            for (HoaDonChiTiet hdct : hoaDonChiTietList) {
-                if (hdct.getSanPhamChiTiet().getId().equals(id)) {
-                    hdct.setSoLuong(hdct.getSoLuong() + quantity);
-                    hoaDonChiTietRepository.save(hdct);
-                    productExistsInBill = true;
-                    break;
-                }
+            // Tính tổng tiền ban đầu (không áp dụng giảm giá)
+            BigDecimal tongTien = hoaDonChiTietList.stream()
+                    .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            // Nếu hóa đơn có phiếu giảm giá
+            if (hoaDon.getPhieuGiamGia() != null) {
+                // Trả lại số lượng cho phiếu giảm giá
+                PhieuGiamGia phieuGiamGia = hoaDon.getPhieuGiamGia();
+                phieuGiamGia.setSoLuong(phieuGiamGia.getSoLuong() + 1);
+                phieuGiamGiaRepository.save(phieuGiamGia);
+                // Xóa phiếu giảm giá khỏi hóa đơn
+                hoaDon.setPhieuGiamGia(null);
+                hoaDon.setTongTien(tongTien);
+                hoaDonRepository.save(hoaDon);
             }
+            // Chuẩn bị response
+            Map<String, Object> response = new HashMap<>();
+            response.put("tongTien", currencyFormat.format(tongTien));
+            response.put("tongTienSauGiam", currencyFormat.format(tongTien));
+            response.put("maPhieuGiamGia", null);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Có lỗi xảy ra: " + e.getMessage()));
+        }
+    }
 
-            // Nếu sản phẩm chưa có trong hóa đơn, tạo mới
-            if (!productExistsInBill) {
-                HoaDonChiTiet hoaDonChiTiet = HoaDonChiTiet.builder()
+    // TODO: ADD SP TO HDCT FOR QR
+    @GetMapping("/add-sanpham-hdctqr/{id}")
+    @ResponseBody
+    public ResponseEntity<?> addSanPhamHDCTQR(
+            @PathVariable("id") String idRaw,
+            @RequestParam(value = "quantity") int quantity,
+            @RequestParam(value = "idHoaDon") Integer idHoaDon
+    ) {
+        try {
+            // Định dạng tiền tệ
+            NumberFormat currencyFormat = NumberFormat.getInstance(new Locale("vi", "VN"));
+            // Chuyển đổi ID
+            Integer id = Integer.parseInt(idRaw);
+            // Tìm sản phẩm chi tiết
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(id)
+                    .orElseThrow(() -> new DataNotFoundException("Sản phẩm không tồn tại"));
+            // Kiểm tra số lượng tồn kho
+            if (sanPhamChiTiet.getSoLuong() < quantity) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "errorSoLuong", "Sản phẩm không đủ số lượng. Chỉ còn " + sanPhamChiTiet.getSoLuong() + " sản phẩm. Vui lòng nhập lại số lượng"
+                ));
+            }
+            // Tìm hóa đơn
+            HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
+                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy hóa đơn"));
+            // Tìm chi tiết hóa đơn hiện tại
+            List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
+            // Kiểm tra xem sản phẩm đã tồn tại trong hóa đơn chưa
+            Optional<HoaDonChiTiet> existingHoaDonChiTiet = hoaDonChiTietList.stream()
+                    .filter(hdct -> hdct.getSanPhamChiTiet().getId().equals(id))
+                    .findFirst();
+
+            HoaDonChiTiet hoaDonChiTiet;
+            if (existingHoaDonChiTiet.isPresent()) {
+                // Nếu sản phẩm đã tồn tại, cập nhật số lượng
+                hoaDonChiTiet = existingHoaDonChiTiet.get();
+                hoaDonChiTiet.setSoLuong(hoaDonChiTiet.getSoLuong() + quantity);
+            } else {
+                // Nếu sản phẩm chưa tồn tại, tạo mới
+                hoaDonChiTiet = HoaDonChiTiet.builder()
                         .hoaDon(hoaDon)
                         .sanPhamChiTiet(sanPhamChiTiet)
                         .soLuong(quantity)
                         .build();
-                hoaDonChiTietRepository.save(hoaDonChiTiet);
+            }
+            // Lưu chi tiết hóa đơn
+            hoaDonChiTietRepository.save(hoaDonChiTiet);
+            // Cập nhật số lượng sản phẩm trong kho
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - quantity);
+            sanPhamChiTietRepository.save(sanPhamChiTiet);
+            // Tính tổng tiền
+            BigDecimal tongTien = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon).stream()
+                    .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            // Tự động tìm phiếu giảm giá
+            PhieuGiamGia phieuGiamGiaAuto = timPhieuGiamGiaHopLe(tongTien);
+            // Biến lưu tổng tiền sau giảm
+            BigDecimal tongTienSauGiam = tongTien;
+            String maPhieuGiamGia = null;
+            // Nếu có phiếu giảm giá phù hợp
+            if (phieuGiamGiaAuto != null) {
+                maPhieuGiamGia = phieuGiamGiaAuto.getMaPhieuGiamGia();
+                tongTienSauGiam = phieuGiamGiaService.applyDiscount(maPhieuGiamGia, tongTien);
+             }
+            // Lấy danh sách chi tiết hóa đơn mới nhất
+            List<HoaDonChiTiet> updatedHoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
+            // Chuẩn bị dữ liệu trả về
+            // Trong controller
+            Map<String, Object> response = new HashMap<>();
+            response.put("tongTien", currencyFormat.format(tongTien));
+            response.put("tongTienSauGiam", currencyFormat.format(tongTienSauGiam));
+            response.put("maPhieuGiamGia", maPhieuGiamGia);
+
+            List<Map<String, Object>> listHDCT = updatedHoaDonChiTietList.stream()
+                    .map(hdct -> {
+                        Map<String, Object> hdctMap = new HashMap<>();
+                        hdctMap.put("id", hdct.getId());
+
+                        Map<String, Object> sanPhamChiTietMap = new HashMap<>();
+                        sanPhamChiTietMap.put("id", hdct.getSanPhamChiTiet().getId());
+
+                        Map<String, Object> sanPhamMap = new HashMap<>();
+                        sanPhamMap.put("tenSanPham", hdct.getSanPhamChiTiet().getSanPham().getTenSanPham());
+
+                        sanPhamChiTietMap.put("sanPham", sanPhamMap);
+                        sanPhamChiTietMap.put("gia", hdct.getSanPhamChiTiet().getGia());
+
+                        hdctMap.put("sanPhamChiTiet", sanPhamChiTietMap);
+                        hdctMap.put("soLuong", hdct.getSoLuong());
+
+                        return hdctMap;
+                    })
+                    .collect(Collectors.toList());
+
+            response.put("listHDCT", listHDCT);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Có lỗi xảy ra: " + e.getMessage()));
+        }
+    }
+    //TODO UPDATE SP CART
+    @PostMapping("/update-sanpham-hdct/{id}")
+    public ResponseEntity<Map<String, Object>> updateSanPhamHDCT(
+            @PathVariable("id") Integer id,
+            @RequestParam("delta") int delta) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // Tìm sản phẩm trong hóa đơn chi tiết
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(id)
+                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy sản phẩm trong hóa đơn chi tiết"));
+
+            // Tính số lượng mới
+            int newQuantity = hoaDonChiTiet.getSoLuong() + delta;
+
+            // Kiểm tra số lượng mới
+            if (newQuantity < 1) {
+                response.put("error", "Số lượng không thể nhỏ hơn 1.");
+                return ResponseEntity.badRequest().body(response);
             }
 
-            // Tính tổng tiền và trả về
-            hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
+            SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
+
+            // Kiểm tra số lượng tồn kho
+            if (delta < 0 && (sanPhamChiTiet.getSoLuong() + delta < 0)) {
+                response.put("error", "Không đủ số lượng trong kho. Chỉ còn " + sanPhamChiTiet.getSoLuong() + " sản phẩm.");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Cập nhật số lượng
+            hoaDonChiTiet.setSoLuong(newQuantity);
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - delta);
+            hoaDonChiTietRepository.save(hoaDonChiTiet);
+            sanPhamChiTietRepository.save(sanPhamChiTiet);
+
+            // Tính tổng tiền và cập nhật danh sách
+            Integer idHoaDon = hoaDonChiTiet.getHoaDon().getId();
+            List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
             BigDecimal tongTien = hoaDonChiTietList.stream()
                     .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            response.put("tongTien", tongTien.toString());
+            // Chuẩn bị danh sách chi tiết để trả về
+            List<Map<String, Object>> listHDCT = hoaDonChiTietList.stream()
+                    .map(hdct -> {
+                        Map<String, Object> hdctMap = new HashMap<>();
+                        hdctMap.put("id", hdct.getId());
+                        hdctMap.put("tongTien", NumberFormat.getInstance(new Locale("vi", "VN"))
+                                .format(hdct.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(hdct.getSoLuong()))));
+                        return hdctMap;
+                    })
+                    .collect(Collectors.toList());
+            // Thêm số lượng tồn kho vào response
+            response.put("stockQuantity", sanPhamChiTiet.getSoLuong());
+            response.put("listHDCT", listHDCT);
+            response.put("tongTien", NumberFormat.getInstance(new Locale("vi", "VN")).format(tongTien));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("error", "Có lỗi xảy ra: " + e.getMessage());

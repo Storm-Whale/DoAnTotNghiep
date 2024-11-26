@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yagi Shop</title>
+    <link rel="icon" th:href="@{/Logoyagi2.png}">
+    <link rel="stylesheet" th:href="@{/css/showInfoAddress.css}">
+    <link rel="stylesheet" th:href="@{/css/alertStyle.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Trong phần head của trang -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+</head>
+<body>
+<header class="p-2 mb-2 border-bottom custom-header">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <!-- Logo Section -->
+            <a th:href="@{/client}" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+                <img th:src="@{/LOGOYAGI.png}" alt="Bee Shirt" width="60" height="60" class="logo-fixed-size me-2">
+            </a>
+
+            <!-- Navigation Links -->
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
+                <li><a href="#" class="nav-link px-2 link-dark">Inventory</a></li>
+                <li><a href="#" class="nav-link px-2 link-dark">Customers</a></li>
+                <li><a href="#" class="nav-link px-2 link-dark">Products</a></li>
+            </ul>
+
+            <!-- Search Form -->
+            <div class="col-12 col-lg-auto mb-2 mb-lg-0 me-4 position-relative">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search" id="searchInput">
+                <div class="suggestions-box" id="suggestions" style="display: none;">
+                    <ul id="suggestionList"></ul>
+                </div>
+            </div>
+
+            <!-- Cart Icon -->
+            <a th:if="${session.user != null}" th:href="@{/client/gio-hang}" class="me-4">
+                <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
+            </a>
+            <a th:if="${session.user == null}" th:href="@{/login/login-client}" class="me-4">
+                <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
+            </a>
+            <!-- User Dropdown -->
+            <div id="avatarContainer">
+                <div class="dropdown text-end" th:if="${session.loginStatus == true}">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
+                       id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img id="userAvatar"
+                             th:src="@{/{anhUrl}(anhUrl=${session.user.anhUrl})}"
+                             alt="User Avatar" width="40" height="40" class="rounded-circle" style="object-fit: cover">
+                    </a>
+                    <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                        <li><a class="dropdown-item" th:href="@{/client/showInfoCustomer}">Tài Khoản Của Tôi</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" th:href="@{/login/logout}">Đăng Xuất</a></li>
+                    </ul>
+                </div>
+
+                <!-- Hiển thị ảnh mặc định nếu không đăng nhập -->
+                <div class="dropdown text-end" th:unless="${session.loginStatus == true}">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
+                       id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img th:src="@{/nguoidung.png}"
+                             alt="Default Avatar" width="40" height="40" class="rounded-circle">
+                    </a>
+                    <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2">
+                        <li><a class="dropdown-item" th:href="@{/login/login-client}">Đăng nhập</a></li>
+                        <li><a class="dropdown-item" th:href="@{/client/register}">Đăng ký</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="accordion" id="sidebarAccordion">
+                <!-- Tài Khoản Của Tôi -->
+                <div class="accordion-item" id="accountSection">
+                    <h2 class="accordion-header" id="headingAccount">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accountCollapse"
+                                aria-expanded="false"
+                                aria-controls="accountCollapse">
+                            Tài Khoản Của Tôi
+                        </button>
+                    </h2>
+                    <div id="accountCollapse" class="accordion-collapse collapse" aria-labelledby="headingAccount" data-bs-parent="#sidebarAccordion">
+                        <div class="accordion-body">
+                            <div class="list-group">
+                                <a th:href="@{/client/showInfoCustomer}" class="list-group-item list-group-item-action">Hồ Sơ</a>
+                                <a th:href="@{/client/showInfoAddress}" class="list-group-item list-group-item-action">Địa Chỉ</a>
+                                <a href="#" class="list-group-item list-group-item-action">Đổi Mật Khẩu</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Đơn Mua -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOrders">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ordersCollapse"
+                                aria-expanded="true" aria-controls="ordersCollapse">
+                            Mua Hàng
+                        </button>
+                    </h2>
+                    <div id="ordersCollapse" class="accordion-collapse collapse show" aria-labelledby="headingOrders" data-bs-parent="#sidebarAccordion">
+                        <div class="accordion-body">
+                            <div class="list-group">
+                                <a th:href="@{/client/showInfoBill}" class="list-group-item list-group-item-action active">Đơn Mua</a>
+                                <a href="#" class="list-group-item list-group-item-action">Kho Voucher</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <h3 class="mb-4">Danh sách đơn hàng</h3>
+
+            <!-- Tabs -->
+            <ul class="nav nav-tabs" id="tabList">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/client/showInfoBill}">Tất cả</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/client/showInfoBill/type/1}">Chờ xác nhận</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/client/showInfoBill/type/2}">Xác nhân đơn hàng</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/client/showInfoBill/type/4}">Giao hàng</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/client/showInfoBill/type/5}">Giao hàng thành công</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/client/showInfoBill/type/6}">Đã hủy</a>
+                </li>
+            </ul>
+
+
+            <!-- Search -->
+            <div class="mt-3">
+                <form>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Tìm kiếm theo tên shop, ID đơn hàng hoặc tên sản phẩm"/>
+                        <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="mt-3">
+                <!-- First Order -->
+                <a th:href="@{/client/showDetailInfoBill/idHD/{idHD}/loai/{loai} (idHD=${hoadon.id}, loai=${hoadon.trangThai})}"
+                   class="card mb-3" th:each="hoadon : ${hoaDons}" style="text-decoration: none">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>
+                            <strong class="ngayTaoElement" th:text="${hoadon.ngayTao}" style="color: black"></strong>
+                        </span>
+                        <span class="status text-danger"
+                              th:text="${hoadon.trangThai == 1 ? 'Chờ xác nhận' :
+                             (hoadon.trangThai == 2 ? 'Xác nhân đơn hàng' :
+                             (hoadon.trangThai == 4 ? 'Giao hàng' :
+                             (hoadon.trangThai == 5 ? 'Giao hàng thành công' :
+                             'Hủy')))}" style="font-weight: bold">
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-center" th:each="hdct : ${hoadon.hoaDonChiTietList}">
+                            <div class="col-md-2 text-center">
+                                <img th:src="@{/{anhUrl} (anhUrl = ${hdct.sanPhamChiTiet.sanPham.anhUrl})}" class="img-thumbnail" alt="Product Image"
+                                     style="height: 100px; width: 100px; object-fit: cover">
+                            </div>
+                            <div class="col-md-8">
+                                <p th:text="${hdct.sanPhamChiTiet.sanPham.tenSanPham}" style="color: black"></p>
+                                <p><small
+                                        th:text="'Phân loại : ' +  ${hdct.sanPhamChiTiet.mauSac.tenMauSac} + ' - ' + ${hdct.sanPhamChiTiet.kichCo.tenKichCo}" style="color: black"></small>
+                                </p>
+                                <p th:text="'Số lượng : x' + ${hdct.soLuong}" style="color: black"></p>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <p class="text-decoration" th:text="${#numbers.formatDecimal(hdct.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + ' đ'" style="color: black"></p>
+                            </div>
+                        </div>
+                        <form th:id="'deleteForm' + ${hoadon.id}"
+                              th:action="@{/admin/hoadon/delete_client/{idHD} (idHD=${hoadon.id})}"
+                              method="GET">
+                            <button type="button" class="btn btn-primary"
+                                    th:onclick="'confirmDelete(event, ' + ${hoadon.id} + ')'">Hủy đơn hàng</button>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <h6 class="text-danger d-flex justify-content-end"
+                            th:text="'Thành tiền : ' + ${#numbers.formatDecimal(hoadon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></h6>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>FPT POLY</h3>
+            <p>Chuyên cung cấp các sản phẩm thời trang chất lượng.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Liên kết nhanh</h3>
+            <ul>
+                <li><a href="#">Trang Chủ</a></li>
+                <li><a href="#">Sản Phẩm</a></li>
+                <li><a href="#">Về Chúng Tôi</a></li>
+                <li><a href="#">Liên Hệ</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Liên Hệ</h3>
+            <p>Địa chỉ: 123 Đường ABC, Hà Nội</p>
+            <p>Email: yagi.shop@example.com</p>
+            <p>SĐT: 0123456789</p>
+        </div>
+        <div class="footer-section">
+            <h3>Social</h3>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+    <p>&copy; 2024 Yagi Shop. All rights reserved.</p>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:inline="javascript">
+    var san_phams = /*[[${sanphams}]]*/ '{}';
+    var type = /*[[${type}]]*/ '{}';
+</script>
+<script th:src="@{/javascript/thong_tin_hoa_don.js}"></script>
+</body>
+</html>

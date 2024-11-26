@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="container-fluid">
+<article th:replace="~{admin/fragments/article :: article}"></article>
+<header th:replace="~{admin/fragments/header :: header}"></header>
+<nav th:replace="~{admin/fragments/nav :: nav}"></nav>
+<style>
+  /* Định dạng chung cho body */
+
+  /* Tiêu đề */
+  h2 {
+    color: #4a4a4a;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  /* Bảng */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Đầu bảng */
+  thead {
+    background-color: #343a40;
+    color: #ffffff;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  /* Thân bảng */
+  tbody tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  tbody td {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  /* Hàng cuối hiển thị tổng tiền */
+  label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+    font-size: 16px;
+  }
+
+  div {
+    display: inline-block;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  /* Hiệu ứng khi di chuột */
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    table {
+      font-size: 12px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    label {
+      font-size: 14px;
+    }
+  }
+
+</style>
+<section class="page-content">
+  <h2>Hóa đơn của khách hàng: <span th:text="${khachHang.ten}"></span></h2>
+<!--  <div th:each="hd : ${hoaDonList}">-->
+<!--    <label>-->
+<!--      <strong>Tổng Tiền Đơn Hàng Sau Thanh Toán:</strong>-->
+<!--      <span th:text="${#numbers.formatDecimal(hd.tongTien, 1, 'COMMA', 0, 'POINT')} + 'đ'"></span>-->
+<!--    </label>-->
+<!--  </div>-->
+  <table class="table">
+    <thead>
+    <tr>
+      <th>STT</th>
+      <th>ID Hóa đơn</th>
+      <th>Ngày tạo</th>
+      <th>Tổng tiền</th>
+      <th>Chi tiết</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="hoaDon, index : ${danhSachHoaDon}">
+      <td th:text="${index.index + 1}"></td>
+      <td th:text="${hoaDon.id}"></td>
+      <td th:text="${hoaDon.ngayTao}"></td>
+      <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+      <td>
+        <a th:href="@{'/admin/khachhang/hoa-don/' + ${hoaDon.id} + '/chi-tiet'}" class="btn btn-primary">Xem chi tiết</a>
+        <a th:href="@{'/admin/khachhang'}" class="btn btn-primary">Back</a>
+      </td>
+    </tr>
+<!--    <tr th:each="hoaDonChiTiet,index : ${hoaDonChiTietList}">-->
+<!--      &lt;!&ndash; ID Hóa đơn &ndash;&gt;-->
+<!--      <td th:text="${index.index+1}"></td>-->
+
+<!--      &lt;!&ndash; Ngày tạo hóa đơn &ndash;&gt;-->
+<!--      <td th:text="${hoaDonChiTiet.hoaDon.ngayTao}"></td>-->
+
+<!--      &lt;!&ndash; Tên sản phẩm &ndash;&gt;-->
+<!--      <td th:text="${hoaDonChiTiet.sanPhamChiTiet.sanPham.tenSanPham}"></td>-->
+
+<!--      &lt;!&ndash; Số lượng &ndash;&gt;-->
+<!--      <td th:text="${hoaDonChiTiet.soLuong}"></td>-->
+
+<!--      &lt;!&ndash; Đơn giá &ndash;&gt;-->
+<!--      <td th:text="${#numbers.formatDecimal(hoaDonChiTiet.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>-->
+
+<!--      &lt;!&ndash; Thành tiền &ndash;&gt;-->
+<!--      <td th:text="${#numbers.formatDecimal(hoaDonChiTiet.soLuong * hoaDonChiTiet.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>-->
+<!--    </tr>-->
+    </tbody>
+  </table>
+
+
+
+</section>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/javascript/admin.js}"></script>
+<!--<script th:src="@{/javascrip/khachhang.js}"></script>-->
+</html>

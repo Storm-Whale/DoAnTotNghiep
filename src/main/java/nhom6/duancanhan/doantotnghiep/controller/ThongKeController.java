@@ -22,6 +22,7 @@ public class ThongKeController {
     @GetMapping(value = "/thong_ke_doanh_thu_thong_hoa_don")
     public String doanhThuTongHoaDon(Model model) {
         List<HoaDon> hoaDons = hoaDonService.getAll();
+        System.out.println("size : " + hoaDons.size());
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
@@ -35,6 +36,7 @@ public class ThongKeController {
     @GetMapping(value = "/thong_ke_trang_thai_hoa_don")
     public String trangThaiHoaDon(Model model) {
         List<HoaDon> hoaDons = hoaDonService.getAll();
+        System.out.println("size : " + hoaDons.size());
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());

@@ -23,58 +23,67 @@
     <form method="post" action="/admin/phieu-giam-gia/addpg" th:object="${phieuGiamGia}" class="row g-3">
         <div class="col-md-6">
             <label for="voucherCode" class="form-label">Mã phiếu giảm giá</label>
-            <input type="text" class="form-control" id="voucherCode" name="voucherCode" th:field="*{maPhieuGiamGia}" required>
+            <input type="text" class="form-control" id="voucherCode" name="voucherCode" th:field="*{maPhieuGiamGia}" >
+            <p class="text-danger" th:if="${#fields.hasErrors('maPhieuGiamGia')}" th:errors="*{maPhieuGiamGia}"></p>
         </div>
 
         <div class="col-md-6">
             <label for="voucherName" class="form-label">Tên phiếu giảm giá</label>
-            <input type="text" class="form-control" id="voucherName" name="voucherName" th:field="*{tenPhieuGiamGia}" required>
+            <input type="text" class="form-control" id="voucherName" name="voucherName" th:field="*{tenPhieuGiamGia}" >
+            <p class="text-danger" th:if="${#fields.hasErrors('tenPhieuGiamGia')}" th:errors="*{tenPhieuGiamGia}"></p>
         </div>
 
         <div class="col-md-6">
             <label for="quantity" class="form-label">Số lượng</label>
-            <input type="number" class="form-control" id="quantity" name="quantity" min="1" th:field="*{soLuong}" required>
+            <input type="number" class="form-control" id="quantity" name="quantity" th:field="*{soLuong}" >
+            <p class="text-danger" th:if="${#fields.hasErrors('soLuong')}" th:errors="*{soLuong}"></p>
         </div>
 
         <div class="col-md-6">
             <label for="discountCondition" class="form-label">Điều kiện giảm (VND)</label>
-            <input type="number" class="form-control" id="discountCondition" name="discountCondition" min="0" th:field="*{dieuKien}" required>
+            <input type="number" class="form-control" id="discountCondition" name="discountCondition"  th:field="*{dieuKien}" >
+            <p class="text-danger" th:if="${#fields.hasErrors('dieuKien')}" th:errors="*{dieuKien}"></p>
         </div>
 
         <div class="col-md-6">
             <label for="voucherType" class="form-label">Loại giảm giá</label>
-            <select class="form-select" id="voucherType" name="voucherType" th:field="*{kieuGiamGia}" required>
+            <select class="form-select" id="voucherType" name="voucherType" th:field="*{kieuGiamGia}" >
                 <option value="1">%</option>
                 <option value="0">VND</option>
             </select>
+            <p class="text-danger" th:if="${#fields.hasErrors('kieuGiamGia')}" th:errors="*{kieuGiamGia}"></p>
         </div>
 
         <div class="col-md-6">
             <label for="startDate" class="form-label">Ngày bắt đầu</label>
-            <input type="date" class="form-control" id="startDate" name="startDate" th:field="*{ngayBatDau}" required>
+            <input type="date" class="form-control" id="startDate" name="startDate" th:field="*{ngayBatDau}" >
+            <p class="text-danger" th:if="${#fields.hasErrors('ngayBatDau')}" th:errors="*{ngayBatDau}"></p>
         </div>
 
         <div class="col-md-6">
             <label for="endDate" class="form-label">Ngày kết thúc</label>
-            <input type="date" class="form-control" id="endDate" name="endDate" th:field="*{ngayKetThuc}" required>
+            <input type="date" class="form-control" id="endDate" name="endDate" th:field="*{ngayKetThuc}" >
+            <p class="text-danger" th:if="${#fields.hasErrors('ngayKetThuc')}" th:errors="*{ngayKetThuc}"></p>
         </div>
-
         <div class="col-md-6">
-            <label for="minValue" class="form-label">Giá trị tối thiểu (VND)</label>
-            <input type="number" class="form-control" id="minValue" name="minValue" min="0" th:field="*{giaTriGiam}" required>
+            <label for="minValue" class="form-label">Giá trị giảm (% & VND)</label>
+            <input type="number" class="form-control" id="minValue" name="minValue"  th:field="*{giaTriGiam}" >
+            <p class="text-danger" th:if="${#fields.hasErrors('giaTriGiam')}" th:errors="*{giaTriGiam}"></p>
         </div>
 
         <div class="col-md-6">
             <label for="maxValue" class="form-label">Giá trị tối đa (VND)</label>
-            <input type="number" class="form-control" id="maxValue" name="maxValue" min="0" th:field="*{giaTriMax}" required>
+            <input type="number" class="form-control" id="maxValue" name="maxValue"  th:field="*{giaTriMax}" >
+            <p class="text-danger" th:if="${#fields.hasErrors('giaTriMax')}" th:errors="*{giaTriMax}"></p>
         </div>
 
         <div class="col-md-6">
             <label for="status" class="form-label">Trạng thái</label>
-            <select class="form-select" id="status" name="status" th:field="*{trangThai}" required>
-                <option value="1">Inactive</option>
-                <option value="0">Active</option>
+            <select class="form-select" id="status" name="status" th:field="*{trangThai}" >
+                <option value="0">Inactive</option>
+                <option value="1">Active</option>
             </select>
+            <p class="text-danger" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"></p>
         </div>
 
         <div class="col-md-12">

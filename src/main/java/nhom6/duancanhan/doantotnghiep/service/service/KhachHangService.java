@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
+import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import org.springframework.data.domain.Page;
 
@@ -26,4 +27,8 @@ public interface KhachHangService {
      KhachHang saveKhachHang(KhachHang khachHang);
 
      KhachHang findBySoDienThoaiKhachHang (String soDienThoai);
+     KhachHang findById(Integer id);
+
+
+
 }

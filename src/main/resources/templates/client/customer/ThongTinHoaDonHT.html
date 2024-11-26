@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yagi Shop</title>
+    <link rel="icon" th:href="@{/Logoyagi2.png}">
+    <link rel="stylesheet" th:href="@{/css/showInfoCustomer.css}">
+    <link rel="stylesheet" th:href="@{/css/alertStyle.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .status-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            position: relative;
+            align-items: center;
+        }
+
+        .status-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .status-img {
+            position: relative;
+            z-index: 3;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            background-color: #fff;
+            display: block;
+            margin: 0 auto;
+            border: 2px solid #000; /* Outer black border */
+            box-shadow: 0 0 0 3px #fff, 0 0 0 5px #000; /* Inner green border, outer black border */
+            object-fit: cover;
+        }
+
+        .finish {
+            box-shadow: 0 0 0 3px green, 0 0 0 5px #000;
+        }
+    </style>
+</head>
+<body>
+<header class="p-2 mb-2 border-bottom custom-header">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <!-- Logo Section -->
+            <a th:href="@{/client}" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+                <img th:src="@{/LOGOYAGI.png}" alt="Bee Shirt" width="60" height="60" class="logo-fixed-size me-2">
+            </a>
+
+            <!-- Navigation Links -->
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
+                <li><a href="#" class="nav-link px-2 link-dark">Inventory</a></li>
+                <li><a href="#" class="nav-link px-2 link-dark">Customers</a></li>
+                <li><a href="#" class="nav-link px-2 link-dark">Products</a></li>
+            </ul>
+
+            <!-- Search Form -->
+            <div class="col-12 col-lg-auto mb-2 mb-lg-0 me-4 position-relative">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search" id="searchInput">
+                <div class="suggestions-box" id="suggestions" style="display: none;">
+                    <ul id="suggestionList"></ul>
+                </div>
+            </div>
+
+            <!-- Cart Icon -->
+            <a th:if="${session.user != null}" th:href="@{/client/gio-hang}" class="me-4">
+                <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
+            </a>
+            <a th:if="${session.user == null}" th:href="@{/login/login-client}" class="me-4">
+                <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
+            </a>
+            <!-- User Dropdown -->
+            <div id="avatarContainer">
+                <div class="dropdown text-end" th:if="${session.loginStatus == true}">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
+                       id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img id="userAvatar"
+                             th:src="@{/{anhUrl}(anhUrl=${session.user.anhUrl})}"
+                             alt="User Avatar" width="40" height="40" class="rounded-circle" style="object-fit: cover">
+                    </a>
+                    <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                        <li><a class="dropdown-item" th:href="@{/client/showInfoCustomer}">Tài Khoản Của Tôi</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" th:href="@{/login/logout}">Đăng Xuất</a></li>
+                    </ul>
+                </div>
+
+                <!-- Hiển thị ảnh mặc định nếu không đăng nhập -->
+                <div class="dropdown text-end" th:unless="${session.loginStatus == true}">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
+                       id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img th:src="@{/nguoidung.png}"
+                             alt="Default Avatar" width="40" height="40" class="rounded-circle">
+                    </a>
+                    <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2">
+                        <li><a class="dropdown-item" th:href="@{/login/login-client}">Đăng nhập</a></li>
+                        <li><a class="dropdown-item" th:href="@{/client/register}">Đăng ký</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="accordion" id="sidebarAccordion">
+                <!-- Tài Khoản Của Tôi -->
+                <div class="accordion-item" id="accountSection">
+                    <h2 class="accordion-header" id="headingAccount">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accountCollapse"
+                                aria-expanded="false"
+                                aria-controls="accountCollapse">
+                            Tài Khoản Của Tôi
+                        </button>
+                    </h2>
+                    <div id="accountCollapse" class="accordion-collapse collapse" aria-labelledby="headingAccount" data-bs-parent="#sidebarAccordion">
+                        <div class="accordion-body">
+                            <div class="list-group">
+                                <a th:href="@{/client/showInfoCustomer}" class="list-group-item list-group-item-action">Hồ Sơ</a>
+                                <a th:href="@{/client/showInfoAddress}" class="list-group-item list-group-item-action">Địa Chỉ</a>
+                                <a href="#" class="list-group-item list-group-item-action">Đổi Mật Khẩu</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Đơn Mua -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOrders">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ordersCollapse"
+                                aria-expanded="true" aria-controls="ordersCollapse">
+                            Mua Hàng
+                        </button>
+                    </h2>
+                    <div id="ordersCollapse" class="accordion-collapse collapse show" aria-labelledby="headingOrders" data-bs-parent="#sidebarAccordion">
+                        <div class="accordion-body">
+                            <div class="list-group">
+                                <a th:href="@{/client/showInfoBill}" class="list-group-item list-group-item-action active">Đơn Mua</a>
+                                <a href="#" class="list-group-item list-group-item-action">Kho Voucher</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a th:href="@{/client/showInfoBill}" class="btn btn-outline-primary text-decoration-none">&larr; Trở lại</a>
+                <div>
+                    <h4 class="text-danger"
+                        th:text="${hd.trangThai == 1 ? 'Chờ xác nhận' :
+                             (hd.trangThai == 2 ? 'Xác nhân đơn hàng' :
+                             (hd.trangThai == 4 ? 'Giao hàng' :
+                             (hd.trangThai == 5 ? 'Giao hàng thành công' :
+                             'Đơn hàng bị hủy')))}" style="font-weight: bold"></h4>
+                </div>
+            </div>
+
+            <!-- Progress -->
+            <div class="progress-container my-3">
+                <div class="status-container position-relative">
+                    <!-- Step 1 -->
+                    <div class="status-step">
+                        <img th:src="@{/invoice_6057772.png}" alt="Đơn Hàng Đã Đặt" class="status-img mb-2">
+
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="status-step">
+                        <img th:src="@{/cash_11761325.png}" alt="Xác Nhận Thanh Toán" class="status-img mb-2">
+
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="status-step">
+                        <img th:src="@{/shipping-fast_11659911.png}" alt="Giao Đơn Vị Vận Chuyển" class="status-img mb-2">
+
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="status-step">
+                        <img th:src="@{/star.png}" alt="Hoàn Thành Đơn Hàng" class="status-img mb-2">
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Details -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">Địa Chỉ Nhận Hàng</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong th:text="${hd.diaChi.tenKhachHang} + 'SDT : ' + ${hd.sdt}"></strong></p>
+                    <p class="mb-1" th:text="${hd.diaChi.diaChiChiTiet}"></p>
+                    <hr>
+                    <ul class="timeline list-unstyled">
+                        <li class="mb-2" th:each="lshd : ${lshd}">
+                            <span id="ngayTaoLSHD" th:text="${lshd.ngayTao}"></span>
+                            <span th:text="${lshd.trangThai == 1 ? 'Chờ xác nhận' :
+                             (lshd.trangThai == 2 ? 'Xác nhân đơn hàng' :
+                             (lshd.trangThai == 4 ? 'Giao hàng' :
+                             (lshd.trangThai == 5 ? 'Giao hàng thành công' :
+                             'Hủy')))}" style="font-weight: bold"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="card">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Danh Sách Sản Phẩm</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex mb-3" th:each="hdct : ${hd.hoaDonChiTietList}">
+                        <img th:src="@{/{anhUrl} (anhUrl = ${hdct.sanPhamChiTiet.sanPham.anhUrl})}" class="img-thumbnail me-3" alt="Product Image"
+                             height="100px" width="100px">
+                        <div>
+                            <p class="mb-1" th:text="${hdct.sanPhamChiTiet.sanPham.tenSanPham}"></p>
+                            <p class="mb-1">
+                                <small th:text="'Phân loại hàng : ' + ${hdct.sanPhamChiTiet.mauSac.tenMauSac} + ' - ' + ${hdct.sanPhamChiTiet.kichCo.tenKichCo}"></small>
+                            </p>
+                            <p class="mb-1" th:text="'Số lượng : x' + ${hdct.soLuong}"></p>
+                        </div>
+                        <div class="ms-auto text-end">
+                            <p class="text-danger fs-5" th:text="${#numbers.formatDecimal(hdct.tongTien(), 1, 'COMMA', 0, 'POINT')} + ' đ'"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="card-footer bg-light">
+                    <ul class="list-unstyled mb-2">
+                        <li class="d-flex justify-content-between">
+                            <span>Tổng tiền hàng</span>
+                            <span th:text="${#numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                        </li>
+                        <li class="d-flex justify-content-between">
+                            <span>Phí vận chuyển</span>
+                            <span th:text="${#numbers.formatDecimal(tienShip, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                        </li>
+                        <li class="d-flex justify-content-between">
+                            <span>Voucher từ Shopee</span>
+                            <span th:text="'- ' + ${#numbers.formatDecimal(tienGG, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                        </li>
+                        <hr>
+                        <li class="d-flex justify-content-between">
+                            <span>Thành tiền</span>
+                            <span th:text="${#numbers.formatDecimal(hd.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>FPT POLY</h3>
+            <p>Chuyên cung cấp các sản phẩm thời trang chất lượng.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Liên kết nhanh</h3>
+            <ul>
+                <li><a href="#">Trang Chủ</a></li>
+                <li><a href="#">Sản Phẩm</a></li>
+                <li><a href="#">Về Chúng Tôi</a></li>
+                <li><a href="#">Liên Hệ</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Liên Hệ</h3>
+            <p>Địa chỉ: 123 Đường ABC, Hà Nội</p>
+            <p>Email: yagi.shop@example.com</p>
+            <p>SĐT: 0123456789</p>
+        </div>
+        <div class="footer-section">
+            <h3>Social</h3>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+    <p>&copy; 2024 Yagi Shop. All rights reserved.</p>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    var san_phams = /*[[${sanphams}]]*/ '{}';
+    var lshd = /*[[${lshd}]]*/ '{}';
+    console.log(lshd)
+</script>
+<script th:src="@{/javascript/thong_tin_hoa_don_ht.js}"></script>
+</body>
+</html>

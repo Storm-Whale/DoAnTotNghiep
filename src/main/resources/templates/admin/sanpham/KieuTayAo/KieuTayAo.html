@@ -20,12 +20,18 @@
             <h2>Quản Lý Kiểu Tay Áo</h2>
         </div>
     </div>
+    <div th:if="${error != null}" class="alert alert-danger" role="alert">
+        <span th:text="${error}"></span>
+    </div>
     <div class="row mb-4">
         <div class="col-md-12">
             <form th:action="@{/admin/kieu-tay-ao/add}" th:object="${kieuTayAo}" method="post" class="row g-3">
                 <div class="col-md-4">
                     <label for="tenChatLieu" class="form-label">Tên Kiểu Cổ Áo</label>
                     <input type="text" class="form-control"  th:field="*{tenTayAo}" placeholder="Nhập tên kiểu tay áo">
+                    <div th:if="${#fields.hasErrors('tenTayAo')}" class="text-danger">
+                        <span th:errors="*{tenTayAo}"></span>
+                    </div>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
                     <button type="submit" class="btn btn-success">
@@ -50,7 +56,7 @@
         <tr th:each="kieuTayAo : ${listKTA}">
             <td th:text="${kieuTayAo.id}"></td>
             <td th:text="${kieuTayAo.tenTayAo}"></td>
-            <td th:text="${kieuTayAo.trangThai == 0 ? 'Hoạt động' : 'Ngừng hoạt động'}"></td>
+            <td th:text="${kieuTayAo.trangThai == 1 ? 'Hoạt động' : 'Ngừng hoạt động'}"></td>
             <td th:text="${kieuTayAo.ngayTao}"></td>
             <td>
                 <form class="d-inline-block">

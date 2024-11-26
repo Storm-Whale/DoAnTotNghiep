@@ -1,14 +1,23 @@
 package nhom6.duancanhan.doantotnghiep.repository;
 
 import nhom6.duancanhan.doantotnghiep.entity.KieuTayAo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KieuTayAoRepository extends JpaRepository<KieuTayAo, Integer> {
+    @Query("SELECT k FROM KieuTayAo k WHERE k.trangThai = :trangThai")
+    Page<KieuTayAo> findKieuTayAoByTrangThai(@Param("trangThai") int trangThai, Pageable pageable);
+
+    @Query("SELECT k FROM KieuTayAo k WHERE k.tenTayAo LIKE %:tenTayAo%")
+    Page<KieuTayAo> findKieuTayAoByTen(@Param("tenTayAo") String tenTayAo, Pageable pageable);
 
     @Query(value = """
             select kta.tenTayAo from KieuTayAo kta

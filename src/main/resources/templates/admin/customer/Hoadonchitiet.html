@@ -48,6 +48,7 @@
             <th scope="col">Size</th>
             <th scope="col">Số Lượng</th>
             <th scope="col">Giá</th>
+            <th scope="col">Tổng Tiền</th>
         </tr>
         </thead>
         <tbody>
@@ -57,7 +58,9 @@
             <td th:text="${item.sanPhamChiTiet.mauSac.tenMauSac}"></td>
             <td th:text="${item.sanPhamChiTiet.kichCo.tenKichCo}"></td>
             <td th:text="${item.soLuong}"></td>
-            <td th:text="${item.gia}"></td>
+<!--            <td th:text="${item.gia}"></td>-->
+            <td th:text="${item.sanPhamChiTiet.gia}"></td>
+            <td th:text="${item.sanPhamChiTiet.gia * item.soLuong}"></td>
         </tr>
         </tbody>
     </table>

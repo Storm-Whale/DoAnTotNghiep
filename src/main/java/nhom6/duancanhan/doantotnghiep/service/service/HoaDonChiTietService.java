@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
+import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import org.springframework.data.domain.Page;
 
@@ -18,6 +19,10 @@ public interface HoaDonChiTietService {
     void updateHoaDon(Integer id, HoaDonChiTiet hoaDon);
 
     void deleteHoaDon(Integer id);
+
     public List<HoaDonChiTiet> getHoaDonChiTietByHoaDonId(Integer hoaDonId);
+
     public List<HoaDonChiTiet> findByHoaDonId(Integer hoaDonId);
+
+    List<HoaDonChiTiet> findByKhachHangId(Integer khachHangId);
 }

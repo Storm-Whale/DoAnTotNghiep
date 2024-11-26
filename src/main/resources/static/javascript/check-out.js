@@ -58,19 +58,44 @@ document.getElementById('voucherList').addEventListener('change', function (even
 var tongTienSauKhiTruMa
 document.getElementById('select-voucher').addEventListener('click', function () {
     if (selectedVoucherMa !== null) {
-        const  selectedVoucher = listPhieuGiamGia.find(voucher => voucher.maPhieuGiamGia === selectedVoucherMa)
+        const selectedVoucher = listPhieuGiamGia.find(voucher => voucher.maPhieuGiamGia === selectedVoucherMa);
         const nameVoucher = document.querySelector('.nameVoucherCode');
-        document.getElementById('voucherCode').value = `${selectedVoucher.maPhieuGiamGia}`
-        nameVoucher.innerHTML = `Tên ưu đãi : ${selectedVoucher.tenPhieuGiamGia}`
 
-        let kieuGiamGia = selectedVoucher.kieuGiamGia
-        tongTienSauKhiTruMa = kieuGiamGia === 1 ? tongTien - (tongTien * (selectedVoucher.giaTriGiam / 100)) - tienShip : tongTien - selectedVoucher.giaTriGiam - tienShip
+        // Cập nhật thông tin mã giảm giá
+        document.getElementById('voucherCode').value = `${selectedVoucher.maPhieuGiamGia}`;
+        nameVoucher.innerHTML = `Tên ưu đãi : ${selectedVoucher.tenPhieuGiamGia}`;
 
-        document.getElementById('tongTien').innerHTML = tongTienSauKhiTruMa.toLocaleString('vi-VN') + " đ"
-        document.getElementById('tienGiamTuMa').innerHTML = (tongTien * (selectedVoucher.giaTriGiam / 100)).toLocaleString('vi-VN') + " đ"
+        let kieuGiamGia = selectedVoucher.kieuGiamGia; // Kiểu giảm giá (1: phần trăm, khác: số tiền cố định)
+        let tienGiam = kieuGiamGia === 1
+            ? tongTien * (selectedVoucher.giaTriGiam / 100)
+            : selectedVoucher.giaTriGiam;
+
+        // Đảm bảo tiền giảm không vượt quá giá trị tối đa
+        if (tienGiam > selectedVoucher.giaTriMax) {
+            tienGiam = selectedVoucher.giaTriMax;
+        }
+
+        // Tính tổng tiền sau khi áp dụng mã giảm giá
+        tongTienSauKhiTruMa = tongTien - tienGiam - tienShip;
+
+        // Cập nhật giao diện
+        document.getElementById('tongTien').innerHTML = tongTienSauKhiTruMa.toLocaleString('vi-VN') + " đ";
+        document.getElementById('tienGiamTuMa').innerHTML = tienGiam.toLocaleString('vi-VN') + " đ";
     }
     $('#exampleModal').modal('hide');
-})
+});
+
+document.getElementById('restPGG').addEventListener('click', function () {
+    // Xóa mã giảm giá đã chọn
+    selectedVoucherMa = null;
+    document.getElementById('voucherCode').value = ''; // Xóa mã giảm giá khỏi input
+    document.querySelector('.nameVoucherCode').innerHTML = 'Tên ưu đãi: Chưa có mã giảm giá';
+
+    // Khôi phục các giá trị gốc
+    const tongTienSauKhiXoaMa = tongTien + tienShip; // Tổng tiền ban đầu + tiền ship
+    document.getElementById('tongTien').innerHTML = tongTienSauKhiXoaMa.toLocaleString('vi-VN') + ' đ'; // Hiển thị tổng tiền
+    document.getElementById('tienGiamTuMa').innerHTML = '0 đ'; // Không có giảm giá
+});
 
 // What For : Hiện model địa chỉ
 // * Hiển thị địa chỉ ban đầu
@@ -151,23 +176,37 @@ document.querySelectorAll('.cancel, .confirm').forEach(button => {
         document.getElementById('addressContainer').style.display = 'none';
         document.getElementById('addAddressContainer').style.display = 'none';
     });
+
+    resetErrorMessages()
 });
 
 // * Hiển thị form thêm địa chỉ mới
 document.getElementById('addAddressButton').addEventListener('click', function () {
     document.getElementById('addressContainer').style.display = 'none';
     document.getElementById('addAddressContainer').style.display = 'block';
+    const form = document.getElementById('addressForm')
+    form.reset()
+
+    resetErrorMessages()
 });
 
 // * Xử lý sự kiện quay lại từ form thêm địa chỉ
 document.getElementById('backButton').addEventListener('click', function () {
     document.getElementById('addressContainer').style.display = 'block';
     document.getElementById('addAddressContainer').style.display = 'none';
+
+    resetErrorMessages()
 });
 
 // What For : Gửi dữ liệu về trang địa chỉ để thêm mới
 async function submitForm() {
     const form = document.getElementById('addressForm');
+
+    // Validate trước khi gửi
+    if (!validateAddressForm()) {
+        return;
+    }
+
     const formData = new FormData(form);
 
     try {
@@ -177,6 +216,7 @@ async function submitForm() {
         });
 
         if (response.ok) {
+            // Lưu trạng thái và reload trang
             localStorage.setItem('shouldTriggerShow', 'true');
             window.location.reload();
         } else {
@@ -186,6 +226,80 @@ async function submitForm() {
         console.log('Có lỗi xảy ra: ' + error.message);
     }
 }
+
+// Hàm validate form
+function validateAddressForm() {
+    let isValid = true;
+
+    // Lấy giá trị các input
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
+    const cityInput = document.getElementById('city');
+    const districtInput = document.getElementById('district');
+    const wardInput = document.getElementById('ward');
+    const detailAddressInput = document.getElementById('detailAddress');
+
+    // Reset lỗi trước khi kiểm tra
+    resetErrorMessages();
+
+    // Kiểm tra Họ và Tên
+    if (nameInput.value.trim() === '' || nameInput.value.startsWith(' ')) {
+        showError(nameInput, 'Họ và tên không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    }
+
+    // Kiểm tra Số điện thoại
+    const phoneRegex = /^[0-9]{10,11}$/;
+    if (!phoneRegex.test(phoneInput.value.trim()) || phoneInput.value.trim() === '' || phoneInput.value.startsWith(' ')) {
+        showError(phoneInput, 'Số điện thoại không hợp lệ! Phải chứa 10-11 chữ số.');
+        isValid = false;
+    }
+
+    // Kiểm tra Thành phố
+    if (cityInput.value.trim() === '' || cityInput.value.startsWith(' ')) {
+        showError(cityInput, 'Thành phố không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    }
+
+    // Kiểm tra Quận/Huyện
+    if (districtInput.value.trim() === '' || districtInput.value.startsWith(' ')) {
+        showError(districtInput, 'Quận/Huyện không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    }
+
+    // Kiểm tra Xã/Phường
+    if (wardInput.value.trim() === '' || wardInput.value.startsWith(' ')) {
+        showError(wardInput, 'Xã/Phường không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    }
+
+    // Kiểm tra Địa chỉ cụ thể
+    if (detailAddressInput.value.trim() === '' || detailAddressInput.value.startsWith(' ')) {
+        showError(detailAddressInput, 'Địa chỉ cụ thể không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+// Hiển thị lỗi
+function showError(input, message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'text-danger mt-1';
+    errorDiv.textContent = message;
+    input.parentElement.appendChild(errorDiv);
+    input.classList.add('is-invalid');
+}
+
+// Reset thông báo lỗi
+function resetErrorMessages() {
+    const errorMessages = document.querySelectorAll('.text-danger');
+    errorMessages.forEach((error) => error.remove());
+
+    const invalidInputs = document.querySelectorAll('.is-invalid');
+    invalidInputs.forEach((input) => input.classList.remove('is-invalid'));
+}
+
 
 // * Hàm hiển thị form cập nhật và lưu idDiaChi
 function showUpdateForm(idDiaChi) {
@@ -215,6 +329,11 @@ function showUpdateForm(idDiaChi) {
 
 // * Hàm xử lý cập nhật địa chỉ
 async function updateAddress() {
+    // Validate trước khi gửi
+    if (!validateAddressForm()) {
+        return;
+    }
+
     const form = document.getElementById('addressForm');
     const formData = new FormData(form);
     const idDiaChi = form.getAttribute('data-id-dia-chi');
@@ -251,16 +370,31 @@ document.addEventListener('DOMContentLoaded', function() {
 function guiDataThanhToan() {
     const paymentMethods = document.getElementsByName('paymentMethod');
     let selectedMethod;
-    const idDiaChi = document.getElementById('diaChi').value
-    const maPGG = document.getElementById('voucherCode').value
-    const ghiChu = document.getElementById('ghiChu').value
+    const idDiaChi = document.getElementById('diaChi')?.value;
+    const maPGG = document.getElementById('voucherCode')?.value;
+    const ghiChu = document.getElementById('ghiChu')?.value;
 
-    // Duyệt qua từng nút radio để tìm nút nào được chọn
-    for (let i = 0; i < paymentMethods.length; i++) {
-        if (paymentMethods[i].checked) {
-            selectedMethod = paymentMethods[i].value; // Lấy giá trị của nút được chọn
+    // Validate dữ liệu
+    if (!idDiaChi) {
+        alert('Vui lòng chọn địa chỉ nhận hàng');
+        return;
+    }
+
+    // Lấy phương thức thanh toán được chọn
+    for (let method of paymentMethods) {
+        if (method.checked) {
+            selectedMethod = method.value;
             break;
         }
+    }
+
+    if (!selectedMethod) {
+        alert('Vui lòng chọn phương thức thanh toán');
+        return;
+    }
+
+    if (tongTienSauKhiTruMa == null) {
+        tongTienSauKhiTruMa = tongTien - tienShip;
     }
 
     const formData = new FormData();
@@ -268,21 +402,43 @@ function guiDataThanhToan() {
     formData.append('tongTien', tongTienSauKhiTruMa);
     formData.append('pttt', selectedMethod);
     formData.append('idDiaChi', idDiaChi);
-    formData.append('maPGG', maPGG);
-    formData.append('ghiChu', ghiChu)
+    formData.append('maPGG', maPGG || '');
+    formData.append('ghiChu', ghiChu || '');
+
+    // Hiển thị loading
+    const loadingElement = document.createElement('div');
+    loadingElement.innerHTML = 'Đang xử lý thanh toán...';
+    loadingElement.className = 'loading-overlay';
+    document.body.appendChild(loadingElement);
 
     fetch('/client/thanh-toan', {
         method: 'POST',
         body: formData
     })
-        .then(response => response.text())
-        .then(() => {
-            // Lưu trạng thái vào localStorage
-            localStorage.setItem('paymentSuccess', 'true');
-            // Chuyển hướng sang trang chính
-            window.location.href = 'http://localhost:8080/client';
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
         })
-        .catch(error => console.log(error));
+        .then(data => {
+            if (data.redirectUrl) {
+                localStorage.setItem('pendingOrderId', data.orderId);
+                localStorage.setItem('paymentSuccess', 'true');
+                window.location.href = data.redirectUrl;
+            } else {
+                localStorage.setItem('paymentSuccess', 'true');
+                window.location.href = 'http://localhost:8080/client';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại!');
+        })
+        .finally(() => {
+            document.body.removeChild(loadingElement);
+        });
 }
+
 
 

@@ -27,4 +27,14 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
    List<KhachHang> findBySoDienThoai(String soDienThoai);
 
    Optional<KhachHang> findByEmail(String email);
+    @Query("SELECT k FROM KhachHang k WHERE "
+            + "(:keyword IS NULL OR k.ten LIKE %:keyword%)  AND "
+            + "(:trangThai IS NULL OR k.trangThai = :trangThai) OR (:keyword IS NULL OR k.soDienThoai LIKE %:keyword%) " +
+            "and (:trangThai IS NULL OR k.trangThai = :trangThai) " +
+            "OR (:keyword IS NULL OR k.email LIKE %:keyword%) " +
+            "and (:trangThai IS NULL OR k.trangThai = :trangThai)")
+    Page<KhachHang> findByKeywordAndTrangThai(
+            @Param("keyword") String keyword,
+            @Param("trangThai") Integer trangThai,
+            Pageable pageable);
 }

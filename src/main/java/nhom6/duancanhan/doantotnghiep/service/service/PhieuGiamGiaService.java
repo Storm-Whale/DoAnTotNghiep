@@ -26,6 +26,8 @@ public interface PhieuGiamGiaService {
 
     void delete(Integer id);
 
+    void updateStatus(Integer id, PhieuGiamGia phieuGiamGia);
+
     BigDecimal applyDiscount(String maPhieuGiamGia, BigDecimal tongTien);
 
     PhieuGiamGia getByMaPhieuGiamGia(String maPhieuGiamGia);

@@ -21,7 +21,7 @@ public class KieuCoAo extends BaseEntity{
     private Integer id;
 
     @NotBlank(message = "Vui lòng nhập tên cổ áo!")
-    @Size(max = 30, message = "Name must be 30 characters")
+    @Size(max = 19, message = "Name must be 20 characters")
     @Column(name = "ten_co_ao")
     private String tenCoAo;
 

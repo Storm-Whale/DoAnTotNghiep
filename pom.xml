@@ -95,7 +95,7 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
         </dependency>
-<!--        import qr scan video-->
+        <!--        import qr scan video-->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
@@ -106,15 +106,16 @@
             <artifactId>javase</artifactId>
             <version>3.4.1</version>
         </dependency>
+        <!--        lib xuất hóa đơn bằng itext-->
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.5.5.Final</version>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+            <version>7.2.5</version>
         </dependency>
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.5.5.Final</version>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>7.2.5</version>
         </dependency>
 
     </dependencies>
@@ -124,6 +125,10 @@
         <repository>
             <id>spring-repo</id>
             <url>https://repo.spring.io/release/</url>
+        </repository>
+        <repository>
+            <id>itextpdf</id>
+            <url>https://repo.itextsupport.com/releases/</url>
         </repository>
     </repositories>
 

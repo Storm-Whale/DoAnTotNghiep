@@ -117,6 +117,10 @@ function hideAddAddressForm() {
 }
 
 function submitAddressForm() {
+    if (!validateAddressForm()) {
+        return; // Exit if validation fails
+    }
+
     const form = document.getElementById('addressForm');
     const formData = new FormData(form);
 
@@ -127,15 +131,15 @@ function submitAddressForm() {
         .then(response => {
             if (response.ok) {
                 console.log('Thêm địa chỉ thành công');
+                window.location.reload();
             } else {
                 console.error('Error:', response);
-                showErrorAlert()
+                showErrorAlert();
             }
-            window.location.reload()
         })
         .catch(error => {
             console.error("Đã xảy ra lỗi khi gửi dữ liệu: " + error);
-            showErrorAlert()
+            showErrorAlert();
         });
 }
 
@@ -156,6 +160,7 @@ function showSuccessAlert() {
         title: "Xóa địa chỉ thành công"
     });
 }
+
 // Hàm hiển thị lỗi mua hàng thất bại
 function showErrorAlert() {
     const Toast = Swal.mixin({
@@ -213,6 +218,10 @@ function showUpdateAddressForm(element) {
 }
 
 async function updateAddress() {
+    if (!validateAddressForm()) {
+        return;
+    }
+
     const form = document.getElementById('addressForm');
     const formData = new FormData(form);
     const idDiaChi = form.getAttribute('data-id-dia-chi');
@@ -230,4 +239,57 @@ async function updateAddress() {
     } catch (error) {
         console.log('Có lỗi xảy ra: ' + error.message);
     }
+}
+
+
+function validateAddressForm() {
+    let isValid = true;
+
+    // Reset all error messages
+    document.querySelectorAll('.text-danger').forEach(el => el.classList.add('d-none'));
+
+    // Validate name
+    const name = document.getElementById('name').value.trim();
+    if (name === '') {
+        document.getElementById('nameError').classList.remove('d-none');
+        isValid = false;
+    }
+
+    // Validate phone number
+    const phone = document.getElementById('phone').value.trim();
+    const phoneRegex = /^[0-9]{10,11}$/; // Accepts 10-11 digit numbers
+    if (!phoneRegex.test(phone)) {
+        document.getElementById('phoneError').classList.remove('d-none');
+        isValid = false;
+    }
+
+    // Validate city
+    const city = document.getElementById('city').value.trim();
+    if (city === '') {
+        document.getElementById('cityError').classList.remove('d-none');
+        isValid = false;
+    }
+
+    // Validate district
+    const district = document.getElementById('district').value.trim();
+    if (district === '') {
+        document.getElementById('districtError').classList.remove('d-none');
+        isValid = false;
+    }
+
+    // Validate ward
+    const ward = document.getElementById('ward').value.trim();
+    if (ward === '') {
+        document.getElementById('wardError').classList.remove('d-none');
+        isValid = false;
+    }
+
+    // Validate detail address
+    const detailAddress = document.getElementById('detailAddress').value.trim();
+    if (detailAddress === '') {
+        document.getElementById('detailAddressError').classList.remove('d-none');
+        isValid = false;
+    }
+
+    return isValid;
 }

@@ -20,30 +20,30 @@
             <h2>Thông Tin Chi Tiết Phiếu Giảm Giá</h2>
         </div>
     </div>
-    <form th:action="@{'/admin/phieu-giam-gia/update/' + ${phieuGiamGia.id}}" method="post" class="row g-3">
+    <form class="row g-3">
         <div class="col-md-6">
             <labe class="form-label">Mã phiếu giảm giá</labe>
-            <input type="text" class="form-control" name="maPhieuGiamGia" th:value="*{phieuGiamGia.maPhieuGiamGia}" required>
+            <input type="text" class="form-control" name="maPhieuGiamGia" th:value="*{phieuGiamGia.maPhieuGiamGia}" readonly>
         </div>
 
         <div class="col-md-6">
             <label class="form-label">Tên phiếu giảm giá</label>
-            <input type="text" class="form-control" name="tenPhieuGiamGia" th:value="*{phieuGiamGia.tenPhieuGiamGia}" required>
+            <input type="text" class="form-control" name="tenPhieuGiamGia" th:value="*{phieuGiamGia.tenPhieuGiamGia}" readonly>
         </div>
 
         <div class="col-md-6">
             <label class="form-label">Số lượng</label>
-            <input type="number" class="form-control" name="soLuong" min="1" th:value="*{phieuGiamGia.soLuong}" required>
+            <input type="number" class="form-control" name="soLuong" min="1" th:value="*{phieuGiamGia.soLuong}" readonly>
         </div>
 
         <div class="col-md-6">
             <label class="form-label">Điều kiện giảm (VND)</label>
-            <input type="number" class="form-control" name="dieuKien" min="0" th:value="*{phieuGiamGia.dieuKien}" required>
+            <input type="number" class="form-control" name="dieuKien" min="0" th:value="*{phieuGiamGia.dieuKien}" readonly>
         </div>
 
         <div class="col-md-6">
             <label class="form-label">Loại giảm giá</label>
-            <select class="form-select" th:field="*{phieuGiamGia.kieuGiamGia}" required>
+            <select class="form-select" th:field="*{phieuGiamGia.kieuGiamGia}" readonly>
                 <option value="1" th:selected="${phieuGiamGia.kieuGiamGia == 1}">%</option>
                 <option value="0" th:selected="${phieuGiamGia.kieuGiamGia == 0}">VND</option>
             </select>
@@ -51,35 +51,62 @@
 
         <div class="col-md-6">
             <label class="form-label">Ngày bắt đầu</label>
-            <input type="date" class="form-control" name="ngayBatDau" th:value="${#dates.format(phieuGiamGia.ngayBatDau, 'yyyy-MM-dd')}" required>
+            <input type="date" class="form-control" name="ngayBatDau" th:value="${#dates.format(phieuGiamGia.ngayBatDau, 'yyyy-MM-dd')}" readonly>
         </div>
 
         <div class="col-md-6">
             <label class="form-label">Ngày kết thúc</label>
-            <input type="date" class="form-control" name="ngayKetThuc" th:value="${#dates.format(phieuGiamGia.ngayKetThuc, 'yyyy-MM-dd')}" required>
+            <input type="date" class="form-control" name="ngayKetThuc" th:value="${#dates.format(phieuGiamGia.ngayKetThuc, 'yyyy-MM-dd')}" readonly>
         </div>
 
         <div class="col-md-6">
-            <label class="form-label">Giá trị tối thiểu (VND)</label>
-            <input type="number" class="form-control" name="giaTriGiam" min="0" th:value="*{phieuGiamGia.giaTriGiam}" required>
+            <label class="form-label">Giá trị giảm (% & VND)</label>
+            <input type="number" class="form-control" name="giaTriGiam" min="0" th:value="*{phieuGiamGia.giaTriGiam}" readonly>
         </div>
 
         <div class="col-md-6">
             <label class="form-label">Giá trị tối đa (VND)</label>
-            <input type="number" class="form-control" name="giaTriMax" min="0" th:value="*{phieuGiamGia.giaTriMax}" required>
+            <input type="number" class="form-control" name="giaTriMax" min="0" th:value="*{phieuGiamGia.giaTriMax}" readonly>
         </div>
 
         <div class="col-md-6">
             <label class="form-label">Trạng thái</label>
-            <select class="form-select" th:value="*{phieuGiamGia.trangThai}" required>
-                <option value="1" th:selected="${phieuGiamGia.trangThai == 1}">Inactive</option>
-                <option value="0" th:selected="${phieuGiamGia.trangThai == 0}">Active</option>
+            <select class="form-select" th:field="*{phieuGiamGia.trangThai}" readonly>
+                <option value="1">Active</option>
+                <option value="0">Inactive</option>
             </select>
         </div>
 
+
         <div class="col-md-12">
-            <button type="submit" class="btn btn-outline-warning">Update</button>
+            <a th:href="@{/admin/phieu-giam-gia/index}" class="btn btn-outline-primary">Back</a>
         </div>
+
+        <h2>Các hóa đơn đã áp dụng phiếu giảm giá</h2>
+        <table class="table table-bordered table-hover text-center">
+            <thead class="table-dark">
+            <tr>
+                <th>Hóa Đơn</th>
+                <th>Ngày Áp Dụng</th>
+                <th>Tên Phiếu Giảm Giá</th>
+                <th>Ngày Bắt Đầu</th>
+                <th>Ngày Kết Thúc</th>
+                <th>Giá Trị Giảm</th>
+                <th>Tổng Tiền Sau Áp Dụng</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="hoaDon : ${hoaDonList}">
+                <td th:text=" 'Hóa đơn ' + ${hoaDon.hoaDonId}"></td>
+                <td th:text="${#temporals.format(hoaDon.ngaySua, 'yyyy-MM-dd')}"></td>
+                <td th:text="${hoaDon.tenPhieuGiamGia}"></td>
+                <td th:text="${#dates.format(hoaDon.ngayBatDau, 'yyyy-MM-dd')}"></td>
+                <td th:text="${#dates.format(hoaDon.ngayKetThuc, 'yyyy-MM-dd')}"></td>
+                <td th:text="${hoaDon.kieuGiamGia == 1 ? hoaDon.giaTriGiam + ' %' : #numbers.formatDecimal(hoaDon.giaTriGiam, 1, 'COMMA', 0, 'POINT') + 'đ'}"></td>
+                <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
+            </tr>
+            </tbody>
+        </table>
     </form>
 
 </section>

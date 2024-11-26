@@ -23,8 +23,8 @@
             <button type="submit" class="btn btn-dark"><i class="bi bi-search"></i> Search</button>
             <select style="margin-left: 30px" class="form-select col-sm-12" aria-label="Default select example" name="trangThai">
                 <option value="">Chọn trạng thái</option>
-                <option type="submit" value="1" th:selected="${trangThai == 1}">Hoạt động</option>
-                <option type="submit" value="0" th:selected="${trangThai == 0}">Không hoạt động</option>
+                <option th:value="1" th:selected="${trangThai == 1}">Hoạt động</option>
+                <option th:value="0" th:selected="${trangThai == 0}">Ngưng hoạt động</option>
             </select>
         </div>
 
@@ -54,7 +54,9 @@
         <tbody>
         <tr th:each="nv: ${listNV}">
             <td th:text="${nv.id}"></td>
-            <td th:text="${nv.anhUrl}"></td>
+            <td>
+                <img th:src="@{/{filename}(filename=${nv.anhUrl})}" alt="Hình ảnh khách hàng" height="60px" />
+            </td>
             <td th:text="${nv.ten}"></td>
             <td th:text="${nv.ngaySinh}"></td>
             <td th:text="${nv.gioiTinh == 1 ? 'Nam' : 'Nữ'}"></td>
@@ -66,6 +68,7 @@
             <td>
                 <a th:href="@{/admin/nhanvien/delete/{id}(id=${nv.id})}"><button class="btn btn-light" onclick="return confirm('Bạn có chắc chắn muốn xóa?');"><i class="bi bi-trash-fill fs3"></i></button></a>
                 <a th:href="@{/admin/nhanvien/view_update/{id}(id=${nv.id})}"><button class="btn btn-light"><i class="bi bi-pencil-square fs3"></i></button></a>
+                <a th:href="@{/admin/nhanvien/{id}/hoa-dons(id=${nv.id})}" class="btn btn-primary">Xem hóa đơn</a>
             </td>
         </tr>
         </tbody>
@@ -82,14 +85,26 @@
 
     <nav>
         <ul class="pagination">
+            <!-- Nút Previous -->
             <li th:classappend="${currentPage == 0} ? 'disabled'">
-                <a th:href="@{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage - 1}, size=${size})}" class="page-link">Previous</a>
+                <a th:href="${currentPage > 0}
+                         ? @{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage - 1}, size=${size})}
+                         : '#'"
+                   class="page-link">Previous</a>
             </li>
+
+            <!-- Các số trang -->
             <li th:each="pageNum : ${pageNumbers}" th:classappend="${pageNum == currentPage} ? 'active'">
-                <a th:href="@{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${pageNum}, size=${size})}" th:text="${pageNum + 1}" class="page-link"></a>
+                <a th:href="@{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${pageNum}, size=${size})}"
+                   th:text="${pageNum + 1}" class="page-link"></a>
             </li>
+
+            <!-- Nút Next -->
             <li th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a th:href="@{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage + 1}, size=${size})}" class="page-link">Next</a>
+                <a th:href="${currentPage < totalPages - 1}
+                         ? @{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage + 1}, size=${size})}
+                         : '#'"
+                   class="page-link">Next</a>
             </li>
         </ul>
     </nav>

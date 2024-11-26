@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -62,8 +64,9 @@ public class HoaDon extends BaseEntity{
     private Integer trangThaiThanhToan;
 
     @Column(name = "trang_thai")
-    private int trangThai;
+    private Integer trangThai;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL)
     private List<HoaDonChiTiet> hoaDonChiTietList;
 

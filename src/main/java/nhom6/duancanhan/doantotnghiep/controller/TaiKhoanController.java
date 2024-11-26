@@ -139,7 +139,7 @@ public class TaiKhoanController {
         khachHangdt.setAnhUrl("img_1.png");
         TaiKhoanDTO savedTaiKhoan = taiKhoanService.saveTaiKhoan(taiKhoandt);
         khachHangdt.setTaiKhoan(savedTaiKhoan);
-       forgotKHRepository.save(khachHangdt);
+        forgotKHRepository.save(khachHangdt);
 
         return "redirect:login/check-login";
     }

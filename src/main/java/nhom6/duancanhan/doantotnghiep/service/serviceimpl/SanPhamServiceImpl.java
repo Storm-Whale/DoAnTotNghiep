@@ -41,7 +41,7 @@ public class SanPhamServiceImpl implements SanPhamService {
     private final KieuTayAoRepository kieuTayAoRepository;
     private final KieuCoAoRepository kieuCoAoRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
-    private static final String QR_CODE_IMAGE_PATH = "D:/FALL_2024/DATN/DoAnTotNghiep/upload/";
+    private static final String QR_CODE_IMAGE_PATH = "D:/WorkPlace/Java/DuAnTotNghiep/DoAnTotNghiep/upload/";
 
 
     @Override
@@ -142,7 +142,8 @@ public class SanPhamServiceImpl implements SanPhamService {
     @Override
     public List<SanPhamShowOnClient> getAllSanPhamShowOnClient(String method) {
         return DatabaseOperationHandler.handleDatabaseOperation(() -> {
-            List<SanPhamResponse> sanPhamResponses = new ArrayList<>(getAllSanPham());
+            List<SanPhamResponse> sanPhamResponses = sanPhamRepository.findAllByTrangThai(1).stream()
+                    .map(sanPhamMapper::toSanPhamResponse).collect(Collectors.toList());
 
             if ("get-random".equals(method)) {
                 Collections.shuffle(sanPhamResponses);
@@ -234,6 +235,13 @@ public class SanPhamServiceImpl implements SanPhamService {
                     return listSanPhamShowOnClients;
                 }, "Lỗi khi lấy thông tin từ cơ sở dữ liệu"
         );
+    }
+
+    @Override
+    public boolean existTenSanPham(String tenSanPham, Integer id) {
+        return DatabaseOperationHandler.handleDatabaseOperation(
+                () -> sanPhamRepository.existsSanPhamByTenSanPhamAndIdNot(tenSanPham, id)
+                , "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu");
     }
 
     @Override

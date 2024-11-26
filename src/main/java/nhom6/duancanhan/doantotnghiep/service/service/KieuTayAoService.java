@@ -22,5 +22,12 @@ public interface KieuTayAoService {
 
     void deleteKieuTayAo(Integer id);
 
+    List<KieuTayAo> getKieuTayAoByTrangThai(int trangThai);
+
+    List<KieuTayAo> getKieuTayAoByTen(String tenTayAo);
+
+    Page<KieuTayAo> phanTrangTheoTrangThai(int trangThai, int pageNo, int pageSize);
+
+    Page<KieuTayAo> phanTrangTheoTen(String tenTayAo, int pageNo, int pageSize);
     List<String> getAllKieuTayAo();
 }

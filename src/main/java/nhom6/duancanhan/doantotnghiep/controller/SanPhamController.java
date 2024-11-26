@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
-import nhom6.duancanhan.doantotnghiep.service.serviceimpl.QRGeneratorCode;
+import nhom6.duancanhan.doantotnghiep.util.QRGeneratorCode;
 import nhom6.duancanhan.doantotnghiep.util.UploadImage;
 import nhom6.duancanhan.doantotnghiep.util.ValidationErrorHandler;
 import org.springframework.data.domain.Page;
@@ -37,21 +37,21 @@ public class SanPhamController {
     //  TODO : INDEX Sản Phẩm
     @GetMapping("/index")
     public String index(
-            @RequestParam(name = "keyword", required = false) String keyword,
-            @RequestParam(name = "status", required = false) Integer status,
-            @RequestParam(name = "thuongHieuId", required = false) Integer thuongHieuId,
-            @RequestParam(name = "chatLieuId", required = false) Integer chatLieuId,
-            @RequestParam(name = "tayAoId", required = false) Integer tayAoId,
-            @RequestParam(name = "coAoId", required = false) Integer coAoId,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
-            @PageableDefault(size = 10) Pageable pageable,
-            Model model
+            @RequestParam(name = "keyword", required = false) String keyword, @RequestParam(name = "status", required = false) Integer status,
+            @RequestParam(name = "thuongHieuId", required = false) Integer thuongHieuId, @RequestParam(name = "chatLieuId", required = false) Integer chatLieuId,
+            @RequestParam(name = "tayAoId", required = false) Integer tayAoId, @RequestParam(name = "coAoId", required = false) Integer coAoId,
+            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size, @PageableDefault(size = 10) Pageable pageable,
+            Model model, @ModelAttribute("sp_moi") SanPhamResponse spMoi
     ) {
         // Sử dụng size từ @RequestParam để phân trang
         Page<SanPhamResponse> products = sanPhamService.timKiemSanPham(
                 keyword, status, thuongHieuId, chatLieuId, tayAoId, coAoId, pageable.getPageNumber(), size);
 
         model.addAttribute("products", products.getContent());
+
+        if (spMoi != null) {
+            model.addAttribute("sp_moi", spMoi);
+        }
 
         // Tính toán startPage và endPage
         int currentPage = products.getNumber();
@@ -104,7 +104,10 @@ public class SanPhamController {
 
     //   TODO : Thêm Sản Phẩm
     @PostMapping("/store")
-    public String store(@Valid @ModelAttribute("product") SanPhamRequest productRequest, BindingResult bindingResult, Model model) {
+    public String store(
+            @Valid @ModelAttribute("product") SanPhamRequest productRequest, BindingResult bindingResult,
+            RedirectAttributes redirectAttributes, Model model
+    ) {
         if (sanPhamService.existTenSanPham(productRequest.getTenSanPham())) {
             model.addAttribute("trungTenSanPham", "Bạn đã có sản phẩm với tên này");
             return "/admin/sanpham/create";
@@ -147,12 +150,13 @@ public class SanPhamController {
                 return "/admin/sanpham/create";
             }
         }
-
+        String tenSP = productRequest.getTenSanPham();
+        productRequest.setTenSanPham(tenSP);
         productRequest.setTrangThai(1);
-        sanPhamService.storeSanPham(productRequest);
-        //set image QrCode cho sp mới tạo
-        System.out.println("Bắt đầu tạo mã QR cho sản phẩm: " + productRequest.getTenSanPham());
+        SanPhamResponse sanPhamResponse = sanPhamService.storeSanPham(productRequest);
         qrGeneratorCode.generateQRCodeForProduct(productRequest);
+        redirectAttributes.addFlashAttribute("sp_moi", sanPhamResponse);
+        System.out.println("TO String" + sanPhamResponse.toString());
         return "redirect:/admin/products/index";
     }
 
@@ -167,15 +171,11 @@ public class SanPhamController {
     //   TODO : Update sản phẩm
     @PostMapping(value = "/update/{id}")
     public String update(
-            @PathVariable(name = "id") Integer id,
-            @RequestParam(value = "ten_sp", required = false) String tenSP,
-            @RequestParam(value = "id_thuong_hieu", required = false) Integer idThuongHieu,
-            @RequestParam(value = "id_chat_lieu", required = false) Integer idChatLieu,
-            @RequestParam(value = "id_co_ao", required = false) Integer idCoAo,
-            @RequestParam(value = "id_tay_ao", required = false) Integer idTayAo,
-            @RequestParam(value = "anh_san_pham", required = false) MultipartFile anhSanPham,
-            @RequestParam(value = "trang_thai", required = false) Integer trangThai,
-            Model model
+            @PathVariable(name = "id") Integer id, @RequestParam(value = "ten_sp", required = false) String tenSP,
+            @RequestParam(value = "id_thuong_hieu", required = false) Integer idThuongHieu, @RequestParam(value = "id_chat_lieu", required = false) Integer idChatLieu,
+            @RequestParam(value = "id_co_ao", required = false) Integer idCoAo, @RequestParam(value = "id_tay_ao", required = false) Integer idTayAo,
+            @RequestParam(value = "anh_san_pham", required = false) MultipartFile anhSanPham, @RequestParam(value = "trang_thai", required = false) Integer trangThai,
+            Model model, RedirectAttributes redirectAttributes
     ) {
         boolean hasErrors = false;
 
@@ -185,7 +185,7 @@ public class SanPhamController {
             hasErrors = true;
         } else {
             // Kiểm tra trùng tên sản phẩm
-            if (sanPhamService.existTenSanPham(tenSP)) {
+            if (sanPhamService.existTenSanPham(tenSP, id)) {
                 model.addAttribute("productNameError", "Bạn đã có sản phẩm với tên này");
                 hasErrors = true;
             }
@@ -248,13 +248,8 @@ public class SanPhamController {
         String oldImageUrl = existingProduct.getAnhUrl();
 
         SanPhamRequest sanPhamRequest = SanPhamRequest.builder()
-                .tenSanPham(tenSP)
-                .idChatLieu(idChatLieu)
-                .idThuongHieu(idThuongHieu)
-                .idCoAo(idCoAo)
-                .idTayAo(idTayAo)
-                .trangThai(trangThai)
-                .build();
+                .tenSanPham(tenSP.trim()).idChatLieu(idChatLieu).idThuongHieu(idThuongHieu).idCoAo(idCoAo)
+                .idTayAo(idTayAo).trangThai(trangThai).build();
 
         if (!anhSanPham.isEmpty()) {
             try {
@@ -270,8 +265,9 @@ public class SanPhamController {
             sanPhamRequest.setAnhUrl(oldImageUrl);
         }
 
-        sanPhamService.updateSanPham(id, sanPhamRequest);
-        return "redirect:/admin/products/index";  // Chuyển hướng về trang sản phẩm sau khi cập nhật thành công
+        SanPhamResponse sanPhamResponse = sanPhamService.updateSanPham(id, sanPhamRequest);
+        redirectAttributes.addFlashAttribute("sp_moi", sanPhamResponse);
+        return "redirect:/admin/products/index";
     }
 
     //   TODO : Cập Nhật Trạng Thái Sản Phẩm
@@ -282,7 +278,8 @@ public class SanPhamController {
 
     }
 
-    private void addSanPhamModelAttributes(Model model, SanPhamRequest sanPhamRequest) {
+    private void
+    addSanPhamModelAttributes(Model model, SanPhamRequest sanPhamRequest) {
         model.addAttribute("product", sanPhamRequest);
         model.addAttribute("thuongHieus", thuongHieuService.getAll());
         model.addAttribute("chatLieus", chatLieuService.getAll());
@@ -296,6 +293,7 @@ public class SanPhamController {
         model.addAttribute("kieuCoAos", kieuCoAoService.getAll());
         model.addAttribute("kieuTayAos", kieuTayAoService.getAll());
     }
+
     //  TODO: CREATE IMAGE QR FOR SP
     @GetMapping("/generate-qrcodes")
     public String generateQRCodesForAllProducts(RedirectAttributes redirectAttributes) {

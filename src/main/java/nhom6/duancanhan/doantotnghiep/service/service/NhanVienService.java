@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
+import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import org.springframework.data.domain.Page;
 
@@ -11,7 +12,7 @@ public interface NhanVienService {
 
     Page<NhanVien> phanTrang(int pageNo, int pageSize);
 
-    Optional<NhanVien> detail(Integer id);
+    NhanVien detailNhanVien(Integer id);
 
     void addNhanVien(NhanVien nhanVien);
 
@@ -22,4 +23,6 @@ public interface NhanVienService {
     Page<NhanVien> SearchandPhantrang (String keyword, Integer trangThai, int pageNo, int pageSize);
 
     NhanVien getNhanVienByIdTaiKhoan(Integer idTK);
+
+    NhanVien findById(Integer id);
 }

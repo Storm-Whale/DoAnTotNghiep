@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
+import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonChiTietService;
@@ -56,5 +57,10 @@ public class HoaDonChiTietServiceImpl implements HoaDonChiTietService {
     @Override
     public List<HoaDonChiTiet> findByHoaDonId(Integer hoaDonId) {
         return hoaDonChiTietRepository.findByHoaDonId(hoaDonId);
+    }
+
+    @Override
+    public List<HoaDonChiTiet> findByKhachHangId(Integer khachHangId) {
+        return hoaDonChiTietRepository.findByKhachHangId(khachHangId);
     }
 }

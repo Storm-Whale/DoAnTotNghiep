@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -36,7 +38,7 @@ public class HoaDonController {
     public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
 
 
-        int pageSize = 3;
+        int pageSize = 5;
 
 
         Page<HoaDon> page = hoaDonService.phanTrang(pageNo, pageSize);
@@ -76,8 +78,78 @@ public class HoaDonController {
 //    }
 
 
+//    @PutMapping("/update-status/{id}")
+//    public ResponseEntity<?> updateStatus(@PathVariable("id") Integer id, @RequestBody Map<String, Integer> payload) {
+//        try {
+//            HoaDon hoaDon = hoaDonService.findById(id);
+//            if (hoaDon == null || hoaDon.getTrangThai() != 1) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hóa đơn không hợp lệ");
+//            }
+//
+//            hoaDon.setTrangThai(3); // Chuyển trạng thái sang "Đang Chuẩn Bị Hàng"
+//            hoaDonService.addHoaDon(hoaDon);
+//            return ResponseEntity.ok("Cập nhật trạng thái thành công");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
+//        }
+//    }
 
 
+    @PutMapping("/update-status/{id}")
+    public ResponseEntity<?> updateStatus(@PathVariable("id") Integer id, @RequestBody Map<String, Integer> payload) {
+        try {
+            HoaDon hoaDon = hoaDonService.findById(id);
+
+            if (hoaDon == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hóa đơn không hợp lệ");
+            }
+
+            // Cập nhật trạng thái tùy vào giá trị hiện tại của trạng thái
+            if (hoaDon.getTrangThai() == 2) {
+                hoaDon.setTrangThai(3); // Trạng thái chuyển từ 'Chờ Xác Nhận' sang 'Đang Chuẩn Bị Hàng'
+
+            } else if (hoaDon.getTrangThai() == 3) {
+                hoaDon.setTrangThai(4); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đang Vận Chuyển'
+            } else if (hoaDon.getTrangThai() == 4) {
+                hoaDon.setTrangThai(5); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đã Giao'
+//            }else if (hoaDon.getTrangThai() == 2) {
+//                hoaDon.setTrangThai(6); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đã Giao'
+//            }else if (hoaDon.getTrangThai() == 3) {
+//                hoaDon.setTrangThai(6); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đã Giao'
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Trạng thái không hợp lệ để cập nhật");
+            }
+
+            hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            return ResponseEntity.ok("Cập nhật trạng thái thành công");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
+        }
+
+    }
+
+    @PutMapping("/cancel-order/{id}")
+    public ResponseEntity<?> cancelOrder(@PathVariable("id") Integer id) {
+        try {
+            HoaDon hoaDon = hoaDonService.findById(id);
+
+            if (hoaDon == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hóa đơn không hợp lệ");
+            }
+            if (hoaDon.getTrangThai() == 2) {
+                hoaDon.setTrangThai(6); // Trạng thái chuyển từ 'Chờ Xác Nhận' sang 'Đang Chuẩn Bị Hàng'
+
+            } else if (hoaDon.getTrangThai() == 3) {
+                hoaDon.setTrangThai(6); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đang Vận Chuyển'
+            }
+
+
+            hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            return ResponseEntity.ok("Đơn hàng đã được hủy thành công");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
+        }
+    }
 
 
     @PostMapping("/add")
@@ -101,18 +173,45 @@ public class HoaDonController {
         }
         return "redirect:/admin/hoadon";
     }
-    @GetMapping("/search")
-    public String timKiem(@RequestParam("keyword") String keyword, Model model) {
-        int pageNo = 1;
-        int pageSize = 7;
-        Page<HoaDon> page = hoaDonService.timKiem(keyword, pageNo, pageSize);
-        List<HoaDon> listHD = page.getContent();
-        model.addAttribute("hoaDon", new HoaDon());
-        model.addAttribute("listHD", listHD);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-        return "/admin/customer/hoadon";
-    }
+//    @GetMapping("/search")
+//    public String timKiem(@RequestParam("keyword") String keyword, Model model) {
+//        int pageNo = 1;
+//        int pageSize = 7;
+//        Page<HoaDon> page = hoaDonService.timKiem(keyword, pageNo, pageSize);
+//        List<HoaDon> listHD = page.getContent();
+//        model.addAttribute("hoaDon", new HoaDon());
+//        model.addAttribute("listHD", listHD);
+//        model.addAttribute("keyword", keyword);
+//        model.addAttribute("currentPage", pageNo);
+//        model.addAttribute("totalPages", page.getTotalPages());
+//        model.addAttribute("totalItems", page.getTotalElements());
+//        return "/admin/customer/hoadon";
+//    }
+@GetMapping("/search")
+public String timKiem(
+        @RequestParam("keyword") String keyword,
+        @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
+        @RequestParam(value = "pageSize", defaultValue = "7") int pageSize,
+        Model model) {
+
+    // Tìm kiếm với các tham số đã cung cấp
+    Page<HoaDon> page = hoaDonService.timKiem(keyword, pageNo, pageSize);
+    List<HoaDon> listHD = page.getContent();
+
+    // Thêm các đối tượng cần thiết vào model để hiển thị
+    model.addAttribute("hoaDon", new HoaDon());
+    model.addAttribute("listHD", listHD);
+    model.addAttribute("keyword", keyword);
+    model.addAttribute("currentPage", pageNo);
+    model.addAttribute("totalPages", page.getTotalPages());
+    model.addAttribute("totalItems", page.getTotalElements());
+
+    // Trả về trang cần hiển thị
+    return "/admin/customer/hoadon";
+}
+
+
+
+
+
 }

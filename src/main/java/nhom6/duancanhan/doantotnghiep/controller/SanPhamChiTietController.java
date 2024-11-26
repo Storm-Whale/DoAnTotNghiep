@@ -68,9 +68,8 @@ public class SanPhamChiTietController {
     @PostMapping("/update/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateProductDetails(
-            @PathVariable(value = "id") Integer id, @RequestParam(value = "id_sp") Integer idSp,
-            @RequestParam(value = "id_mau_sac") Integer idMauSac, @RequestParam(value = "id_kich_co") Integer idKichCo,
-            @RequestParam(value = "so_luong") Integer soLuong, @RequestParam(value = "gia") Double gia,
+            @PathVariable(value = "id") Integer id, @RequestParam(value = "id_sp") Integer idSp, @RequestParam(value = "id_mau_sac") Integer idMauSac,
+            @RequestParam(value = "id_kich_co") Integer idKichCo, @RequestParam(value = "so_luong") Integer soLuong, @RequestParam(value = "gia") Double gia,
             @RequestParam(value = "trang_thai") Integer trangThai, @RequestParam(value = "images", required = false) MultipartFile[] images,
             @RequestParam(value = "imageIds", required = false) List<Integer> imageIds
     ) throws IOException {
@@ -116,8 +115,8 @@ public class SanPhamChiTietController {
     //    TODO : Chuyển trạng thái sản phẩm chi tiết
     @GetMapping(value = "/delete/{id}")
     public String delete(@PathVariable(name = "id") Integer id) {
-        sanPhamChiTietService.sortDeleteSanPhamChiTiet(id);
-        return "redirect:/admin";
+        int idSP = sanPhamChiTietService.sortDeleteSanPhamChiTiet(id);
+        return "redirect:/admin/products/find_by_id/" + idSP;
     }
 
     private void addSanPhamChiTietModelAttributes(Model model, SanPhamChiTietRequest sanPhamChiTietRequest) {
