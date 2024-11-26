@@ -52,7 +52,7 @@ $(document).ready(function () {
         const $invoiceItem = $(this).closest('.invoice-item');
         const invoiceId = $invoiceItem.data('id');
 
-        if (invoiceId !== undefined) {
+        if (invoiceId) {
             Swal.fire({
                 title: 'Xác Nhận Hủy Hóa Đơn',
                 text: 'Bạn có chắc chắn muốn hủy hóa đơn này?',
@@ -74,14 +74,15 @@ $(document).ready(function () {
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             }).then(() => {
-                                window.location.href = "/admin/taiquay";
+                                $invoiceItem.remove();
+                                // window.location.href = "/admin/taiquay";
                             });
                         },
                         error: function (xhr) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Lỗi',
-                                text: xhr.responseText || "Không thể hủy hóa đơn. Vui lòng kiểm tra lại!"
+                                    text: xhr.responseText || "Không thể hủy hóa đơn. Vui lòng kiểm tra lại!"
                             });
                         }
                     });

@@ -318,10 +318,10 @@ public class TaiQuayController {
     @ResponseBody
     public ResponseEntity<?> taoHoaDon(Model model) {
         NhanVien nhanVien = (NhanVien) session.getAttribute("nhanvien");
-//        if (nhanVien.getTaiKhoan().getVaiTro() == null) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-//                    .body("Bạn chưa đăng nhập, vui lòng đăng nhập để tạo hóa đơn!");
-//        }
+        if (nhanVien.getTaiKhoan().getVaiTro() == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Bạn chưa đăng nhập, vui lòng đăng nhập để tạo hóa đơn!");
+        }
         HoaDon hoaDon = new HoaDon();
         hoaDon.setTrangThai(1); // Set trạng thái mới tạo
         hoaDon.setLoaiHoaDon("Tại quầy");
@@ -379,16 +379,20 @@ public class TaiQuayController {
         model.addAttribute("listHDCT", hoaDonChiTiet);
 
         List<HoaDon> listHD = hoaDonRepository.findHoaDonsWithStatusOne();
-        // Kiểm tra xem hóa đơn đầu tiên đã có trong danh sách chưa
-//        if (firstHoaDon != null && !listHD.contains(firstHoaDon)) {
-//            listHD.add(0, firstHoaDon); // Thêm hóa đơn đầu tiên vào đầu danh sách
-//        }
+
         model.addAttribute("listHD", listHD.stream().limit(5).collect(Collectors.toList())); // Giới hạn danh sách về 5 hóa đơn
 
         BigDecimal tongTien = hoaDonChiTiet.stream()
                 .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+//        reset phiếu giảm giá
+        if (hoaDon != null && hoaDon.getPhieuGiamGia() != null) {
+            // Nếu muốn reset hoàn toàn
+            hoaDon.setPhieuGiamGia(null);
+            hoaDon.setTongTien(tongTien);
+            hoaDonRepository.save(hoaDon);
+        }
         // Tìm phiếu giảm giá phù hợp
         PhieuGiamGia phieuGiamGiaAuto = timPhieuGiamGiaHopLe(tongTien);
 
@@ -560,7 +564,10 @@ public class TaiQuayController {
         // Biến lưu tổng tiền sau giảm
         BigDecimal tongTienSauGiam = tongTien;
         // Nếu không có mã nhập, tự động tìm phiếu giảm giá
-        PhieuGiamGia phieuGiamGiaAuto = timPhieuGiamGiaHopLe(tongTien);
+//        PhieuGiamGia phieuGiamGiaAuto = timPhieuGiamGiaHopLe(tongTien);
+        PhieuGiamGia phieuGiamGiaApdung = null;
+        // Kiểm tra điều kiện áp dụng phiếu giảm giá
+        boolean apDungPgg = false;
         if (maPhieuGiamGiaInput != null && !maPhieuGiamGiaInput.isEmpty()) {
             try {
                 // Tìm phiếu giảm giá theo mã nhập
@@ -572,14 +579,16 @@ public class TaiQuayController {
                 phieuGiamGia.setSoLuong(phieuGiamGia.getSoLuong() - 1);
                 phieuGiamGiaRepository.save(phieuGiamGia);
                 // Lưu phiếu giảm giá vào hóa đơn
-                hoaDon.setPhieuGiamGia(phieuGiamGia);
-//                hoaDonRepository.save(hoaDon);
+//                hoaDon.setPhieuGiamGia(phieuGiamGia);
+                phieuGiamGiaApdung = phieuGiamGia;
+                apDungPgg = true;
             } catch (IllegalArgumentException e) {
                 model.addAttribute("error", e.getMessage());
                 return "redirect:/admin/taiquay/detail/" + idHoaDon;
             }
         }// Nếu không có mã nhập, tự động tìm phiếu giảm giá
         else {
+        PhieuGiamGia phieuGiamGiaAuto = timPhieuGiamGiaHopLe(tongTien);
             // Tìm phiếu giảm giá phù hợp nhất
             if (phieuGiamGiaAuto != null) {
                 // Áp dụng phiếu giảm giá tự động
@@ -591,14 +600,24 @@ public class TaiQuayController {
                 phieuGiamGiaAuto.setSoLuong(phieuGiamGiaAuto.getSoLuong() - 1);
                 phieuGiamGiaRepository.save(phieuGiamGiaAuto);
                 // Lưu phiếu giảm giá vào hóa đơn
-                hoaDon.setPhieuGiamGia(phieuGiamGiaAuto);
-//                phieuGiamGiaSuDung = phieuGiamGiaAuto;
+//                hoaDon.setPhieuGiamGia(phieuGiamGiaAuto);
+                phieuGiamGiaApdung = phieuGiamGiaAuto;
+                apDungPgg = true;
             } else {
                 System.out.println("Không tìm thấy phiếu giảm giá phù hợp");
             }
         }
-        hoaDon.setTongTien(tongTienSauGiam);
-        model.addAttribute("tongTien", tongTien);
+//        hoaDon.setTongTien(tongTienSauGiam);
+        // Nếu có phiếu giảm giá được áp dụng
+        if (apDungPgg) {
+            hoaDon.setPhieuGiamGia(phieuGiamGiaApdung);
+            hoaDon.setTongTien(tongTienSauGiam);
+        } else {
+            // Nếu không có phiếu giảm giá, giữ nguyên tổng tiền ban đầu
+            hoaDon.setPhieuGiamGia(null);
+            hoaDon.setTongTien(tongTien);
+        }
+//        model.addAttribute("tongTien", tongTien);
         PhuongThucThanhToan phuongThuc = phuongThucThanhToanRepository.findById(phuongThucId).orElse(null);
         hoaDon.setPhuongThucThanhToan(phuongThuc);
         if (hoaDon.getKhachHang() != null) {
@@ -755,22 +774,24 @@ public class TaiQuayController {
         return "redirect:/admin/taiquay/detail/" + idHoaDon;
     }
 
-    // TODO huyhd
+    //TODO: HUY HD
     @PostMapping("/huyhoadon/{id}")
-    public String huyHoaDon(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-        String message;
+    public ResponseEntity<?> huyHoaDon(@PathVariable("id") Integer id) {
         try {
+            // Kiểm tra ID
+            if (id == null) {
+                return ResponseEntity.badRequest().body("ID hóa đơn không hợp lệ");
+            }
             hoaDonService.cancelHoaDon(id);
-            idHoaDon = null;
-            message = "Hóa đơn đã được hủy thành công.";
+            return ResponseEntity.ok("Hóa đơn đã được hủy thành công");
+//            idHoaDon = null;
         } catch (IllegalArgumentException e) {
-            message = "Không tìm thấy hóa đơn để hủy.";
+            // Ghi log thông tin chi tiết
+            System.err.println("Lỗi: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            message = "Không thể hủy hóa đơn.";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể hủy hóa đơn");
         }
-        // Thêm thông báo vào RedirectAttributes
-        redirectAttributes.addFlashAttribute("message", message);
-        return "redirect:/admin/taiquay"; // Chuyển hướng về trang chủ
     }
 
 
@@ -785,17 +806,27 @@ public class TaiQuayController {
             BigDecimal tongTien = hoaDonChiTietList.stream()
                     .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-            //
+            // Nếu đã có phiếu giảm giá cũ, hoàn lại số lượng
+            if (hoaDon.getPhieuGiamGia() != null) {
+                PhieuGiamGia phieuGiamGiaCu = hoaDon.getPhieuGiamGia();
+                phieuGiamGiaCu.setSoLuong(phieuGiamGiaCu.getSoLuong() + 1);
+                phieuGiamGiaRepository.save(phieuGiamGiaCu);
+            }
+            // Áp dụng phiếu giảm giá mới
             BigDecimal tongTienSauGiam = phieuGiamGiaService.applyDiscount(maPhieuGiamGiaInput, tongTien);
-            hoaDon.setTongTien(tongTienSauGiam);
+//            hoaDon.setTongTien(tongTienSauGiam);
             //update so luong pgg trong db
-            PhieuGiamGia phieuGiamGia = phieuGiamGiaRepository.findByMaPhieuGiamGia(maPhieuGiamGiaInput)
+            PhieuGiamGia phieuGiamGiaMoi = phieuGiamGiaRepository.findByMaPhieuGiamGia(maPhieuGiamGiaInput)
                     .orElseThrow(() -> new IllegalArgumentException("Mã giảm giá không hợp lệ"));
-            phieuGiamGia.setSoLuong(phieuGiamGia.getSoLuong() - 1);  // Giảm đi 1
-            phieuGiamGiaRepository.save(phieuGiamGia);
+            //
+            phieuGiamGiaMoi.setSoLuong(phieuGiamGiaMoi.getSoLuong() - 1);  // Giảm đi 1
+            phieuGiamGiaRepository.save(phieuGiamGiaMoi);
             // luu thong tin hoa don
+            hoaDon.setPhieuGiamGia(phieuGiamGiaMoi);
+            hoaDon.setTongTien(tongTienSauGiam);
             hoaDonRepository.save(hoaDon);
-//            maPhieuGiamGia = maPhieuGiamGiaInput;
+            //cập nhật lại maPhieuGG
+            this.maPhieuGiamGia = maPhieuGiamGiaInput;
             model.addAttribute("hoaDon", hoaDon);
             model.addAttribute("message", "Mã giảm giá hợp lệ!");
             model.addAttribute("maPhieuGiamGia", maPhieuGiamGiaInput);
@@ -839,9 +870,10 @@ public class TaiQuayController {
                 phieuGiamGia.setSoLuong(phieuGiamGia.getSoLuong() + 1);
                 phieuGiamGiaRepository.save(phieuGiamGia);
                 // Xóa phiếu giảm giá khỏi hóa đơn
-                hoaDon.setPhieuGiamGia(null);
+//                hoaDon.setPhieuGiamGia(null);
                 hoaDon.setTongTien(tongTien);
                 hoaDonRepository.save(hoaDon);
+                this.maPhieuGiamGia = "";
             }
             // Chuẩn bị response
             Map<String, Object> response = new HashMap<>();
@@ -985,14 +1017,12 @@ public class TaiQuayController {
             sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - delta);
             hoaDonChiTietRepository.save(hoaDonChiTiet);
             sanPhamChiTietRepository.save(sanPhamChiTiet);
-
             // Tính tổng tiền và cập nhật danh sách
             Integer idHoaDon = hoaDonChiTiet.getHoaDon().getId();
             List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
             BigDecimal tongTien = hoaDonChiTietList.stream()
                     .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-
             // Chuẩn bị danh sách chi tiết để trả về
             List<Map<String, Object>> listHDCT = hoaDonChiTietList.stream()
                     .map(hdct -> {

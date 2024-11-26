@@ -30,12 +30,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:///D:/DoAnTotNghiep/DoAnTotNghiep/upload/");
+                .addResourceLocations("file:///D:/FALL_2024/DATN/DoAnTotNghiep/upload/");
     }
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(authenticationInterceptor)
-//                .addPathPatterns("/admin/**") // Áp dụng cho đường dẫn này
-//                .excludePathPatterns("/login", "/css/**", "/js/**"); // Ngoại trừ các đường dẫn không cần kiểm tra
-//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authenticationInterceptor)
+                .addPathPatterns("/admin/**") // Áp dụng cho đường dẫn này
+                .excludePathPatterns("/login", "/css/**", "/js/**"); // Ngoại trừ các đường dẫn không cần kiểm tra
+    }
 }

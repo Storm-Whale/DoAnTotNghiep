@@ -1,6 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 
+import jakarta.transaction.Transactional;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
@@ -98,6 +99,7 @@ public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
 //        });
 //        hoaDonRepository.delete(hoaDon);
 //    }
+    @Transactional
     @Override
     public void cancelHoaDon(Integer id) {
         HoaDon hoaDon = hoaDonRepository.findById(id)
@@ -115,8 +117,9 @@ public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
             } else {
                 System.out.println("Sản phẩm không tồn tại.");
             }
-            hoaDonChiTietRepository.delete(hoaDonChiTiet);
         }
+        // Xóa tất cả chi tiết hóa đơn
+        hoaDonChiTietRepository.deleteAll(hoaDonChiTietList);
         hoaDonRepository.delete(hoaDon);
     }
 
