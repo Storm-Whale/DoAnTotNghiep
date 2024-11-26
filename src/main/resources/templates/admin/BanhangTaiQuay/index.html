@@ -133,6 +133,7 @@
                     style="margin-right: 15px;">
                     <a th:href="@{/admin/taiquay/detail/{id}(id=${hoaDon.id})}"
                        th:text="'Hóa đơn ' + ${hoaDon.id}" style="text-decoration: none;" class="invoice-link"
+                       th:attr="data-id=${hoaDon.id}"
                     ></a>
                     <span class="invoice-close-btn">&times;</span>
                 </li>
@@ -269,8 +270,6 @@
                                 color: red;
                                 margin-top: 5px; /* Khoảng cách từ button đến thông báo lỗi */
                                 font-weight: bold; /* Đậm chữ thông báo lỗi */
-
-
                             }
                         </style>
                         <div>
@@ -316,7 +315,7 @@
                                    th:value="${maPhieuGiamGia}" readonly/>
                             <button type="button" id="huyPhieuGiamGiaBtn"
                                     class="cancel-button"
-                                    style="background-color: #2c3e50; color: white; margin-bottom: 5px; padding: 8px 10px; border: none; border-radius: 5px; cursor: pointer; ">
+                                    style="background-color: #2c3e50; color: white; margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; ">
                                 Bỏ chọn
                             </button>
                         </form>
@@ -336,6 +335,7 @@
                             <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: table}"></div>
 
 
+                            <!--                            <a th:href="@{/admin/taiquay/detail/{id}(id=${idHoaDon})}" class="modal__close">&times;</a>-->
                             <a th:href="@{${idHoaDon != null ? '/admin/taiquay/detail/' + idHoaDon : '/admin/taiquay'}}"
                                class="modal__close">&times;</a>
                             <div>
@@ -355,6 +355,12 @@
                             <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: script}"></div>
                         </div>
                     </div>
+                    <!--                    <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="get">-->
+                    <!--                        <input type="text" name="maPhieuGiamGia" th:value="${maPhieuGiamGia}"/>-->
+                    <!--                        &lt;!&ndash; Sử dụng thuộc tính đúng &ndash;&gt;-->
+                    <!--                        <button type="submit">Áp dụng</button>-->
+                    <!--                    </form>-->
+
 
                     <p style="font-size: 14px; margin-top: 10px;">Tiền Tạm Tính:
                         <span id="subtotal"
@@ -375,8 +381,59 @@
                         <p style="color: red;" th:text="${error}"></p>
                     </div>
 
-                    <label style="margin-right: 50px;font-size: 14px;">Khách thanh toán: </label>
+                    <!-- Modal HTML -->
+                    <div id="customerModal" class="modal" style="display:none;">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeModal()">&times;</span>
+                            <p>Chưa có khách hàng. Bạn có muốn thêm không?</p>
+                            <button onclick="redirectToAddCustomer()">Có</button>
+                            <button onclick="closeModal()">Không</button>
+                        </div>
+                    </div>
 
+                    <script>
+                        function showModal() {
+                            document.getElementById('customerModal').style.display = 'block';
+                        }
+
+                        function closeModal() {
+                            document.getElementById('customerModal').style.display = 'none';
+                        }
+
+                        function redirectToAddCustomer() {
+                            window.location.href = "/admin/taiquay/add"; // Đường dẫn đến trang thêm khách hàng
+                        }
+
+                        // Hàm này sẽ được gọi khi nhận được phản hồi từ server
+                        function handlePaymentResponse(response) {
+                            if (response.includes("Chưa có khách hàng")) {
+                                showModal();
+                            } else {
+                                // Xử lý thanh toán thành công hoặc các phản hồi khác
+                            }
+                        }
+                    </script>
+                    <script>
+                        function confirmPayment() {
+                            // Gửi yêu cầu thanh toán
+                            fetch('/thanhtoan', {
+                                method: 'GET',
+                                // Các tham số cần thiết khác
+                            })
+                                .then(response => response.text())
+                                .then(data => handlePaymentResponse(data))
+                                .catch(error => console.error('Error:', error));
+                        }
+                    </script>
+
+                    <label style="margin-right: 50px;font-size: 14px;">Khách thanh toán: </label>
+                    <a class="taiquay">
+                        <a href="#thanhtoan">
+                            <button class="bi bi-card-text" style="background-color: #2c3e50;"></button>
+                        </a>
+                    </a>
+                    <div id="thanhtoan" class="modalthanhtoan">
+                        <div class="modal__centerthanhtoan">
                             <form action="/admin/taiquay/thanhtoan" method="get" id="paymentForm" target="pdfWindow"
                                   class="thanhtoan">
                                 <div class="mb-3">
@@ -420,9 +477,6 @@
                                                style="margin-right: 15px;margin-left: 5px;margin-top: 10px;font-size: 12px;">Chuyển
                                             Khoản</label>
                                     </div>
-                                    <div th:if="${errorMessageThanhToan != null}" class="alert alert-danger">
-                                        <p th:text="${errorMessageThanhToan}"></p>
-                                    </div>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <label style="font-size: 14px; margin-right: 10px;margin-top: 10px;">Ghi
@@ -438,6 +492,9 @@
                                 </button>
                                 <a href="#" class="modal__close">&times;</a>
                             </form>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -729,10 +786,7 @@
 <!--UPDATE SL SAN PHAM TRONG GH-->
 <script>
     function updateQuantityDirectly(inputElement, hdctId) {
-        // Lấy ID hóa đơn từ URL
-        const pathParts = window.location.pathname.split('/');
-        const hoaDonId = pathParts[pathParts.length - 1];
-        //
+        console.log(`Directly updating quantity for ID: ${hdctId}`);
         let newQuantity = parseInt(inputElement.value);
         const currentQuantity = parseInt(inputElement.getAttribute('data-current-quantity'));
         // Kiểm tra số lượng tồn kho
@@ -743,9 +797,6 @@
                 icon: 'error',
                 title: 'Lỗi',
                 text: 'Số lượng không hợp lệ. Vui lòng nhập số lượng lớn hơn 0.'
-            }).then(() => {
-                // Khôi phục lại giá trị cũ ngay sau khi đóng popup
-                inputElement.value = currentQuantity;
             });
             return;
         }
@@ -755,10 +806,8 @@
                 icon: 'error',
                 title: 'Lỗi',
                 text: `Số lượng vượt quá số lượng tồn kho. Chỉ còn lại ${stockQuantity} sản phẩm.`
-            }).then(() => {
-                // Khôi phục lại giá trị cũ ngay sau khi đóng popup
-                inputElement.value = currentQuantity;
             });
+            inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
             return;
         }
         //
@@ -775,25 +824,31 @@
                 },
                 body: `delta=${delta}`
             })
-                .then(response => {
-                    // Kiểm tra response status
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.error) {
                         Swal.fire({
                             icon: 'warning',
                             title: 'Cảnh Báo',
                             text: data.error
-                        }).then(() => {
-                            inputElement.value = currentQuantity; //khôi phục giá trị cũ
                         });
+                        inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
                     } else {
-                        // Redirect về trang chi tiết hóa đơn
-                        window.location.href = `/admin/taiquay/detail/${hoaDonId}`;
+                        // Cập nhật số lượng tồn kho
+                        if (stockQuantityElement) {
+                            stockQuantityElement.textContent = data.stockQuantity;
+                        }
+                        inputElement.setAttribute('data-current-quantity', newQuantity);
+                        document.querySelector('.total').textContent = data.tongTien + ' vnđ';
+                        data.listHDCT.forEach(hdct => {
+                            const row = document.querySelector(`tr:has(input[id='quantity-${hdct.id}'])`);
+                            if (row) {
+                                const tongTienCell = row.querySelector('td:nth-child(5)');
+                                if (tongTienCell) {
+                                    tongTienCell.textContent = hdct.tongTien + 'đ';
+                                }
+                            }
+                        });
                     }
                 })
                 .catch(error => {
@@ -814,11 +869,6 @@
         let newQuantity = currentQuantity + delta;
         // Kiểm tra số lượng tồn kho trước khi thay đổi
         const stockQuantity = parseInt(quantityInput.getAttribute('data-stock-quantity')); // Lấy số lượng tồn kho
-
-        // Lấy ID hóa đơn từ URL
-        const pathParts = window.location.pathname.split('/');
-        const hoaDonId = pathParts[pathParts.length - 1]; // Giả sử ID hóa đơn là phần cuối cùng của URL
-
 
         if (newQuantity < 1) {
             Swal.fire({
@@ -871,8 +921,20 @@
                     });
                     quantityInput.value = currentQuantity; // Khôi phục lại giá trị cũ
                 } else {
-                    // Redirect về trang chi tiết hóa đơn
-                    window.location.href = `/admin/taiquay/detail/${hoaDonId}`;
+                    // Cập nhật giá trị hiện tại
+                    quantityInput.setAttribute('data-current-quantity', newQuantity);
+                    // Cập nhật tổng tiền
+                    document.querySelector('.total').textContent = data.tongTien + ' vnđ';
+                    // Cập nhật các dòng khác trong bảng
+                    data.listHDCT.forEach(hdct => {
+                        const row = document.querySelector(`tr:has(input[id='quantity-${hdct.id}'])`);
+                        if (row) {
+                            const tongTienCell = row.querySelector('td:nth-child(5)');
+                            if (tongTienCell) {
+                                tongTienCell.textContent = hdct.tongTien + 'đ';
+                            }
+                        }
+                    });
                 }
             })
             .catch(error => {

@@ -52,7 +52,7 @@ $(document).ready(function () {
         const $invoiceItem = $(this).closest('.invoice-item');
         const invoiceId = $invoiceItem.data('id');
 
-        if (invoiceId) {
+        if (invoiceId !== undefined) {
             Swal.fire({
                 title: 'Xác Nhận Hủy Hóa Đơn',
                 text: 'Bạn có chắc chắn muốn hủy hóa đơn này?',
@@ -74,8 +74,7 @@ $(document).ready(function () {
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             }).then(() => {
-                                $invoiceItem.remove();
-                                // window.location.href = "/admin/taiquay";
+                                window.location.href = "/admin/taiquay";
                             });
                         },
                         error: function (xhr) {
