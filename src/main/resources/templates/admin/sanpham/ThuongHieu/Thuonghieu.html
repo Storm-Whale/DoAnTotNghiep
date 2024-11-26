@@ -17,7 +17,7 @@
 <section class="page-content my-4">
     <div class="row mb-3">
         <div class="col-md-6">
-            <h2>Quản Lý Thương Hiwwuj</h2>
+            <h2>Quản Lý Thương Hiệu</h2>
         </div>
     </div>
     <div class="row mb-4">
@@ -25,11 +25,11 @@
             <form th:action="@{/admin/thuong-hieu/add}" th:object="${thuongHieu}" method="post" class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label">Tên Thương Hiệu</label>
-                    <input type="text" class="form-control"  th:field="*{TenThuongHieu}" placeholder="Nhập tên thương hiệu">
+                    <input type="text" class="form-control"  th:field="*{tenThuongHieu}" placeholder="Nhập tên thương hiệu">
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-plus"></i> Thêm Thuong Hiệu
+                        <i class="fas fa-plus"></i> Thêm Thương Hiệu
                     </button>
                 </div>
             </form>
@@ -40,7 +40,7 @@
         <thead class="table-dark">
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">Tên Thuong Hiệu</th>
+            <th scope="col">Tên Thương Hiệu</th>
             <th scope="col">Trạng Thái</th>
             <th scope="col">Ngày Tạo</th>
             <th scope="col">Hành Động</th>
@@ -122,7 +122,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="ten" class="form-label">Tên Thuong Hiệu</label>
+                        <label for="ten" class="form-label">Tên Thương Hiệu</label>
                         <input type="text" class="form-control" id="ten" th:field="*{tenThuongHieu}" placeholder="Nhập tên thuong hiệu">
                     </div>
                 </div>

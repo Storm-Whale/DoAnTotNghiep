@@ -36,6 +36,8 @@ public class SanPhamServiceImpl implements SanPhamService {
     private final SanPhamRepository sanPhamRepository;
     private final ThuongHieuRepository thuongHieuRepository;
     private final ChatLieuRepository chatLieuRepository;
+    private final MauSacRepository mauSacRepository;
+    private final KichCoRepository kichCoRepository;
     private final KieuTayAoRepository kieuTayAoRepository;
     private final KieuCoAoRepository kieuCoAoRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
@@ -340,5 +342,20 @@ public class SanPhamServiceImpl implements SanPhamService {
                 e.printStackTrace();
             }
         }
+    }
+    @Override
+    public List<SanPhamResponse> getSanPhamByThuongHieuId(Integer id) {
+        List<SanPham> sanPhams = sanPhamRepository.findByIdThuongHieu(id);
+        return sanPhams.stream()
+                .map(sanPhamMapper::toSanPhamResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SanPhamResponse> getSanPhamByChatLieuId(Integer id) {
+        List<SanPham> sanPhams = sanPhamRepository.findByIdChatLieu(id);
+        return sanPhams.stream()
+                .map(sanPhamMapper::toSanPhamResponse)
+                .collect(Collectors.toList());
     }
 }

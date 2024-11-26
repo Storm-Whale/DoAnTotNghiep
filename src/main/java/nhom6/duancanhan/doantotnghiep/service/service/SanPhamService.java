@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
+import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietResponse;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamShowOnClient;
@@ -38,4 +39,8 @@ public interface SanPhamService {
     List<SanPhamShowOnClient> searchSanPham(String tenThuongHieu, String tenChatLieu, String tenTayAo, String tenCoAo, String sort);
 
     boolean existTenSanPham(String tenSanPham);
+
+    List<SanPhamResponse> getSanPhamByThuongHieuId(Integer id);
+
+    List<SanPhamResponse> getSanPhamByChatLieuId(Integer id);
 }

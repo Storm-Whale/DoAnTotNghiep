@@ -18,11 +18,6 @@
         <div class="col-md-6">
             <h2>Chi Tiết Chất Liệu</h2>
         </div>
-        <div class="col-md-6 text-end">
-            <a href="/admin/chatlieu" class="btn btn-primary">
-                <i class="fas fa-arrow-left"></i> Quay lại
-            </a>
-        </div>
     </div>
 
     <div class="row mb-4">
@@ -33,29 +28,90 @@
                 </div>
                 <div class="card-body">
 
-                    <form th:action="@{'/admin/chatlieu/update/' + ${chatLieu.id}}" method="post" class="d-inline-block">
+                    <form class="d-inline-block w-100">
 
                         <input type="hidden" name="_method" value="put">
 
-                        <div class="mb-3">
-                            <label for="tenChatLieu" class="form-label">Tên Chất Liệu:</label>
-                            <input type="text" id="tenChatLieu" name="tenChatLieu" class="form-control"
-                                   th:value="${chatLieu.tenChatLieu}" required>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id" class="form-label">ID:</label>
+                                <input type="text" id="id" name="id" class="form-control" th:value="${chatLieu.id}"
+                                       readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="trangThai" class="form-label">Trạng Thái:</label>
+                                <input type="text" id="trangThai" name="trangThai" class="form-control"
+                                       th:value="${chatLieu.trangThai == 0 ? 'Hoạt động' : 'Ngừng hoạt động'}" readonly>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="id" class="form-label">ID:</label>
-                            <input type="text" id="id" name="id" class="form-control" th:value="${chatLieu.id}" readonly>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="tenChatLieu" class="form-label">Tên Chất Liệu:</label>
+                                <input type="text" id="tenChatLieu" name="tenChatLieu" class="form-control"
+                                       th:value="${chatLieu.tenChatLieu}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ngayTao" class="form-label">Ngày Tạo:</label>
+                                <input type="text" id="ngayTao" name="ngayTao" class="form-control"
+                                       th:value="${chatLieu.ngayTao}" readonly>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="trangThai" class="form-label">Trạng Thái:</label>
-                            <input type="text" id="trangThai" name="trangThai" class="form-control"
-                                   th:value="${chatLieu.trangThai}" readonly>
+
+                        <div class="row">
+                            <div class="col text-end">
+                                <a href="/admin/chatlieu" class="btn btn-warning">
+                                    <i class="fas fa-arrow-left"></i> Back
+                                </a>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-warning btn-sm">
-                            <i class="fas fa-edit"></i> Cập nhật
-                        </button>
+
                     </form>
+
                 </div>
+            </div>
+            <div>
+                <h5 class="mb-3" style="text-align: center ; margin-top: 10px">Danh sách chất liệu</h5>
+                <table class="table table-bordered table-hover text-center">
+                    <thead class="table-dark">
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Tên Chất Liệu</th>
+                        <th scope="col">Tên Sản Phẩm</th>
+                        <th scope="col">Trạng Thái</th>
+                        <th scope="col">Ngày Tạo</th>
+                        <th scope="col">Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="chatLieu : ${chatLieu}">
+                        <th:block th:each="sanPham, index : ${sanPhams}" th:if="${sanPham.tenChatLieu == chatLieu.tenChatLieu}">
+                            <tr>
+                                <td th:text="${index.index + 1}"></td>
+                                <td th:text="${chatLieu.tenChatLieu}"></td>
+                                <td>
+                                    <span th:text="${sanPham.tenSanPham}"></span>
+                                </td>
+                                <td th:text="${chatLieu.trangThai == 0 ? 'Hoạt động' : 'Ngừng hoạt động'}"></td>
+                                <td th:text="${chatLieu.ngayTao}"></td>
+                                <td>
+                                    <form class="d-inline-block">
+                                        <a class="btn btn-warning btn-sm" th:href="@{'/admin/chatlieu/edit/' + ${chatLieu.id}}">
+                                            <i class="fas fa-info-circle"></i> Update
+                                        </a>
+                                    </form>
+                                    <form class="d-inline-block" th:action="@{'/admin/chatlieu/updatett/' + ${chatLieu.id}}" method="post">
+                                        <input type="hidden" name="_method" value=""/>
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tạm dừng hoạt động chất liệu này?');">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </th:block>
+                    </th:block>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

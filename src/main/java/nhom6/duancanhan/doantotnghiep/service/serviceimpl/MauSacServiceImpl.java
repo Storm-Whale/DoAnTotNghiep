@@ -43,7 +43,7 @@ public class MauSacServiceImpl implements MauSacService {
     }
 
     @Override
-    public void deleteMauSac(Integer id) {
-        mauSacRepository.deleteById(id);
+    public void updateMauSacById(Integer id, MauSac mauSac) {
+        mauSacRepository.save(mauSac);
     }
 }

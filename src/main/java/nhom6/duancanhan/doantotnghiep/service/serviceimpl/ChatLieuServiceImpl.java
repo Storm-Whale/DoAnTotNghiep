@@ -57,4 +57,9 @@ public class ChatLieuServiceImpl implements ChatLieuService {
                         chatLieuRepository.findAllTenChatLieu()
                 , "Lỗi khi lấy dữ liêu từ cơ sở dữ liệu");
     }
+
+    @Override
+    public void updateChatLieuById(Integer id, ChatLieu chatLieu) {
+        chatLieuRepository.save(chatLieu);
+    }
 }

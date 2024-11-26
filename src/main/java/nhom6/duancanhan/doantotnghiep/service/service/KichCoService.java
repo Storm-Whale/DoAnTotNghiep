@@ -18,5 +18,5 @@ public interface KichCoService {
 
     void updateKichCo(Integer id, KichCo kichCo);
 
-    void deleteKichCo(Integer id);
+    void updateKichCoById(Integer id, KichCo kichCo);
 }
