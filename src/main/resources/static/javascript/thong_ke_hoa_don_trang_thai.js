@@ -1,78 +1,111 @@
-    const trangThaiLabels = {
-        1: 'Chờ xác nhận',
-        2: 'Đơn hàng đã xác nhận',
-        3: 'Chuẩn bị đơn hàng',
-        4: 'Giao hàng',
-        5: 'Đơn hàng hoàn thành'
-    };
+const trangThaiLabels = {
+    1: 'Chờ xác nhận',
+    2: 'Đơn hàng đã xác nhận',
+    4: 'Giao hàng',
+    5: 'Đơn hàng hoàn thành',
+    6: 'Đơn hàng bị huỷ'
+};
+
+// Define status mapping for cards
+const statusElementIds = {
+    1: 'statusPending',     // Chờ xác nhận
+    2: 'statusConfirmed',   // Đã xác nhận
+    4: 'statusDelivered',   // Giao hàng
+    5: 'statusCompleted',   // Hoàn thành
+    6: 'statusCanceled'     // Đã huỷ
+};
 
 // Khởi tạo biểu đồ
 const ctx = document.getElementById('orderStatusChart').getContext('2d');
 let chart;
 
-// Hiển thị biểu đồ theo khoảng ngày
+// Get all input elements
 const startDateInput = document.getElementById('startDate');
 const endDateInput = document.getElementById('endDate');
-
-startDateInput.addEventListener('input', () => {
-    updateChartByDateRange();
-    clearMonthAndDayInputs();
-});
-
-endDateInput.addEventListener('input', () => {
-    updateChartByDateRange();
-    clearMonthAndDayInputs();
-});
-
-// Hiển thị biểu đồ theo tháng
 const monthInput = document.getElementById('monthInput');
-monthInput.addEventListener('input', () => {
-    updateChartByMonth();
-    clearStartEndDateAndDayInputs();
-});
-
-// Hiển thị biểu đồ theo ngày
 const dayInput = document.getElementById('dayInput');
-dayInput.addEventListener('input', () => {
-    updateChartByDay();
-    clearStartEndDateAndMonthInputs();
-});
+const displayTypeSelect = document.getElementById('displayTypeSelect');
 
-function updateChartByDateRange() {
-    const startDate = startDateInput.value ? new Date(startDateInput.value) : new Date(new Date().getFullYear(), 0, 1);
-    const endDate = endDateInput.value ? new Date(endDateInput.value) : new Date(new Date().getFullYear(), 11, 31);
-
-    const filteredHoaDons = hoa_dons.filter(hoa_don => {
-        const hoaDonDate = new Date(hoa_don.ngaySua[0], hoa_don.ngaySua[1] - 1, hoa_don.ngaySua[2]);
-        return hoaDonDate >= startDate && hoaDonDate <= endDate;
-    });
-
-    updateChart(filteredHoaDons);
+// Calculate total invoices
+function calculateTotalInvoices(filteredHoaDons) {
+    return filteredHoaDons.length;
 }
 
-function updateChartByMonth() {
-    const selectedMonth = monthInput.value;
-    const filteredHoaDons = hoa_dons.filter(hoa_don => {
-        const hoaDonMonth = new Date(hoa_don.ngaySua[0], hoa_don.ngaySua[1] - 1, hoa_don.ngaySua[2]).getMonth();
-        const selectedMonthNum = new Date(selectedMonth).getMonth();
-        return hoaDonMonth === selectedMonthNum;
-    });
+// Get currently filtered invoices
+function getCurrentFilteredHoaDons() {
+    // If a date range is selected
+    if (startDateInput.value || endDateInput.value) {
+        const startDate = startDateInput.value ? new Date(startDateInput.value) : new Date(new Date().getFullYear(), 0, 1);
+        const endDate = endDateInput.value ? new Date(endDateInput.value) : new Date(new Date().getFullYear(), 11, 31);
 
-    updateChart(filteredHoaDons);
+        return hoa_dons.filter(hoa_don => {
+            const hoaDonDate = new Date(hoa_don.ngaySua[0], hoa_don.ngaySua[1] - 1, hoa_don.ngaySua[2]);
+            return hoaDonDate >= startDate && hoaDonDate <= endDate;
+        });
+    }
+
+    // If a month is selected
+    if (monthInput.value) {
+        const selectedMonth = monthInput.value;
+        return hoa_dons.filter(hoa_don => {
+            const hoaDonMonth = new Date(hoa_don.ngaySua[0], hoa_don.ngaySua[1] - 1, hoa_don.ngaySua[2]).getMonth();
+            const selectedMonthNum = new Date(selectedMonth).getMonth();
+            return hoaDonMonth === selectedMonthNum;
+        });
+    }
+
+    // If a day is selected
+    if (dayInput.value) {
+        const selectedDay = new Date(dayInput.value);
+        return hoa_dons.filter(hoa_don => {
+            const hoaDonDate = new Date(hoa_don.ngaySua[0], hoa_don.ngaySua[1] - 1, hoa_don.ngaySua[2]);
+            return hoaDonDate.getDate() === selectedDay.getDate()
+                && hoaDonDate.getMonth() === selectedDay.getMonth()
+                && hoaDonDate.getFullYear() === selectedDay.getFullYear();
+        });
+    }
+
+    // If no filter is applied, return all invoices
+    return hoa_dons;
 }
 
-function updateChartByDay() {
-    const selectedDay = new Date(dayInput.value);
-    const filteredHoaDons = hoa_dons.filter(hoa_don => {
-        const hoaDonDate = new Date(hoa_don.ngaySua[0], hoa_don.ngaySua[1] - 1, hoa_don.ngaySua[2]);
-        return hoaDonDate.getDate() === selectedDay.getDate()
-            && hoaDonDate.getMonth() === selectedDay.getMonth()
-            && hoaDonDate.getFullYear() === selectedDay.getFullYear();
+// Update status cards
+function updateStatusCards(filteredHoaDons) {
+    // Reset all status card values
+    Object.values(statusElementIds).forEach(elementId => {
+        document.getElementById(elementId).textContent = '0';
     });
 
-    updateChart(filteredHoaDons);
+    // Count status occurrences
+    const statusCounts = filteredHoaDons.reduce((counts, hoa_don) => {
+        counts[hoa_don.trangThai] = (counts[hoa_don.trangThai] || 0) + 1;
+        return counts;
+    }, {});
+
+    // Get display type
+    const displayType = displayTypeSelect.value;
+    const totalInvoices = calculateTotalInvoices(filteredHoaDons);
+
+    // Update status cards with counts or percentages
+    Object.entries(statusCounts).forEach(([status, count]) => {
+        const elementId = statusElementIds[status];
+        if (elementId) {
+            const element = document.getElementById(elementId);
+
+            if (displayType === 'number') {
+                element.textContent = count;
+            } else {
+                // Calculate percentage
+                const percentage = totalInvoices > 0
+                    ? ((count / totalInvoices) * 100).toFixed(1)
+                    : 0;
+                element.textContent = `${percentage}%`;
+            }
+        }
+    });
 }
 
+// Update chart function
 function updateChart(filteredHoaDons) {
     if (filteredHoaDons.length === 0) {
         const config = {
@@ -104,13 +137,18 @@ function updateChart(filteredHoaDons) {
         }
         chart = new Chart(ctx, config);
     } else {
+        const displayType = displayTypeSelect.value;
+        const totalInvoices = calculateTotalInvoices(filteredHoaDons);
+
         const trangThaiCounts = filteredHoaDons.reduce((counts, hoa_don) => {
             counts[hoa_don.trangThai] = (counts[hoa_don.trangThai] || 0) + 1;
             return counts;
         }, {});
 
         const labels = Object.keys(trangThaiCounts).map(key => trangThaiLabels[key]);
-        const data = Object.values(trangThaiCounts);
+        const data = displayType === 'number'
+            ? Object.values(trangThaiCounts)
+            : Object.values(trangThaiCounts).map(count => ((count / totalInvoices) * 100).toFixed(1));
 
         const config = {
             type: 'pie',
@@ -144,8 +182,10 @@ function updateChart(filteredHoaDons) {
                     },
                     tooltip: {
                         callbacks: {
-                            label: function(tooltipItem) {
-                                return `${tooltipItem.label}: ${tooltipItem.raw} đơn hàng`;
+                            label: function (tooltipItem) {
+                                return displayType === 'number'
+                                    ? `${tooltipItem.label}: ${tooltipItem.raw} đơn hàng`
+                                    : `${tooltipItem.label}: ${tooltipItem.raw}%`;
                             }
                         }
                     }
@@ -160,6 +200,46 @@ function updateChart(filteredHoaDons) {
     }
 }
 
+// Update functions for different date selections
+function updateChartByDateRange() {
+    const startDate = startDateInput.value ? new Date(startDateInput.value) : new Date(new Date().getFullYear(), 0, 1);
+    const endDate = endDateInput.value ? new Date(endDateInput.value) : new Date(new Date().getFullYear(), 11, 31);
+
+    const filteredHoaDons = hoa_dons.filter(hoa_don => {
+        const hoaDonDate = new Date(hoa_don.ngaySua[0], hoa_don.ngaySua[1] - 1, hoa_don.ngaySua[2]);
+        return hoaDonDate >= startDate && hoaDonDate <= endDate;
+    });
+
+    updateChart(filteredHoaDons);
+    updateStatusCards(filteredHoaDons);
+}
+
+function updateChartByMonth() {
+    const selectedMonth = monthInput.value;
+    const filteredHoaDons = hoa_dons.filter(hoa_don => {
+        const hoaDonMonth = new Date(hoa_don.ngaySua[0], hoa_don.ngaySua[1] - 1, hoa_don.ngaySua[2]).getMonth();
+        const selectedMonthNum = new Date(selectedMonth).getMonth();
+        return hoaDonMonth === selectedMonthNum;
+    });
+
+    updateChart(filteredHoaDons);
+    updateStatusCards(filteredHoaDons);
+}
+
+function updateChartByDay() {
+    const selectedDay = new Date(dayInput.value);
+    const filteredHoaDons = hoa_dons.filter(hoa_don => {
+        const hoaDonDate = new Date(hoa_don.ngaySua[0], hoa_don.ngaySua[1] - 1, hoa_don.ngaySua[2]);
+        return hoaDonDate.getDate() === selectedDay.getDate()
+            && hoaDonDate.getMonth() === selectedDay.getMonth()
+            && hoaDonDate.getFullYear() === selectedDay.getFullYear();
+    });
+
+    updateChart(filteredHoaDons);
+    updateStatusCards(filteredHoaDons);
+}
+
+// Clear input functions
 function clearStartEndDateAndMonthInputs() {
     startDateInput.value = '';
     endDateInput.value = '';
@@ -177,5 +257,35 @@ function clearMonthAndDayInputs() {
     dayInput.value = '';
 }
 
-// Hiển thị biểu đồ trạng thái đơn hàng ngay khi tải trang
+// Event listeners
+startDateInput.addEventListener('input', () => {
+    updateChartByDateRange();
+    clearMonthAndDayInputs();
+});
+
+endDateInput.addEventListener('input', () => {
+    updateChartByDateRange();
+    clearMonthAndDayInputs();
+});
+
+monthInput.addEventListener('input', () => {
+    updateChartByMonth();
+    clearStartEndDateAndDayInputs();
+});
+
+dayInput.addEventListener('input', () => {
+    updateChartByDay();
+    clearStartEndDateAndMonthInputs();
+});
+
+// Event listener for display type change
+displayTypeSelect.addEventListener('change', () => {
+    // Re-update the status cards and chart with the current data
+    const currentFilteredHoaDons = getCurrentFilteredHoaDons();
+    updateStatusCards(currentFilteredHoaDons);
+    updateChart(currentFilteredHoaDons);
+});
+
+// Initial load
 updateChart(hoa_dons);
+updateStatusCards(hoa_dons);

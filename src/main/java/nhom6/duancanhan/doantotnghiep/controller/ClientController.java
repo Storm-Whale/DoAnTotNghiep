@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,11 +62,13 @@ public class ClientController {
             @RequestParam(name = "kieutayao", required = false) String tenKieuTayAo, @RequestParam(name = "sort", required = false) String sort,
             @RequestParam(name = "activeAccordion", required = false) List<String> activeAccordions, HttpSession session, Model model
     ) {
+        if (session.getAttribute("user") == null) {
+            session.setAttribute("loginStatus", false);
+        }
+
         // Kiểm tra trạng thái đăng nhập
-        boolean isLoggedIn = session != null &&
-                session.getAttribute("loginStatus") != null &&
-                (Boolean) session.getAttribute("loginStatus");
-//        session.setAttribute("loginStatus", false);
+        boolean isLoggedIn = session.getAttribute("loginStatus") != null && (Boolean) session.getAttribute("loginStatus");
+
         if (!isLoggedIn) {
             model.addAttribute("user", null);
         } else {
@@ -109,7 +113,7 @@ public class ClientController {
 
     //  TODO: Detail Sản Phẩm Chi Tiết từ ID Sản Phẩm
     @GetMapping("/san_pham_chi_tiet/{id}")
-    private String sanPhamChiTiet(@SessionAttribute(value = "user", required = false) KhachHang khachHang, @PathVariable int id, Model model) {
+    private String sanPhamChiTiet(@SessionAttribute(value = "user", required = false) KhachHang khachHang, @PathVariable(name = "id") int id, Model model) {
         // Retrieve product details by ID
         List<SanPhamChiTiet> sanPhamChiTietList = sanPhamChiTietRepository.findBySanPhamIdAndTrangThai(id, 1);
 
@@ -166,15 +170,6 @@ public class ClientController {
 
         // Get product information and first image
         SanPhamShowOnClient sanPhamShowOnClient = sanPhamService.getSanPhamShowOnClientById(id);
-        AnhSanPhamResponse firstImage = detailImageList.stream().findFirst().orElse(null);
-
-        // Set image URL for the first image
-        if (firstImage != null) {
-            firstImage.setAnhUrl(sanPhamShowOnClient.getSanPhamResponse().getAnhUrl());
-            if (!detailImageList.contains(firstImage)) {
-                detailImageList.add(firstImage);
-            }
-        }
 
         // Add information to the model
         model.addAttribute("giaBanDau", productDetailRequests.isEmpty() ? null : productDetailRequests.get(0).getGia());
@@ -195,7 +190,6 @@ public class ClientController {
         model.addAttribute("mauSacToAnhDaiDienMap", sortedColorToImageMap);
         model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
         model.addAttribute("sp_random", sanPhamService.getAllSanPhamShowOnClient("get-random"));
-        model.addAttribute("firstImageUrl", firstImage != null ? firstImage.getAnhUrl() : "img/default-image.jpg");
         return "/client/chitiet";
     }
 
@@ -203,17 +197,25 @@ public class ClientController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/add_sp_vao_gio_hang/{idSP}")
     private void addSpVaoGioHang(
-            @SessionAttribute(value = "user") KhachHang khachHang, @PathVariable(name = "idSP") int idSP,
-            @RequestParam(name = "soluong") Integer soluong, @RequestParam(name = "mausac") Integer idMauSac,
-            @RequestParam(name = "kichco") Integer idKichCo, HttpServletRequest httpServletRequest, Model model
-    ) {
+            HttpSession session, @PathVariable(name = "idSP") int idSP, @RequestParam(name = "soluong") Integer soluong,
+            @RequestParam(name = "mausac") Integer idMauSac, @RequestParam(name = "kichco") Integer idKichCo, HttpServletResponse response
+    ) throws IOException {
+        KhachHang khachHang = (KhachHang) session.getAttribute("user");
+        if (khachHang == null) {
+            response.sendRedirect("/login/login-client");
+            return;
+        }
         Integer idGioHang = gioHangRepository.findByKhachHangId(khachHang.getId()).getId();
         addSPGH(khachHang.getId(), idGioHang, idSP, idKichCo, idMauSac, soluong);
     }
 
     //  TODO: Giỏ Hàng Sản Phẩm Chi Tiết Muốn Mua
     @GetMapping("/gio-hang")
-    public String gioHang(@SessionAttribute(value = "user") KhachHang khachHang, Model model) {
+    public String gioHang(HttpSession session, Model model) {
+        KhachHang khachHang = (KhachHang) session.getAttribute("user");
+        if (khachHang == null) {
+            return "redirect:/login/login-client";
+        }
         GioHang gioHang = gioHangRepository.findByKhachHangId(khachHang.getId());
 
         List<Integer> listIDSPGH = new ArrayList<>();
@@ -253,18 +255,22 @@ public class ClientController {
     //  TODO : Gio-Hang Post & Mua And Buy Quickly
     @PostMapping("/gio-hang")
     private String gioHangPost(
-            @SessionAttribute(value = "user") KhachHang khachHang, @RequestParam(name = "buyNow", required = false) String buyNow,
+            HttpSession session, @RequestParam(name = "buyNow", required = false) String buyNow,
             @RequestParam(name = "idSP", required = false) Integer idSP, @RequestParam(name = "mausac", required = false) Integer idMauSac,
             @RequestParam(name = "kichco", required = false) Integer idKichCo, @RequestParam(name = "soluong", required = false) Integer soluong,
             Model model
     ) {
         try {
+            KhachHang khachHang = (KhachHang) session.getAttribute("user");
+            if (khachHang == null) {
+                return "redirect:/login/login-client";
+            }
             GioHang gioHang = gioHangRepository.findByKhachHangId(khachHang.getId());
             //  What For : Chức năng mua nhanh
             if (buyNow != null && !buyNow.isEmpty()) {
                 SanPhamGioHang sanPhamGioHang = addSPGH(khachHang.getId(), gioHang.getId(), idSP, idKichCo, idMauSac, soluong);
             }
-            return gioHang(khachHang, model);
+            return gioHang(session, model);
         } catch (Exception e) {
             e.printStackTrace();
             return e.getMessage();
@@ -274,7 +280,12 @@ public class ClientController {
     //  TODO: Check-Out Sản Phẩm Chi Tiết
     @PostMapping(value = "/check-out")
     @ResponseStatus(HttpStatus.OK)
-    private String checkOut(@SessionAttribute(value = "user") KhachHang khachHang, @RequestParam("productIds") List<Integer> listIDSPGHJson, Model model) {
+    private String checkOut(HttpSession session, @RequestParam("productIds") List<Integer> listIDSPGHJson, Model model) {
+        KhachHang khachHang = (KhachHang) session.getAttribute("user");
+        if (khachHang == null) {
+            return "redirect:/login/login-client";
+        }
+
         List<SanPhamGioHangCustom> sanPhamGioHangCustomList = new ArrayList<>();
         List<Integer> listIDSPGH = new ArrayList<>();
         GioHang gioHang = gioHangRepository.findByKhachHangId(khachHang.getId());
@@ -301,7 +312,7 @@ public class ClientController {
         //  What For : Calculate shipping fee as 10% of the total amount
         BigDecimal phiShip = BigDecimal.valueOf(10000);
 
-        List<DiaChi> diaChiList = diaChiService.getDiaChiByIdKhachHang(khachHang.getId());
+        List<DiaChi> diaChiList = diaChiService.getDiaChiByIdKhachHang(khachHang.getId(), 1);
         List<PhieuGiamGiaResponse> phieuGiamGiaResponseList = phieuGiamGiaService.getPGGByTrangThai(1);
         if (!phieuGiamGiaResponseList.isEmpty()) {
             try {
@@ -343,7 +354,8 @@ public class ClientController {
             // Parse listIDSPGH
             List<Integer> listIDSPGH;
             try {
-                listIDSPGH = new ObjectMapper().readValue(listIDSPGHString, new TypeReference<List<Integer>>() {});
+                listIDSPGH = new ObjectMapper().readValue(listIDSPGHString, new TypeReference<>() {
+                });
                 log.info("Product IDs to process: {}", listIDSPGH);
             } catch (JsonProcessingException e) {
                 log.error("Error parsing product IDs: {}", e.getMessage());
@@ -369,6 +381,12 @@ public class ClientController {
             PhieuGiamGia phieuGiamGia = null;
             if (StringUtils.hasText(maPGG)) {
                 phieuGiamGia = phieuGiamGiaService.getByMaPhieuGiamGia(maPGG);
+                int sl_pgg = phieuGiamGia.getSoLuong();
+                phieuGiamGia.setSoLuong(sl_pgg - 1);
+                if (phieuGiamGia.getSoLuong() == 0) {
+                    phieuGiamGia.setTrangThai(0);
+                }
+                phieuGiamGiaService.update(phieuGiamGia.getId(), phieuGiamGia);
             }
 
             // Create order
@@ -458,7 +476,11 @@ public class ClientController {
 
     // TODO : Thêm endpoint xử lý callback từ VNPay
     @GetMapping("/vnpay-payment")
-    public String vnPayCallback(@RequestParam Map<String, String> queryParams, Model model) {
+    public String vnPayCallback(HttpSession session, @RequestParam Map<String, String> queryParams, Model model) {
+        KhachHang khachHang = (KhachHang) session.getAttribute("user");
+        if (khachHang == null) {
+            return "redirect:/login/login-client";
+        }
         try {
             String vnp_ResponseCode = queryParams.get("vnp_ResponseCode");
             String vnp_TxnRef = queryParams.get("vnp_TxnRef"); // Mã đơn hàng
@@ -483,14 +505,22 @@ public class ClientController {
 
     //    TODO : Thông Tin Khách Hàng
     @GetMapping(value = "/showInfoCustomer")
-    private String showInfoKhachHang(@SessionAttribute(value = "user") KhachHang khachHang, Model model) {
+    private String showInfoKhachHang(HttpSession session, Model model) {
+        KhachHang khachHang = (KhachHang) session.getAttribute("user");
+        if (khachHang == null) {
+            return "redirect:/login/login-client";
+        }
         model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
         return "/client/customer/ThongTinKhachHang";
     }
 
     //    TODO : Thông Tin Address
     @GetMapping(value = "/showInfoAddress")
-    private String showInfoAddress(@SessionAttribute(value = "user") KhachHang khachHang, Model model) {
+    private String showInfoAddress(HttpSession session, Model model) {
+        KhachHang khachHang = (KhachHang) session.getAttribute("user");
+        if (khachHang == null) {
+            return "redirect:/login/login-client";
+        }
         model.addAttribute("diachi", diaChiService.getDiaChiByIdKhachHang(khachHang.getId(), 1));
         model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
         return "/client/customer/ThongTinDiaChi";
@@ -498,7 +528,11 @@ public class ClientController {
 
     //    TODO : Thông Tin Hóa Đơn
     @GetMapping(value = "/showInfoBill")
-    private String showInfoBill(@SessionAttribute(value = "user") KhachHang khachHang, Model model) {
+    private String showInfoBill(HttpSession session, Model model) {
+        KhachHang khachHang = (KhachHang) session.getAttribute("user");
+        if (khachHang == null) {
+            return "redirect:/login/login-client";
+        }
         List<HoaDon> hoaDons = hoaDonRepository.findHoaDonByKhachHangId(khachHang.getId());
         model.addAttribute("hoaDons", hoaDons);
         model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
@@ -507,9 +541,11 @@ public class ClientController {
 
     //    TODO : Thông Tin Hóa Đơn
     @GetMapping(value = "/showInfoBill/type/{type}")
-    private String showInfoBill(
-            @SessionAttribute(value = "user") KhachHang khachHang, Model model, @PathVariable(name = "type") Integer type
-    ) {
+    private String showInfoBill(HttpSession session, Model model, @PathVariable(name = "type") Integer type) {
+        KhachHang khachHang = (KhachHang) session.getAttribute("user");
+        if (khachHang == null) {
+            return "redirect:/login/login-client";
+        }
         List<HoaDon> hoaDons = hoaDonRepository.findHoaDonByKhachHangIdAndTrangThai(khachHang.getId(), type);
         model.addAttribute("hoaDons", hoaDons);
         model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));
@@ -519,7 +555,12 @@ public class ClientController {
 
     //    TODO : Thông Tin Chi Tiết Hóa Đơn
     @GetMapping(value = "/showDetailInfoBill/idHD/{idHD}/loai/{loai}")
-    private String showDetailInfoBill(Model model, @PathVariable(name = "idHD") Integer idHD, @PathVariable(name = "loai") Integer loai) {
+    private String showDetailInfoBill(HttpSession session, Model model, @PathVariable(name = "idHD") Integer idHD, @PathVariable(name = "loai") Integer loai) {
+        KhachHang khachHang = (KhachHang) session.getAttribute("user");
+        if (khachHang == null) {
+            return "redirect:/login/login-client";
+        }
+
         HoaDon hoaDon = hoaDonRepository.findById(idHD)
                 .orElseThrow(() -> new DataNotFoundException("Không tìm thấy hóa đơn với id: " + idHD));
         model.addAttribute("sanphams", sanPhamService.getAllSanPhamShowOnClient("get-all"));

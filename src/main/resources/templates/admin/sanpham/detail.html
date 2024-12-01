@@ -28,11 +28,11 @@
                 <div class="row">
                     <div class="col-4">
                         <div class="text-center">
-                            <div th:if="${anhUrl != null}">
-                                <img th:src="@{${anhUrl}}" class="rounded" alt="Không tìm thấy ảnh"
+                            <div th:if="*{anhUrl != null || !anhUrl.isBlank()}">
+                                <img th:src="@{/{anhUrl} (anhUrl = *{anhUrl})}" class="rounded" alt="Không tìm thấy ảnh"
                                      style="border: 2px solid #cccccc; border-radius: 10px; width: 400px; height: 400px;">
                             </div>
-                            <div th:unless="${anhUrl != null}">
+                            <div th:unless="*{anhUrl != null || !anhUrl.isBlank()}">
                                 <h4>Chưa có ảnh</h4>
                             </div>
                         </div>

@@ -20,16 +20,6 @@
             </li>
 
             <li>
-                <a href="">
-                    <svg>
-                        <use xlink:href="#pages"></use>
-                    </svg>
-                    <span>Trang Chủ</span>
-                </a>
-            </li>
-
-
-            <li>
                 <a th:href="@{/admin/taiquay}">
                     <svg>
                         <use xlink:href="#users"></use>
@@ -169,23 +159,51 @@
                 </a>
             </li>
 
-<!--            <li>-->
-<!--                <a href="#!/phieu-giam-gia">-->
-<!--                    <svg>-->
-<!--                        <use xlink:href="#options"></use>-->
-<!--                    </svg>-->
-<!--                    <span>Giam Gia</span>-->
-<!--                </a>-->
-<!--            </li>-->
+            <li class="nav-item">
+                <a href="#" class="nav-link nav-toggle"> <i data-feather="users"></i>
+                    <svg>
+                        <use xlink:href="#options"></use>
+                    </svg>
+                    <span class="title">Thống kê</span>
+                    <span class="arrow"></span>
+                </a>
 
-<!--            <li>-->
-<!--                <a href="#0">-->
-<!--                    <svg>-->
-<!--                        <use xlink:href="#charts"></use>-->
-<!--                    </svg>-->
-<!--                    <span>Giao Hang</span>-->
-<!--                </a>-->
-<!--            </li>-->
+                <ul class="sub-menu">
+                    <li class="nav-item">
+                        <a th:href="@{/admin/thong-ke/thong_ke_doanh_thu_thong_hoa_don}" class="nav-link">
+                            <svg><use xlink:href="#option1"></use></svg>
+                            <span class="title">Thông kê hoá đơn và doanh thu</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="sub-menu">
+                    <li class="nav-item">
+                        <a th:href="@{/admin/thong-ke/thong_ke_trang_thai_hoa_don}" class="nav-link">
+                            <svg><use xlink:href="#option1"></use></svg>
+                            <span class="title">Thống kê trạng thái hoá đơn</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="sub-menu">
+                    <li class="nav-item">
+                        <a th:href="@{/admin/thong-ke/thong_ke_khach_hang}" class="nav-link">
+                            <svg><use xlink:href="#option1"></use></svg>
+                            <span class="title">Thông kê khách hàng</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="sub-menu">
+                    <li class="nav-item">
+                        <a th:href="@{/admin/thong-ke/thong_ke_san_pham}" class="nav-link">
+                            <svg><use xlink:href="#option1"></use></svg>
+                            <span class="title">Thông kê sản phẩm</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
             <li>
                 <div class="switch">

@@ -49,15 +49,16 @@
                     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
                        id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                         <img id="userAvatar"
-                             th:src="@{/{anhUrl}(anhUrl=${session.user.anhUrl})}"
-                             alt="User Avatar" width="40" height="40" class="rounded-circle" style="object-fit: cover">
+                             th:src="@{/{anhUrl}(anhUrl=${user.anhUrl})}"
+                             alt="User Avatar" width="40" height="40" class="rounded-circle"
+                             style="object-fit: cover">
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
                         <li><a class="dropdown-item" th:href="@{/client/showInfoCustomer}">Tài Khoản Của Tôi</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" th:href="@{/login/logout}">Đăng Xuất</a></li>
+                        <li><a class="dropdown-item" onclick="logout()">Đăng Xuất</a></li>
                     </ul>
                 </div>
 
@@ -65,7 +66,7 @@
                 <div class="dropdown text-end" th:unless="${session.loginStatus == true}">
                     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
                        id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img th:src="@{/nguoidung.png}"
+                        <img src="/nguoidung.png"
                              alt="Default Avatar" width="40" height="40" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2">

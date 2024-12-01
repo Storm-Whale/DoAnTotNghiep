@@ -6,38 +6,109 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .info-card {
+            border: 1px solid #000000; /* Border color */
+            border-radius: 0.5rem; /* Rounded corners */
+            background-color: #f8f9fa; /* Light background color */
+            text-align: center; /* Center text */
+            margin-right: 1rem; /* Space between cards */
+            flex: 1; /* Allow cards to grow */
+        }
+        .info-card h5 {
+            margin-bottom: 0.5rem; /* Space below the heading */
+        }
+        .info-card p {
+            font-size: 1.5rem; /* Larger font for the value */
+            font-weight: bold; /* Bold font for emphasis */
+            color: #007bff; /* Color for the value */
+        }
+        .card-container {
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space out cards */
+            flex-wrap: wrap; /* Allow wrapping to next line if needed */
+        }
+    </style>
 </head>
 <body class="container-fluid">
 <article th:replace="~{admin/fragments/article :: article}"></article>
 <header th:replace="~{admin/fragments/header :: header}"></header>
 <nav th:replace="~{admin/fragments/nav :: nav}"></nav>
 <section class="page-content">
-    <div class="container">
-        <!-- Input for selecting date range -->
-        <div class="mb-3">
-            <label for="startDate" class="form-label">Từ ngày:</label>
-            <input type="date" class="form-control" id="startDate">
-        </div>
-        <div class="mb-3">
-            <label for="endDate" class="form-label">Đến ngày:</label>
-            <input type="date" class="form-control" id="endDate">
+    <div class="container card mt-2">
+        <h1 class="text-center mt-3">
+            Thống kê trạng thái hoá đơn
+        </h1>
+        <div class="card-container mt-3">
+            <!-- Invoice Status: Canceled -->
+            <div class="info-card">
+                <h5>Đã hủy:</h5>
+                <p id="statusCanceled">0</p>
+            </div>
+            <!-- Invoice Status: Pending Confirmation -->
+            <div class="info-card">
+                <h5>Chờ xác nhận:</h5>
+                <p id="statusPending">0</p>
+            </div>
+            <!-- Invoice Status: Confirmed -->
+            <div class="info-card">
+                <h5>Đã xác nhận:</h5>
+                <p id="statusConfirmed">0</p>
+            </div>
+            <!-- Invoice Status: Delivered -->
+            <div class="info-card">
+                <h5>Giao hàng:</h5>
+                <p id="statusDelivered">0</p>
+            </div>
+            <!-- Invoice Status: Completed -->
+            <div class="info-card">
+                <h5>Hoàn thành:</h5>
+                <p id="statusCompleted">0</p>
+            </div>
         </div>
 
-        <!-- Month input for selecting a specific month -->
-        <div class="mb-3">
-            <label for="monthInput" class="form-label">Chọn tháng:</label>
-            <input type="month" class="form-control" id="monthInput">
-        </div>
+        <div class="row mt-3">
+            <div class="col-4">
+                <!-- Thêm select để chọn hiển thị số lượng hoặc phần trăm -->
+                <div class="mb-3">
+                    <label for="displayTypeSelect" class="form-label" style="font-size: 16px">Hiển thị:</label>
+                    <select id="displayTypeSelect" class="form-control" style="font-size: 16px">
+                        <option value="number" selected>Số lượng</option>
+                        <option value="percentage">Phần trăm</option>
+                    </select>
+                </div>
 
-        <!-- Date input for selecting a specific day -->
-        <div class="mb-3">
-            <label for="dayInput" class="form-label">Chọn ngày:</label>
-            <input type="date" class="form-control" id="dayInput">
-        </div>
+                <!-- Input for selecting date range -->
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label for="startDate" class="form-label" style="font-size: 16px">Từ ngày:</label>
+                        <input type="date" class="form-control" id="startDate">
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label for="endDate" class="form-label" style="font-size: 16px">Đến ngày:</label>
+                        <input type="date" class="form-control" id="endDate">
+                    </div>
+                </div>
 
-        <!-- Chart display area -->
-        <div style="width: 50%; margin: auto;">
-            <canvas id="orderStatusChart"></canvas>
+                <!-- Date input for selecting a specific day -->
+                <div class="mb-3">
+                    <label for="dayInput" class="form-label" style="font-size: 16px">Chọn ngày:</label>
+                    <input type="date" class="form-control" id="dayInput">
+                </div>
+
+                <!-- Month input for selecting a specific month -->
+                <div class="mb-3">
+                    <label for="monthInput" class="form-label" style="font-size: 16px">Chọn tháng:</label>
+                    <input type="month" class="form-control" id="monthInput">
+                </div>
+            </div>
+
+            <div class="col-8 mb-4">
+                <!-- Chart display area -->
+                <div style="width: 60%; margin: auto;">
+                    <canvas id="orderStatusChart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 </section>

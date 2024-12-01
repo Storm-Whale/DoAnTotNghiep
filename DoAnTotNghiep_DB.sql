@@ -321,3 +321,7 @@ FOREIGN KEY (id_hoa_don) REFERENCES hoa_don(id)
 ON DELETE CASCADE;
 
 ALTER TABLE san_pham ADD qr_code_url VARCHAR(255);
+
+alter table dia_chi
+    add trang_thai int
+go
