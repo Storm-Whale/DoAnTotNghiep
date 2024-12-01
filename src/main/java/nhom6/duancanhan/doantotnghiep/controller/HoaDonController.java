@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
@@ -16,7 +17,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.IOException;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,6 +59,8 @@ public class HoaDonController {
         model.addAttribute("totalItems", page.getTotalElements());
         return "/admin/customer/hoadon";
     }
+
+
 
     @GetMapping("/detail/{id}")
     public String showDetail(@PathVariable Integer id, Model model) {
@@ -187,31 +198,207 @@ public class HoaDonController {
 //        model.addAttribute("totalItems", page.getTotalElements());
 //        return "/admin/customer/hoadon";
 //    }
-@GetMapping("/search")
-public String timKiem(
-        @RequestParam("keyword") String keyword,
+//@GetMapping("/search")
+//public String timKiem(
+//        @RequestParam("keyword") String keyword,
+//        @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
+//        @RequestParam(value = "pageSize", defaultValue = "7") int pageSize,
+//        Model model) {
+//
+//    // Tìm kiếm với các tham số đã cung cấp
+//    Page<HoaDon> page = hoaDonService.timKiem(keyword, pageNo, pageSize);
+//    List<HoaDon> listHD = page.getContent();
+//
+//    // Thêm các đối tượng cần thiết vào model để hiển thị
+//    model.addAttribute("hoaDon", new HoaDon());
+//    model.addAttribute("listHD", listHD);
+//    model.addAttribute("keyword", keyword);
+//    model.addAttribute("currentPage", pageNo);
+//    model.addAttribute("totalPages", page.getTotalPages());
+//    model.addAttribute("totalItems", page.getTotalElements());
+//
+//    // Trả về trang cần hiển thị
+//    return "/admin/customer/hoadon";
+//}
+
+
+//    @GetMapping("/filter")
+//    public String getFilteredHoaDon(@RequestParam(name = "status", required = false) String status, Model model) {
+//        List<HoaDon> listHD;
+//
+//        if (status == null || status.equals("all")) {
+//            listHD = hoaDonService.getAll();
+//        } else {
+//            int trangThai = Integer.parseInt(status);
+//            listHD = hoaDonService.getHoaDonByTrangThai(trangThai);
+//        }
+//
+//        model.addAttribute("listHD", listHD);
+//        model.addAttribute("status", status);
+//        return "hoa-don"; // Tên file HTML
+//    }
+@GetMapping("/filter")
+public String getFilteredHoaDon(
+        @RequestParam(name = "status", required = false, defaultValue = "all") String status,
         @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
-        @RequestParam(value = "pageSize", defaultValue = "7") int pageSize,
+        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
         Model model) {
 
-    // Tìm kiếm với các tham số đã cung cấp
-    Page<HoaDon> page = hoaDonService.timKiem(keyword, pageNo, pageSize);
+    // Lấy dữ liệu từ service với phân trang
+    Page<HoaDon> page = hoaDonService.findHoaDonByStatus(status, pageNo, pageSize);
     List<HoaDon> listHD = page.getContent();
 
-    // Thêm các đối tượng cần thiết vào model để hiển thị
+    // Thêm các thuộc tính vào model để hiển thị
     model.addAttribute("hoaDon", new HoaDon());
     model.addAttribute("listHD", listHD);
-    model.addAttribute("keyword", keyword);
+    model.addAttribute("status", status);
     model.addAttribute("currentPage", pageNo);
     model.addAttribute("totalPages", page.getTotalPages());
     model.addAttribute("totalItems", page.getTotalElements());
 
-    // Trả về trang cần hiển thị
-    return "/admin/customer/hoadon";
+    return "/admin/customer/hoadon"; // Chỉnh sửa đường dẫn đến trang cần hiển thị
 }
 
+    @GetMapping("/filter/loaiHoaDon")
+    public String getFilteredHoaDonByLoaiHoaDon(
+            @RequestParam(name = "loaiHoaDon", required = false, defaultValue = "all") String loaiHoaDon,
+            @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            Model model) {
+
+        // Lọc theo loại hóa đơn
+        Page<HoaDon> page = hoaDonService.findHoaDonByLoaiHoaDon(loaiHoaDon, pageNo, pageSize);
+        List<HoaDon> listHD = page.getContent();
+
+        // Thêm các thuộc tính vào model
+        model.addAttribute("hoaDon", new HoaDon());
+        model.addAttribute("listHD", listHD);
+        model.addAttribute("loaiHoaDon", loaiHoaDon);
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+
+        return "/admin/customer/hoadon"; // Trang hiển thị hóa đơn
+    }
+
+    @GetMapping("/search")
+    public String searchHoaDon(
+            @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
+            @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            Model model) {
+
+        // Lọc theo từ khóa (tìm kiếm theo số điện thoại hoặc tên khách hàng)
+        Page<HoaDon> page = hoaDonService.searchHoaDon(keyword, pageNo, pageSize);
+        List<HoaDon> listHD = page.getContent();
+
+        // Thêm các thuộc tính vào model
+        model.addAttribute("hoaDon", new HoaDon());
+        model.addAttribute("listHD", listHD);
+        model.addAttribute("keyword", keyword);  // Truyền lại giá trị từ khóa tìm kiếm vào form
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+
+        return "/admin/customer/hoadon"; // Trang hiển thị hóa đơn
+    }
 
 
+    @GetMapping("/export")
+    public void exportHoaDon(HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        String fileName = "Danh_Sach_Hoa_Don.xlsx";
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Hóa Đơn");
+
+            // Tạo header
+            Row header = sheet.createRow(0);
+            header.createCell(0).setCellValue("ID");
+            header.createCell(1).setCellValue("Tên Người Nhận");
+            header.createCell(2).setCellValue("Số Điện Thoại");
+            header.createCell(3).setCellValue("Địa Chỉ");
+            header.createCell(4).setCellValue("Phương Thức Thanh Toán");
+            header.createCell(5).setCellValue("Tổng Tiền");
+            header.createCell(6).setCellValue("Ghi Chú");
+            header.createCell(7).setCellValue("Loại Hóa Đơn");
+            header.createCell(8).setCellValue("Trạng Thái");
+
+            // Thêm dữ liệu
+            List<HoaDon> listHoaDon = hoaDonService.getAll(); // Lấy danh sách hóa đơn
+            int rowIndex = 1;
+            for (HoaDon hoaDon : listHoaDon) {
+                Row row = sheet.createRow(rowIndex++);
+                row.createCell(0).setCellValue(hoaDon.getId());
+                row.createCell(1).setCellValue(hoaDon.getKhachHang() != null ? hoaDon.getKhachHang().getTen() : "Khách Lẻ");
+                row.createCell(2).setCellValue(hoaDon.getDiaChi() != null ? hoaDon.getDiaChi().getSoDienThoai() : "");
+                row.createCell(3).setCellValue(hoaDon.getDiaChi() != null ? hoaDon.getDiaChi().getDiaChiChiTiet() : "");
+                row.createCell(4).setCellValue(hoaDon.getPhuongThucThanhToan() != null ? hoaDon.getPhuongThucThanhToan().getTenPhuongThuc() : "N/A");
+                row.createCell(5).setCellValue(hoaDon.getTongTien() != null ? hoaDon.getTongTien().doubleValue() : 0.0);
+
+                row.createCell(6).setCellValue(hoaDon.getGhiChu() != null ? hoaDon.getGhiChu() : "");
+                row.createCell(7).setCellValue(hoaDon.getLoaiHoaDon() != null ? hoaDon.getLoaiHoaDon() : "");
+                row.createCell(8).setCellValue(getTrangThaiText(hoaDon.getTrangThai())); // Hàm chuyển trạng thái thành text
+            }
+
+            // Ghi dữ liệu ra output stream
+            workbook.write(response.getOutputStream());
+        }
+    }
+
+    private String getTrangThaiText(Integer trangThai) {
+        switch (trangThai) {
+            case 2: return "Chờ Xác Nhận";
+            case 3: return "Đang Chuẩn Bị Hàng";
+            case 4: return "Đang Giao Hàng";
+            case 5: return "Giao Hàng Thành Công";
+            case 6: return "Đã Hủy";
+            default: return "Không Xác Định";
+        }
+    }
+
+    @GetMapping("/exportID/{id}")
+    public void exportHoaDonById(@PathVariable Integer id, HttpServletResponse response) throws IOException {
+        // Set type của file Excel
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        String fileName = "YAGI_SHOP_HD_" + id + ".xlsx";
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+        // Tạo workbook và sheet trong file Excel
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Hóa Đơn");
+
+            // Tạo header
+            Row header = sheet.createRow(0);
+            header.createCell(0).setCellValue("ID");
+            header.createCell(1).setCellValue("Tên Người Nhận");
+            header.createCell(2).setCellValue("Số Điện Thoại");
+            header.createCell(3).setCellValue("Địa Chỉ");
+            header.createCell(4).setCellValue("Phương Thức Thanh Toán");
+            header.createCell(5).setCellValue("Tổng Tiền");
+            header.createCell(6).setCellValue("Ghi Chú");
+            header.createCell(7).setCellValue("Loại Hóa Đơn");
+            header.createCell(8).setCellValue("Trạng Thái");
+
+            // Lấy hóa đơn theo ID
+            HoaDon hoaDon = hoaDonService.findById(id);
+            if (hoaDon != null) {
+                Row row = sheet.createRow(1);
+                row.createCell(0).setCellValue(hoaDon.getId());
+                row.createCell(1).setCellValue(hoaDon.getKhachHang() != null ? hoaDon.getKhachHang().getTen() : "Khách Lẻ");
+                row.createCell(2).setCellValue(hoaDon.getDiaChi() != null ? hoaDon.getDiaChi().getSoDienThoai() : "");
+                row.createCell(3).setCellValue(hoaDon.getDiaChi() != null ? hoaDon.getDiaChi().getDiaChiChiTiet() : "");
+                row.createCell(4).setCellValue(hoaDon.getPhuongThucThanhToan() != null ? hoaDon.getPhuongThucThanhToan().getTenPhuongThuc() : "N/A");
+                row.createCell(5).setCellValue(hoaDon.getTongTien() != null ? hoaDon.getTongTien().doubleValue() : 0.0);
+                row.createCell(6).setCellValue(hoaDon.getGhiChu() != null ? hoaDon.getGhiChu() : "");
+                row.createCell(7).setCellValue(hoaDon.getLoaiHoaDon() != null ? hoaDon.getLoaiHoaDon() : "");
+                row.createCell(8).setCellValue(getTrangThaiText(hoaDon.getTrangThai())); // Hàm chuyển trạng thái thành text
+            }
+
+            // Ghi dữ liệu ra output stream (xuất file)
+            workbook.write(response.getOutputStream());
+        }
+    }
 
 }

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class KhachHangServiceImpl implements KhachHangService {
@@ -53,9 +54,8 @@ public class KhachHangServiceImpl implements KhachHangService {
 
     @Override
     public Page<KhachHang> SearchandPhantrang(String keyword, Integer trangThai, int pageNo, int pageSize) {
-        String keywordSearch = (keyword != null && !keyword.isEmpty()) ? "%" + keyword + "%" : null;
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return khachHangRepository.searchKhachHang(keyword, trangThai, pageable);
+        return khachHangRepository.findByKeywordAndTrangThai(keyword, trangThai, pageable);
     }
 
     @Override
@@ -72,5 +72,11 @@ public class KhachHangServiceImpl implements KhachHangService {
     public KhachHang findBySoDienThoaiKhachHang(String soDienThoai) {
        List<KhachHang> khachHangs = khachHangRepository.findBySoDienThoai(soDienThoai);
         return khachHangs.isEmpty() ? null : khachHangs.get(0);
+    }
+
+    @Override
+    public KhachHang findById(Integer id) {
+        return khachHangRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy khách hàng với ID: " + id));
     }
 }

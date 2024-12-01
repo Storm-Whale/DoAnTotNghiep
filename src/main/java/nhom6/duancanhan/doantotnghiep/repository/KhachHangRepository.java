@@ -12,17 +12,29 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
-    @Query("""
-            select kh from KhachHang kh where (:keyword is null or kh.ten like concat('%', :keyword, '%'))
-                    and (:trangThai is null or kh.trangThai = :trangThai)
-        """)
-    Page<KhachHang> searchKhachHang(
-            @Param("keyword") String keyword, @Param("trangThai") Integer trangThai, Pageable pageable);
+public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
 
-    KhachHang findByTaiKhoanId(int idTaiKhoan);
 
-    List<KhachHang> findBySoDienThoai(String soDienThoai);
+           @Query("SELECT nv FROM KhachHang nv WHERE (:keyword IS NULL OR " +
+                   "LOWER(COALESCE(nv.ten, '')) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+                   "COALESCE(nv.soDienThoai, '') LIKE CONCAT('%', :keyword, '%') OR " +
+                   "LOWER(COALESCE(nv.email, '')) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+                   "AND (:trangThai IS NULL OR nv.trangThai = :trangThai)")
+   Page<KhachHang> searchKhachHang(@Param(("keyword")) String keyword, @Param(("trangThai")) Integer trangThai, Pageable pageable);
 
-    Optional<KhachHang> findByEmail(String email);
+   KhachHang findByTaiKhoanId(int idTaiKhoan);
+
+   List<KhachHang> findBySoDienThoai(String soDienThoai);
+
+   Optional<KhachHang> findByEmail(String email);
+    @Query("SELECT k FROM KhachHang k WHERE "
+            + "(:keyword IS NULL OR k.ten LIKE %:keyword%)  AND "
+            + "(:trangThai IS NULL OR k.trangThai = :trangThai) OR (:keyword IS NULL OR k.soDienThoai LIKE %:keyword%) " +
+            "and (:trangThai IS NULL OR k.trangThai = :trangThai) " +
+            "OR (:keyword IS NULL OR k.email LIKE %:keyword%) " +
+            "and (:trangThai IS NULL OR k.trangThai = :trangThai)")
+    Page<KhachHang> findByKeywordAndTrangThai(
+            @Param("keyword") String keyword,
+            @Param("trangThai") Integer trangThai,
+            Pageable pageable);
 }

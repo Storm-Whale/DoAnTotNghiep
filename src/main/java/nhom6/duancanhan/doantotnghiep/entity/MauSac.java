@@ -3,6 +3,8 @@ package nhom6.duancanhan.doantotnghiep.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -10,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "mau_sac")
-public class MauSac {
+public class MauSac extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -21,5 +23,8 @@ public class MauSac {
 
     @Column(name = "trang_thai")
     private Integer trangThai;
+
+    @OneToMany(mappedBy = "mauSac")
+    private List<SanPhamChiTiet> sanPhamChiTiets;
 
 }

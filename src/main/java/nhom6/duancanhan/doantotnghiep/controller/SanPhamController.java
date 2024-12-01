@@ -278,7 +278,8 @@ public class SanPhamController {
 
     }
 
-    private void addSanPhamModelAttributes(Model model, SanPhamRequest sanPhamRequest) {
+    private void
+    addSanPhamModelAttributes(Model model, SanPhamRequest sanPhamRequest) {
         model.addAttribute("product", sanPhamRequest);
         model.addAttribute("thuongHieus", thuongHieuService.getAll());
         model.addAttribute("chatLieus", chatLieuService.getAll());

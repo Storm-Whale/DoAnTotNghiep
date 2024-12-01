@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.repository;
 
+import nhom6.duancanhan.doantotnghiep.entity.SanPham;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,4 +51,18 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
             @Param("trangThai") Integer trangThai,
             Pageable pageable
     );
+    @Query("SELECT spct FROM SanPhamChiTiet spct " +
+            "JOIN FETCH spct.mauSac ms " +
+            "JOIN FETCH spct.sanPham sp " +
+            "WHERE ms.id = :id")
+    List<SanPhamChiTiet> findByIdMauSac(@Param("id") Integer id);
+
+    @Query("SELECT spct FROM SanPhamChiTiet spct " +
+            "JOIN FETCH spct.kichCo kc " +
+            "JOIN FETCH spct.sanPham sp " +
+            "WHERE kc.id = :id")
+    List<SanPhamChiTiet> findByIdKichCo(@Param("id") Integer id);
+
+
+
 }

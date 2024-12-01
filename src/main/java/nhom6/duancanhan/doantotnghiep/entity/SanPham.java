@@ -23,6 +23,7 @@ public class SanPham extends BaseEntity{
     @JoinColumn(name = "id_thuong_hieu")
     private ThuongHieu thuongHieu;
 
+
     @ManyToOne
     @JoinColumn(name = "id_chat_lieu")
     private ChatLieu chatLieu;

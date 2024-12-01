@@ -3,6 +3,8 @@ package nhom6.duancanhan.doantotnghiep.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -10,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "kich_co")
-public class KichCo {
+public class KichCo extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -22,4 +24,6 @@ public class KichCo {
     @Column(name = "trang_thai")
     private Integer trangThai;
 
+    @OneToMany(mappedBy = "kichCo")
+    private List<SanPhamChiTiet> sanPhamChiTiets;
 }

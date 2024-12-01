@@ -208,3 +208,9 @@ form {
     font-size: 18px;
     color: #8e44ad;
 }
+.error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 5px;
+}
+

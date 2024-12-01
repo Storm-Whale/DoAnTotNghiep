@@ -60,4 +60,12 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
             @Param("tenKieuCoAo") String tenKieuCoAo,
             @Param("tenKieuTayAo") String tenKieuTayAo
     );
+
+    @Query("SELECT s FROM SanPham s WHERE s.thuongHieu.id = :thuongHieuId")
+    List<SanPham> findByIdThuongHieu(@Param("thuongHieuId") Integer thuongHieuId);
+
+
+    @Query("SELECT s FROM SanPham s WHERE s.chatLieu.id = :chatLieuId")
+    List<SanPham> findByIdChatLieu(@Param("chatLieuId") Integer chatLieuId);
+
 }

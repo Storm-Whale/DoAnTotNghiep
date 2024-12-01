@@ -1,6 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
 import jakarta.servlet.http.HttpSession;
+
 import nhom6.duancanhan.doantotnghiep.dto.TaiKhoanDTO;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
@@ -16,8 +17,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-    @Controller
+@Controller
     @RequestMapping("/login")
     public class LoginController {
 
@@ -225,12 +228,45 @@ import java.util.List;
             return "/client/Quenmk"; // Tên file HTML (Thymeleaf) cho trang đặt lại mật khẩu
         }
 
+//        @PostMapping("/reset-password")
+//        public String resetPassword(@RequestParam("code") String resetCode,
+//                                    @RequestParam("newPassword") String newPassword,
+//                                    Model model) {
+//            // Tìm tài khoản dựa trên mã xác nhận
+//            TaiKhoanDTO user = forgotPasswordService.findByResetCode(resetCode);
+//
+//            if (user != null) {
+//                // Nếu mã xác nhận hợp lệ, cập nhật mật khẩu
+//                user.setMat_khau(newPassword); // Cập nhật mật khẩu mới
+//                user.setResetCode(null); // Xóa mã xác nhận sau khi sử dụng
+//                user.setNgaySua(LocalDate.now());
+//                forgotPasswordService.saveTaiKhoan(user); // Lưu thay đổi vào CSDL
+//
+//                model.addAttribute("message", "Mật khẩu đã được đặt lại thành công.");
+//            } else {
+//                model.addAttribute("message", "Mã xác nhận không hợp lệ.");
+//            }
+//
+//            return "/client/Quenmk"; // Trả về trang quên mật khẩu
+//        }
+
         @PostMapping("/reset-password")
         public String resetPassword(@RequestParam("code") String resetCode,
                                     @RequestParam("newPassword") String newPassword,
                                     Model model) {
             // Tìm tài khoản dựa trên mã xác nhận
             TaiKhoanDTO user = forgotPasswordService.findByResetCode(resetCode);
+
+            // Regular expression để kiểm tra mật khẩu
+            String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+            Pattern pattern = Pattern.compile(passwordPattern);
+            Matcher matcher = pattern.matcher(newPassword);
+
+            // Kiểm tra mật khẩu có hợp lệ không
+            if (!matcher.matches()) {
+                model.addAttribute("message", "Mật khẩu không hợp lệ. Mật khẩu phải ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.");
+                return "/client/Quenmk"; // Trả về trang quên mật khẩu nếu mật khẩu không hợp lệ
+            }
 
             if (user != null) {
                 // Nếu mã xác nhận hợp lệ, cập nhật mật khẩu

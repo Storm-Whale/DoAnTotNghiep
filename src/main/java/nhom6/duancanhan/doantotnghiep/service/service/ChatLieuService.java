@@ -21,4 +21,6 @@ public interface ChatLieuService {
     void deleteChatLieu(Integer id);
 
     List<String> getAllTenChatLieu();
+
+    void updateChatLieuById(Integer id, ChatLieu chatLieu);
 }

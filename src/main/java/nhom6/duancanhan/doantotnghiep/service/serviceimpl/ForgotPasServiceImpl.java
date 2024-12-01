@@ -76,7 +76,7 @@ public class ForgotPasServiceImpl implements ForgotPasswordService {
             String logoUrl = "https://scontent.fhan2-3.fna.fbcdn.net/v/t39.30808-6/450538583_122093493734416855_6776650255010347746_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=FT06rq3PoX8Q7kNvgHg7BeL&_nc_zt=23&_nc_ht=scontent.fhan2-3.fna&_nc_gid=A4g5T09cMzam4FhcGpMuY-5&oh=00_AYDL6Y2tYEonuzBcq_4ROJzEj5Oc-BB6DLqHiXsPNQQ2Yw&oe=672CE46E";
 
             String htmlContent = "<div style='text-align: center;'>" +
-                    "<img src='" + logoUrl + "' alt='Logo Công Ty' style='width: 150px; height: auto;'>" +
+
                     "</div>" +
                     "<h1 style='color: #333;'>Xin chào!</h1>" +
                     "<p style='font-size: 16px; color: #555;'>Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của mình.</p>" +

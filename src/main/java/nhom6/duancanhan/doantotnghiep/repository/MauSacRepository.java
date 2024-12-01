@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MauSacRepository extends JpaRepository<MauSac, Integer> {
 
@@ -13,4 +15,6 @@ public interface MauSacRepository extends JpaRepository<MauSac, Integer> {
         select ms.id from MauSac ms where ms.tenMauSac = :tenMauSac
     """)
     Integer findByTenMauSac(@Param("tenMauSac") String tenMauSac);
+
+
 }

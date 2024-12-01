@@ -1,6 +1,8 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
+import nhom6.duancanhan.doantotnghiep.entity.KieuCoAo;
 import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
+import nhom6.duancanhan.doantotnghiep.repository.KieuCoAoRepository;
 import nhom6.duancanhan.doantotnghiep.repository.ThuongHieuRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.ThuongHieuService;
 import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
@@ -16,8 +18,11 @@ import java.util.Optional;
 @Service
 public class ThuongHieuServiceImpl implements ThuongHieuService {
 
-    @Autowired
-    private ThuongHieuRepository thuongHieuRepossitory;
+    private final ThuongHieuRepository thuongHieuRepossitory;
+
+    public ThuongHieuServiceImpl(ThuongHieuRepository thuongHieuRepository) {
+        this.thuongHieuRepossitory = thuongHieuRepository;
+    }
 
     @Override
     public List<ThuongHieu> getAll() {
@@ -46,8 +51,8 @@ public class ThuongHieuServiceImpl implements ThuongHieuService {
     }
 
     @Override
-    public void deleteThuongHieu(Integer id) {
-        thuongHieuRepossitory.deleteById(id);
+    public void updateThuongHieuById(Integer id, ThuongHieu thuongHieu) {
+        thuongHieuRepossitory.save(thuongHieu);
     }
 
     @Override
@@ -57,4 +62,6 @@ public class ThuongHieuServiceImpl implements ThuongHieuService {
                 , "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu"
         );
     }
+
+
 }

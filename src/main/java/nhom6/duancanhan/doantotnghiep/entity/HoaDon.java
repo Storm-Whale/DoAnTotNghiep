@@ -69,4 +69,13 @@ public class HoaDon extends BaseEntity{
     @JsonIgnore
     @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL)
     private List<HoaDonChiTiet> hoaDonChiTietList;
+
+    // Getter và Setter cho hoaDonChiTietList
+    public List<HoaDonChiTiet> getHoaDonChiTietList() {
+        return hoaDonChiTietList;
+    }
+
+    public void setHoaDonChiTietList(List<HoaDonChiTiet> hoaDonChiTietList) {
+        this.hoaDonChiTietList = hoaDonChiTietList;
+    }
 }

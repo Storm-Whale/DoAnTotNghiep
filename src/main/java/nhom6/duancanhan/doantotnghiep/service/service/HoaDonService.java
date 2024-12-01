@@ -31,4 +31,11 @@ public interface HoaDonService {
     public HoaDon findById(Integer id);
 
     List<PhieuGiamGiaHoaDonDTO> getHoaDonByPhieuGiamGia(Integer phieuGiamGiaId);
+
+    List<HoaDon> findByKhachHangId(Integer khachHangId);
+
+    List<HoaDon> findByNhanVienId(Integer nhanVienId);
+    public Page<HoaDon> findHoaDonByStatus(String status, int pageNo, int pageSize);
+    public Page<HoaDon> findHoaDonByLoaiHoaDon(String loaiHoaDon, int pageNo, int pageSize);
+    public Page<HoaDon> searchHoaDon(String keyword, int pageNo, int pageSize);
 }

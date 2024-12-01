@@ -2,7 +2,9 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
+import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.NhanVienRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.NhanVienService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 @Service
 public class NhanVienServiceImpl implements NhanVienService {
@@ -34,9 +37,10 @@ public class NhanVienServiceImpl implements NhanVienService {
     }
 
     @Override
-    public Optional<NhanVien> detail(Integer id) {
-        Optional<NhanVien> nhanVien = nhanVienRepository.findById(id);
-        return Optional.of(nhanVien.get());
+    public NhanVien detailNhanVien(Integer id) {
+        return nhanVienRepository.findById(id).orElseThrow(
+                (() -> new DataNotFoundException("Không tìm thấy khách hàng với id : " + id))
+        );
     }
 
     @Override
@@ -57,11 +61,18 @@ public class NhanVienServiceImpl implements NhanVienService {
     @Override
     public Page<NhanVien> SearchandPhantrang(String keyword, Integer trangThai, int pageNo, int pageSize) {
       Pageable pageable = PageRequest.of(pageNo,pageSize);
-      return nhanVienRepository.searchNhanVien(keyword,trangThai,pageable);
+      return nhanVienRepository.findByKeywordAndTrangThai(keyword,trangThai,pageable);
     }
 
     @Override
     public NhanVien getNhanVienByIdTaiKhoan(Integer idTK) {
         return nhanVienRepository.findByTaiKhoanId(idTK);
     }
+
+    @Override
+    public NhanVien findById(Integer id) {
+        return nhanVienRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy khách hàng với ID: " + id));
+    }
+
 }

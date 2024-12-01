@@ -3,6 +3,7 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietResponse;
+import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.entity.KichCo;
 import nhom6.duancanhan.doantotnghiep.entity.MauSac;
 import nhom6.duancanhan.doantotnghiep.entity.SanPham;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -115,6 +117,7 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
         return  sanPhamChiTietRepository.findAllById(Collections.singleton(id));
     }
 
+
     private void validateSPCTExists(Integer id) {
         if (!sanPhamChiTietRepository.existsById(id)) {
             throw new DataNotFoundException("Không tìm thấy sản phẩm chi tiết với id: " + id);
@@ -162,5 +165,16 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
     private MauSac findMauSacById(Integer id) {
         return mauSacRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Không tìm thấy màu sắc với id: " + id));
+    }
+
+
+    @Override
+    public List<SanPhamChiTiet> getMauSacId(Integer id) {
+        return sanPhamChiTietRepository.findByIdMauSac(id);
+    }
+
+    @Override
+    public List<SanPhamChiTiet> getKichCoId(Integer id) {
+        return sanPhamChiTietRepository.findByIdKichCo(id);
     }
 }

@@ -1,6 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import nhom6.duancanhan.doantotnghiep.entity.KichCo;
+import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
 import nhom6.duancanhan.doantotnghiep.repository.KichCoRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.KichCoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,11 @@ import java.util.Optional;
 @Service
 public class KichCoServiceImpl implements KichCoService {
     @Autowired
-    private KichCoRepository kichCoRepository;
+    private final KichCoRepository kichCoRepository;
+
+    public KichCoServiceImpl(KichCoRepository kichCoRepository) {
+        this.kichCoRepository = kichCoRepository;
+    }
 
     @Override
     public List<KichCo> getAll() {
@@ -44,7 +49,7 @@ public class KichCoServiceImpl implements KichCoService {
     }
 
     @Override
-    public void deleteKichCo(Integer id) {
-        kichCoRepository.deleteById(id);
+    public void updateKichCoById(Integer id, KichCo kichCo) {
+        kichCoRepository.save(kichCo);
     }
 }
