@@ -223,15 +223,113 @@
                         <span class="total"
                               th:text="${#numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT')}"></span> vnđ
                     </div>
+<style>
+    .diaChiCheck {
+        background-color: #f9f9f9; /* Màu nền nhẹ */
+        border: 1px solid #ddd; /* Đường viền nhẹ */
+        border-radius: 8px; /* Bo góc */
+        padding: 20px; /* Khoảng cách bên trong */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+        /*max-width: 400px; !* Chiều rộng tối đa *!*/
+        margin: 20px auto; /* Căn giữa */
+        float: left;
+    }
 
+    .address-label {
+        font-size: 16px; /* Kích thước chữ */
+        font-weight: bold; /* Chữ đậm */
+        margin-bottom: 10px; /* Khoảng cách dưới label */
+        display: block; /* Hiển thị dưới dạng khối */
+    }
+
+    .input-group {
+        display: flex; /* Sử dụng flexbox */
+        align-items: center; /* Căn giữa theo chiều dọc */
+        margin-bottom: 15px; /* Khoảng cách dưới input group */
+    }
+
+    .input-field {
+        flex: 1; /* Chiếm toàn bộ không gian còn lại */
+        padding: 10px; /* Khoảng cách bên trong */
+        border: 1px solid #ccc; /* Đường viền */
+        border-radius: 4px; /* Bo góc */
+        font-size: 14px; /* Kích thước chữ */
+        transition: border-color 0.3s; /* Hiệu ứng chuyển tiếp */
+    }
+
+    .input-field:focus {
+        border-color: #007bff; /* Đổi màu viền khi focus */
+        outline: none; /* Ẩn outline mặc định */
+    }
+
+    .update-button {
+        background-color: #007bff; /* Màu nền nút */
+        color: white; /* Màu chữ */
+        border: none; /* Không có đường viền */
+        border-radius: 4px; /* Bo góc */
+        padding: 10px 15px; /* Khoảng cách bên trong */
+        cursor: pointer; /* Con trỏ chuột */
+        transition: background-color 0.3s; /* Hiệu ứng chuyển tiếp */
+    }
+
+    .update-button:hover {
+        background-color: #0056b3; /* Đổi màu khi hover */
+    }
+
+    .note-section {
+        display: flex; /* Sử dụng flexbox */
+        align-items: center; /* Căn giữa theo chiều dọc */
+    }
+
+    .note-label {
+        font-size: 14px; /* Kích thước chữ */
+        margin-right: 10px; /* Khoảng cách bên phải */
+    }
+
+    .note-input {
+        flex: 1; /* Chiếm toàn bộ không gian còn lại */
+        padding: 10px; /* Khoảng cách bên trong */
+        border: 1px solid #ccc; /* Đường viền */
+        border-radius: 4px; /* Bo góc */
+        font-size: 14px; /* Kích thước chữ */
+        transition: border-color 0.3s; /* Hiệu ứng chuyển tiếp */
+    }
+
+    .note-input:focus {
+        border-color: #007bff; /* Đổi màu viền khi focus */
+        outline: none; /* Ẩn outline mặc định */
+    }
+
+</style>
                     <div class="diaChiCheck">
                         <form id="addressForm" style="display: none;" th:action="@{/admin/taiquay/cap-nhat-hoa-don}" method="post">
-                            <label style="margin: 15px;">Địa chỉ: <span th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></span></label>
-                                    <div class="input-group">
-                                        <input type="hidden" name="idHoaDon" th:value="${hoaDon.id}" />
-                                        <input type="text" id="diaChi" name="diaChi" th:value="${diaChi}" />
-                                        <button type="submit">Cập nhật địa chỉ</button>
-                                    </div>
+<!--                            <label class="address-label">Địa chỉ: <span th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></span></label>-->
+<!--                            <div class="input-group">-->
+<!--                                <input type="hidden" name="idHoaDon" th:value="${hoaDon.id}" />-->
+<!--                                <input type="text" id="diaChi" name="diaChi" th:value="${diaChi}" class="input-field" placeholder="Nhập địa chỉ mới..." />-->
+<!--                                <button type="submit" class="update-button">Cập nhật địa chỉ</button>-->
+<!--                            </div>-->
+<!--                            <div class="note-section">-->
+<!--                                <label class="note-label">Ghi Chú:</label>-->
+<!--                                <input type="text" class="note-input" name="ghiChu" th:value="${ghiChu}" placeholder="Nhập ghi chú..." />-->
+<!--                            </div>-->
+                            <input type="hidden" name="idHoaDon" th:value="${hoaDon.id}" />
+
+                            <label for="diaChi">Địa chỉ:</label>
+                            <input type="text" id="diaChi" name="diaChi" th:value="${hoaDon.diaChi.diaChiChiTiet}" />
+
+                            <label for="soDienThoai1">Số điện thoại:</label>
+                            <input type="text" id="soDienThoai1" name="soDienThoai"
+                                   th:value="${hoaDon.diaChi.soDienThoai}" />
+
+
+                            <label for="tenNguoiNhan">Tên người nhận:</label>
+                            <input type="text" id="tenNguoiNhan" name="tenNguoiNhan" th:value="${hoaDon.diaChi.tenKhachHang}" />
+
+                            <label for="ghiChu">Ghi chú:</label>
+                            <input type="text" id="ghiChu" name="ghiChu" th:value="${hoaDon.ghiChu}">
+
+                            <button type="submit">Cập nhật</button>
                         </form>
                     </div>
                 </div>
@@ -315,46 +413,46 @@
                                    th:value="${maPhieuGiamGia}" readonly/>
                             <button type="button" id="huyPhieuGiamGiaBtn"
                                     class="cancel-button"
-                                    style="background-color: #2c3e50; color: white; margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; ">
+                                    style="width: 100px; background-color: #2c3e50; color: white; margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; ">
                                 Bỏ chọn
                             </button>
                         </form>
-                        <div class="discount-code-container">
-                            <a class="taiquay" th:href="@{/admin/taiquay/phieugiamgia#phieugiamgia}">
-                                <button id="choose" class="discount-code-button"
-                                        style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
-                                    Chọn
-                                </button>
-                            </a>
-                        </div>
+<!--                        <div class="discount-code-container">-->
+<!--                            <a class="taiquay" th:href="@{/admin/taiquay/phieugiamgia#phieugiamgia}">-->
+<!--                                <button id="choose" class="discount-code-button"-->
+<!--                                        style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">-->
+<!--                                    Chọn-->
+<!--                                </button>-->
+<!--                            </a>-->
+<!--                        </div>-->
                     </div>
 
-                    <div id="phieugiamgia" class="dialogmodal">
-                        <div class="modal__center">
-                            <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: form}"></div>
-                            <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: table}"></div>
+<!--                    <div id="phieugiamgia" class="dialogmodal">-->
+<!--                        <div class="modal__center">-->
+<!--                            <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: form}"></div>-->
+<!--                            <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: table}"></div>-->
 
 
-                            <!--                            <a th:href="@{/admin/taiquay/detail/{id}(id=${idHoaDon})}" class="modal__close">&times;</a>-->
-                            <a th:href="@{${idHoaDon != null ? '/admin/taiquay/detail/' + idHoaDon : '/admin/taiquay'}}"
-                               class="modal__close">&times;</a>
-                            <div>
-                                <div class="d-flex align-items-center">
-                                    <label for="itemsPerPage" class="me-2">Xem</label>
-                                    <select class="form-select form-select-sm" id="itemsPerPage" name="size"
-                                            style="width: 80px;"
-                                            onchange="changeItemsPerPage()">
-                                        <option value="5" th:selected="${size == 5}">5</option>
-                                        <option value="10" th:selected="${size == 10}">10</option>
-                                        <option value="15" th:selected="${size == 15}">15</option>
-                                        <option value="20" th:selected="${size == 20}">20</option>
-                                    </select>
-                                </div>
-                                <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: nav}"></div>
-                            </div>
-                            <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: script}"></div>
-                        </div>
-                    </div>
+<!--                            &lt;!&ndash;                            <a th:href="@{/admin/taiquay/detail/{id}(id=${idHoaDon})}" class="modal__close">&times;</a>&ndash;&gt;-->
+<!--                            <a th:href="@{${idHoaDon != null ? '/admin/taiquay/detail/' + idHoaDon : '/admin/taiquay'}}"-->
+<!--                               class="modal__close">&times;</a>-->
+<!--                            <div>-->
+<!--                                <div class="d-flex align-items-center">-->
+<!--                                    <label for="itemsPerPage" class="me-2">Xem</label>-->
+<!--                                    <select class="form-select form-select-sm" id="itemsPerPage" name="size"-->
+<!--                                            style="width: 80px;"-->
+<!--                                            onchange="changeItemsPerPage()">-->
+<!--                                        <option value="5" th:selected="${size == 5}">5</option>-->
+<!--                                        <option value="10" th:selected="${size == 10}">10</option>-->
+<!--                                        <option value="15" th:selected="${size == 15}">15</option>-->
+<!--                                        <option value="20" th:selected="${size == 20}">20</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                                <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: nav}"></div>-->
+<!--                            </div>-->
+<!--                            <div th:replace="~{admin/BanhangTaiQuay/tablePhieuGiamGia :: script}"></div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <!--                    <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="get">-->
                     <!--                        <input type="text" name="maPhieuGiamGia" th:value="${maPhieuGiamGia}"/>-->
                     <!--                        &lt;!&ndash; Sử dụng thuộc tính đúng &ndash;&gt;-->
@@ -375,11 +473,71 @@
                     </p>
                     <p>Tổng tiền sau khi áp dụng mã giảm giá:
                         <span id="totalAfterDiscount"
-                              th:text="${tongTienSauGiam == null || tongTienSauGiam == 0  ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') + ' đ' : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                              th:text="${tongTienSauGiam == null || tongTienSauGiam == 0  ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') + ' đ' : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
                     </p>
                     <div th:if="${error}">
                         <p style="color: red;" th:text="${error}"></p>
                     </div>
+
+                    <form action="/admin/taiquay/thanhtoan" method="get" id="paymentForm" target="pdfWindow"
+                          class="thanhtoan">
+                        <div >
+                            <label style="font-size: 14px;margin-top: 10px;">Khách cần
+                                trả:</label>
+                            <b><span id="tongTien" style="font-size: 14px;"
+                                     th:text="${tongTienSauGiam == null || tongTienSauGiam == 0  ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') + ' đ' : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span></b>
+                            <input type="hidden" name="tongTien"
+                                   th:value="${#numbers.formatDecimal((tongTienSauGiam == null ? tongTien : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"/>
+                        </div>
+
+                        <div class="received">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/big.js/6.0.3/big.min.js"></script>
+                            <label>Số tiền khách đưa:</label>
+                            <input type="number" id="soTienKhachDua" name="soTienKhachDua"
+                                   style="width: 200px;height: 20px" step="0.01" required
+                                   oninput="tinhTienThua()"/>
+                        </div>
+                        <div class="change">
+                            <label>Tiền thừa:</label>
+                            <span id="tienThua">0</span>
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label style="font-size: 13px; margin-right: 10px;margin-top: 10px;">Phương
+                                thức:</label>
+
+                            <div class="form-check" style="display: flex; align-items: center;">
+                                <input class="form-check-input" style="margin-bottom: 5px;margin-top: 10px;"
+                                       type="radio" name="phuongThucThanhToan" value="1" checked>
+                                <label class="form-check-label"
+                                       style="margin-right: 15px; margin-left: 5px;margin-top: 10px;font-size: 12px;">Tiền
+                                    Mặt</label>
+                            </div>
+
+                            <div class="form-check" style="display: flex; align-items: center;">
+                                <input class="form-check-input" type="radio"
+                                       style="margin-bottom: 5px;margin-top: 10px;" name="phuongThucThanhToan"
+                                       value="2">
+                                <label class="form-check-label"
+                                       style="margin-right: 15px;margin-left: 5px;margin-top: 10px;font-size: 12px;">Chuyển
+                                    Khoản</label>
+                            </div>
+                        </div>
+                        <input type="hidden" id="khachHangId" name="khachHangId" th:value="${khachHang != null ? khachHang.ten : ''}"> <!-- Đảm bảo value được cập nhật -->
+<!--                        <div style="display: flex; align-items: center; gap: 10px;">-->
+<!--                            <label style="font-size: 14px; margin-right: 10px;margin-top: 10px;">Ghi-->
+<!--                                Chú:</label>-->
+<!--                            <div class="form-check" style="display: flex; align-items: center;">-->
+<!--                                <input type="text" class="col-7" name="ghiChu"-->
+<!--                                       style="height: 20px;width:200px;margin-top: 10px;" th:value="${ghiChu}">-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <input type="hidden" name="maPhieuGiamGia" th:value="${maPhieuGiamGia}">
+                        <button id="btnCheckout" type="submit"
+                                style="margin-top: 10px;background-color: #2c3e50;">Thanh Toán
+                        </button>
+                        <a href="#" class="modal__close">&times;</a>
+                    </form>
 
                     <!-- Modal HTML -->
                     <div id="customerModal" class="modal" style="display:none;">
@@ -426,75 +584,8 @@
                         }
                     </script>
 
-                    <label style="margin-right: 50px;font-size: 14px;">Khách thanh toán: </label>
-                    <a class="taiquay">
-                        <a href="#thanhtoan">
-                            <button class="bi bi-card-text" style="background-color: #2c3e50;"></button>
-                        </a>
-                    </a>
-                    <div id="thanhtoan" class="modalthanhtoan">
-                        <div class="modal__centerthanhtoan">
-                            <form action="/admin/taiquay/thanhtoan" method="get" id="paymentForm" target="pdfWindow"
-                                  class="thanhtoan">
-                                <div class="mb-3">
-                                    <label class="col-3" style="font-size: 14px;margin-top: 10px;">Khách cần
-                                        trả:</label>
-                                    <b><span id="tongTien" style="font-size: 14px;"
-                                             th:text="${tongTienSauGiam == null || tongTienSauGiam == 0  ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') + ' đ' : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span></b>
-                                    <input type="hidden" name="tongTien"
-                                           th:value="${#numbers.formatDecimal((tongTienSauGiam == null ? tongTien : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"/>
-                                </div>
 
-                                <div class="received">
-                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/big.js/6.0.3/big.min.js"></script>
-                                    <label>Số tiền khách đưa:</label>
-                                    <input type="number" id="soTienKhachDua" name="soTienKhachDua"
-                                           style="width: 200px;height: 20px" step="0.01" required
-                                           oninput="tinhTienThua()"/>
-                                </div>
-                                <div class="change">
-                                    <label>Tiền thừa:</label>
-                                    <span id="tienThua">0</span>
-                                </div>
 
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <label style="font-size: 13px; margin-right: 10px;margin-top: 10px;">Phương
-                                        thức:</label>
-
-                                    <div class="form-check" style="display: flex; align-items: center;">
-                                        <input class="form-check-input" style="margin-bottom: 5px;margin-top: 10px;"
-                                               type="radio" name="phuongThucThanhToan" value="1">
-                                        <label class="form-check-label"
-                                               style="margin-right: 15px; margin-left: 5px;margin-top: 10px;font-size: 12px;">Tiền
-                                            Mặt</label>
-                                    </div>
-
-                                    <div class="form-check" style="display: flex; align-items: center;">
-                                        <input class="form-check-input" type="radio"
-                                               style="margin-bottom: 5px;margin-top: 10px;" name="phuongThucThanhToan"
-                                               value="2">
-                                        <label class="form-check-label"
-                                               style="margin-right: 15px;margin-left: 5px;margin-top: 10px;font-size: 12px;">Chuyển
-                                            Khoản</label>
-                                    </div>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <label style="font-size: 14px; margin-right: 10px;margin-top: 10px;">Ghi
-                                        Chú:</label>
-                                    <div class="form-check" style="display: flex; align-items: center;">
-                                        <input type="text" class="col-7" name="ghiChu"
-                                               style="height: 20px;width:200px;margin-top: 10px;" th:value="${ghiChu}">
-                                    </div>
-                                </div>
-                                <input type="hidden" name="maPhieuGiamGia" th:value="${maPhieuGiamGia}">
-                                <button id="btnCheckout" type="submit"
-                                        style="margin-top: 10px;background-color: #2c3e50;">Thanh Toán
-                                </button>
-                                <a href="#" class="modal__close">&times;</a>
-                            </form>
-
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -513,7 +604,7 @@
                class="modal__close">&times;</a>
 
             <div style="margin-top: 15px" class="d-flex align-items-center">
-                <label for="itemsPerPage" class="me-2">Xem</label>
+                <label for="itemsPerPage2" class="me-2">Xem</label>
                 <select class="form-select form-select-sm" id="itemsPerPage2" name="size"
                         onchange="changeItemsPerPage2()" style="width: 80px;">
                     <option value="5" th:selected="${size == 5}">5</option>
@@ -713,56 +804,100 @@
 <script>
     document.getElementById("paymentForm").onsubmit = function (event) {
         event.preventDefault(); // Ngăn hành vi submit mặc định của form
-        // Lấy dữ liệu form
+
+        const pathParts = window.location.pathname.split('/');
+        const hoaDonId = pathParts[pathParts.length - 1]; // Giả sử ID hóa đơn là phần cuối cùng của URL
+
+        // Kiểm tra phương thức thanh toán
+        if (!isPaymentMethodSelected()) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Thông báo',
+                text: 'Bạn hãy chọn phương thức thanh toán!',
+            });
+            return;
+        }
+
+        // Kiểm tra khách hàng
+        const khachHangInput = document.getElementById("khachHangId");
+        if (!khachHangInput || khachHangInput.value.trim() === "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Thông báo',
+                text: 'Chưa có khách hàng trong hóa đơn! Bạn có muốn thêm khách hàng không?',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Chuyển hướng đến trang thêm nhanh khách hàng
+                    window.location.href = `/admin/taiquay/detail/${hoaDonId}`;
+                } else {
+                    // Tiếp tục thanh toán với khách lẻ
+                    submitPaymentForm(hoaDonId, true);
+                }
+            });
+        } else {
+            // Nếu đã có khách hàng, gửi form
+            submitPaymentForm(hoaDonId, false);
+        }
+    };
+
+    function isPaymentMethodSelected() {
+        const paymentMethods = document.getElementsByName("phuongThucThanhToan");
+        return Array.from(paymentMethods).some(method => method.checked);
+    }
+
+    function submitPaymentForm(hoaDonId, themKhachHang) {
         const form = document.getElementById("paymentForm");
         const formData = new FormData(form);
-        // Thực hiện submit form qua fetch API
+        formData.append("themKhachHang", themKhachHang); // Thêm tham số themKhachHang vào formData
+
         fetch(form.action + "?" + new URLSearchParams(formData), {
-            method: "GET"
+            method: "GET",
         })
-            .then(response => response.text()) // Lấy URL file PDF từ server
-            .then(pdfUrl => {
-                if (pdfUrl) {
-                    // Hiển thị hộp thoại xác nhận in hóa đơn
-                    Swal.fire({
-                        title: 'In Hóa Đơn',
-                        text: "Bạn có muốn in hóa đơn không?",
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'In hóa đơn',
-                        cancelButtonText: 'Không, để sau'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Nếu người dùng chọn in
-                            window.open(pdfUrl, "_blank");
-                        }
-                        // Luôn chuyển về trang admin/taiquay sau khi xử lý
-                        window.location.href = "/admin/taiquay";
-                    });
-                } else {
-                    // Nếu không có PDF
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lỗi',
-                        text: 'Không thể tạo file PDF!'
-                    }).then(() => {
-                        window.location.href = "/admin/taiquay";
-                    });
-                }
-            })
-            .catch(error => {
+            .then((response) => response.text()) // Lấy URL file PDF từ server
+            .then((pdfUrl) => handleInvoiceResponse(pdfUrl))
+            .catch((error) => {
                 console.error("Lỗi khi xử lý thanh toán:", error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Lỗi',
-                    text: 'Đã xảy ra lỗi trong quá trình thanh toán!'
+                    text: 'Đã xảy ra lỗi trong quá trình thanh toán!',
                 }).then(() => {
                     window.location.href = "/admin/taiquay";
                 });
             });
-    };
+    }
+
+    function handleInvoiceResponse(pdfUrl) {
+        if (pdfUrl) {
+            Swal.fire({
+                title: 'In Hóa Đơn',
+                text: "Bạn có muốn in hóa đơn không?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'In hóa đơn',
+                cancelButtonText: 'Không, để sau',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.open(pdfUrl, "_blank");
+                }
+                window.location.href = "/admin/taiquay";
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Không thể tạo file PDF!',
+            }).then(() => {
+                window.location.href = "/admin/taiquay";
+            });
+        }
+    }
+
 </script>
 
 <!-- Thêm thư viện SweetAlert2 -->
@@ -788,8 +923,8 @@
     function updateQuantityDirectly(inputElement, hdctId) {
         // Lấy ID hóa đơn từ URL
         const pathParts = window.location.pathname.split('/');
-        const hoaDonId = pathParts[pathParts.length - 1];
-        //
+        const hoaDonId = pathParts[pathParts.length - 1]; // Giả sử ID hóa đơn là phần cuối cùng của URL
+        console.log(`Directly updating quantity for ID: ${hdctId}`);
         let newQuantity = parseInt(inputElement.value);
         const currentQuantity = parseInt(inputElement.getAttribute('data-current-quantity'));
         // Kiểm tra số lượng tồn kho
@@ -800,9 +935,6 @@
                 icon: 'error',
                 title: 'Lỗi',
                 text: 'Số lượng không hợp lệ. Vui lòng nhập số lượng lớn hơn 0.'
-            }).then(() => {
-                // Khôi phục lại giá trị cũ ngay sau khi đóng popup
-                inputElement.value = currentQuantity;
             });
             return;
         }
@@ -812,10 +944,8 @@
                 icon: 'error',
                 title: 'Lỗi',
                 text: `Số lượng vượt quá số lượng tồn kho. Chỉ còn lại ${stockQuantity} sản phẩm.`
-            }).then(() => {
-                // Khôi phục lại giá trị cũ ngay sau khi đóng popup
-                inputElement.value = currentQuantity;
             });
+            inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
             return;
         }
         //
@@ -832,23 +962,17 @@
                 },
                 body: `delta=${delta}`
             })
-                .then(response => {
-                    // Kiểm tra response status
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.error) {
                         Swal.fire({
                             icon: 'warning',
                             title: 'Cảnh Báo',
                             text: data.error
-                        }).then(() => {
-                            inputElement.value = currentQuantity; //khôi phục giá trị cũ
                         });
+                        inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
                     } else {
+                        // Cập nhật số lượng tồn kho
                         // Redirect về trang chi tiết hóa đơn
                         window.location.href = `/admin/taiquay/detail/${hoaDonId}`;
                     }
@@ -866,16 +990,15 @@
     }
 
     function updateQuantity(hdctId, delta) {
+        // Lấy ID hóa đơn từ URL
+        const pathParts = window.location.pathname.split('/');
+        const hoaDonId = pathParts[pathParts.length - 1]; // Giả sử ID hóa đơn là phần cuối cùng của URL
         const quantityInput = document.getElementById(`quantity-${hdctId}`);
+
         let currentQuantity = parseInt(quantityInput.value);
         let newQuantity = currentQuantity + delta;
         // Kiểm tra số lượng tồn kho trước khi thay đổi
         const stockQuantity = parseInt(quantityInput.getAttribute('data-stock-quantity')); // Lấy số lượng tồn kho
-
-        // Lấy ID hóa đơn từ URL
-        const pathParts = window.location.pathname.split('/');
-        const hoaDonId = pathParts[pathParts.length - 1]; // Giả sử ID hóa đơn là phần cuối cùng của URL
-
 
         if (newQuantity < 1) {
             Swal.fire({
@@ -928,6 +1051,7 @@
                     });
                     quantityInput.value = currentQuantity; // Khôi phục lại giá trị cũ
                 } else {
+                    // Cập nhật giá trị hiện tại
                     // Redirect về trang chi tiết hóa đơn
                     window.location.href = `/admin/taiquay/detail/${hoaDonId}`;
                 }

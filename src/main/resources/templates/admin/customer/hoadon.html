@@ -252,7 +252,10 @@
 <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai >= 2 and hoaDon.trangThai <= 6}">
     <td th:text="${hoaDon.id}"></td>
     <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>
+
     <td th:text="${hoaDon.khachHang == null ? 'Khách Lẻ' : hoaDon.khachHang.soDienThoai}"></td>
+
+
     <td th:text="${hoaDon.khachHang == null ? 'Khách Lẻ' : hoaDon.khachHang.email}"></td>
     <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>
     <td th:text="${hoaDon.tongTien != null ? hoaDon.tongTien : 'N/A'}"></td>

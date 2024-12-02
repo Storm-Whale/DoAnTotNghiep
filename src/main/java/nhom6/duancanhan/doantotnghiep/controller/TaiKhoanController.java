@@ -131,7 +131,7 @@ public class TaiKhoanController {
                     session.setAttribute("account", taiKhoan);
                     session.setAttribute("role", role);
                     session.setAttribute("loginStatus", true);  // Thêm flag
-                    return "redirect:/admin";
+                    return "redirect:/admin/taiquay/";
                 case 3:
                     session.setAttribute("user", khachHangService.findByIdTaiKhoan(taiKhoan.getId()));
                     session.setAttribute("account", taiKhoan);

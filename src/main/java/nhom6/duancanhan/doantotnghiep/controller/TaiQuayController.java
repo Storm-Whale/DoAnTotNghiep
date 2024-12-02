@@ -75,6 +75,9 @@ public class TaiQuayController {
     @Autowired
     HttpSession session;
 
+    @Autowired
+    private DiaChiService diaChiService;
+
     private Integer idHoaDon = 1;
 
     private String maPhieuGiamGia = "";
@@ -93,25 +96,27 @@ public class TaiQuayController {
         this.kieuTayAoService = kieuTayAoService;
         this.invoidPdfService = invoidPdfService;
     }
-// TODO: SHOWINDEX
+
+    // TODO: SHOWINDEX
     @GetMapping("")
-    public String showIndex(@RequestParam(value = "page", defaultValue = "0") int page,
-                            @RequestParam(value = "size", defaultValue = "5") int size,
-                            @RequestParam(value = "keyword", required = false) String keyword,
-                            @RequestParam(value = "ngayBatDau", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayBatDau,
-                            @RequestParam(value = "ngayKetThuc", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayKetThuc,
-                            @RequestParam(value = "thuongHieuId", required = false) Integer thuongHieuId,
-                            @RequestParam(value = "chatLieuId", required = false) Integer chatLieuId,
-                            @RequestParam(value = "tayAoId", required = false) Integer tayAoId,
-                            @RequestParam(value = "coAoId", required = false) Integer coAoId,
-                            @RequestParam(value = "kichCoId", required = false) Integer kichCoId,
-                            @RequestParam(value = "mauSacId", required = false) Integer mauSacId,
-                            @RequestParam(value = "kieuGiamGia", required = false) Integer kieuGiamGia,
-                            @RequestParam(value = "trangThai", required = false) Integer trangThai,
-                            @RequestParam(name = "soDienThoai", required = false) String soDienThoai,
-                            @SessionAttribute(value = "nhanvien", required = false) NhanVien nhanVien
-            , RedirectAttributes redirectAttributes,
-                            Model model) {
+    public String showIndex(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "ngayBatDau", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayBatDau,
+            @RequestParam(value = "ngayKetThuc", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayKetThuc,
+            @RequestParam(value = "thuongHieuId", required = false) Integer thuongHieuId,
+            @RequestParam(value = "chatLieuId", required = false) Integer chatLieuId,
+            @RequestParam(value = "tayAoId", required = false) Integer tayAoId,
+            @RequestParam(value = "coAoId", required = false) Integer coAoId,
+            @RequestParam(value = "kichCoId", required = false) Integer kichCoId,
+            @RequestParam(value = "mauSacId", required = false) Integer mauSacId,
+            @RequestParam(value = "kieuGiamGia", required = false) Integer kieuGiamGia,
+            @RequestParam(value = "trangThai", required = false) Integer trangThai,
+            @RequestParam(name = "soDienThoai", required = false) String soDienThoai,
+            @SessionAttribute(value = "nhanvien", required = false) NhanVien nhanVien
+            , RedirectAttributes redirectAttributes, Model model
+    ) {
         boolean isLoggedIn = session != null &&
                 session.getAttribute("loginStatus") != null &&
                 (Boolean) session.getAttribute("loginStatus");
@@ -200,74 +205,6 @@ public class TaiQuayController {
         return "/admin/BanhangTaiQuay/index";
     }
 
-//    @GetMapping("khachhang")
-//    public String khachhang(
-//            @RequestParam(value = "keyword", required = false) String keyword,
-//            @RequestParam(value = "trangThai", required = false) Integer trangThai,
-//            @RequestParam(value = "page", defaultValue = "0") int page,
-//            @RequestParam(value = "size", defaultValue = "5") int size,
-//            Model model) {
-//        if (keyword != null) {
-//            keyword = keyword.trim();
-//            if (keyword.isEmpty()) {
-//                keyword = null; // Đặt thành null để khớp với logic xử lý trong service
-//            }
-//        }
-//        if (page < 0) {
-//            page = 0;
-//        }
-//        Page<KhachHang> listKH = khachHangService.SearchandPhantrang(keyword, trangThai, page, size);
-//        int totalPages = listKH.getTotalPages();
-//        if (page >= totalPages) {
-//            page = totalPages > 0 ? totalPages - 1 : 0; // Go to the last page if out of bounds or reset to 0 if no pages exist
-//            listKH = khachHangService.SearchandPhantrang(keyword, trangThai, page, size); // Fetch the last page data
-//        }
-//        List<Integer> pageNumbers = IntStream.range(0, totalPages).boxed().collect(Collectors.toList());
-//        model.addAttribute("khachHang", new KhachHang());
-//        model.addAttribute("listKH", listKH);
-//        model.addAttribute("currentPage", page);
-//        model.addAttribute("totalPages", totalPages);
-//        model.addAttribute("keyword", keyword);
-//        model.addAttribute("trangThai", trangThai);
-//        model.addAttribute("pageNumbers", pageNumbers);
-//        model.addAttribute("idHoaDon",idHoaDon);
-//
-//        return "/admin/BanhangTaiQuay/index";
-//    }
-
-
-    @GetMapping("/phieugiamgia")
-    public String phieuGiamGia(@RequestParam(value = "page", defaultValue = "0") int page,
-                               @RequestParam(value = "size", defaultValue = "5") int size,
-                               @RequestParam(value = "keyword", required = false) String keyword,
-                               @RequestParam(value = "ngayBatDau", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayBatDau,
-                               @RequestParam(value = "ngayKetThuc", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayKetThuc,
-                               @RequestParam(value = "kieuGiamGia", required = false) Integer kieuGiamGia,
-                               @RequestParam(value = "trangThai", required = false) Integer trangThai,
-                               Model model) {
-        Page<PhieuGiamGia> pageFind = phieuGiamGiaService.findByCriteria(keyword, ngayBatDau,
-                ngayKetThuc, kieuGiamGia, trangThai, page, size);
-        List<PhieuGiamGia> listPGG = pageFind.getContent();
-        model.addAttribute("listPGG", listPGG);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("size", size);
-        model.addAttribute("totalPages", pageFind.getTotalPages());
-        model.addAttribute("totalItems", pageFind.getTotalElements());
-
-        // Thêm các tham số tìm kiếm vào model để hiển thị lại trên trang
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("ngayBatDau", ngayBatDau);
-        model.addAttribute("ngayKetThuc", ngayKetThuc);
-        model.addAttribute("kieuGiamGia", kieuGiamGia);
-        model.addAttribute("trangThai", trangThai);
-        model.addAttribute("idHoaDon", idHoaDon);
-        model.addAttribute("khachHangThemNhanh", new KhachHang());
-        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
-                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
-        model.addAttribute("hoaDon", hoaDon);
-        return "/admin/BanhangTaiQuay/index";
-    }
-
     // TODO: SAN PHAM
     @GetMapping("/sanpham")
     public String sanpham(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -310,6 +247,14 @@ public class TaiQuayController {
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
                 .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
         model.addAttribute("hoaDon", hoaDon);
+        DiaChi diaChiObj = hoaDon.getDiaChi();
+        if (diaChiObj == null) {
+            diaChiObj = new DiaChi(); // Tạo đối tượng DiaChi mới nếu chưa tồn tại
+            hoaDon.setDiaChi(diaChiObj); // Cập nhật địa chỉ vào hóa đơn nếu cần lưu sau này
+        }
+        // Gán thông tin vào model
+        model.addAttribute("hoaDon", hoaDon);
+        model.addAttribute("diaChi", diaChiObj);
         return "/admin/BanhangTaiQuay/index";
     }
 
@@ -318,10 +263,10 @@ public class TaiQuayController {
     @ResponseBody
     public ResponseEntity<?> taoHoaDon(Model model) {
         NhanVien nhanVien = (NhanVien) session.getAttribute("nhanvien");
-        if (nhanVien.getTaiKhoan().getVaiTro() == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Bạn chưa đăng nhập, vui lòng đăng nhập để tạo hóa đơn!");
-        }
+//        if (nhanVien.getTaiKhoan().getVaiTro() == null) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+//                    .body("Bạn chưa đăng nhập, vui lòng đăng nhập để tạo hóa đơn!");
+//        }
         HoaDon hoaDon = new HoaDon();
         hoaDon.setTrangThai(1); // Set trạng thái mới tạo
         hoaDon.setLoaiHoaDon("Tại quầy");
@@ -412,6 +357,14 @@ public class TaiQuayController {
         model.addAttribute("idHoaDon", idHoaDon);
         model.addAttribute("tongTienSauGiam", lastTongTien);
         model.addAttribute("khachHangThemNhanh", new KhachHang());
+        DiaChi diaChiObj = hoaDon.getDiaChi();
+        if (diaChiObj == null) {
+            diaChiObj = new DiaChi(); // Tạo đối tượng DiaChi mới nếu chưa tồn tại
+            hoaDon.setDiaChi(diaChiObj); // Cập nhật địa chỉ vào hóa đơn nếu cần lưu sau này
+        }
+        // Gán thông tin vào model
+        model.addAttribute("hoaDon", hoaDon);
+        model.addAttribute("diaChi", diaChiObj);
         return "/admin/BanhangTaiQuay/index";
     }
 
@@ -442,57 +395,78 @@ public class TaiQuayController {
         }
 
 
+        // Cập nhật khách hàng cho hóa đơn
+        if (hoaDon != null || hoaDon.getKhachHang() != null) {
+            hoaDon.setKhachHang(khachHang);
+            hoaDon.setTrangThai(1);
+            hoaDonRepository.save(hoaDon);
+            redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
+            redirectAttributes.addFlashAttribute("khachHang", khachHang);
 
-    // Cập nhật khách hàng cho hóa đơn
-    if (hoaDon != null || hoaDon.getKhachHang() != null) {
-        hoaDon.setKhachHang(khachHang);
-        hoaDon.setTrangThai(1);
-        hoaDonRepository.save(hoaDon);
-        redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
-        redirectAttributes.addFlashAttribute("khachHang", khachHang);
-
-        if (hoaDon.getDiaChi() != null) {
-            model.addAttribute("diaChi", hoaDon.getDiaChi().getDiaChiChiTiet());
-        } else {
-            model.addAttribute("diaChi", "Địa chỉ chưa được cập nhật");
+            if (hoaDon.getDiaChi() != null) {
+                model.addAttribute("diaChi", hoaDon.getDiaChi().getDiaChiChiTiet());
+            } else {
+                model.addAttribute("diaChi", "Địa chỉ chưa được cập nhật");
+            }
         }
-    }
         model.addAttribute("listhoadondiachi", hoaDon);
 //        model.addAttribute("khachHang", khachHang);
 //        model.addAttribute("hoaDon", hoaDon);
 //        model.addAttribute("diaChi", hoaDon.getDiaChi());
-    // Tạo ModelAndView để chuyển dữ liệu sang view Thymeleaf
-    return "redirect:/admin/taiquay/detail/" + idHoaDon; // Tên view Thymeleaf để hiển thị kết quả
-}
+        // Tạo ModelAndView để chuyển dữ liệu sang view Thymeleaf
+        return "redirect:/admin/taiquay/detail/" + idHoaDon; // Tên view Thymeleaf để hiển thị kết quả
+    }
+
     @Autowired
     DiaChiRepository diaChiRepository;
+
+    // TODO: DIACHI
     @PostMapping("/cap-nhat-hoa-don")
-    public String capNhatHoaDon(@RequestParam Integer idHoaDon, @RequestParam String diaChi,Model model) {
+    public String capNhatHoaDon(
+            @RequestParam Integer idHoaDon,
+            @RequestParam String diaChi,
+            @RequestParam(value = "soDienThoai", required = false) String soDienThoai,
+            @RequestParam(value = "tenNguoiNhan", required = false) String tenNguoiNhan,
+            @RequestParam(value = "ghiChu", required = false) String ghiChu,
+            Model model
+    ) {
+        // Tìm hóa đơn
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
                 .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
 
-        // Tìm hoặc tạo mới địa chỉ
-        DiaChi diaChiObj = diaChiRepository.findByDiaChiChiTiet(diaChi)
-                .orElseGet(() -> {
-                    DiaChi newDiaChi = new DiaChi();
-                    newDiaChi.setDiaChiChiTiet(diaChi);
-                    diaChiRepository.save(newDiaChi);
-                    return newDiaChi;
-                });
+        DiaChi diaChiObj = null;
 
-        // Cập nhật địa chỉ trong hóa đơn
+        KhachHang khachHang = hoaDon.getKhachHang() != null ? hoaDon.getKhachHang() : null;
+
+        if (khachHang != null && soDienThoai != null) {
+            diaChiObj = diaChiService.newDiaChi(diaChi, tenNguoiNhan, soDienThoai, khachHang.getId());
+        }
+
+        if (khachHang == null) {
+            diaChiObj = diaChiService.newDiaChi(diaChi, tenNguoiNhan, soDienThoai, null);
+        } else {
+            diaChiObj = diaChiService.newDiaChi(diaChi, tenNguoiNhan, khachHang.getSoDienThoai(), khachHang.getId());
+        }
+
         hoaDon.setDiaChi(diaChiObj);
+        hoaDon.setGhiChu(ghiChu);
         hoaDonRepository.save(hoaDon);
 
-        // Chuyển hướng về trang chi tiết hóa đơn
+        // Gửi dữ liệu ra view
+        model.addAttribute("hoaDon", hoaDon);
+        model.addAttribute("diaChi", diaChiObj);
         return "redirect:/admin/taiquay/detail/" + idHoaDon;
     }
+
+    // Chuyển hướng về trang chi tiết hóa đơn
+
     @GetMapping("/themnhanhkhachhang")
     public String addKhachHnagTaiQuay(@ModelAttribute("khachHangThemNhanh") KhachHang khachHang) {
         return "/admin/BanhangTaiQuay/addNhanhKhachHang";
     }
+
     @PostMapping("/add")
-    public String add(@Valid @ModelAttribute("khachHangThemNhanh") KhachHang khachHang, BindingResult result, Model model,RedirectAttributes redirectAttributes) {
+    public String add(@Valid @ModelAttribute("khachHangThemNhanh") KhachHang khachHang, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             for (FieldError error : result.getFieldErrors()) {
                 model.addAttribute(error.getField(), error.getDefaultMessage());
@@ -515,6 +489,7 @@ public class TaiQuayController {
         redirectAttributes.addFlashAttribute("successMessage", "Khách hàng đã được thêm thành công!");
         return "redirect:/admin/taiquay/detail/" + idHoaDon;
     }
+
     @Autowired
     PhuongThucThanhToanRepository phuongThucThanhToanRepository;
 
@@ -537,8 +512,8 @@ public class TaiQuayController {
     @GetMapping("/thanhtoan")
     @ResponseBody
     public String thanhtoan(
-            @RequestParam("ghiChu") String ghiChu,
-            @RequestParam("phuongThucThanhToan") Integer phuongThucId,
+//            @RequestParam("ghiChu") String ghiChu,
+            @RequestParam(value = "phuongThucThanhToan", required = false) Integer phuongThucId,
             @RequestParam(value = "maPhieuGiamGia", required = false) String maPhieuGiamGiaInput,
             @RequestParam(value = "themKhachHang", required = false) Boolean themKhachHang // Thêm tham số này
             , Model model) throws IOException {
@@ -549,13 +524,11 @@ public class TaiQuayController {
         if (hoaDon.getKhachHang() == null) {
             if (themKhachHang == null || !themKhachHang) {
                 // Nếu không có khách hàng và người dùng không muốn thêm khách hàng
-                return "Chưa có khách hàng. Bạn có muốn thêm không?"; // Thiết lập khách hàng mặc định là khách lẻ
-            } else {
-                // Thêm logic để thêm khách hàng mới nếu người dùng chọn thêm khách hàng
-                // ...
+                // Thiết lập khách hàng mặc định là khách lẻ
+                KhachHang khachHang = new KhachHang();
+                hoaDon.setKhachHang(khachHang);
             }
         }
-        // Lấy chi tiết hóa đơn
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
         // Tính tổng tiền ban đầu
         BigDecimal tongTien = hoaDonChiTietList.stream()
@@ -588,7 +561,7 @@ public class TaiQuayController {
             }
         }// Nếu không có mã nhập, tự động tìm phiếu giảm giá
         else {
-        PhieuGiamGia phieuGiamGiaAuto = timPhieuGiamGiaHopLe(tongTien);
+            PhieuGiamGia phieuGiamGiaAuto = timPhieuGiamGiaHopLe(tongTien);
             // Tìm phiếu giảm giá phù hợp nhất
             if (phieuGiamGiaAuto != null) {
                 // Áp dụng phiếu giảm giá tự động
@@ -625,7 +598,8 @@ public class TaiQuayController {
         } else {
             hoaDon.setTrangThai(5); // Đã thanh toán
         }
-        hoaDon.setGhiChu(ghiChu);
+//        hoaDon.setKhachHang(themKhachHang);
+//        hoaDon.setGhiChu(ghiChu);
         hoaDonRepository.save(hoaDon);
 
         byte[] pdfData = invoidPdfService.generateInvoicePdf(hoaDon);
@@ -638,6 +612,10 @@ public class TaiQuayController {
         String fileUrl = "D://FALL_2024//DATN//DoAnTotNghiep//upload/" + fileName;
         model.addAttribute("pdfUrl", fileUrl);
         return "/uploads/" + fileName;
+        // Thêm logic để thêm khách hàng mới nếu người dùng chọn thêm khách hàng
+        // Lấy chi tiết hóa đơn
+
+
     }
 
     //  TODO ADDSP
@@ -747,7 +725,7 @@ public class TaiQuayController {
         }
         redirectAttributes.addFlashAttribute("successMessage", "Thêm sản phẩm thành công!"); // Thêm thông báo thành công
         model.addAttribute("idHoaDon", idHoaDon);
-        return "redirect:/admin/taiquay/detail/" + idHoaDon;
+        return "redirect:/admin/taiquay/sanpham#sanpham";
     }
 
     //TODO XOA SP
@@ -847,6 +825,7 @@ public class TaiQuayController {
             return e.getMessage();
         }
     }
+
     //TODO HỦY DISCOUNT
     @GetMapping("/huy-phieu-giam-gia/{idHoaDon}")
     @ResponseBody
@@ -950,7 +929,7 @@ public class TaiQuayController {
             if (phieuGiamGiaAuto != null) {
                 maPhieuGiamGia = phieuGiamGiaAuto.getMaPhieuGiamGia();
                 tongTienSauGiam = phieuGiamGiaService.applyDiscount(maPhieuGiamGia, tongTien);
-             }
+            }
             // Lấy danh sách chi tiết hóa đơn mới nhất
             List<HoaDonChiTiet> updatedHoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
             // Chuẩn bị dữ liệu trả về
@@ -989,6 +968,7 @@ public class TaiQuayController {
                     .body(Map.of("error", "Có lỗi xảy ra: " + e.getMessage()));
         }
     }
+
     //TODO UPDATE SP CART
     @PostMapping("/update-sanpham-hdct/{id}")
     public ResponseEntity<Map<String, Object>> updateSanPhamHDCT(

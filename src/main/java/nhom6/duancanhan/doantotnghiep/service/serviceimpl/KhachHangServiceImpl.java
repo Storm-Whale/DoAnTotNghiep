@@ -79,4 +79,10 @@ public class KhachHangServiceImpl implements KhachHangService {
         return khachHangRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy khách hàng với ID: " + id));
     }
+
+    @Override
+    public boolean isSoDienThoaiExist(String soDienThoai) {
+            return khachHangRepository.existsBySoDienThoai(soDienThoai);
+
+    }
 }

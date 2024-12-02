@@ -29,6 +29,8 @@ public interface KhachHangService {
      KhachHang findBySoDienThoaiKhachHang (String soDienThoai);
      KhachHang findById(Integer id);
 
+     boolean isSoDienThoaiExist(String soDienThoai);
+
 
 
 }

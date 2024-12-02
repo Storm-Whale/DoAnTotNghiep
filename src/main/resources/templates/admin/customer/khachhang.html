@@ -55,7 +55,7 @@
             <td th:text="${entry.id}"></td>
 <!--            <td th:text="${entry.anhUrl}"></td>-->
             <td>
-                <img th:src="@{/{filename}(filename=${entry.anhUrl})}" alt="Hình ảnh khách hàng" height="60px" />
+                <img th:src="@{/{filename}(filename=${entry.anhUrl})}" alt="Hình ảnh khách hàng" height="60px" style="border-radius: 50%;"/>
             </td>
             <td th:text="${entry.ten}"></td>
             <td th:text="${entry.ngaySinh}"></td>
@@ -70,7 +70,6 @@
                 <a th:href="@{/admin/khachhang/hoa-don/{id}(id=${entry.id})}" class="btn btn-primary">
                     Xem hóa đơn
                 </a>
-                <a th:href="@{/admin/khachhang/{id}/upload(id=${entry.id})}">Upload Ảnh</a>
             </td>
         </tr>
         </tbody>
