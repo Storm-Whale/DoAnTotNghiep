@@ -62,14 +62,6 @@ public class DiaChiServiceImpl implements DiaChiService {
     }
 
     @Override
-    public List<DiaChi> getDiaChiByIdKhachHang(Integer idKhachHang) {
-        return DatabaseOperationHandler.handleDatabaseOperation(
-                () -> diaChiRepossitory.findByKhachHangId(idKhachHang)
-                , "Lấy dữ liệu địa chỉ từ cơ sở dữ liệu bị lỗi"
-        );
-    }
-
-    @Override
     public List<DiaChi> getDiaChiByIdKhachHang(Integer idKhachHang, Integer trangThai) {
         return DatabaseOperationHandler.handleDatabaseOperation(
                 () -> diaChiRepossitory.findByKhachHangId(idKhachHang, trangThai)

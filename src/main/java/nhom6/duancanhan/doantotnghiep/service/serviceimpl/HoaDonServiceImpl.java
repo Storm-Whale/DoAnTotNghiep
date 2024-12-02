@@ -1,13 +1,16 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 
+import jakarta.transaction.Transactional;
+import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
-import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
+//import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPham;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
+import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepo;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
@@ -24,6 +27,7 @@ import java.util.Optional;
 public class HoaDonServiceImpl implements HoaDonService {
 
     private final HoaDonRepository hoaDonRepository;
+   private HoaDonRepo hoaDonRepo;
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
 
@@ -44,7 +48,11 @@ public class HoaDonServiceImpl implements HoaDonService {
         Pageable pageable = PageRequest.of(page - 1, pageSize);
         return this.hoaDonRepository.findAll(pageable);
     }
-
+    @Override
+    public Page<HoaDonDTO> phanTrang2(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        return this.hoaDonRepo.findAll(pageable);
+    }
 
     @Override
     public Optional<HoaDon> detail(Integer id) {
@@ -99,6 +107,7 @@ public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
 //        });
 //        hoaDonRepository.delete(hoaDon);
 //    }
+    @Transactional
     @Override
     public void cancelHoaDon(Integer id) {
         HoaDon hoaDon = hoaDonRepository.findById(id)
@@ -116,8 +125,9 @@ public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
             } else {
                 System.out.println("Sản phẩm không tồn tại.");
             }
-            hoaDonChiTietRepository.delete(hoaDonChiTiet);
         }
+        // Xóa tất cả chi tiết hóa đơn
+        hoaDonChiTietRepository.deleteAll(hoaDonChiTietList);
         hoaDonRepository.delete(hoaDon);
     }
 
@@ -174,5 +184,7 @@ public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
             return hoaDonRepository.searchByKeyword(keyword, pageable);
         }
     }
+
+
 
 }

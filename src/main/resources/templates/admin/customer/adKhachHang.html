@@ -174,46 +174,4 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>
-<!--<script>-->
-<!--&lt;!&ndash;  document.getElementById('khachHangForm').addEventListener('submit', function (event) {&ndash;&gt;-->
-<!--&lt;!&ndash;    const fileInput = document.getElementById('anhUrlFile');&ndash;&gt;-->
-<!--&lt;!&ndash;    const file = fileInput.files[0];&ndash;&gt;-->
-<!--&lt;!&ndash;    const imageError = document.getElementById('imageError');&ndash;&gt;-->
-<!--&lt;!&ndash;    const allowedExtensions = ['image/jpeg', 'image/png', 'image/gif']; // Các định dạng được phép&ndash;&gt;-->
-<!--&lt;!&ndash;    const maxSize = 2 * 1024 * 1024; // Kích thước tối đa 2MB&ndash;&gt;-->
-
-<!--&lt;!&ndash;    imageError.textContent = ''; // Reset thông báo lỗi&ndash;&gt;-->
-
-<!--&lt;!&ndash;    if (file) {&ndash;&gt;-->
-<!--&lt;!&ndash;      // Kiểm tra định dạng&ndash;&gt;-->
-<!--&lt;!&ndash;      if (!allowedExtensions.includes(file.type)) {&ndash;&gt;-->
-<!--&lt;!&ndash;        event.preventDefault();&ndash;&gt;-->
-<!--&lt;!&ndash;        imageError.textContent = 'Chỉ chấp nhận các định dạng JPG, PNG, GIF.';&ndash;&gt;-->
-<!--&lt;!&ndash;        return;&ndash;&gt;-->
-<!--&lt;!&ndash;      }&ndash;&gt;-->
-
-<!--&lt;!&ndash;      // Kiểm tra kích thước&ndash;&gt;-->
-<!--&lt;!&ndash;      if (file.size > maxSize) {&ndash;&gt;-->
-<!--&lt;!&ndash;        event.preventDefault();&ndash;&gt;-->
-<!--&lt;!&ndash;        imageError.textContent = 'Kích thước tệp không được vượt quá 2MB.';&ndash;&gt;-->
-<!--&lt;!&ndash;        return;&ndash;&gt;-->
-<!--&lt;!&ndash;      }&ndash;&gt;-->
-<!--&lt;!&ndash;    }&ndash;&gt;-->
-<!--&lt;!&ndash;  });&ndash;&gt;-->
-
-<!--&lt;!&ndash;  // Preview ảnh khi chọn file&ndash;&gt;-->
-<!--&lt;!&ndash;  document.getElementById('anhUrlFile').addEventListener('change', function () {&ndash;&gt;-->
-<!--&lt;!&ndash;    const file = this.files[0];&ndash;&gt;-->
-<!--&lt;!&ndash;    const preview = document.getElementById('previewImage');&ndash;&gt;-->
-
-<!--&lt;!&ndash;    if (file) {&ndash;&gt;-->
-<!--&lt;!&ndash;      const reader = new FileReader();&ndash;&gt;-->
-<!--&lt;!&ndash;      reader.onload = function (e) {&ndash;&gt;-->
-<!--&lt;!&ndash;        preview.src = e.target.result; // Hiển thị ảnh&ndash;&gt;-->
-<!--&lt;!&ndash;      };&ndash;&gt;-->
-<!--&lt;!&ndash;      reader.readAsDataURL(file);&ndash;&gt;-->
-<!--&lt;!&ndash;    }&ndash;&gt;-->
-<!--&lt;!&ndash;  });&ndash;&gt;-->
-<!--&lt;!&ndash;</script>&ndash;&gt;-->
-
 </html>

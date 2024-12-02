@@ -83,9 +83,8 @@
         <div class="gallery">
             <!-- Vùng hiển thị ảnh chính -->
             <div class="main-image-container">
-                <!-- Ảnh chính, mặc định lấy từ biến `firstImageUrl` -->
                 <img id="mainImage" class="main-image"
-                     th:src="@{/{anhUrl}(anhUrl = ${firstImageUrl})}"
+                     th:src="@{/{anhUrl}(anhUrl = ${infoSP.sanPhamResponse.anhUrl})}"
                      alt="Ảnh sản phẩm chính">
             </div>
 

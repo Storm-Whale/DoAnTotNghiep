@@ -171,6 +171,34 @@
                 <tbody>
 
 
+<!--                <tr th:each="hoaDon : ${listHD}"th:if="${hoaDon.trangThai == 5}">-->
+<!--                    <td th:text="${hoaDon.id}"></td>-->
+<!--                    <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>-->
+<!--&lt;!&ndash;                    <td th:text="${hoaDon.sdt != null ? hoaDon.khachHang.soDienThoai : 'N/A'}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <td th:text="${hoaDon.emailNguoiNhan != null ? hoaDon.emailNguoiNhan : 'N/A'}"></td>&ndash;&gt;-->
+
+
+
+
+<!--                    &lt;!&ndash; Kiểm tra null cho phương thức thanh toán &ndash;&gt;-->
+<!--                    <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>-->
+
+<!--                    &lt;!&ndash; Hiển thị tổng tiền không có định dạng tiền tệ, nếu cần &ndash;&gt;-->
+<!--                    <td th:text="${hoaDon.tongTien != null ? hoaDon.tongTien : 'N/A'}"></td>-->
+
+<!--                    <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : 'N/A'}"></td>-->
+
+<!--                    &lt;!&ndash; Kiểm tra trạng thái thanh toán &ndash;&gt;-->
+<!--                    <td>-->
+<!--                        <span th:text="${hoaDon.trangThai == 5 ? 'Đã Hoàn Thành' : 'Đã Hoàn Thành'}"></span>-->
+<!--                    </td>-->
+
+<!--                    <td>-->
+<!--                        <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary">-->
+<!--                            Chi Tiết-->
+<!--                        </a>-->
+<!--                    </td>-->
+<!--                </tr>-->
 
 
 <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai >= 2 and hoaDon.trangThai <= 6}">
@@ -180,6 +208,12 @@
     <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>
     <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>
     <td th:text="${hoaDon.tongTien != null ? hoaDon.tongTien : ''}"></td>
+
+
+
+
+
+
     <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : ''}"></td>
     <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>
 
@@ -240,7 +274,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai == 5}">
+                <tr th:each="hoaDon2 : ${listHD2}" th:if="${hoaDon.trangThai == 5}">
                     <td th:text="${hoaDon.id}"></td>
                     <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Đã Hoàn Thành'}"></td>
                     <!--                    <td th:text="${hoaDon.sdt != null ? hoaDon.khachHang.getSoDienThoai() : 'N/A'}"></td>-->
@@ -279,6 +313,7 @@
 
 
         </div>
+
         <!-- Tab 2 content -->
         <div class="tab-pane fade" id="profile"  role="tabpanel" aria-labelledby="profile-tab">
             <table class="table table-bordered table-hover text-center">
@@ -321,9 +356,13 @@
 
                     <!-- Kiểm tra trạng thái thanh toán -->
                     <td>
+
          <span th:text="${hoaDon.trangThai == '2' ? 'Chờ Xác Nhận' : ''}"></span>
 
                         <span th:text="${hoaDon.trangThai == 2 ? 'Chờ Xác Nhận' : ''}"></span>
+
+
+                        <span th:text="${hoaDon.trangThai == '2' ? 'Chờ Xác Nhận' : 'Chờ Xác Nhận'}"></span>
 
                     </td>
 
@@ -339,6 +378,7 @@
                 </tr>
                 </tbody>
             </table>
+
 
         </div>
 

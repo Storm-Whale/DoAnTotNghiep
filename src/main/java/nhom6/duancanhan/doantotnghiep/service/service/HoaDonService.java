@@ -1,9 +1,8 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
+import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
-import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
-import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -38,4 +37,6 @@ public interface HoaDonService {
     public Page<HoaDon> findHoaDonByStatus(String status, int pageNo, int pageSize);
     public Page<HoaDon> findHoaDonByLoaiHoaDon(String loaiHoaDon, int pageNo, int pageSize);
     public Page<HoaDon> searchHoaDon(String keyword, int pageNo, int pageSize);
+    public Page<HoaDonDTO> phanTrang2(int page, int pageSize);
+
 }

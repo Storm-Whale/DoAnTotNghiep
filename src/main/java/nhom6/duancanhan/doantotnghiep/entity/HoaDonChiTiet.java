@@ -2,12 +2,9 @@ package nhom6.duancanhan.doantotnghiep.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
@@ -17,10 +14,12 @@ import java.math.BigDecimal;
 @Builder
 @Entity
 @Table(name = "hoa_don_chi_tiet")
-public class HoaDonChiTiet extends BaseEntity {
+public class HoaDonChiTiet extends BaseEntity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(name = "so_luong")
     private int soLuong;
 
