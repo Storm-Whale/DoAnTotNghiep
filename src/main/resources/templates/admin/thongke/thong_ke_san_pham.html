@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <!-- Custom CSS for Select2 Bootstrap 5 theme -->
+    <style>
+        /* Phần chọn */
+        .select2-selection {
+            border: 1px solid #ced4da !important;
+            border-radius: 0.375rem !important;
+            min-height: 38px !important;
+            padding: 0.375rem 0.75rem !important;
+            font-size: 14px;
+        }
+
+        /* Các thẻ đã chọn */
+        .select2-selection__choice {
+            border: none !important;
+            border-radius: 0.25rem !important;
+            color: #212529 !important;
+            margin: 0.1rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+        }
+    </style>
+</head>
+<body class="container-fluid">
+<article th:replace="~{admin/fragments/article :: article}"></article>
+<header th:replace="~{admin/fragments/header :: header}"></header>
+<nav th:replace="~{admin/fragments/nav :: nav}"></nav>
+<section class="page-content">
+    <div class="container my-4">
+        <div class="row g-3" style="font-size: 15px">
+            <!-- Left Section: Top Selling Products -->
+            <div class="col-md-6">
+                <!-- Section: Top Products Input -->
+                <div class="mb-4">
+                    <label for="topProducts" class="form-label">Số lượng sản phẩm hiển thị:</label>
+                    <select class="form-select" id="topProducts">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <h5 class="mt-4">Sản phẩm bán chạy nhất</h5>
+                <ul class="list-group" id="topSellingProducts">
+                    <!-- Example static content for reference -->
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Tên sản phẩm</strong><br>
+                            <small class="text-muted">Tổng tiền: <span>0 VND</span></small>
+                        </div>
+                        <span class="badge bg-success rounded-pill">Số lượng</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Right Section: Filters -->
+            <div class="col-md-6">
+                <!-- Section: Date Filters (Từ ngày và Đến ngày) -->
+                <div class="mb-4">
+                    <h5 class="mt-4">Lọc theo khoảng thời gian</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="startDate" class="form-label">Từ ngày:</label>
+                            <input type="date" class="form-control" id="startDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="endDate" class="form-label">Đến ngày:</label>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Date and Month Filters -->
+                <div class="mb-4">
+                    <h5 class="mt-4">Lọc theo ngày hoặc tháng</h5>
+                    <div class="row g-3">
+                        <!-- Chọn ngày -->
+                        <div class="col-md-6">
+                            <label for="dayInput" class="form-label">Chọn ngày:</label>
+                            <input type="date" class="form-control" id="dayInput">
+                        </div>
+                        <!-- Chọn tháng -->
+                        <div class="col-md-6">
+                            <label for="monthInput" class="form-label">Chọn tháng:</label>
+                            <input type="month" class="form-control" id="monthInput">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Product Selection -->
+                <div class="mb-4">
+                    <label for="tenSanPham" class="form-label">Chọn sản phẩm:</label>
+                    <select class="form-select js-select2" id="tenSanPham" multiple="multiple">
+                        <option th:each="sp : ${sanPhams_S}" th:value="${sp.getId()}" th:text="${sp.getTenSanPham()}"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Chart Display -->
+        <div class="mb-4">
+            <h5 class="mt-4">Biểu đồ bán hàng</h5>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</section>
+
+<!-- jQuery first, then Bootstrap Bundle JS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script th:inline="javascript">
+    var hoaDons = JSON.parse(/*[[${hoaDons}]]*/ '{}');
+    var sanPhams = JSON.parse(/*[[${sanPhams}]]*/ '{}');
+    var hoaDonChiTiets = JSON.parse(/*[[${hoaDonChiTiets}]]*/ '{}');
+    var sanPhamChiTiets = JSON.parse(/*[[${sanPhamChiTiets}]]*/ '{}');
+</script>
+<script th:src="@{/javascript/thong_ke_san_pham.js}"></script>
+</body>
+</html>

@@ -5,13 +5,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "san_pham_chi_tiet")
-public class SanPhamChiTiet extends BaseEntity{
+public class SanPhamChiTiet extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

@@ -91,28 +91,6 @@ body {
     background: var(--page-header-bgColor);
 }
 
-/*In case you prefer an absolutely positioned header that covers the full page height, add these styles*/
-/*body {
-  position: relative;
-}
-
-.page-header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-}*/
-
-/*remove these styles*/
-/*.page-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-}*/
-
 .page-header nav {
     display: flex;
     flex-direction: column;
@@ -122,13 +100,8 @@ body {
 .page-header .logo {
     display: block;
     margin: 0 20px;
-    border-radius: 50%; /* Làm tròn ảnh thành hình tròn */
+    border-radius: 50%;
 }
-
-/*.page-header .logo svg {*/
-/*    max-width: 120px;*/
-/*    fill: var(--white);*/
-/*}*/
 
 .page-header .toggle-mob-menu {
     display: none;
@@ -218,8 +191,6 @@ body {
     background: var(--page-content-blockColor);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
-    /*color: var(--page-content-txtColor);*/
-    /*background: var(--page-content-bgColor);*/
 }
 
 .search-and-user {
@@ -227,7 +198,6 @@ body {
     grid-template-columns: 1fr auto;
     grid-column-gap: 50px;
     align-items: center;
-    /*background: var(--page-content-bgColor);*/
     margin-bottom: 30px;
 }
 
@@ -304,24 +274,6 @@ body {
     grid-gap: 30px;
 }
 
-/*.page-content .grid > article {*/
-/*    display: flex;*/
-/*    left: var(--page-header-width);*/
-/*    width: calc(100% - var(--page-header-width));*/
-/*    min-height: 100vh;*/
-/*    padding: 30px;*/
-/*    background: var(--page-content-blockColor);*/
-/*    border-radius: var(--border-radius);*/
-/*    box-shadow: var(--box-shadow);*/
-/*}*/
-
-/*.page-content .grid > article:first-child,*/
-/*.page-content .grid > article:last-child {*/
-/*    grid-column: 1 / -1;*/
-/*}*/
-
-
-/* MQ RULES
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 @media screen and (max-width: 767px) {
     .page-header,
@@ -341,11 +293,6 @@ body {
     .page-header .logo {
         margin: 0;
     }
-
-    /*.page-header .logo svg {*/
-    /*    width: 83px;*/
-    /*    height: 35px;*/
-    /*}*/
 
     .page-header .toggle-mob-menu {
         display: block;

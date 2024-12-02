@@ -144,7 +144,7 @@ function confirmDelete(event, orderId) {
                 error: function(xhr) {
                     Swal.fire({
                         title: 'Lỗi!',
-                        text: 'Không thể xóa đơn hàng',
+                        text: xhr.responseText,
                         icon: 'error'
                     });
                 }

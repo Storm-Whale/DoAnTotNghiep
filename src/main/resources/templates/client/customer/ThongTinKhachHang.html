@@ -94,7 +94,7 @@
                             <div class="list-group">
                                 <a th:href="@{/client/showInfoCustomer}" class="list-group-item list-group-item-action active">Hồ Sơ</a>
                                 <a th:href="@{/client/showInfoAddress}" class="list-group-item list-group-item-action">Địa Chỉ</a>
-                                <a href="#" class="list-group-item list-group-item-action">Đổi Mật Khẩu</a>
+                                <a th:href="@{/client/showInfoBill}" class="list-group-item list-group-item-action">Đổi Mật Khẩu</a>
                             </div>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                     <div id="ordersCollapse" class="accordion-collapse collapse" aria-labelledby="headingOrders" data-bs-parent="#sidebarAccordion">
                         <div class="accordion-body">
                             <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action">Đơn Mua</a>
+                                <a th:href="@{/client/showInfoBill}" class="list-group-item list-group-item-action">Đơn Mua</a>
                                 <a href="#" class="list-group-item list-group-item-action">Kho Voucher</a>
                             </div>
                         </div>
@@ -131,7 +131,6 @@
                             <label for="name" class="form-label">Tên</label>
                             <input type="text" id="name" class="form-control" name="ten" th:value="${session.user.ten}">
                             <span id="errorName" class="error-message text-danger"></span>
-                            <span class="error-message text-danger" th:if="${err != null}" th:text="${err}"></span>
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>

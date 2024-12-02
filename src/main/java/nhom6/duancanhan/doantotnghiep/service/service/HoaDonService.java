@@ -1,9 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
-import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
-import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

@@ -1,6 +1,5 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
-import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepo;
@@ -24,10 +23,15 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/admin/hoadon")
 public class HoaDonController {
+
     @Autowired
     private HoaDonService hoaDonService;
+
     @Autowired
     private HoaDonChiTietService hoaDonChiTietService;
+
+    @Autowired
+    private ChangeNumberOfDetailProduct changeNumberOfDetailProduct;
 
     @GetMapping("")
     public String getAll(Model model) {
@@ -36,11 +40,7 @@ public class HoaDonController {
 
     @GetMapping("/{pageNo}")
     public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
-
-
-        int pageSize = 5;
-
-
+        int pageSize = 10;
         Page<HoaDon> page = hoaDonService.phanTrang(pageNo, pageSize);
         List<HoaDon> listHD = page.getContent();
         model.addAttribute("hoaDon", new HoaDon());
@@ -65,35 +65,6 @@ public class HoaDonController {
 
         return "/admin/customer/hoadonchitiet"; // Trang hiển thị chi tiết hóa đơn
     }
-
-    // Hiển thị chi tiết hóa đơn
-//    @GetMapping("/detail/{id}")
-//    public String showDetail(@PathVariable("id") Integer id, Model model) {
-//        Optional<HoaDon> hoaDon = hoaDonService.detail(id);
-//        if (hoaDon.isPresent()) {
-//            model.addAttribute("hoaDon", hoaDon.get());
-//            return "/admin/hoadon/HoaDon/Detail";
-//        }
-//        return "redirect:/admin/hoadon";
-//    }
-
-
-//    @PutMapping("/update-status/{id}")
-//    public ResponseEntity<?> updateStatus(@PathVariable("id") Integer id, @RequestBody Map<String, Integer> payload) {
-//        try {
-//            HoaDon hoaDon = hoaDonService.findById(id);
-//            if (hoaDon == null || hoaDon.getTrangThai() != 1) {
-//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hóa đơn không hợp lệ");
-//            }
-//
-//            hoaDon.setTrangThai(3); // Chuyển trạng thái sang "Đang Chuẩn Bị Hàng"
-//            hoaDonService.addHoaDon(hoaDon);
-//            return ResponseEntity.ok("Cập nhật trạng thái thành công");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
-//        }
-//    }
-
 
     @PutMapping("/update-status/{id}")
     public ResponseEntity<?> updateStatus(@PathVariable("id") Integer id, @RequestBody Map<String, Integer> payload) {
@@ -173,20 +144,7 @@ public class HoaDonController {
         }
         return "redirect:/admin/hoadon";
     }
-//    @GetMapping("/search")
-//    public String timKiem(@RequestParam("keyword") String keyword, Model model) {
-//        int pageNo = 1;
-//        int pageSize = 7;
-//        Page<HoaDon> page = hoaDonService.timKiem(keyword, pageNo, pageSize);
-//        List<HoaDon> listHD = page.getContent();
-//        model.addAttribute("hoaDon", new HoaDon());
-//        model.addAttribute("listHD", listHD);
-//        model.addAttribute("keyword", keyword);
-//        model.addAttribute("currentPage", pageNo);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems", page.getTotalElements());
-//        return "/admin/customer/hoadon";
-//    }
+
 @GetMapping("/search")
 public String timKiem(
         @RequestParam("keyword") String keyword,
@@ -210,8 +168,20 @@ public String timKiem(
     return "/admin/customer/hoadon";
 }
 
-
-
-
-
+    @GetMapping(value = "/delete_client/{idHD}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> deleteClient(@PathVariable("idHD") Integer idHD, Model model) {
+        HoaDon hoaDon = hoaDonService.findById(idHD);
+        int trang_thai = hoaDon.getTrangThai();
+        if (trang_thai == 1 || trang_thai == 2) {
+            hoaDon.getHoaDonChiTietList().forEach(hoaDonChiTiet -> {
+                changeNumberOfDetailProduct.updateProductDetailQuantity(hoaDonChiTiet.getSanPhamChiTiet().getId(), hoaDonChiTiet.getSoLuong(), "+");
+            });
+            hoaDon.setTrangThai(6);
+            hoaDonService.updateHoaDon(idHD, hoaDon);
+            return ResponseEntity.ok("Hoá đơn đã được huỷ thành công");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hoá đơn đang được giao, không thể huỷ");
+        }
+    }
 }

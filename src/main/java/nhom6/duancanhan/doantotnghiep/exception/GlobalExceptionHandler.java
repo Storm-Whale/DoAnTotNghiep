@@ -1,60 +1,84 @@
 package nhom6.duancanhan.doantotnghiep.exception;
 
-import nhom6.duancanhan.doantotnghiep.dto.ErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Date;
-
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(DataNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleDataNotFoundException(DataNotFoundException ex, WebRequest webRequest) {
-        String requestUrl = webRequest.getDescription(false);
+    public ModelAndView handleDataNotFoundException(
+            DataNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        logger.error("Data Not Found: {}", request.getRequestURI(), ex);
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .httpStatus(HttpStatus.NOT_FOUND)
-                .message(ex.getMessage())
-                .timestamp(new Date())
-                .detail("Request URL: " + requestUrl)
-                .build();
+        // Tạo ModelAndView cho trang lỗi
+        ModelAndView modelAndView = new ModelAndView("error-page");
+        modelAndView.addObject("errorTitle", "Dữ Liệu Không Tồn Tại");
+        modelAndView.addObject("errorMessage", "Rất tiếc, dữ liệu bạn yêu cầu không tồn tại.");
+        modelAndView.addObject("requestedUrl", request.getRequestURI());
+        modelAndView.setStatus(HttpStatus.NOT_FOUND);
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return modelAndView;
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException ex, WebRequest webRequest) {
-        String requestUrl = webRequest.getDescription(false);
+    public ModelAndView handleDuplicateKeyException(
+            DuplicateKeyException ex,
+            HttpServletRequest request
+    ) {
+        logger.error("Duplicate Key Error: {}", request.getRequestURI(), ex);
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .httpStatus(HttpStatus.CONFLICT)
-                .message("Duplicate key error: " + ex.getMessage())
-                .timestamp(new Date())
-                .detail("Request URL: " + requestUrl)
-                .build();
+        // Tạo ModelAndView cho trang lỗi
+        ModelAndView modelAndView = new ModelAndView("error-page");
+        modelAndView.addObject("errorTitle", "Lỗi Trùng Lặp Dữ Liệu");
+        modelAndView.addObject("errorMessage", "Rất tiếc, dữ liệu bạn nhập đã bị trùng lặp.");
+        modelAndView.addObject("requestedUrl", request.getRequestURI());
+        modelAndView.setStatus(HttpStatus.CONFLICT);
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        return modelAndView;
     }
 
     @ExceptionHandler({DataAccessException.class, JpaSystemException.class})
-    public ResponseEntity<ErrorResponse> handleDatabaseExceptions(RuntimeException e, WebRequest webRequest) {
-        String requestUrl = webRequest.getDescription(false);
+    public ModelAndView handleDatabaseExceptions(
+            RuntimeException e,
+            HttpServletRequest request
+    ) {
+        logger.error("Database Error: {}", request.getRequestURI(), e);
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                .message("Database error: " + e.getMessage())
-                .timestamp(new Date())
-                .detail("Request URL: " + requestUrl)
-                .build();
+        // Tạo ModelAndView cho trang lỗi
+        ModelAndView modelAndView = new ModelAndView("error-page");
+        modelAndView.addObject("errorTitle", "Lỗi Cơ Sở Dữ Liệu");
+        modelAndView.addObject("errorMessage", "Đã xảy ra lỗi trong quá trình xử lý dữ liệu.");
+        modelAndView.addObject("requestedUrl", request.getRequestURI());
+        modelAndView.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return modelAndView;
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ModelAndView handleResourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request) {
+        logger.error("Resource Not Found: {}", request.getRequestURI(), ex);
+
+        // Tạo ModelAndView cho trang lỗi
+        ModelAndView modelAndView = new ModelAndView("error-page");
+        modelAndView.addObject("errorTitle", "Trang Không Tồn Tại");
+        modelAndView.addObject("errorMessage", "Rất tiếc, trang bạn yêu cầu không tồn tại.");
+        modelAndView.addObject("requestedUrl", request.getRequestURI());
+        modelAndView.setStatus(HttpStatus.NOT_FOUND);
+
+        return modelAndView;
     }
 }
 
