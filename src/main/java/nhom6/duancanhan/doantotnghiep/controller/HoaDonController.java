@@ -6,6 +6,7 @@ import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepo;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
+import nhom6.duancanhan.doantotnghiep.util.ChangeNumberOfDetailProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

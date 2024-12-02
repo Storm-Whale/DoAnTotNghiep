@@ -3,7 +3,7 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import jakarta.transaction.Transactional;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
-import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
+//import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPham;
