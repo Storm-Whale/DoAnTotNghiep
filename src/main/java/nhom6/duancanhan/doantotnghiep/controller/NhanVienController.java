@@ -144,16 +144,29 @@ public class NhanVienController {
     }
     @PostMapping("/add")
     public String add(@Valid @ModelAttribute("nhanVien") NhanVien nhanVien,
-                      @RequestParam(value = "anhUrlFile", required = false) MultipartFile anhUrlFile,
+//                      @RequestParam(value = "anhUrlFile", required = false) MultipartFile anhUrlFile,
                       BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            for (FieldError error : result.getFieldErrors()) {
-                model.addAttribute(error.getField(), error.getDefaultMessage());
+        MultipartFile anhUrlFile = nhanVien.getAnhUrlFile();
+        if (anhUrlFile == null || anhUrlFile.isEmpty()) {
+            result.rejectValue("anhUrl", "error.nhanVien", "Vui lòng chọn tệp ảnh.");
+        } else {
+            String contentType = anhUrlFile.getContentType();
+            if (!contentType.startsWith("image/")) {
+                result.rejectValue("anhUrl", "error.nhanVien", "Tệp tải lên không phải là hình ảnh.");
             }
-            model.addAttribute("error", "Kiểm tra lại");
+        }
+
+        if (nhanVienService.isSdtExist(nhanVien.getSdt())) {
+            result.rejectValue("sdt", "error.nhanVien", "Số điện thoại đã tồn tại.");
+        }
+
+        // Nếu có lỗi, thêm tất cả các lỗi vào model để hiển thị
+        if (result.hasErrors()) {
+            model.addAttribute("fieldErrors", result.getFieldErrors());
             return "/admin/nhanvien/adNhanVien";
         }
-        if (anhUrlFile != null && !anhUrlFile.isEmpty()) {
+
+
             try {
                 // Tạo tên file duy nhất bằng UUID
                 String fileName = UUID.randomUUID() + "_" + anhUrlFile.getOriginalFilename();
@@ -177,11 +190,8 @@ public class NhanVienController {
                 model.addAttribute("uploadError", "Lỗi khi tải lên tệp.");
                 return "/admin/nhanvien/adNhanVien";
             }
-        } else {
-            model.addAttribute("uploadError", "Vui lòng chọn tệp ảnh.");
-            return "/admin/nhanvien/adNhanVien";
-        }
-        model.addAttribute("nhanVien", nhanVien);
+
+//        model.addAttribute("nhanVien", nhanVien);
         nhanVienService.addNhanVien(nhanVien);
         return "redirect:/admin/nhanvien";
     }
@@ -196,22 +206,36 @@ public class NhanVienController {
     }
 
     @PostMapping("/update")
-    public String update(@Valid @ModelAttribute("nhanVien") NhanVien nhanVien,
-                         @RequestParam(value = "anhUrlFile", required = false) MultipartFile anhUrlFile
+    public String update(@Valid @ModelAttribute("nhanVien") NhanVien nhanVien
+//                         @RequestParam(value = "anhUrlFile", required = false) MultipartFile anhUrlFile
             , BindingResult result, Model model) throws Exception {
+
+        NhanVien existingNhanVien = nhanVienService.findById(nhanVien.getId());
+        if (existingNhanVien == null) {
+            model.addAttribute("error", "Không tìm thấy khách hàng.");
+            return "/admin/nhanvien/updatenhanvien";
+        }
+        uploadImage.deleteOldImage(existingNhanVien.getAnhUrl());
+
+
+        MultipartFile anhUrlFile = nhanVien.getAnhUrlFile();
+        if (anhUrlFile != null && !anhUrlFile.isEmpty()) {
+            String contentType = anhUrlFile.getContentType();
+            if (!contentType.startsWith("image/")) {
+                result.rejectValue("anhUrl", "error.khachHang", "Tệp tải lên không phải là hình ảnh.");
+            }
+        } else {
+            // Nếu không tải lên tệp mới, giữ ảnh cũ
+            nhanVien.setAnhUrl(existingNhanVien.getAnhUrl());
+        }
+
+
         if (result.hasErrors()) {
             for (FieldError error : result.getFieldErrors()) {
                 model.addAttribute(error.getField(), error.getDefaultMessage());
             }
             return "/admin/nhanvien/updatenhanvien";
         }
-        NhanVien existingNhanVien = nhanVienService.findById(nhanVien.getId());
-        if (existingNhanVien == null) {
-            model.addAttribute("error", "Không tìm thấy khách hàng.");
-            return "/admin/nhanvien/updatenhanvien";
-        }
-
-        uploadImage.deleteOldImage(existingNhanVien.getAnhUrl());
         // Xử lý tệp tải lên (nếu có)
         if (anhUrlFile != null && !anhUrlFile.isEmpty()) {
             try {
@@ -227,7 +251,7 @@ public class NhanVienController {
             // Giữ lại ảnh cũ
             nhanVien.setAnhUrl(existingNhanVien.getAnhUrl());
         }
-        model.addAttribute("nhanVien",nhanVien);
+//        model.addAttribute("nhanVien",nhanVien);
         nhanVienService.updateNhanVien(nhanVien);
         return "redirect:/admin/nhanvien";
     }

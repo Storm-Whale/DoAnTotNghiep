@@ -29,4 +29,6 @@ public interface NhanVienRepository extends JpaRepository<NhanVien,Integer> {
             @Param("keyword") String keyword,
             @Param("trangThai") Integer trangThai,
             Pageable pageable);
+
+    boolean existsBySdt(String sdt);
 }

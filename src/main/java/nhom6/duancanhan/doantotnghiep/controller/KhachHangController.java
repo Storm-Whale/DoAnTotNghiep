@@ -182,32 +182,31 @@ public class KhachHangController {
     @PostMapping("/add")
     public String add(
             @Valid @ModelAttribute("khachHang") KhachHang khachHang,
-            @RequestParam(value = "anhUrlFile", required = false) MultipartFile anhUrlFile,
+//            @RequestParam(value = "anhUrlFile", required = false) MultipartFile anhUrlFile,
             BindingResult result,
             Model model) {
 
-        // Kiểm tra lỗi xác thực
-        if (result.hasErrors()) {
-            for (FieldError error : result.getFieldErrors()) {
-                model.addAttribute(error.getField(), error.getDefaultMessage());
-            }
-            return "/admin/customer/adKhachHang";
-        }
+        MultipartFile anhUrlFile = khachHang.getAnhUrlFile();
         if (anhUrlFile == null || anhUrlFile.isEmpty()) {
-            result.rejectValue("anhUrl", "error.khachHang", "Vui lòng chọn tệp ảnh."); // Thêm thông báo lỗi cho trường ảnh
+            result.rejectValue("anhUrl", "error.khachHang", "Vui lòng chọn tệp ảnh.");
         } else {
-            // Kiểm tra định dạng tệp (nếu cần)
             String contentType = anhUrlFile.getContentType();
             if (!contentType.startsWith("image/")) {
-                result.rejectValue("anhUrl", "error.khachHang", "Tệp tải lên không phải là hình ảnh."); // Thêm thông báo lỗi cho trường ảnh
+                result.rejectValue("anhUrl", "error.khachHang", "Tệp tải lên không phải là hình ảnh.");
             }
         }
+
+        // Kiểm tra số điện thoại đã tồn tại
+        if (khachHangService.isSoDienThoaiExist(khachHang.getSoDienThoai())) {
+            result.rejectValue("soDienThoai", "error.khachHang", "Số điện thoại đã tồn tại.");
+        }
+
+        // Nếu có lỗi, thêm tất cả các lỗi vào model để hiển thị
         if (result.hasErrors()) {
-            for (FieldError error : result.getFieldErrors()) {
-                model.addAttribute(error.getField(), error.getDefaultMessage());
-            }
+            model.addAttribute("fieldErrors", result.getFieldErrors());
             return "/admin/customer/adKhachHang";
         }
+
         // Xử lý tệp tải lên
 
             try {
@@ -252,17 +251,17 @@ public class KhachHangController {
     @PostMapping("/update")
     public String update(
             @Valid @ModelAttribute("khachHang") KhachHang khachHang,
-            @RequestParam(value = "anhUrlFile", required = false) MultipartFile anhUrlFile,
+//            @RequestParam(value = "anhUrlFile", required = false) MultipartFile anhUrlFile,
             BindingResult result,
             Model model) throws Exception{
 
         // Kiểm tra lỗi xác thực
-        if (result.hasErrors()) {
-            for (FieldError error : result.getFieldErrors()) {
-                model.addAttribute(error.getField(), error.getDefaultMessage());
-            }
-            return "/admin/customer/updateKhachHang";
-        }
+//        if (result.hasErrors()) {
+//            for (FieldError error : result.getFieldErrors()) {
+//                model.addAttribute(error.getField(), error.getDefaultMessage());
+//            }
+//            return "/admin/customer/updateKhachHang";
+//        }
 
         // Lấy thông tin khách hàng từ DB để giữ ảnh cũ nếu không có ảnh mới
         KhachHang existingKhachHang = khachHangService.findById(khachHang.getId());
@@ -272,6 +271,24 @@ public class KhachHangController {
         }
 
         uploadImage.deleteOldImage(existingKhachHang.getAnhUrl());
+
+        MultipartFile anhUrlFile = khachHang.getAnhUrlFile();
+        if (anhUrlFile != null && !anhUrlFile.isEmpty()) {
+            String contentType = anhUrlFile.getContentType();
+            if (!contentType.startsWith("image/")) {
+                result.rejectValue("anhUrl", "error.khachHang", "Tệp tải lên không phải là hình ảnh.");
+            }
+        } else {
+            // Nếu không tải lên tệp mới, giữ ảnh cũ
+            khachHang.setAnhUrl(existingKhachHang.getAnhUrl());
+        }
+
+        // Nếu có lỗi, thêm tất cả các lỗi vào model để hiển thị
+        if (result.hasErrors()) {
+            model.addAttribute("fieldErrors", result.getFieldErrors());
+            return "/admin/customer/updateKhachHang";
+        }
+
         // Xử lý tệp tải lên (nếu có)
         if (anhUrlFile != null && !anhUrlFile.isEmpty()) {
             try {

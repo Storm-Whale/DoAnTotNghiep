@@ -6,15 +6,11 @@ import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
-import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepo;
-import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
 import nhom6.duancanhan.doantotnghiep.util.ChangeNumberOfDetailProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -30,6 +26,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+<<<<<<< HEAD
 import java.io.IOException;
 
 import java.io.IOException;
@@ -37,6 +34,10 @@ import java.io.IOException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
+=======
+import java.util.List;
+import java.util.Map;
+>>>>>>> e5d9b1be001ac1eb7c4d26485b88e8708ac0828e
 
 @Controller
 @RequestMapping("/admin/hoadon")

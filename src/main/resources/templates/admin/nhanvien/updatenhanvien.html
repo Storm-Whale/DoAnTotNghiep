@@ -85,6 +85,7 @@
 <nav th:replace="~{admin/fragments/nav :: nav}"></nav>
 
 <section class="page-content">
+    <h3 style="margin-top: 10px; margin-bottom: 10px; text-align: center">Cập Nhập Nhân Viên</h3>
     <form th:action="@{/admin/nhanvien/update}" th:object="${nhanVien}" enctype="multipart/form-data" method="post" class="form-container">
         <div class="form-row">
             <div class="form-group col-sm-6">
@@ -94,7 +95,8 @@
 
             <div class="form-group col-sm-6">
                 <label for="anhUrlFile">Ảnh Đại Diện</label>
-                <input type="file" id="anhUrlFile" name="anhUrlFile" class="form-control">
+                <input type="file" id="anhUrlFile" th:field="*{anhUrlFile}" class="form-control">
+                <span th:if="${#fields.hasErrors('anhUrl')}" th:errors="*{anhUrl}" style="color: red; margin-top: 6px"></span>
                 <img th:if="${nhanVien.anhUrl}" th:src="@{'/' + ${nhanVien.anhUrl}}" alt="Ảnh hiện tại" class="preview-img">
             </div>
 
@@ -117,29 +119,39 @@
             </div>
 
             <div class="form-group col-sm-6">
-                <label>Giới Tính</label>
-                <div>
-                    <label class="radio-inline">
-                        <input type="radio" value="1" th:field="*{gioiTinh}" checked> Nam
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" value="0" th:field="*{gioiTinh}"> Nữ
+                <label class="form-label">Giới Tính</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name=""  value="1" th:field="*{gioiTinh}" checked>
+                    <label class="form-check-label">
+                        Nam
                     </label>
                 </div>
-                <span class="error-text" th:if="${#fields.hasErrors('gioiTinh')}" th:errors="*{gioiTinh}"></span>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name=""  value="0" th:field="*{gioiTinh}">
+                    <label class="form-check-label">
+                        Nu
+                    </label>
+                </div>
+                <span  th:if="${#fields.hasErrors('gioiTinh')}" th:errors="*{gioiTinh}"  style="color: red; margin-top: 10px;margin-bottom: 10px"></span>
+
             </div>
 
+
             <div class="form-group col-sm-6">
-                <label>Trạng Thái</label>
-                <div>
-                    <label class="radio-inline">
-                        <input type="radio" value="0" th:field="*{trangThai}"> Không Hoạt Động
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" value="1" th:field="*{trangThai}"> Hoạt Động
+                <label class="form-label">Trạng Thái</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="" value="0" th:field="*{trangThai}">
+                    <label class="form-check-label">
+                        Khong Hoat Dong
                     </label>
                 </div>
-                <span class="error-text" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"></span>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name=""  value="1" th:field="*{trangThai}">
+                    <label class="form-check-label">
+                        Hoat Dong
+                    </label>
+                </div>
+                <span  th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"  style="color: red; margin-top: 10px;margin-bottom: 10px"></span>
             </div>
 
             <div class="form-group col-sm-6">
@@ -148,8 +160,12 @@
                 <span class="error-text" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div>
+        <button type="submit" class="btn btn-danger">Submit</button>
+
+        </div>
     </form>
+    <a href="/admin/nhanvien"><button style="width: 100px; margin-left: 10px; text-align: center" class="btn btn-danger">Back</button></a>
 
 </section>
 </body>

@@ -75,4 +75,9 @@ public class NhanVienServiceImpl implements NhanVienService {
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy khách hàng với ID: " + id));
     }
 
+    @Override
+    public boolean isSdtExist(String sdt) {
+        return nhanVienRepository.existsBySdt(sdt);
+    }
+
 }

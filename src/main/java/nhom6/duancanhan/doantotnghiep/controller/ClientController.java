@@ -47,6 +47,7 @@ public class ClientController {
     private final ThuongHieuService thuongHieuService;
     private final PhieuGiamGiaService phieuGiamGiaService;
     private final KhachHangRepository khachHangRepository;
+    private final ForgotPasswordService forgotPasswordService;
     private final LichSuHoaDonRepository lichSuHoaDonRepository;
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
@@ -432,6 +433,9 @@ public class ClientController {
                     throw new RuntimeException("Error processing products", e);
                 }
             });
+
+            log.info("Đã gửi mail đến khách hàng với email: {} với hoá đơn: {}", khachHang.getEmail(), hoaDon.getId());
+            forgotPasswordService.sendHoaDon(khachHang.getEmail(), hoaDon.getId());
 
             // Xử lý thanh toán VNPay nếu pttt = 5
             if (pttt == 5) {
