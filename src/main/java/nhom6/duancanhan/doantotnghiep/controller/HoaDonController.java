@@ -36,10 +36,7 @@ import java.io.IOException;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/admin/hoadon")
@@ -71,7 +68,6 @@ public class HoaDonController {
         model.addAttribute("totalItems", page.getTotalElements());
         return "/admin/customer/hoadon";
     }
-
 
 
 
@@ -389,48 +385,7 @@ public class HoaDonController {
         }
     }
 
-//    @GetMapping("/exportID/{id}")
-//    public void exportHoaDonById(@PathVariable Integer id, HttpServletResponse response) throws IOException {
-//        // Set type của file Excel
-//        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-//        String fileName = "YAGI_SHOP_HD_" + id + ".xlsx";
-//        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-//
-//        // Tạo workbook và sheet trong file Excel
-//        try (Workbook workbook = new XSSFWorkbook()) {
-//            Sheet sheet = workbook.createSheet("Hóa Đơn");
-//
-//            // Tạo header
-//            Row header = sheet.createRow(0);
-//            header.createCell(0).setCellValue("ID");
-//            header.createCell(1).setCellValue("Tên Người Nhận");
-//            header.createCell(2).setCellValue("Số Điện Thoại");
-//            header.createCell(3).setCellValue("Địa Chỉ");
-//            header.createCell(4).setCellValue("Phương Thức Thanh Toán");
-//            header.createCell(5).setCellValue("Tổng Tiền");
-//            header.createCell(6).setCellValue("Ghi Chú");
-//            header.createCell(7).setCellValue("Loại Hóa Đơn");
-//            header.createCell(8).setCellValue("Trạng Thái");
-//
-//            // Lấy hóa đơn theo ID
-//            HoaDon hoaDon = hoaDonService.findById(id);
-//            if (hoaDon != null) {
-//                Row row = sheet.createRow(1);
-//                row.createCell(0).setCellValue(hoaDon.getId());
-//                row.createCell(1).setCellValue(hoaDon.getKhachHang() != null ? hoaDon.getKhachHang().getTen() : "Khách Lẻ");
-//                row.createCell(2).setCellValue(hoaDon.getDiaChi() != null ? hoaDon.getDiaChi().getSoDienThoai() : "");
-//                row.createCell(3).setCellValue(hoaDon.getDiaChi() != null ? hoaDon.getDiaChi().getDiaChiChiTiet() : "");
-//                row.createCell(4).setCellValue(hoaDon.getPhuongThucThanhToan() != null ? hoaDon.getPhuongThucThanhToan().getTenPhuongThuc() : "N/A");
-//                row.createCell(5).setCellValue(hoaDon.getTongTien() != null ? hoaDon.getTongTien().doubleValue() : 0.0);
-//                row.createCell(6).setCellValue(hoaDon.getGhiChu() != null ? hoaDon.getGhiChu() : "");
-//                row.createCell(7).setCellValue(hoaDon.getLoaiHoaDon() != null ? hoaDon.getLoaiHoaDon() : "");
-//                row.createCell(8).setCellValue(getTrangThaiText(hoaDon.getTrangThai())); // Hàm chuyển trạng thái thành text
-//            }
-//
-//            // Ghi dữ liệu ra output stream (xuất file)
-//            workbook.write(response.getOutputStream());
-//        }
-//    }
+
 
     @GetMapping("/exportID/{id}")
     public void exportHoaDonById(@PathVariable Integer id, HttpServletResponse response) throws IOException {
@@ -516,5 +471,6 @@ public class HoaDonController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hoá đơn đang được giao, không thể huỷ");
         }
     }
+
 
 }

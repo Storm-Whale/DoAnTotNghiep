@@ -204,10 +204,18 @@
 <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai >= 2 and hoaDon.trangThai <= 6}">
     <td th:text="${hoaDon.id}"></td>
     <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>
-    <td th:text="${hoaDon.khachHang == null ? '' : hoaDon.khachHang.soDienThoai}"></td>
-    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>
+    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.soDienThoai}"></td>
+    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet + ', ' + hoaDon.diaChi.xa + ', ' + hoaDon.diaChi.huyen + ', ' + hoaDon.diaChi.thanhPho}"></td>
+
     <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>
-    <td th:text="${hoaDon.tongTien != null ? hoaDon.tongTien : ''}"></td>
+    <td th:text="${hoaDon.tongTien != null ? hoaDon.tongTien : ''}" ></td>
+
+
+
+
+
+
+
 
 
 
@@ -274,7 +282,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="hoaDon2 : ${listHD2}" th:if="${hoaDon.trangThai == 5}">
+                <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai == 5}">
                     <td th:text="${hoaDon.id}"></td>
                     <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Đã Hoàn Thành'}"></td>
                     <!--                    <td th:text="${hoaDon.sdt != null ? hoaDon.khachHang.getSoDienThoai() : 'N/A'}"></td>-->
@@ -789,7 +797,15 @@
         window.location.href = url;  // Mở URL để tải file Excel
     }
 
+    // Lấy tất cả các td chứa tổng tiền
+    const totalCells = document.querySelectorAll('td.tongTien');
 
+    totalCells.forEach(cell => {
+        let tongTien = parseFloat(cell.textContent.trim());
+        if (!isNaN(tongTien)) {
+            cell.textContent = tongTien.toFixed(2) + ' VNĐ';
+        }
+    });
 
 
 
