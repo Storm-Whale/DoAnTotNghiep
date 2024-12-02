@@ -25,4 +25,6 @@ public interface NhanVienService {
     NhanVien getNhanVienByIdTaiKhoan(Integer idTK);
 
     NhanVien findById(Integer id);
+
+    boolean isSdtExist(String sdt);
 }

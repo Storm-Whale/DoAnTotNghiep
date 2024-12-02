@@ -81,4 +81,5 @@ public class HoaDon extends BaseEntity implements Serializable {
     public void setHoaDonChiTietList(List<HoaDonChiTiet> hoaDonChiTietList) {
         this.hoaDonChiTietList = hoaDonChiTietList;
     }
+
 }

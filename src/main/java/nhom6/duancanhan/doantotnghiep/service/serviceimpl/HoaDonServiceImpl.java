@@ -2,17 +2,21 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 
 import jakarta.transaction.Transactional;
+import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
+<<<<<<< HEAD
 //import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
+=======
+>>>>>>> e5d9b1be001ac1eb7c4d26485b88e8708ac0828e
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
-import nhom6.duancanhan.doantotnghiep.entity.SanPham;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
+import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
+import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepo;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +29,7 @@ import java.util.Optional;
 public class HoaDonServiceImpl implements HoaDonService {
 
     private final HoaDonRepository hoaDonRepository;
+   private HoaDonRepo hoaDonRepo;
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
 
@@ -39,12 +44,20 @@ public class HoaDonServiceImpl implements HoaDonService {
         return hoaDonRepository.findAll();
     }
 
+
     @Override
     public Page<HoaDon> phanTrang(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize);
         return this.hoaDonRepository.findAll(pageable);
     }
-
+<<<<<<< HEAD
+    @Override
+    public Page<HoaDonDTO> phanTrang2(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        return this.hoaDonRepo.findAll(pageable);
+    }
+=======
+>>>>>>> e5d9b1be001ac1eb7c4d26485b88e8708ac0828e
 
     @Override
     public Optional<HoaDon> detail(Integer id) {
@@ -62,43 +75,17 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDonRepository.save(hoaDon);
     }
 
-//    @Override
-//    public Optional<HoaDon> detail(Integer id) {
-//        Optional<HoaDon> hoaDon = hoaDonRepository.findById(id);
-//        return Optional.of(hoaDon.get());
-//    }
-
-
     @Override
     public void deleteHoaDon(Integer id) {
         hoaDonRepository.deleteById(id);
     }
 
-//    @Override
-//    public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
-//        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-//        return hoaDonRepository.findByTenNguoiNhanContaining(keyword, pageable);
-//    }
-@Override
-public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
-    Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-    return hoaDonRepository.findByKeywordInAllFields(keyword, pageable);
-}
+    @Override
+    public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return hoaDonRepository.findByKeywordInAllFields(keyword, pageable);
+    }
 
-
-
-    //    @Override
-//    public void cancelHoaDon(Integer id) {
-//        HoaDon hoaDon = hoaDonRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với id: "+id));
-//        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findHoaDonChiTietById(id);
-//        hoaDonChiTietList.forEach(hoaDonChiTiet -> {
-//            SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
-//            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSoLuong());
-//            sanPhamChiTietRepository.save(sanPhamChiTiet);
-//        });
-//        hoaDonRepository.delete(hoaDon);
-//    }
     @Transactional
     @Override
     public void cancelHoaDon(Integer id) {
@@ -125,8 +112,9 @@ public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
 
     @Override
     public HoaDon findById(Integer id) {
-        return hoaDonRepository.findById(id).orElse(null);
+        return hoaDonRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Không tìm thấy hoá đơn với id : " + id));
     }
+
     @Override
     public List<PhieuGiamGiaHoaDonDTO> getHoaDonByPhieuGiamGia(Integer phieuGiamGiaId) {
         return hoaDonRepository.findHoaDonByPhieuGiamGia(phieuGiamGiaId);
@@ -141,4 +129,42 @@ public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
     public List<HoaDon> findByNhanVienId(Integer nhanVienId) {
         return hoaDonRepository.findByNhanVienId(nhanVienId);
     }
+    @Override
+    public Page<HoaDon> findHoaDonByStatus(String status, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+
+        if ("all".equals(status)) {
+            // Nếu trạng thái là "all", trả về tất cả hóa đơn
+            return hoaDonRepository.findAll(pageable);
+        } else {
+            // Nếu không phải "all", lọc theo trạng thái
+            int trangThai = Integer.parseInt(status);
+            return hoaDonRepository.findByTrangThai(trangThai, pageable);
+        }
+    }
+    @Override
+    public Page<HoaDon> findHoaDonByLoaiHoaDon(String loaiHoaDon, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+
+        if ("all".equals(loaiHoaDon)) {
+            return hoaDonRepository.findAll(pageable);
+        } else {
+            return hoaDonRepository.findByLoaiHoaDon(loaiHoaDon, pageable);
+        }
+    }
+    @Override
+    public Page<HoaDon> searchHoaDon(String keyword, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+
+        // Nếu không có từ khóa tìm kiếm, trả về tất cả các hóa đơn
+        if (keyword.isEmpty()) {
+            return hoaDonRepository.findAll(pageable);
+        } else {
+            // Tìm kiếm hóa đơn theo tên khách hàng hoặc số điện thoại
+            return hoaDonRepository.searchByKeyword(keyword, pageable);
+        }
+    }
+
+
+
 }

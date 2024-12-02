@@ -12,8 +12,66 @@
     <link rel="icon" href="/img/Logoyagi2.png">
 </head>
 <body>
+<!--<div id="wrapper">-->
+<!--    <form action="#" th:action="@{/login/dangkytk}" method="post" id="form-register">-->
+<!--        <h1 class="form-heading">Đăng Ký</h1>-->
+<!--        <div class="form-group">-->
+<!--            <i class="far fa-user"></i>-->
+<!--            <input type="text" name="ten" class="form-input" placeholder="Họ và tên" required>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <i class="fas fa-calendar-alt"></i>-->
+<!--            <input type="date" name="ngaySinh" class="form-input" placeholder="Ngày sinh" required>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <i class="fas fa-venus-mars"></i>-->
+<!--            <select name="gioiTinh" class="form-input" required>-->
+<!--                <option value="" disabled selected>Chọn giới tính</option>-->
+<!--                <option value="1">Nam</option>-->
+<!--                <option value="0">Nữ</option>-->
+<!--            </select>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <i class="fas fa-phone"></i>-->
+<!--            <input type="text" name="soDienThoai" class="form-input" placeholder="Số điện thoại" required>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <i class="fas fa-envelope"></i>-->
+<!--            <input type="email" name="email" class="form-input" placeholder="Email" required>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <i class="far fa-user"></i>-->
+<!--            <input type="text" name="tenDangNhap" class="form-input" placeholder="Tên đăng nhập" required>-->
+<!--        </div>-->
+<!--&lt;!&ndash;        <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;            <i class="fas fa-key"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;            <input type="password" name="mat_khau" class="form-input" placeholder="Mật khẩu" required>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                <span class="show-btn"><i class="fas fa-eye"></i></span>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--        <div class="form-group position-relative">-->
+<!--            <i class="fas fa-key"></i>-->
+<!--            <input type="password" name="mat_khau" class="form-input" placeholder="Mật khẩu" required>-->
+<!--            <span id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">-->
+<!--        <i class="far fa-eye"></i>-->
+<!--    </span>-->
+<!--        </div>-->
+
+
+<!--        &lt;!&ndash; Trường ẩn để đặt trạng thái tài khoản là 1 &ndash;&gt;-->
+<!--        <input type="hidden" name="trangThai" value="1">-->
+
+<!--        <input type="submit" value="Đăng ký" class="form-submit">-->
+<!--        <div class="form-footer">-->
+<!--            <p>Đã có tài khoản? <a href="/login/login-client" class="login-link">Đăng nhập ngay</a></p>-->
+<!--        </div>-->
+<!--    </form>-->
+
+
+<!--</div>-->
 <div id="wrapper">
-    <form action="#" th:action="@{/login/dangkytk}" method="post" id="form-register">
+    <form action="#" method="post" id="form-register">
         <h1 class="form-heading">Đăng Ký</h1>
         <div class="form-group">
             <i class="far fa-user"></i>
@@ -21,7 +79,7 @@
         </div>
         <div class="form-group">
             <i class="fas fa-calendar-alt"></i>
-            <input type="date" name="ngaySinh" class="form-input" placeholder="Ngày sinh" required>
+            <input type="date" name="ngaySinh" class="form-input" required>
         </div>
         <div class="form-group">
             <i class="fas fa-venus-mars"></i>
@@ -43,31 +101,25 @@
             <i class="far fa-user"></i>
             <input type="text" name="tenDangNhap" class="form-input" placeholder="Tên đăng nhập" required>
         </div>
-<!--        <div class="form-group">-->
-<!--            <i class="fas fa-key"></i>-->
-<!--            <input type="password" name="mat_khau" class="form-input" placeholder="Mật khẩu" required>-->
-
-<!--                <span class="show-btn"><i class="fas fa-eye"></i></span>-->
-
-<!--        </div>-->
         <div class="form-group position-relative">
             <i class="fas fa-key"></i>
             <input type="password" name="mat_khau" class="form-input" placeholder="Mật khẩu" required>
-            <span id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
-        <i class="far fa-eye"></i>
-    </span>
+            <span id="togglePassword" style="position: absolute; right: 40px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+                <i class="far fa-eye"></i>
+            </span>
         </div>
 
-
-        <!-- Trường ẩn để đặt trạng thái tài khoản là 1 -->
+        <!-- Trạng thái tài khoản -->
         <input type="hidden" name="trangThai" value="1">
 
+        <!-- Nút đăng ký -->
         <input type="submit" value="Đăng ký" class="form-submit">
         <div class="form-footer">
             <p>Đã có tài khoản? <a href="/login/login-client" class="login-link">Đăng nhập ngay</a></p>
         </div>
     </form>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -89,6 +141,75 @@
         }
     };
 
+    document.getElementById('form-register').addEventListener('submit', function (e) {
+        // Lấy tất cả input cần kiểm tra
+        const ten = document.querySelector('input[name="ten"]');
+        const ngaySinh = document.querySelector('input[name="ngaySinh"]');
+        const gioiTinh = document.querySelector('select[name="gioiTinh"]');
+        const soDienThoai = document.querySelector('input[name="soDienThoai"]');
+        const email = document.querySelector('input[name="email"]');
+        const tenDangNhap = document.querySelector('input[name="tenDangNhap"]');
+        const matKhau = document.querySelector('input[name="mat_khau"]');
+
+        // Xóa thông báo lỗi trước đó
+        const errorMessages = document.querySelectorAll('.error-message');
+        errorMessages.forEach((msg) => msg.remove());
+
+        // Biến kiểm tra form hợp lệ
+        let isValid = true;
+
+        // Hàm thêm thông báo lỗi
+        function addErrorMessage(input, message) {
+            const error = document.createElement('p');
+            error.className = 'error-message';
+            error.style.color = 'red';
+            error.textContent = message;
+            input.parentNode.appendChild(error);
+        }
+
+        // Kiểm tra từng trường
+        if (!ten.value.trim()) {
+            isValid = false;
+            addErrorMessage(ten, 'Họ và tên không được để trống.');
+        }
+
+        if (!ngaySinh.value.trim()) {
+            isValid = false;
+            addErrorMessage(ngaySinh, 'Ngày sinh không được để trống.');
+        }
+
+        if (!gioiTinh.value) {
+            isValid = false;
+            addErrorMessage(gioiTinh, 'Vui lòng chọn giới tính.');
+        }
+
+        const phoneRegex = /^(0|\+84)\d{9,10}$/;
+        if (!phoneRegex.test(soDienThoai.value.trim())) {
+            isValid = false;
+            addErrorMessage(soDienThoai, 'Số điện thoại không hợp lệ.');
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.value.trim())) {
+            isValid = false;
+            addErrorMessage(email, 'Email không hợp lệ.');
+        }
+
+        if (!tenDangNhap.value.trim()) {
+            isValid = false;
+            addErrorMessage(tenDangNhap, 'Tên đăng nhập không được để trống.');
+        }
+
+        if (matKhau.value.trim().length < 6) {
+            isValid = false;
+            addErrorMessage(matKhau, 'Mật khẩu phải có ít nhất 6 ký tự.');
+        }
+
+        // Ngăn form gửi nếu có lỗi
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
 </script>
 </body>
 </html>

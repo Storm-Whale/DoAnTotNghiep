@@ -73,7 +73,7 @@
   }
 
   .form-submit-btn {
-    margin-top: 20px;
+    margin-top: 10px;
     display: inline-block;
   }
 
@@ -85,12 +85,14 @@
 <nav th:replace="~{admin/fragments/nav :: nav}"></nav>
 
 <section class="page-content">
+  <h3 style="margin-top: 10px; margin-bottom: 10px; text-align: center">Thêm Mới Nhân Viên</h3>
   <form th:action="@{/admin/nhanvien/add}" th:object="${nhanVien}" enctype="multipart/form-data" method="post" class="form-container">
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
-          <label>Ảnh Đại Diện</label>
-          <input type="file" name="anhUrlFile" class="form-control" />
+          <label class="form-label">Ảnh Đại Diện</label>
+          <input type="file" th:field="*{anhUrlFile}" class="form-control" />
+          <span th:if="${#fields.hasErrors('anhUrl')}" th:errors="*{anhUrl}" style="color: red; margin-top: 6px"/>
           <div class="preview-image">
             <img th:if="${nhanVien.anhUrl}" th:src="@{'/' + ${nhanVien.anhUrl}}" alt="Ảnh Nhân Viên" />
           </div>
@@ -138,14 +140,6 @@
 
       <div class="col-sm-6">
         <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-control" th:field="*{email}">
-          <span class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-        </div>
-      </div>
-
-      <div class="col-sm-6">
-        <div class="form-group">
           <label class="form-label">Trạng Thái</label>
           <div class="form-check">
             <input class="form-check-input" type="radio" value="0" th:field="*{trangThai}">
@@ -158,9 +152,21 @@
           <span class="error-message" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"></span>
         </div>
       </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" th:field="*{email}">
+          <span class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+        </div>
+      </div>
     </div>
-    <button class="btn btn-primary form-submit-btn">Submit</button>
+    <div>
+    <button class="btn btn-danger form-submit-btn">Submit</button>
+
+    </div>
   </form>
+  <a href="/admin/nhanvien"><button style="margin-left: 10px;margin-top:10px;text-align: center" class="btn btn-danger form-submit-btn">Back</button></a>
 </section>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

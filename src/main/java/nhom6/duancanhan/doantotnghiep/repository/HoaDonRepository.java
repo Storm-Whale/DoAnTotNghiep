@@ -16,6 +16,7 @@ import java.util.List;
 public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     Page<HoaDon> findByTenNguoiNhanContaining(String keyword, Pageable pageable);
 
+
     // Lấy hóa đơn đầu tiên (theo thứ tự tăng dần của ID)
     HoaDon findFirstByOrderByIdAsc();
 
@@ -38,6 +39,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
 
     List<HoaDon> findByNguoiTao(NhanVien nguoiTao);
 
+
     // Hoặc truy vấn theo ID của NhanVien
     @Query("SELECT h FROM HoaDon h WHERE h.nguoiTao.id = :nhanVienId")
     List<HoaDon> findByNhanVienId(@Param("nhanVienId") Integer nhanVienId);
@@ -51,25 +53,29 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findHoaDonByKhachHangId(Integer khachHangId);
     List<HoaDon> findHoaDonByKhachHangIdAndTrangThai(Integer khachHangId, int trangThai);
 
-//    @Query("SELECT h FROM HoaDon h " +
-//            "WHERE (LOWER(h.tenNguoiNhan) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-//            "LOWER(h.sdt) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-//            "LOWER(h.emailNguoiNhan) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-//            "LOWER(h.diaChi.diaChiChiTiet) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-//            "LOWER(h.phuongThucThanhToan.tenPhuongThuc) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-//            "CAST(h.tongTien AS string) LIKE :keyword OR " +  // Chuyển đổi tongTien thành chuỗi
-//            "LOWER(h.ghiChu) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-//            "CAST(h.trangThai AS string) LIKE :keyword)") // Chuyển đổi trangThai thành chuỗi
-//    Page<HoaDon> findByKeywordInAllFields(@Param("keyword") String keyword, Pageable pageable);
-@Query("SELECT h FROM HoaDon h " +
-        "WHERE (h.tenNguoiNhan LIKE CONCAT('%', :keyword, '%') OR " +
-        "h.sdt LIKE CONCAT('%', :keyword, '%') OR " +
-        "h.emailNguoiNhan LIKE CONCAT('%', :keyword, '%') OR " +
-        "h.diaChi.diaChiChiTiet LIKE CONCAT('%', :keyword, '%') OR " +
-        "h.phuongThucThanhToan.tenPhuongThuc LIKE CONCAT('%', :keyword, '%') OR " +
-        "CAST(h.tongTien AS string) LIKE :keyword OR " +
-        "h.ghiChu LIKE CONCAT('%', :keyword, '%') OR " +
-        "CAST(h.trangThai AS string) LIKE :keyword)")
-Page<HoaDon> findByKeywordInAllFields(@Param("keyword") String keyword, Pageable pageable);
+
+//    @Query("SELECT hd FROM HoaDon hd JOIN hd.diaChi dc JOIN hd.phuongThucThanhToan ptt WHERE " +
+//            "(hd.tenNguoiNhan LIKE %:keyword% OR hd.sdt LIKE %:keyword% OR hd.emailNguoiNhan LIKE %:keyword% OR " +
+//            "dc.diaChiChiTiet LIKE %:keyword% OR ptt.tenPhuongThuc LIKE %:keyword% OR " +
+//            "CAST(hd.tongTien AS string) LIKE :keyword OR hd.ghiChu LIKE %:keyword%) " +
+//            "AND (:sdt IS NULL OR hd.sdt LIKE %:sdt%) " +
+//            "AND (:tenNguoiNhan IS NULL OR hd.tenNguoiNhan LIKE %:tenNguoiNhan%)")
+//    Page<HoaDon> findByKeyword(@Param("keyword") String keyword, @Param("sdt") String sdt, @Param("tenNguoiNhan") String tenNguoiNhan, Pageable pageable);
+//Page<HoaDon> findByKeywordInAllFields(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT hd FROM HoaDon hd JOIN hd.diaChi dc JOIN hd.phuongThucThanhToan ptt WHERE " +
+            "(hd.tenNguoiNhan LIKE %:keyword% OR hd.sdt LIKE %:keyword% OR hd.emailNguoiNhan LIKE %:keyword% OR " +
+            "dc.diaChiChiTiet LIKE %:keyword% OR ptt.tenPhuongThuc LIKE %:keyword% OR " +
+            "CAST(hd.tongTien AS string) LIKE %:keyword% OR hd.ghiChu LIKE %:keyword%)")
+    Page<HoaDon> findByKeywordInAllFields(@Param("keyword") String keyword, Pageable pageable);
+        // Custom query with conditional handling of 'all'
+        Page<HoaDon> findByTrangThai(int trangThai, Pageable pageable);
+
+
+    @Query("SELECT h FROM HoaDon h WHERE (:loaiHoaDon = 'all' OR h.loaiHoaDon = :loaiHoaDon)")
+    Page<HoaDon> findByLoaiHoaDon(@Param("loaiHoaDon") String loaiHoaDon, Pageable pageable);
+    @Query("SELECT h FROM HoaDon h JOIN h.khachHang k " +
+            "WHERE (k.soDienThoai LIKE %:keyword% OR k.ten LIKE %:keyword%)")
+    Page<HoaDon> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
 }

@@ -5,11 +5,13 @@ import nhom6.duancanhan.doantotnghiep.dto.TaiKhoanDTO;
 
 public interface ForgotPasswordService {
 
+    String sendResetCode(String email);
 
-    public String sendResetCode(String email);
+    String resetPassword(String resetCode, String newPassword);
 
-    public String resetPassword(String resetCode, String newPassword);
+    TaiKhoanDTO findByResetCode(String resetCode);
 
-    public TaiKhoanDTO findByResetCode(String resetCode);
-    public TaiKhoanDTO saveTaiKhoan(TaiKhoanDTO taiKhoan);
+    TaiKhoanDTO saveTaiKhoan(TaiKhoanDTO taiKhoan);
+
+    void sendHoaDon(String email, int idHoaDon);
 }

@@ -55,7 +55,7 @@
         <tr th:each="nv: ${listNV}">
             <td th:text="${nv.id}"></td>
             <td>
-                <img th:src="@{/{filename}(filename=${nv.anhUrl})}" alt="Hình ảnh khách hàng" height="60px" />
+                <img th:src="@{/{filename}(filename=${nv.anhUrl})}" alt="Hình ảnh khách hàng" height="60px" style="border-radius: 50%;"/>
             </td>
             <td th:text="${nv.ten}"></td>
             <td th:text="${nv.ngaySinh}"></td>

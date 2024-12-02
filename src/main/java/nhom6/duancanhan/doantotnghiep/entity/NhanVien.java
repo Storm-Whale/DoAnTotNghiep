@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,6 +24,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -39,7 +41,7 @@ public class NhanVien {
 
     @Column(name = "ten")
     @NotBlank(message = "Tên không trống")
-    @Size(max = 30, message = "Name must be 30 characters")
+    @Size(max = 50, message = "Ten không được vượt quá 50 ký tự")
     private String ten;
 
     @Column(name = "ngay_sinh")
@@ -56,12 +58,14 @@ public class NhanVien {
 
     @Column(name = "sdt")
 //    @NotBlank(message = "SDT không trống")
+    @Size(max = 50, message = "TDT không được vượt quá 50 ký tự")
     @Pattern(regexp = "^[0-9]{10}$", message = "SDT phải là 10 số và không được trống")
     private String sdt;
 
     @Column(name = "email")
     @NotBlank(message = "Email không trống")
     @Email(message = "Vui lòng cung cấp địa chỉ email hợp lệ")
+    @Size(max = 50, message = "Email không được vượt quá 50 ký tự")
     private String email;
 
     @Column(name = "anh_url")
@@ -98,4 +102,7 @@ public class NhanVien {
     protected void onUpdateUpdate() {
         ngaySua = LocalDate.now();
     }
+
+    @Transient
+    private MultipartFile anhUrlFile;
 }

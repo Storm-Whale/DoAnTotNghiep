@@ -1,9 +1,12 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
+import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.DiaChiRepository;
+import nhom6.duancanhan.doantotnghiep.repository.KhachHangRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.DiaChiService;
+import nhom6.duancanhan.doantotnghiep.service.service.KhachHangService;
 import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +22,9 @@ public class DiaChiServiceImpl implements DiaChiService {
 
     @Autowired
     private DiaChiRepository diaChiRepossitory;
+
+    @Autowired
+    private KhachHangRepository khachHangRepository;
 
     @Override
     public List<DiaChi> getAll() {
@@ -67,5 +73,18 @@ public class DiaChiServiceImpl implements DiaChiService {
                 () -> diaChiRepossitory.findByKhachHangId(idKhachHang, trangThai)
                 , "Lấy dữ liệu địa chỉ từ cơ sở dữ liệu bị lỗi"
         );
+    }
+
+    @Override
+    public DiaChi newDiaChi(String diaChi, String tenNguoiNhan, String soDienThoai, Integer idKhachHang) {
+        KhachHang khachHang = idKhachHang == null ? null : khachHangRepository.findById(idKhachHang).orElseThrow(
+                () -> new DataNotFoundException("Không tìm thấy khách hàng với đi : "  + idKhachHang)
+        );
+        return diaChiRepossitory.save(DiaChi.builder()
+                .diaChiChiTiet(diaChi)
+                .soDienThoai(soDienThoai)
+                .tenKhachHang(tenNguoiNhan)
+                .khachHang(khachHang)
+                .build());
     }
 }

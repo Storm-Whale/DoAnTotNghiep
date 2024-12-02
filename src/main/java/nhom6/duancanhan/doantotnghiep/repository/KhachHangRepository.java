@@ -37,4 +37,6 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
             @Param("keyword") String keyword,
             @Param("trangThai") Integer trangThai,
             Pageable pageable);
+
+    boolean existsBySoDienThoai(String soDienThoai);
 }
