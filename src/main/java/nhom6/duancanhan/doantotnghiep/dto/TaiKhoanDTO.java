@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nhom6.duancanhan.doantotnghiep.entity.VaiTro;
 
 import java.time.LocalDate;
 
@@ -16,6 +15,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "tai_khoan")
 public class TaiKhoanDTO {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -25,8 +25,10 @@ public class TaiKhoanDTO {
 
     @Column(name = "mat_khau")
     private String mat_khau;
+
     @Column(name = "ngay_tao")
     private LocalDate ngayTao;
+
     @Column(name = "ngay_sua")
     private LocalDate ngaySua;
 
@@ -35,7 +37,7 @@ public class TaiKhoanDTO {
 
     @Column(name = "reset_code")
     private String resetCode;
+
     @Column(name = "id_vai_tro")
     Integer idvt;
-
 }

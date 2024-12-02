@@ -26,7 +26,8 @@ public interface HoaDonService {
     Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize);
 
     void cancelHoaDon(Integer id);
-    public HoaDon findById(Integer id);
+
+    HoaDon findById(Integer id);
 
     List<PhieuGiamGiaHoaDonDTO> getHoaDonByPhieuGiamGia(Integer phieuGiamGiaId);
 

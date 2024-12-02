@@ -3,16 +3,14 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import jakarta.transaction.Transactional;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
-import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
-import nhom6.duancanhan.doantotnghiep.entity.SanPham;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
+import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +43,6 @@ public class HoaDonServiceImpl implements HoaDonService {
         return this.hoaDonRepository.findAll(pageable);
     }
 
-
     @Override
     public Optional<HoaDon> detail(Integer id) {
         return Optional.empty();
@@ -62,43 +59,17 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDonRepository.save(hoaDon);
     }
 
-//    @Override
-//    public Optional<HoaDon> detail(Integer id) {
-//        Optional<HoaDon> hoaDon = hoaDonRepository.findById(id);
-//        return Optional.of(hoaDon.get());
-//    }
-
-
     @Override
     public void deleteHoaDon(Integer id) {
         hoaDonRepository.deleteById(id);
     }
 
-//    @Override
-//    public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
-//        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-//        return hoaDonRepository.findByTenNguoiNhanContaining(keyword, pageable);
-//    }
-@Override
-public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
-    Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-    return hoaDonRepository.findByKeywordInAllFields(keyword, pageable);
-}
+    @Override
+    public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return hoaDonRepository.findByKeywordInAllFields(keyword, pageable);
+    }
 
-
-
-    //    @Override
-//    public void cancelHoaDon(Integer id) {
-//        HoaDon hoaDon = hoaDonRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với id: "+id));
-//        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findHoaDonChiTietById(id);
-//        hoaDonChiTietList.forEach(hoaDonChiTiet -> {
-//            SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
-//            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSoLuong());
-//            sanPhamChiTietRepository.save(sanPhamChiTiet);
-//        });
-//        hoaDonRepository.delete(hoaDon);
-//    }
     @Transactional
     @Override
     public void cancelHoaDon(Integer id) {
@@ -125,8 +96,9 @@ public Page<HoaDon> timKiem(String keyword, int pageNo, int pageSize) {
 
     @Override
     public HoaDon findById(Integer id) {
-        return hoaDonRepository.findById(id).orElse(null);
+        return hoaDonRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Không tìm thấy hoá đơn với id : " + id));
     }
+
     @Override
     public List<PhieuGiamGiaHoaDonDTO> getHoaDonByPhieuGiamGia(Integer phieuGiamGiaId) {
         return hoaDonRepository.findHoaDonByPhieuGiamGia(phieuGiamGiaId);
