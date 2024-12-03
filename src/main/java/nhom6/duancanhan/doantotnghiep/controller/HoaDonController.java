@@ -26,18 +26,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-<<<<<<< HEAD
+
 import java.io.IOException;
 
 import java.io.IOException;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.*;
-=======
+
 import java.util.List;
 import java.util.Map;
->>>>>>> e5d9b1be001ac1eb7c4d26485b88e8708ac0828e
+
 
 @Controller
 @RequestMapping("/admin/hoadon")
@@ -182,87 +181,6 @@ public class HoaDonController {
         }
         return "redirect:/admin/hoadon";
     }
-
-//    @GetMapping("/search")
-//    public String timKiem(@RequestParam("keyword") String keyword, Model model) {
-//        int pageNo = 1;
-//        int pageSize = 7;
-//        Page<HoaDon> page = hoaDonService.timKiem(keyword, pageNo, pageSize);
-//        List<HoaDon> listHD = page.getContent();
-//        model.addAttribute("hoaDon", new HoaDon());
-//        model.addAttribute("listHD", listHD);
-//        model.addAttribute("keyword", keyword);
-//        model.addAttribute("currentPage", pageNo);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems", page.getTotalElements());
-//        return "/admin/customer/hoadon";
-//    }
-//@GetMapping("/search")
-//public String timKiem(
-//        @RequestParam("keyword") String keyword,
-//        @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
-//        @RequestParam(value = "pageSize", defaultValue = "7") int pageSize,
-//        Model model) {
-//
-//    // Tìm kiếm với các tham số đã cung cấp
-//    Page<HoaDon> page = hoaDonService.timKiem(keyword, pageNo, pageSize);
-//    List<HoaDon> listHD = page.getContent();
-//
-//    // Thêm các đối tượng cần thiết vào model để hiển thị
-//    model.addAttribute("hoaDon", new HoaDon());
-//    model.addAttribute("listHD", listHD);
-//    model.addAttribute("keyword", keyword);
-//    model.addAttribute("currentPage", pageNo);
-//    model.addAttribute("totalPages", page.getTotalPages());
-//    model.addAttribute("totalItems", page.getTotalElements());
-//
-//    // Trả về trang cần hiển thị
-//    return "/admin/customer/hoadon";
-//}
-
-
-//    @GetMapping("/filter")
-//    public String getFilteredHoaDon(@RequestParam(name = "status", required = false) String status, Model model) {
-//        List<HoaDon> listHD;
-//
-//        if (status == null || status.equals("all")) {
-//            listHD = hoaDonService.getAll();
-//        } else {
-//            int trangThai = Integer.parseInt(status);
-//            listHD = hoaDonService.getHoaDonByTrangThai(trangThai);
-//        }
-//
-//        model.addAttribute("listHD", listHD);
-//        model.addAttribute("status", status);
-//        return "hoa-don"; // Tên file HTML
-//    }
-//@GetMapping("/filter")
-//public String getFilteredHoaDon(
-//        @RequestParam(name = "status", required = false, defaultValue = "all") String status,
-
-
-//@GetMapping("/search")
-//public String timKiem(
-//        @RequestParam("keyword") String keyword,
-//
-//        @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
-//        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-//        Model model) {
-//
-//    // Lấy dữ liệu từ service với phân trang
-//    Page<HoaDon> page = hoaDonService.findHoaDonByStatus(status, pageNo, pageSize);
-//    List<HoaDon> listHD = page.getContent();
-//
-//    // Thêm các thuộc tính vào model để hiển thị
-//    model.addAttribute("hoaDon", new HoaDon());
-//    model.addAttribute("listHD", listHD);
-//    model.addAttribute("status", status);
-//    model.addAttribute("currentPage", pageNo);
-//    model.addAttribute("totalPages", page.getTotalPages());
-//    model.addAttribute("totalItems", page.getTotalElements());
-//
-//    return "/admin/customer/hoadon"; // Chỉnh sửa đường dẫn đến trang cần hiển thị
-//}
 
     @GetMapping("/filter")
     public String getFilteredHoaDon(

@@ -269,7 +269,7 @@ public class TaiQuayController {
 //        }
         HoaDon hoaDon = new HoaDon();
         hoaDon.setTrangThai(1); // Set trạng thái mới tạo
-        hoaDon.setLoaiHoaDon("Tại quầy");
+        hoaDon.setLoaiHoaDon("Tai quay");
         hoaDon.setNguoiTao(nhanVien);
         hoaDonRepository.save(hoaDon); // Lưu vào cơ sở dữ liệu
         return ResponseEntity.ok(hoaDon);
@@ -761,8 +761,8 @@ public class TaiQuayController {
                 return ResponseEntity.badRequest().body("ID hóa đơn không hợp lệ");
             }
             hoaDonService.cancelHoaDon(id);
+            idHoaDon = 1;
             return ResponseEntity.ok("Hóa đơn đã được hủy thành công");
-//            idHoaDon = null;
         } catch (IllegalArgumentException e) {
             // Ghi log thông tin chi tiết
             System.err.println("Lỗi: " + e.getMessage());

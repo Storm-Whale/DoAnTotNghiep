@@ -74,8 +74,8 @@ $(document).ready(function () {
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             }).then(() => {
-                                $invoiceItem.remove();
-                                // window.location.href = "/admin/taiquay";
+                                // $invoiceItem.remove();
+                                window.location.href = "/admin/taiquay";
                             });
                         },
                         error: function (xhr) {

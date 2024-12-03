@@ -154,9 +154,11 @@
 
                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-                <a class="taiquay"><a th:href="@{/admin/taiquay/sanpham#sanpham}">
+                <a class="taiquay">
+                    <a href="#" onclick="checkAddProduct(); return false;" th:href="@{/admin/taiquay/sanpham#sanpham}">
                     <button class="btn btn-light">Thêm Sản Phẩm</button>
-                </a></a>
+                    </a>
+                </a>
             </div>
             <div class="container-row">
                 <div class="custom-table">
@@ -316,15 +318,15 @@
                             <input type="hidden" name="idHoaDon" th:value="${hoaDon.id}" />
 
                             <label for="diaChi">Địa chỉ:</label>
-                            <input type="text" id="diaChi" name="diaChi" th:value="${hoaDon.diaChi.diaChiChiTiet}" />
+                            <input type="text" id="diaChi" name="diaChi" th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : ''}" />
 
                             <label for="soDienThoai1">Số điện thoại:</label>
                             <input type="text" id="soDienThoai1" name="soDienThoai"
-                                   th:value="${hoaDon.diaChi.soDienThoai}" />
+                                   th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.soDienThoai : ''}" />
 
 
                             <label for="tenNguoiNhan">Tên người nhận:</label>
-                            <input type="text" id="tenNguoiNhan" name="tenNguoiNhan" th:value="${hoaDon.diaChi.tenKhachHang}" />
+                            <input type="text" id="tenNguoiNhan" name="tenNguoiNhan" th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.tenKhachHang : ''}" />
 
                             <label for="ghiChu">Ghi chú:</label>
                             <input type="text" id="ghiChu" name="ghiChu" th:value="${hoaDon.ghiChu}">
@@ -640,25 +642,27 @@
     // Hàm toggle camera khi nhấn nút Quét QR
     function toggleCamera() {
         const currentUrl = window.location.href;
-        if (currentUrl.includes("http://localhost:8080/admin/taiquay")) {
-            // Kiểm tra nếu idHoaDon chưa được chọn hoặc là giá trị mặc định (1)
-            if (!idHoaDon || idHoaDon === 1) {
-                alert("Vui lòng chọn hóa đơn trước khi quét QR.");
-                return;
-            }
-            // Thực hiện mở/tắt camera
-            if (isCameraOn) {
-                // Tắt camera
-                video.style.display = "none";
-                canvas.style.display = "none";
-                isCameraOn = false;
-                console.log("Camera closed");
-            } else {
-                // Bật camera
-                startCamera();
-                isCameraOn = true;
-                console.log("Camera opened");
-            }
+        if (currentUrl === "http://localhost:8080/admin/taiquay") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Chọn hóa đơn trước',
+                text: 'Vui lòng chọn hóa đơn trước khi quét QR.',
+                confirmButtonText: 'OK'
+            });
+            return; // Không cho phép quét QR
+        }
+        // Thực hiện mở/tắt camera
+        if (isCameraOn) {
+            // Tắt camera
+            video.style.display = "none";
+            canvas.style.display = "none";
+            isCameraOn = false;
+            console.log("Camera closed");
+        } else {
+            // Bật camera
+            startCamera();
+            isCameraOn = true;
+            console.log("Camera opened");
         }
     }
 
@@ -798,6 +802,24 @@
     // Hàm format tiền tệ
     function formatCurrency(amount) {
         return new Intl.NumberFormat('vi-VN').format(amount);
+    }
+</script>
+<!--js check add sp-->
+<script>
+    function checkAddProduct() {
+        const currentUrl = window.location.href;
+        if (currentUrl === "http://localhost:8080/admin/taiquay") {
+            // Sử dụng SweetAlert2 để hiển thị thông báo
+            Swal.fire({
+                icon: 'warning',
+                title: 'Thông báo',
+                text: 'Vui lòng chọn hóa đơn trước khi thêm sản phẩm.',
+                confirmButtonText: 'Đóng'
+            });
+        } else {
+            // Nếu không phải trang taiquay, thực hiện chuyển trang bình thường
+            window.location.href = document.querySelector('.taiquay a').getAttribute('th:href');
+        }
     }
 </script>
 <!--js confirm print pdf for hd-->
