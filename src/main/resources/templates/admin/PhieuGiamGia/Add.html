@@ -21,10 +21,18 @@
         </div>
     </div>
     <form method="post" action="/admin/phieu-giam-gia/addpg" th:object="${phieuGiamGia}" class="row g-3">
+<!--        <div class="col-md-6">-->
+<!--            <label for="voucherCode" class="form-label">Mã phiếu giảm giá</label>-->
+<!--            <input type="text" class="form-control" id="voucherCode" name="voucherCode" th:field="*{maPhieuGiamGia}" >-->
+<!--            <p class="text-danger" th:if="${#fields.hasErrors('maPhieuGiamGia')}" th:errors="*{maPhieuGiamGia}"></p>-->
+<!--        </div>-->
         <div class="col-md-6">
-            <label for="voucherCode" class="form-label">Mã phiếu giảm giá</label>
-            <input type="text" class="form-control" id="voucherCode" name="voucherCode" th:field="*{maPhieuGiamGia}" >
-            <p class="text-danger" th:if="${#fields.hasErrors('maPhieuGiamGia')}" th:errors="*{maPhieuGiamGia}"></p>
+            <label for="maPhieuGiamGia" class="form-label">Mã phiếu giảm giá</label>
+            <input type="text"
+                   class="form-control"
+                   id="maPhieuGiamGia"
+                   name="maPhieuGiamGia"
+                   th:field="*{maPhieuGiamGia}" readonly>
         </div>
 
         <div class="col-md-6">
@@ -77,17 +85,20 @@
             <p class="text-danger" th:if="${#fields.hasErrors('giaTriMax')}" th:errors="*{giaTriMax}"></p>
         </div>
 
-        <div class="col-md-6">
-            <label for="status" class="form-label">Trạng thái</label>
-            <select class="form-select" id="status" name="status" th:field="*{trangThai}" >
-                <option value="0">Inactive</option>
-                <option value="1">Active</option>
-            </select>
-            <p class="text-danger" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"></p>
-        </div>
+<!--        <div class="col-md-6">-->
+<!--            <label for="status" class="form-label">Trạng thái</label>-->
+<!--            <select class="form-select" id="status" name="status" th:field="*{trangThai}" >-->
+<!--                <option value="0">Inactive</option>-->
+<!--                <option value="1">Active</option>-->
+<!--            </select>-->
+<!--            <p class="text-danger" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"></p>-->
+<!--        </div>-->
 
         <div class="col-md-12">
             <button type="submit" class="btn btn-outline-info">Thêm mới</button>
+        </div>
+        <div class="col-md-12">
+            <a th:href="@{/admin/phieu-giam-gia/index}" class="btn btn-outline-primary">Back</a>
         </div>
     </form>
 

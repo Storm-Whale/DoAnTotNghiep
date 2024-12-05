@@ -146,7 +146,6 @@ public class KieuCoAoController {
         return "redirect:/admin/kieu-co-ao";
     }
 
-
     //chinh sua trang thai kieu co ao
     @PostMapping("/updatett/{id}")
     public String updateTrangthai(@PathVariable("id") Integer id) {

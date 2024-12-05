@@ -4,9 +4,12 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 import jakarta.transaction.Transactional;
 import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
+<<<<<<< HEAD
 
 //import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 
+=======
+>>>>>>> 314f8c6aae3e65c4b82f88ac22b0347552ffc1c8
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
@@ -54,6 +57,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         return hoaDonRepository.findAll(pageRequest);
     }
 
+<<<<<<< HEAD
     // Phương thức phân trang cho Tab 2 (ví dụ: phân trang theo trạng thái 5)
     public Page<HoaDon> phanTrangTaiQuay(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);  // Tạo Pageable từ page và pageSize
@@ -61,6 +65,13 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
 
+=======
+    @Override
+    public Page<HoaDonDTO> phanTrang2(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        return this.hoaDonRepo.findAll(pageable);
+    }
+>>>>>>> 314f8c6aae3e65c4b82f88ac22b0347552ffc1c8
 
     @Override
     public Optional<HoaDon> detail(Integer id) {
