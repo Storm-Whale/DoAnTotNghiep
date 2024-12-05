@@ -2,12 +2,9 @@ package nhom6.duancanhan.doantotnghiep.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -18,8 +15,7 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name = "hoa_don")
-public class HoaDon extends BaseEntity implements Serializable {
-
+public class TaiQuay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -82,5 +78,4 @@ public class HoaDon extends BaseEntity implements Serializable {
     public void setHoaDonChiTietList(List<HoaDonChiTiet> hoaDonChiTietList) {
         this.hoaDonChiTietList = hoaDonChiTietList;
     }
-
 }

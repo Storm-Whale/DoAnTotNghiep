@@ -4,10 +4,9 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 import jakarta.transaction.Transactional;
 import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
-<<<<<<< HEAD
+
 //import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
-=======
->>>>>>> e5d9b1be001ac1eb7c4d26485b88e8708ac0828e
+
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
@@ -20,6 +19,7 @@ import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,18 +46,21 @@ public class HoaDonServiceImpl implements HoaDonService {
 
 
     @Override
-    public Page<HoaDon> phanTrang(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
-        return this.hoaDonRepository.findAll(pageable);
+//    public Page<HoaDon> phanTrang(int page, int pageSize) {
+//        Pageable pageable = PageRequest.of(page - 1, pageSize);
+//        return this.hoaDonRepository.findAll(pageable);
+//    }
+    public Page<HoaDon> phanTrang(PageRequest pageRequest) {
+        return hoaDonRepository.findAll(pageRequest);
     }
-<<<<<<< HEAD
-    @Override
-    public Page<HoaDonDTO> phanTrang2(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
-        return this.hoaDonRepo.findAll(pageable);
+
+    // Phương thức phân trang cho Tab 2 (ví dụ: phân trang theo trạng thái 5)
+    public Page<HoaDon> phanTrangTaiQuay(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);  // Tạo Pageable từ page và pageSize
+        return hoaDonRepository.findByTrangThai(5, pageable);  // Tìm hóa đơn có trạng thái 5
     }
-=======
->>>>>>> e5d9b1be001ac1eb7c4d26485b88e8708ac0828e
+
+
 
     @Override
     public Optional<HoaDon> detail(Integer id) {
@@ -164,7 +167,21 @@ public class HoaDonServiceImpl implements HoaDonService {
             return hoaDonRepository.searchByKeyword(keyword, pageable);
         }
     }
+    @Override
+    public Page<HoaDon> getHoaDonByTrangThai(Integer trangThai, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("ngayTao").descending());
+        return hoaDonRepository.findByTrangThai(trangThai, pageable);
+    }
 
+    @Override
+    public Page<HoaDon> findHoaDonByTenPhuongThuc(String tenPhuongThuc, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
 
+        if ("all".equals(tenPhuongThuc)) {
+            return hoaDonRepository.findAll(pageable);
+        } else {
+            return hoaDonRepository.findByTenPhuongThuc(tenPhuongThuc, pageable);
+        }
+    }
 
 }

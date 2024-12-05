@@ -11,6 +11,8 @@ import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
 import nhom6.duancanhan.doantotnghiep.util.ChangeNumberOfDetailProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,7 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-<<<<<<< HEAD
+
 import java.io.IOException;
 
 import java.io.IOException;
@@ -34,10 +36,10 @@ import java.io.IOException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
-=======
+
 import java.util.List;
 import java.util.Map;
->>>>>>> e5d9b1be001ac1eb7c4d26485b88e8708ac0828e
+
 
 @Controller
 @RequestMapping("/admin/hoadon")
@@ -57,35 +59,86 @@ public class HoaDonController {
         return phanTrang(1, model);
     }
 
-    @GetMapping("/{pageNo}")
-    public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
-        int pageSize = 10;
-        Page<HoaDon> page = hoaDonService.phanTrang(pageNo, pageSize);
-        List<HoaDon> listHD = page.getContent();
-        model.addAttribute("hoaDon", new HoaDon());
-        model.addAttribute("listHD", listHD);
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-        return "/admin/customer/hoadon";
+//    @GetMapping("/{pageNo}")
+//    public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
+//        int pageSize = 3;
+//        Page<HoaDon> page = hoaDonService.phanTrang(pageNo, pageSize);
+//        List<HoaDon> listHD = page.getContent();
+//        model.addAttribute("hoaDon", new HoaDon());
+//        model.addAttribute("listHD", listHD);
+//        model.addAttribute("currentPage", pageNo);
+//        model.addAttribute("totalPages", page.getTotalPages());
+//        model.addAttribute("totalItems", page.getTotalElements());
+//        return "/admin/customer/hoadon";
+//    }
+//@GetMapping("/{pageNo}")
+//public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
+//    int pageSize = 3;
+//
+//    // Thêm Sort để sắp xếp ngày tạo mới nhất (giảm dần)
+//    Sort sort = Sort.by(Sort.Order.desc("ngayTao"));
+//
+//    // Phân trang với Sort
+//    PageRequest pageRequest = PageRequest.of(pageNo - 1, pageSize, sort);
+//    Page<HoaDon> page = hoaDonService.phanTrang(pageRequest);
+//
+//    List<HoaDon> listHD = page.getContent();
+//    model.addAttribute("hoaDon", new HoaDon());
+//    model.addAttribute("listHD", listHD);
+//    model.addAttribute("currentPage", pageNo);
+//    model.addAttribute("totalPages", page.getTotalPages());
+//    model.addAttribute("totalItems", page.getTotalElements());
+//
+//    return "/admin/customer/hoadon";
+//}
+@GetMapping("/{pageNo}")
+public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
+    int pageSize = 3;
+
+    // Thêm Sort để sắp xếp ngày tạo mới nhất (giảm dần)
+    Sort sort = Sort.by(Sort.Order.desc("ngayTao"));
+
+    // Phân trang với Sort
+    PageRequest pageRequest = PageRequest.of(pageNo - 1, pageSize, sort);
+    Page<HoaDon> page = hoaDonService.phanTrang(pageRequest);
+
+    List<HoaDon> listHD = page.getContent();
+
+    // Kiểm tra nếu số lượng dữ liệu ít hơn 3 thì thêm dữ liệu giả
+    if (listHD.size() < 3) {
+        int remainingItems = 3 - listHD.size();
+        // Thêm dữ liệu giả vào nếu cần thiết
+        for (int i = 0; i < remainingItems; i++) {
+            listHD.add(new HoaDon());  // Thêm đối tượng HoaDon trống hoặc dữ liệu mặc định
+        }
     }
 
+    model.addAttribute("hoaDon", new HoaDon());
+    model.addAttribute("listHD", listHD);
+    model.addAttribute("currentPage", pageNo);
+    model.addAttribute("totalPages", page.getTotalPages());
+    model.addAttribute("totalItems", page.getTotalElements());
 
-
-
+    return "/admin/customer/hoadon";
+}
 
     @GetMapping("/tab2/{pageNo}")
-    public String phanTrang2(@PathVariable(value = "pageNo") int pageNo, Model model) {
+    public String phanTrangTaiQuay(@PathVariable(value = "pageNo") int pageNo, Model model) {
         int pageSize = 10;
-        Page<HoaDonDTO> page = hoaDonService.phanTrang2(pageNo, pageSize);
-        List<HoaDonDTO> listHD2 = page.getContent();
-
-        model.addAttribute("listHD2", listHD2);
+        Page<HoaDon> page = hoaDonService.phanTrangTaiQuay(pageNo, pageSize);
+        System.out.println("Page: " + page.getContent());  // Kiểm tra dữ liệu trong log
+        model.addAttribute("listHD2", page.getContent());
         model.addAttribute("currentPage2", pageNo);
         model.addAttribute("totalPages2", page.getTotalPages());
         model.addAttribute("totalItems2", page.getTotalElements());
-        return "/admin/customer/hoadon"; // Trả về giao diện
+        return "/admin/customer/hoadon";  // Đảm bảo đường dẫn đúng
     }
+
+
+
+
+
+
 
 
 
@@ -302,6 +355,27 @@ public class HoaDonController {
         model.addAttribute("hoaDon", new HoaDon());
         model.addAttribute("listHD", listHD);
         model.addAttribute("loaiHoaDon", loaiHoaDon);
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+
+        return "/admin/customer/hoadon"; // Trang hiển thị hóa đơn
+    }
+    @GetMapping("/filter/tenPhuongThuc")
+    public String getFilteredHoaDonByTenPhuongThuc(
+            @RequestParam(name = "tenPhuongThuc", required = false, defaultValue = "all") String tenPhuongThuc,
+            @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            Model model) {
+
+        // Lọc theo phương thức thanh toán
+        Page<HoaDon> page = hoaDonService.findHoaDonByTenPhuongThuc(tenPhuongThuc, pageNo, pageSize);
+        List<HoaDon> listHD = page.getContent();
+
+        // Thêm các thuộc tính vào model
+        model.addAttribute("hoaDon", new HoaDon());
+        model.addAttribute("listHD", listHD);
+        model.addAttribute("tenPhuongThuc", tenPhuongThuc);
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
