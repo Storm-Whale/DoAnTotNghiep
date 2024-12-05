@@ -33,4 +33,6 @@ public interface PhieuGiamGiaService {
     PhieuGiamGia getByMaPhieuGiamGia(String maPhieuGiamGia);
 
     List<PhieuGiamGiaResponse> getPGGByTrangThai(Integer trangThai);
+
+    String generateMaPhieuGiamGia();
 }

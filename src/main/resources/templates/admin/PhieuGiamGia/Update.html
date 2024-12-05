@@ -22,9 +22,12 @@
   </div>
   <form th:action="@{'/admin/phieu-giam-gia/update/' + ${phieuGiamGia.id}}" th:object="${phieuGiamGia}" method="post" class="row g-3">
     <div class="col-md-6">
-      <label class="form-label">Mã phiếu giảm giá</label>
-      <input type="text" class="form-control" name="maPhieuGiamGia" th:field="*{maPhieuGiamGia}" >
-      <p class="text-danger" th:if="${#fields.hasErrors('maPhieuGiamGia')}" th:errors="*{maPhieuGiamGia}"></p>
+      <label for="maPhieuGiamGia" class="form-label">Mã phiếu giảm giá</label>
+      <input type="text"
+             class="form-control"
+             id="maPhieuGiamGia"
+             name="maPhieuGiamGia"
+             th:field="*{maPhieuGiamGia}" readonly>
     </div>
 
     <div class="col-md-6">
@@ -78,19 +81,22 @@
       <p class="text-danger" th:if="${#fields.hasErrors('giaTriMax')}" th:errors="*{giaTriMax}"></p>
     </div>
 
-    <div class="col-md-6">
-      <label class="form-label">Trạng thái</label>
-      <select class="form-select" th:field="*{trangThai}" >
-        <option value="1">Active</option>
-        <option value="0">Inactive</option>
-      </select>
-      <p class="text-danger" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"></p>
-    </div>
-
+<!--    <div class="col-md-6">-->
+<!--      <label class="form-label">Trạng thái</label>-->
+<!--      <select class="form-select" th:field="*{trangThai}" >-->
+<!--        <option value="1">Active</option>-->
+<!--        <option value="0">Inactive</option>-->
+<!--      </select>-->
+<!--      <p class="text-danger" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"></p>-->
+<!--    </div>-->
 
     <div class="col-md-12">
       <button type="submit" class="btn btn-outline-warning">Update</button>
     </div>
+    <div class="col-md-12">
+      <a th:href="@{/admin/phieu-giam-gia/index}" class="btn btn-outline-primary">Back</a>
+    </div>
+
   </form>
 </section>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

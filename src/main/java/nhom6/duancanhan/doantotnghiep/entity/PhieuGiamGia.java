@@ -27,10 +27,10 @@ public class PhieuGiamGia extends BaseEntity{
     @Column(name = "ma")
     private String maPhieuGiamGia;
     @NotBlank(message = "Tên phiếu giảm giá không được để trống")
-    @Size(max = 255, message = "Tên phiếu giảm giá không được vượt quá 255 ký tự")
+    @Size(max = 50, message = "Tên phiếu giảm giá không được vượt quá 50 ký tự")
     @Column(name = "ten_phieu_giam_gia")
     private String tenPhieuGiamGia;
-    @Min(value = 1, message = "Số lượng phải lớn hơn hoặc bằng 1")
+
     @Column(name = "so_luong")
     private int soLuong;
     @NotNull(message = "Điều kiện giảm không được để trống")
@@ -61,12 +61,4 @@ public class PhieuGiamGia extends BaseEntity{
 
     @Column(name = "trang_thai")
     private int trangThai;
-
-//    @AssertTrue(message = "Ngày kết thúc phải sau hoặc trùng với ngày bắt đầu")
-//    public boolean isNgayKetThucValid() {
-//        if (ngayBatDau != null && ngayKetThuc != null) {
-//            return !ngayKetThuc.before(ngayBatDau);
-//        }
-//        return true; // Không thực hiện kiểm tra nếu thiếu ngày
-//    }
 }

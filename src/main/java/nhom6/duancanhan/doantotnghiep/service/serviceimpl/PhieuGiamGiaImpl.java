@@ -104,4 +104,33 @@ public class PhieuGiamGiaImpl implements PhieuGiamGiaService {
                 ,"Lỗi khi lấy thông tin phiếu giảm giá từ cơ sở dữ liệu"
         );
     }
+    //auto generate ma
+    @Override
+    public String generateMaPhieuGiamGia() {
+        PhieuGiamGia lastPhieu = phieuGiamGiaRepository.findTopByOrderByIdDesc();
+        if (lastPhieu == null) {
+            return "PGG001";
+        }
+        // Tách số từ mã cuối cùng
+        String lastMa = lastPhieu.getMaPhieuGiamGia();
+        // Nếu mã không bắt đầu bằng PGG hoặc không có số
+        if (!lastMa.startsWith("PGG")) {
+            return "PGG001";
+        }
+        // Tìm số cuối cùng trong mã
+        String soThuTu = lastMa.replaceAll("[^0-9]", "");
+        int soMoi;
+        try {
+            // Nếu không có số, bắt đầu từ 1
+            if (soThuTu.isEmpty()) {
+                soMoi = 1;
+            } else {
+                // Chuyển đổi số và tăng lên
+                soMoi = Integer.parseInt(soThuTu) + 1;
+            }
+        } catch (NumberFormatException e) {
+            soMoi = 1;
+        }
+        return String.format("PGG%03d", soMoi);
+    }
 }
