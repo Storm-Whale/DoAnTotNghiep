@@ -35,10 +35,10 @@ import java.io.IOException;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-<<<<<<< HEAD
+
 import java.util.*;
-=======
->>>>>>> 314f8c6aae3e65c4b82f88ac22b0347552ffc1c8
+
+
 
 import java.util.List;
 import java.util.Map;
