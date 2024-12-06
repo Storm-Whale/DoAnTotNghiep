@@ -95,4 +95,5 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     Page<HoaDon> findByTrangThai(@Param("trangThai") Integer trangThai, Pageable pageable);
 
     Page<HoaDon> findByTrangThai(int trangThai, Pageable pageable);
+    List<HoaDon> findByTrangThai(int trangThai);
 }

@@ -45,16 +45,20 @@ public class HoaDonServiceImpl implements HoaDonService {
     public List<HoaDon> getAll() {
         return hoaDonRepository.findAll();
     }
+    public Page<HoaDon> phanTrang(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize); // Bắt đầu từ trang 0
+        return hoaDonRepository.findAll(pageable);
+    }
 
 
-    @Override
+//    @Override
 //    public Page<HoaDon> phanTrang(int page, int pageSize) {
 //        Pageable pageable = PageRequest.of(page - 1, pageSize);
 //        return this.hoaDonRepository.findAll(pageable);
 //    }
-    public Page<HoaDon> phanTrang(PageRequest pageRequest) {
-        return hoaDonRepository.findAll(pageRequest);
-    }
+//    public Page<HoaDon> phanTrang(PageRequest pageRequest) {
+//        return hoaDonRepository.findAll(pageRequest);
+//    }
 
 
     // Phương thức phân trang cho Tab 2 (ví dụ: phân trang theo trạng thái 5)
@@ -192,6 +196,42 @@ public class HoaDonServiceImpl implements HoaDonService {
         } else {
             return hoaDonRepository.findByTenPhuongThuc(tenPhuongThuc, pageable);
         }
+    }
+    public Page<HoaDon> getHoaDons(int trangThai, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return hoaDonRepository.findByTrangThai(trangThai, pageable);
+    }
+
+    public Page<HoaDon> getHoaDonsByTrangThai(int trangThai, int page, int size) {
+        return hoaDonRepository.findByTrangThai(trangThai, PageRequest.of(page, size));
+    }
+
+    public Page<HoaDon> getAllHoaDons(int page, int size) {
+        return hoaDonRepository.findAll(PageRequest.of(page, size));
+    }
+
+    public Page<HoaDon> getHoaDonsByStatus(int trangThai, int page, int size) {
+        if (trangThai == 0) {
+            return getAllHoaDons(page, size);  // Trạng thái 0 lấy tất cả hóa đơn
+        }
+        return getHoaDonsByTrangThai(trangThai, page, size);
+    }
+    public Page<HoaDon> phanTrangTheoTrangThai(int pageNo, int pageSize, int trangThai) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return hoaDonRepository.findByTrangThai(trangThai, pageable);
+    }
+
+    public List<HoaDon> getByTrangThai(int trangThai) {
+        return hoaDonRepository.findByTrangThai(trangThai); // Gọi phương thức từ repository
+    }
+    public Page<HoaDon> getAllWithPagination(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return hoaDonRepository.findAll(pageable);
+    }
+
+    public Page<HoaDon> getByTrangThaiWithPagination(int trangThai, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return hoaDonRepository.findByTrangThai(trangThai, pageable);
     }
 
 }

@@ -14,8 +14,8 @@ public interface HoaDonService {
 
     List<HoaDon> getAll();
 
-//    Page<HoaDon> phanTrang(int pageNo, int pageSize);
-public Page<HoaDon> phanTrang(PageRequest pageRequest);
+    Page<HoaDon> phanTrang(int pageNo, int pageSize);
+//public Page<HoaDon> phanTrang(PageRequest pageRequest);
 
     Optional<HoaDon> detail(Integer id);
 
@@ -44,4 +44,8 @@ public Page<HoaDon> phanTrang(PageRequest pageRequest);
     public Page<HoaDon> getHoaDonByTrangThai(Integer trangThai, int page, int size);
     public Page<HoaDon> phanTrangTaiQuay(int page, int pageSize);
     public Page<HoaDon> findHoaDonByTenPhuongThuc(String tenPhuongThuc, int pageNo, int pageSize);
+    public Page<HoaDon> phanTrangTheoTrangThai(int pageNo, int pageSize, int trangThai) ;
+    public List<HoaDon> getByTrangThai(int trangThai);
+    public Page<HoaDon> getAllWithPagination(int pageNo, int pageSize);
+    public Page<HoaDon> getByTrangThaiWithPagination(int trangThai, int pageNo, int pageSize);
 }
