@@ -154,7 +154,7 @@ public class HoaDonController {
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("activeTab", "delivered"); // Tab đang mở
+        model.addAttribute("activeTab", "fall"); // Tab đang mở
         return "/admin/customer/hoadon";
     }
 //    @GetMapping("")
@@ -627,6 +627,108 @@ public void exportHoaDon(@RequestParam(value = "page", defaultValue = "1") int p
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hoá đơn đang được giao, không thể huỷ");
         }
     }
+    @GetMapping("/exportHoaDonChiTiet/{id}")
+    public void exportHoaDonChiTietGop(@PathVariable Integer id, HttpServletResponse response) throws IOException {
+        // Set type của file Excel
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        String fileName = "YAGI_SHOP_HD_" + id + "_ChiTiet.xlsx";
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+        // Tạo workbook và sheet trong file Excel
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Hóa Đơn Chi Tiết");
+
+            // Style cho header
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerFont.setFontHeightInPoints((short) 12);
+            headerStyle.setFont(headerFont);
+            headerStyle.setAlignment(HorizontalAlignment.CENTER);
+            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            // Style cho dữ liệu
+            CellStyle dataStyle = workbook.createCellStyle();
+            dataStyle.setAlignment(HorizontalAlignment.LEFT);
+            dataStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            dataStyle.setWrapText(true);
+
+            // Lấy thông tin hóa đơn và chi tiết
+            HoaDon hoaDon = hoaDonService.findById(id);
+            List<HoaDonChiTiet> chiTietList = hoaDonChiTietService.findByHoaDonId(id);
+
+            // === 1. Thêm thông tin hóa đơn ===
+            String[] hoaDonHeaders = {
+                    "ID", "Tên Người Nhận", "Số Điện Thoại", "Địa Chỉ",
+                    "Phương Thức Thanh Toán", "Tổng Tiền", "Ghi Chú", "Loại Hóa Đơn", "Trạng Thái"
+            };
+            Row hoaDonHeaderRow = sheet.createRow(0);
+            for (int i = 0; i < hoaDonHeaders.length; i++) {
+                Cell cell = hoaDonHeaderRow.createCell(i);
+                cell.setCellValue(hoaDonHeaders[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            // Thêm dữ liệu thông tin hóa đơn
+            if (hoaDon != null) {
+                Row hoaDonDataRow = sheet.createRow(1);
+                hoaDonDataRow.createCell(0).setCellValue(hoaDon.getId());
+                hoaDonDataRow.createCell(1).setCellValue(hoaDon.getKhachHang() != null ? hoaDon.getKhachHang().getTen() : "Khách Lẻ");
+                hoaDonDataRow.createCell(2).setCellValue(hoaDon.getDiaChi() != null ? hoaDon.getDiaChi().getSoDienThoai() : "");
+                hoaDonDataRow.createCell(3).setCellValue(hoaDon.getDiaChi() != null ? hoaDon.getDiaChi().getDiaChiChiTiet() : "");
+                hoaDonDataRow.createCell(4).setCellValue(hoaDon.getPhuongThucThanhToan() != null ? hoaDon.getPhuongThucThanhToan().getTenPhuongThuc() : "N/A");
+                hoaDonDataRow.createCell(5).setCellValue(hoaDon.getTongTien() != null ? hoaDon.getTongTien().doubleValue() : 0.0);
+                hoaDonDataRow.createCell(6).setCellValue(hoaDon.getGhiChu() != null ? hoaDon.getGhiChu() : "");
+                hoaDonDataRow.createCell(7).setCellValue(hoaDon.getLoaiHoaDon() != null ? hoaDon.getLoaiHoaDon() : "");
+                hoaDonDataRow.createCell(8).setCellValue(getTrangThaiText(hoaDon.getTrangThai()));
+
+                // Áp dụng style cho dữ liệu
+                for (int i = 0; i < hoaDonHeaders.length; i++) {
+                    hoaDonDataRow.getCell(i).setCellStyle(dataStyle);
+                }
+            }
+
+            // Thêm một dòng trống để phân cách
+            int currentRowIndex = 3;
+
+            // === 2. Thêm header cho danh sách sản phẩm ===
+            String[] chiTietHeaders = {"ID Sản Phẩm", "Tên Sản Phẩm", "Màu Sắc", "Size", "Số Lượng", "Giá", "Tổng Tiền"};
+            Row chiTietHeaderRow = sheet.createRow(currentRowIndex++);
+            for (int i = 0; i < chiTietHeaders.length; i++) {
+                Cell cell = chiTietHeaderRow.createCell(i);
+                cell.setCellValue(chiTietHeaders[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            // === 3. Thêm dữ liệu danh sách sản phẩm ===
+            for (HoaDonChiTiet chiTiet : chiTietList) {
+                Row dataRow = sheet.createRow(currentRowIndex++);
+                dataRow.createCell(0).setCellValue(chiTiet.getSanPhamChiTiet().getId());
+                dataRow.createCell(1).setCellValue(chiTiet.getSanPhamChiTiet().getSanPham().getTenSanPham());
+                dataRow.createCell(2).setCellValue(chiTiet.getSanPhamChiTiet().getMauSac().getTenMauSac());
+                dataRow.createCell(3).setCellValue(chiTiet.getSanPhamChiTiet().getKichCo().getTenKichCo());
+                dataRow.createCell(4).setCellValue(chiTiet.getSoLuong());
+                dataRow.createCell(5).setCellValue(chiTiet.getSanPhamChiTiet().getGia().doubleValue());
+                dataRow.createCell(6).setCellValue(chiTiet.getSoLuong() * chiTiet.getSanPhamChiTiet().getGia().doubleValue());
+
+                // Áp dụng style
+                for (int i = 0; i < chiTietHeaders.length; i++) {
+                    dataRow.getCell(i).setCellStyle(dataStyle);
+                }
+            }
+
+            // Tự động điều chỉnh độ rộng cột
+            int maxColumns = Math.max(hoaDonHeaders.length, chiTietHeaders.length);
+            for (int i = 0; i < maxColumns; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Ghi dữ liệu ra output stream (xuất file)
+            workbook.write(response.getOutputStream());
+        }
+    }
+
+
 
 
 }

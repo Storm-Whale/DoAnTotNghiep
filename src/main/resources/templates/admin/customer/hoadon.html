@@ -100,32 +100,6 @@
         </div>
     </div>
 
-
-<!--    <ul class="nav nav-tabs" id="myTab" role="tablist">-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" onclick="changeUrl('hoadon')">Danh Sách Hóa Đơn</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" id="taiquay-tab" data-bs-toggle="tab" href="#profile1" role="tab" aria-controls="profile2" aria-selected="false" onclick="changeUrl('hoadon/taiquay')">Tại Quầy</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" onclick="changeUrl('hoadon/online')">Mua Hàng Online</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false" onclick="changeUrl('hoadon/prepare')">Đang Chuẩn Bị Hàng</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" id="dangiao-tab" data-bs-toggle="tab" href="#contact1" role="tab" aria-controls="contact" aria-selected="false" onclick="changeUrl('hoadon/dangiao')">Đang Giao Hàng</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" id="dagiao-tab" data-bs-toggle="tab" href="#contact2" role="tab" aria-controls="contact" aria-selected="false" onclick="changeUrl('hoadon/dagiao')">Giao Hàng Thành Công</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" id="dahuy-tab" data-bs-toggle="tab" href="#contact3" role="tab" aria-controls="contact" aria-selected="false" onclick="changeUrl('hoadon/dahuy')">Đã Hủy</a>-->
-<!--        </li>-->
-<!--    </ul>-->
-
-<!--    &lt;!&ndash; Tab content &ndash;&gt;-->
     <div class="tab-content" id="myTabContent">
 
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -161,11 +135,11 @@
                 <div class="input-group">
                     <select id="phuongthucFilter" class="form-select form-select-sm" onchange="filterByPhuongThuc()">
                         <option value="all" th:selected="${tenPhuongThuc == 'all'}">Tất cả</option>
-                        <option value="thanhToanKhiNhanHang" th:selected="${tenPhuongThuc == 'Thanh toán khi nh?n hàng'}">Thanh Toán Khi Nhận Hàng</option>
-                        <option value="ViDienTu" th:selected="${tenPhuongThuc == 'Ví đi?n t?'}">Ví điện tử</option>
+                        <option value="Thanh toán khi nh?n hàng" th:selected="${tenPhuongThuc == 'Thanh toán khi nh?n hàng'}">Thanh Toán Khi Nhận Hàng</option>
+                        <option value="Ví đi?n t?" th:selected="${tenPhuongThuc == 'Ví đi?n t?'}">Ví điện tử</option>
                         <option value="Th? tín d?ng" th:selected="${tenPhuongThuc == 'Th? tín d?ng'}">Thẻ Tín Dụng</option>
-                        <option value="TheGhiNo" th:selected="${tenPhuongThuc == 'Th? ghi n?'}">Thẻ Ghi Nợ</option>
-                        <option value="ChuyenKhoanNganHang" th:selected="${tenPhuongThuc == 'Chuy?n kho?n ngân hàng'}">Chuyển Khoản Ngân Hàng</option>
+                        <option value="Th? ghi n?" th:selected="${tenPhuongThuc == 'Th? ghi n?'}">Thẻ Ghi Nợ</option>
+                        <option value="Chuy?n kho?n ngân hàng" th:selected="${tenPhuongThuc == 'Chuy?n kho?n ngân hàng'}">Chuyển Khoản Ngân Hàng</option>
                     </select>
                 </div>
             </div>
@@ -177,572 +151,7 @@
                 </button>
             </div>
 
-<!--            <br>-->
-<!--            <table class="table table-bordered table-hover text-center">-->
-<!--                <thead class="table-dark">-->
-<!--                <tr>-->
-<!--                    <th scope="col">ID</th>-->
-<!--                    <th scope="col">Tên Người Nhận</th>-->
-<!--                    <th scope="col">Số Điện Thoại</th>-->
-<!--                    &lt;!&ndash;                    <th scope="col">Email</th>&ndash;&gt;-->
-<!--                    <th scope="col">Địa Chỉ</th>-->
-<!--                    <th scope="col">Phương Thức Thanh Toán</th>-->
-<!--                    <th scope="col">Tổng Tiền</th>-->
-<!--                    <th scope="col">Ghi Chú</th>-->
 
-<!--                    <th scope="col">Loại Hóa Đơn</th>-->
-<!--                    <th scope="col">Trạng Thái</th>-->
-<!--                    <th scope="col">Chức Năng</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-
-
-
-<!--                <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai >= 2 and hoaDon.trangThai <= 6}">-->
-<!--                    <td th:text="${hoaDon.id}"></td>-->
-<!--                    <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>-->
-
-<!--                    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.soDienThoai}"></td>-->
-<!--                    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet + ', ' + hoaDon.diaChi.xa + ', ' + hoaDon.diaChi.huyen + ', ' + hoaDon.diaChi.thanhPho}"></td>-->
-
-
-
-
-
-<!--                    <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>-->
-<!--&lt;!&ndash;                    <td th:text="${hoaDon.tongTien != null ? hoaDon.tongTien : ''}" ></td>&ndash;&gt;-->
-<!--                    <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>-->
-<!--                    <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : ''}"></td>-->
-<!--                    <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>-->
-
-<!--                    <td>-->
-
-<!--    <span th:switch="${hoaDon.trangThai}">-->
-<!--        <span th:case="2">Chờ Xác Nhận</span>-->
-<!--        <span th:case="3">Đang Chuẩn Bị Hàng</span>-->
-<!--        <span th:case="4">Đang Giao Hàng</span>-->
-<!--        <span th:case="5">Giao Hàng Thành Công</span>-->
-<!--        <span th:case="6">Đã Hủy</span>-->
-<!--        <span th:case="*">Trạng Thái Không Xác Định</span> &lt;!&ndash; Dùng cho trường hợp mặc định &ndash;&gt;-->
-<!--    </span>-->
-
-<!--                    </td>-->
-
-
-
-<!--                    &lt;!&ndash; Nút Chi Tiết &ndash;&gt;-->
-<!--                    <td>-->
-<!--                        <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary">-->
-<!--                            Chi Tiết-->
-<!--                        </a>-->
-<!--                        <div class="mb-3">-->
-<!--                            <button class="btn btn-success" th:onclick="|exportHoaDonById(${hoaDon.id})|">-->
-<!--                                <i class="fas fa-file-excel"></i> Xuất Hóa Đơn-->
-<!--                            </button>-->
-<!--                        </div>-->
-
-
-<!--                    </td>-->
-<!--                </tr>-->
-
-
-<!--                </tbody>-->
-
-<!--            </table>-->
-<!--            <div th:if="${totalPages >= 1}">-->
-<!--                <nav>-->
-<!--                    <ul class="pagination justify-content-center">-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage - 1}|}" aria-label="Previous">Trước</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;<li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
-<!--                        <a class="page-link" th:href="@{|/admin/hoadon/1|}" aria-label="Previous">Trước</a>-->
-<!--                    </li>-->
-<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${i}|}" th:text="${i}"></a>-->
-<!--                        </li>-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage + 1}|}" aria-label="Next">Sau</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;-->
-<!--                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${totalPages}|}" aria-label="Next">Sau</a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </nav>-->
-<!--            </div>-->
-
-<!--        </div>-->
-
-<!--        &lt;!&ndash; Tab 2 content &ndash;&gt;-->
-<!--        <div class="tab-pane fade" id="profile1"  role="tabpanel" aria-labelledby="taiquay-tab-tab">-->
-<!--            <table class="table table-bordered table-hover text-center">-->
-<!--                <thead class="table-dark">-->
-<!--                <tr>-->
-<!--                    <th scope="col">ID</th>-->
-<!--                    <th scope="col">Tên Người Nhận</th>-->
-<!--                    <th scope="col">Số Điện Thoại</th>-->
-<!--                    &lt;!&ndash;                    <th scope="col">Email</th>&ndash;&gt;-->
-<!--                    <th scope="col">Địa Chỉ</th>-->
-<!--                    <th scope="col">Phương Thức Thanh Toán</th>-->
-<!--                    <th scope="col">Tổng Tiền</th>-->
-<!--                    <th scope="col">Ghi Chú</th>-->
-
-<!--                    <th scope="col">Loại Hóa Đơn</th>-->
-<!--                    <th scope="col">Trạng Thái</th>-->
-<!--                    <th scope="col">Chức Năng</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai == 5}">-->
-<!--                    <td th:text="${hoaDon.id}"></td>-->
-<!--                    <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.sdt != null ? hoaDon.khachHang.getSoDienThoai() : 'N/A'}"></td>&ndash;&gt;-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.emailNguoiNhan != null ? hoaDon.emailNguoiNhan : 'N/A'}"></td>&ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.khachHang == null ? '' : hoaDon.khachHang.soDienThoai}"></td>-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.khachHang == null ? 'Khách Lẻ' : hoaDon.khachHang.email}"></td>&ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>-->
-<!--                    &lt;!&ndash; Kiểm tra null cho địa chỉ &ndash;&gt;-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : 'N/A'}"></td>&ndash;&gt;-->
-
-<!--                    &lt;!&ndash; Kiểm tra null cho phương thức thanh toán &ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>-->
-
-<!--                    &lt;!&ndash; Hiển thị tổng tiền không có định dạng tiền tệ, nếu cần &ndash;&gt;-->
-<!--                    <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>-->
-
-<!--                    <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : 'N/A'}"></td>-->
-<!--                    <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>-->
-
-
-<!--                    <td>-->
-<!--                        <span th:text="${hoaDon.trangThai == 5 ? 'Đã Hoàn Thành' : 'Chưa Hoàn Thành'}"></span>-->
-<!--                    </td>-->
-
-
-
-<!--                    <td>-->
-<!--                        <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary">-->
-<!--                            Chi Tiết-->
-<!--                        </a>-->
-<!--                    </td>-->
-
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--            <div th:if="${totalPages >= 1}">-->
-<!--                <nav>-->
-<!--                    <ul class="pagination justify-content-center">-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage - 1}|}" aria-label="Previous">Trước</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;<li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
-<!--                        <a class="page-link" th:href="@{|/admin/hoadon/1|}" aria-label="Previous">Trước</a>-->
-<!--                    </li>-->
-<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${i}|}" th:text="${i}"></a>-->
-<!--                        </li>-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage + 1}|}" aria-label="Next">Sau</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;-->
-<!--                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${totalPages}|}" aria-label="Next">Sau</a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </nav>-->
-<!--            </div>-->
-
-<!--        </div>-->
-
-<!--        &lt;!&ndash; Tab 2 content &ndash;&gt;-->
-<!--        <div class="tab-pane fade" id="profile"  role="tabpanel" aria-labelledby="profile-tab">-->
-<!--            <table class="table table-bordered table-hover text-center">-->
-<!--                <thead class="table-dark">-->
-<!--                <tr>-->
-<!--                    <th scope="col">ID</th>-->
-<!--                    <th scope="col">Tên Người Nhận</th>-->
-<!--                    <th scope="col">Số Điện Thoại</th>-->
-<!--                    &lt;!&ndash;                    <th scope="col">Email</th>&ndash;&gt;-->
-<!--                    <th scope="col">Địa Chỉ</th>-->
-<!--                    <th scope="col">Phương Thức Thanh Toán</th>-->
-<!--                    <th scope="col">Tổng Tiền</th>-->
-<!--                    <th scope="col">Ghi Chú</th>-->
-
-<!--                    <th scope="col">Loại Hóa Đơn</th>-->
-<!--                    <th scope="col">Trạng Thái</th>-->
-<!--                    <th scope="col">Chức Năng</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai == 2}">-->
-<!--                    <td th:text="${hoaDon.id}"></td>-->
-<!--                    <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.sdt != null ? hoaDon.khachHang.getSoDienThoai() : 'N/A'}"></td>&ndash;&gt;-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.emailNguoiNhan != null ? hoaDon.emailNguoiNhan : 'N/A'}"></td>&ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.khachHang == null ? '' : hoaDon.khachHang.soDienThoai}"></td>-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.khachHang == null ? 'Khách Lẻ' : hoaDon.khachHang.email}"></td>&ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>-->
-<!--                    &lt;!&ndash; Kiểm tra null cho địa chỉ &ndash;&gt;-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : 'N/A'}"></td>&ndash;&gt;-->
-
-<!--                    &lt;!&ndash; Kiểm tra null cho phương thức thanh toán &ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>-->
-
-<!--                    &lt;!&ndash; Hiển thị tổng tiền không có định dạng tiền tệ, nếu cần &ndash;&gt;-->
-<!--                    <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>-->
-
-<!--                    <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : 'N/A'}"></td>-->
-<!--                    <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>-->
-
-<!--                    &lt;!&ndash; Kiểm tra trạng thái thanh toán &ndash;&gt;-->
-<!--                    <td>-->
-
-<!--                        <span th:text="${hoaDon.trangThai == '2' ? 'Chờ Xác Nhận' : ''}"></span>-->
-
-<!--                        <span th:text="${hoaDon.trangThai == 2 ? 'Chờ Xác Nhận' : ''}"></span>-->
-
-
-<!--                        &lt;!&ndash;                        <span th:text="${hoaDon.trangThai == '2' ? 'Chờ Xác Nhận' : 'Chờ Xác Nhận'}"></span>&ndash;&gt;-->
-
-<!--                    </td>-->
-
-<!--                    <td>-->
-<!--                        <button class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">-->
-<!--                            Xác Nhận-->
-<!--                        </button>-->
-<!--                        <button type="button" class="btn btn-outline-danger" th:attr="data-id=${hoaDon.id}">-->
-<!--                            Hủy Đơn-->
-<!--                        </button>-->
-<!--                    </td>-->
-
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--            <div th:if="${totalPages >= 1}">-->
-<!--                <nav>-->
-<!--                    <ul class="pagination justify-content-center">-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage - 1}|}" aria-label="Previous">Trước</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;<li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
-<!--                        <a class="page-link" th:href="@{|/admin/hoadon/1|}" aria-label="Previous">Trước</a>-->
-<!--                    </li>-->
-<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${i}|}" th:text="${i}"></a>-->
-<!--                        </li>-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage + 1}|}" aria-label="Next">Sau</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;-->
-<!--                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${totalPages}|}" aria-label="Next">Sau</a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </nav>-->
-<!--            </div>-->
-
-<!--        </div>-->
-
-<!--        &lt;!&ndash; Tab 3 content &ndash;&gt;-->
-<!--        <div class="tab-pane fade" id="contact"  role="tabpanel" aria-labelledby="contact-tab">-->
-<!--            <table class="table table-bordered table-hover text-center">-->
-<!--                <thead class="table-dark">-->
-<!--                <tr>-->
-<!--                    <th scope="col">ID</th>-->
-<!--                    <th scope="col">Tên Người Nhận</th>-->
-<!--                    <th scope="col">Số Điện Thoại</th>-->
-<!--                    &lt;!&ndash;                    <th scope="col">Email</th>&ndash;&gt;-->
-<!--                    <th scope="col">Địa Chỉ</th>-->
-<!--                    <th scope="col">Phương Thức Thanh Toán</th>-->
-<!--                    <th scope="col">Tổng Tiền</th>-->
-<!--                    <th scope="col">Ghi Chú</th>-->
-
-<!--                    <th scope="col">Loại Hóa Đơn</th>-->
-<!--                    <th scope="col">Trạng Thái</th>-->
-<!--                    <th scope="col">Chức Năng</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai == 3}">-->
-<!--                    <td th:text="${hoaDon.id}"></td>-->
-<!--                    <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.sdt != null ? hoaDon.khachHang.getSoDienThoai() : 'N/A'}"></td>&ndash;&gt;-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.emailNguoiNhan != null ? hoaDon.emailNguoiNhan : 'N/A'}"></td>&ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.khachHang == null ? '' : hoaDon.khachHang.soDienThoai}"></td>-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.khachHang == null ? 'Khách Lẻ' : hoaDon.khachHang.email}"></td>&ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>-->
-<!--                    &lt;!&ndash; Kiểm tra null cho địa chỉ &ndash;&gt;-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : 'N/A'}"></td>&ndash;&gt;-->
-
-<!--                    &lt;!&ndash; Kiểm tra null cho phương thức thanh toán &ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>-->
-
-<!--                    &lt;!&ndash; Hiển thị tổng tiền không có định dạng tiền tệ, nếu cần &ndash;&gt;-->
-<!--                    <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>-->
-
-<!--                    <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : 'N/A'}"></td>-->
-<!--                    <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>-->
-<!--                    <td>-->
-<!--                        <span th:text="${hoaDon.trangThai == 3 ? 'Đang Chuẩn Bị Hàng' : ''}"></span>-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                        <button class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">-->
-<!--                            Xác Nhận-->
-<!--                        </button>-->
-<!--                        <button type="button" class="btn btn-outline-danger" th:attr="data-id=${hoaDon.id}">-->
-<!--                            Hủy Đơn-->
-<!--                        </button>-->
-<!--                    </td>-->
-
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--            <div th:if="${totalPages >= 1}">-->
-<!--                <nav>-->
-<!--                    <ul class="pagination justify-content-center">-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage - 1}|}" aria-label="Previous">Trước</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;<li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
-<!--                        <a class="page-link" th:href="@{|/admin/hoadon/1|}" aria-label="Previous">Trước</a>-->
-<!--                    </li>-->
-<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${i}|}" th:text="${i}"></a>-->
-<!--                        </li>-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage + 1}|}" aria-label="Next">Sau</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;-->
-<!--                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${totalPages}|}" aria-label="Next">Sau</a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </nav>-->
-<!--            </div>-->
-<!--        </div>-->
-
-<!--        &lt;!&ndash; Tab 3 content &ndash;&gt;-->
-<!--        <div class="tab-pane fade" id="contact1"  role="tabpanel" aria-labelledby="contact-tab">-->
-<!--            <table class="table table-bordered table-hover text-center">-->
-<!--                <thead class="table-dark">-->
-<!--                <tr>-->
-<!--                    <th scope="col">ID</th>-->
-<!--                    <th scope="col">Tên Người Nhận</th>-->
-<!--                    <th scope="col">Số Điện Thoại</th>-->
-<!--                    &lt;!&ndash;                    <th scope="col">Email</th>&ndash;&gt;-->
-<!--                    <th scope="col">Địa Chỉ</th>-->
-<!--                    <th scope="col">Phương Thức Thanh Toán</th>-->
-<!--                    <th scope="col">Tổng Tiền</th>-->
-<!--                    <th scope="col">Ghi Chú</th>-->
-
-<!--                    <th scope="col">Loại Hóa Đơn</th>-->
-<!--                    <th scope="col">Trạng Thái</th>-->
-<!--                    <th scope="col">Chức Năng</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai == 4}">-->
-<!--                    <td th:text="${hoaDon.id}"></td>-->
-<!--                    <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.sdt != null ? hoaDon.khachHang.getSoDienThoai() : 'N/A'}"></td>&ndash;&gt;-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.emailNguoiNhan != null ? hoaDon.emailNguoiNhan : 'N/A'}"></td>&ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.khachHang == null ? '' : hoaDon.khachHang.soDienThoai}"></td>-->
-
-<!--                    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>-->
-
-
-
-<!--                    <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>-->
-
-
-<!--                    <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>-->
-
-<!--                    <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : 'N/A'}"></td>-->
-<!--                    <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>-->
-<!--                    <td>-->
-<!--  <span th:classappend="${hoaDon.trangThai == 4 ? 'status shipping' : 'status paid'}">-->
-<!--    <i th:if="${hoaDon.trangThai == 4}" class="fas fa-truck"></i>-->
-<!--    <i th:if="${hoaDon.trangThai != 4}" class="fas fa-check-circle"></i>-->
-<!--    <span th:text="${hoaDon.trangThai == 4 ? 'Đang Giao Hàng' : 'Đã Thanh Toán'}"></span>-->
-<!--  </span>-->
-<!--                    </td>-->
-
-<!--                    <td>-->
-<!--                        <button class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">-->
-<!--                            Xác Nhận-->
-<!--                        </button>-->
-<!--                    </td>-->
-
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-<!--        &lt;!&ndash; Tab 4 content &ndash;&gt;-->
-<!--        <div class="tab-pane fade" id="contact2"  role="tabpanel" aria-labelledby="contact-tab">-->
-<!--            <table class="table table-bordered table-hover text-center">-->
-<!--                <thead class="table-dark">-->
-<!--                <tr>-->
-<!--                    <th scope="col">ID</th>-->
-<!--                    <th scope="col">Tên Người Nhận</th>-->
-<!--                    <th scope="col">Số Điện Thoại</th>-->
-<!--                    <th scope="col">Địa Chỉ</th>-->
-<!--                    <th scope="col">Phương Thức Thanh Toán</th>-->
-<!--                    <th scope="col">Tổng Tiền</th>-->
-<!--                    <th scope="col">Ghi Chú</th>-->
-
-<!--                    <th scope="col">Loại Hóa Đơn</th>-->
-<!--                    <th scope="col">Trạng Thái</th>-->
-<!--                    <th scope="col">Chức Năng</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai == 5}">-->
-<!--                    <td th:text="${hoaDon.id}"></td>-->
-<!--                    <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>-->
-
-<!--                    <td th:text="${hoaDon.khachHang == null ? '' : hoaDon.khachHang.soDienThoai}"></td>-->
-
-<!--                    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>-->
-
-<!--                    <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>-->
-
-
-<!--                    <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>-->
-
-<!--                    <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : 'N/A'}"></td>-->
-<!--                    <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>-->
-
-<!--                    <td>-->
-<!--  <span th:classappend="${hoaDon.trangThai == 5 ? 'status success' : 'status paid'}">-->
-<!--    <i th:if="${hoaDon.trangThai == 5}" class="fas fa-check-circle"></i>-->
-<!--    <i th:if="${hoaDon.trangThai != 5}" class="fas fa-credit-card"></i>-->
-<!--    <span th:text="${hoaDon.trangThai == 5 ? 'Giao Hàng Thành Công' : ''}"></span>-->
-<!--  </span>-->
-<!--                    </td>-->
-
-
-<!--                    <td>-->
-<!--                        <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary">-->
-<!--                            Chi Tiết-->
-<!--                        </a>-->
-<!--                    </td>-->
-
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--            <div th:if="${totalPages >= 1}">-->
-<!--                <nav>-->
-<!--                    <ul class="pagination justify-content-center">-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage - 1}|}" aria-label="Previous">Trước</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;<li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
-<!--                        <a class="page-link" th:href="@{|/admin/hoadon/1|}" aria-label="Previous">Trước</a>-->
-<!--                    </li>-->
-<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${i}|}" th:text="${i}"></a>-->
-<!--                        </li>-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage + 1}|}" aria-label="Next">Sau</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;-->
-<!--                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${totalPages}|}" aria-label="Next">Sau</a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </nav>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        &lt;!&ndash; Tab 4 content &ndash;&gt;-->
-<!--        <div class="tab-pane fade" id="contact3"  role="tabpanel" aria-labelledby="contact-tab">-->
-<!--            <table class="table table-bordered table-hover text-center">-->
-<!--                <thead class="table-dark">-->
-<!--                <tr>-->
-<!--                    <th scope="col">ID</th>-->
-<!--                    <th scope="col">Tên Người Nhận</th>-->
-<!--                    <th scope="col">Số Điện Thoại</th>-->
-<!--                    &lt;!&ndash;                    <th scope="col">Email</th>&ndash;&gt;-->
-<!--                    <th scope="col">Địa Chỉ</th>-->
-<!--                    <th scope="col">Phương Thức Thanh Toán</th>-->
-<!--                    <th scope="col">Tổng Tiền</th>-->
-<!--                    <th scope="col">Ghi Chú</th>-->
-
-<!--                    <th scope="col">Loại Hóa Đơn</th>-->
-<!--                    <th scope="col">Trạng Thái</th>-->
-<!--                    <th scope="col">Chức Năng</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai == 6}">-->
-<!--                    <td th:text="${hoaDon.id}"></td>-->
-<!--                    <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.sdt != null ? hoaDon.khachHang.getSoDienThoai() : 'N/A'}"></td>&ndash;&gt;-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.emailNguoiNhan != null ? hoaDon.emailNguoiNhan : 'N/A'}"></td>&ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.khachHang == null ? '' : hoaDon.khachHang.soDienThoai}"></td>-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.khachHang == null ? 'Khách Lẻ' : hoaDon.khachHang.email}"></td>&ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>-->
-<!--                    &lt;!&ndash; Kiểm tra null cho địa chỉ &ndash;&gt;-->
-<!--                    &lt;!&ndash;                    <td th:text="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : 'N/A'}"></td>&ndash;&gt;-->
-
-<!--                    &lt;!&ndash; Kiểm tra null cho phương thức thanh toán &ndash;&gt;-->
-<!--                    <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>-->
-
-<!--                    &lt;!&ndash; Hiển thị tổng tiền không có định dạng tiền tệ, nếu cần &ndash;&gt;-->
-<!--                    <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>-->
-
-<!--                    <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : 'N/A'}"></td>-->
-<!--                    <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>-->
-<!--                    <td>-->
-<!--  <span th:classappend="${hoaDon.trangThai == 6 ? 'status canceled' : 'status paid'}">-->
-<!--    <i th:if="${hoaDon.trangThai == 6}" class="fas fa-times-circle"></i>-->
-<!--    <i th:if="${hoaDon.trangThai != 6}" class="fas fa-credit-card"></i>-->
-<!--    <span th:text="${hoaDon.trangThai == 6 ? 'Đã Hủy' : ''}"></span>-->
-<!--  </span>-->
-<!--                    </td>-->
-
-<!--                    <td>-->
-<!--                        <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary">-->
-<!--                            Chi Tiết-->
-<!--                        </a>-->
-<!--                    </td>-->
-
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--            <div th:if="${totalPages >= 1}">-->
-<!--                <nav>-->
-<!--                    <ul class="pagination justify-content-center">-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage - 1}|}" aria-label="Previous">Trước</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;<li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
-<!--                        <a class="page-link" th:href="@{|/admin/hoadon/1|}" aria-label="Previous">Trước</a>-->
-<!--                    </li>-->
-<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${i}|}" th:text="${i}"></a>-->
-<!--                        </li>-->
-<!--                        &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage + 1}|}" aria-label="Next">Sau</a>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </li>&ndash;&gt;-->
-<!--                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
-<!--                            <a class="page-link" th:href="@{|/admin/hoadon/${totalPages}|}" aria-label="Next">Sau</a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </nav>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        &lt;!&ndash;        <div th:if="${totalPages >= 1}">&ndash;&gt;-->
-<!--        &lt;!&ndash;            <nav>&ndash;&gt;-->
-<!--        &lt;!&ndash;                <ul class="pagination justify-content-center">&ndash;&gt;-->
-<!--        &lt;!&ndash;                    &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">&ndash;&gt;&ndash;&gt;-->
-<!--        &lt;!&ndash;                    &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage - 1}|}" aria-label="Previous">Trước</a>&ndash;&gt;&ndash;&gt;-->
-<!--        &lt;!&ndash;                    &lt;!&ndash;                        </li>&ndash;&gt;<li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">&ndash;&gt;-->
-<!--        &lt;!&ndash;                    <a class="page-link" th:href="@{|/admin/hoadon/1|}" aria-label="Previous">Trước</a>&ndash;&gt;-->
-<!--        &lt;!&ndash;                </li>&ndash;&gt;-->
-<!--        &lt;!&ndash;                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">&ndash;&gt;-->
-<!--        &lt;!&ndash;                        <a class="page-link" th:href="@{|/admin/hoadon/${i}|}" th:text="${i}"></a>&ndash;&gt;-->
-<!--        &lt;!&ndash;                    </li>&ndash;&gt;-->
-<!--        &lt;!&ndash;                    &lt;!&ndash;                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">&ndash;&gt;&ndash;&gt;-->
-<!--        &lt;!&ndash;                    &lt;!&ndash;                            <a class="page-link" th:href="@{|/admin/hoadon/${currentPage + 1}|}" aria-label="Next">Sau</a>&ndash;&gt;&ndash;&gt;-->
-<!--        &lt;!&ndash;                    &lt;!&ndash;                        </li>&ndash;&gt;&ndash;&gt;-->
-<!--        &lt;!&ndash;                    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">&ndash;&gt;-->
-<!--        &lt;!&ndash;                        <a class="page-link" th:href="@{|/admin/hoadon/${totalPages}|}" aria-label="Next">Sau</a>&ndash;&gt;-->
-<!--        &lt;!&ndash;                    </li>&ndash;&gt;-->
-<!--        &lt;!&ndash;                </ul>&ndash;&gt;-->
-<!--        &lt;!&ndash;            </nav>&ndash;&gt;-->
-<!--        &lt;!&ndash;        </div>&ndash;&gt;-->
-<!--    </div>-->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
             <a class="nav-link" href="/admin/hoadon" th:classappend="${activeTab == 'all' ? 'active' : ''}">Danh Sách Hóa Đơn</a>
@@ -800,29 +209,18 @@
                   hoaDon.trangThai == 3 ? 'Đang Chuẩn Bị Hàng' :
                   hoaDon.trangThai == 4 ? 'Đang Giao Hàng' :
                   hoaDon.trangThai == 5 ? 'Hoàn Thành' :
-                  hoaDon.trangThai == 6 ? 'Đã Hủy' : 'Unknown'}"></td>
-<!--                <div class="mb-3">-->
-<!--                <td >-->
-<!--                    <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary">-->
-<!--                        Chi Tiết-->
-<!--                    </a>-->
-<!--                </td>-->
-<!--               <td th:if="${activeTab == 'all'}">-->
-<!--                                                <button class="btn btn-success" th:onclick="|exportHoaDonById(${hoaDon.id})|">-->
-<!--                                                    <i class="fas fa-file-excel"></i> Xuất Hóa Đơn-->
-<!--                                                </button>-->
-<!--                                            </td>-->
-<!--                </div>-->
+                  hoaDon.trangThai == 6 ? 'Đã Hủy' : 'Chưa Thanh Toán'}"></td>
+
                 <td>
                     <div class="d-flex justify-content-start align-items-center">
                         <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary btn-sm mr-2">
                             Chi Tiết
                         </a>
-                        <div class="mb-3" th:if="${activeTab == 'all'}">
-                            <button class="btn btn-success btn-sm" th:onclick="|exportHoaDonById(${hoaDon.id})|">
-                                <i class="fas fa-file-excel"></i> Xuất EX
-                            </button>
-                        </div>
+<!--                        <div class="mb-3" th:if="${activeTab == 'all'}">-->
+<!--                            <button class="btn btn-success btn-sm" th:onclick="|exportHoaDonById(${hoaDon.id})|">-->
+<!--                                <i class="fas fa-file-excel"></i> Xuất EX-->
+<!--                            </button>-->
+<!--                        </div>-->
                     </div>
                 <div class="mb-3" th:if="${activeTab == 'online'}">
                     <a class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">
@@ -832,6 +230,21 @@
                         Hủy Đơn
                     </a>
                 </div>
+                    <div class="mb-3" th:if="${activeTab == 'prepare'}">
+                        <a class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">
+                            Xác Nhận
+                        </a>
+                        <a type="button" class="btn btn-outline-danger" th:attr="data-id=${hoaDon.id}">
+                            Hủy Đơn
+                        </a>
+                    </div>
+
+                    <div class="mb-3" th:if="${activeTab == 'shipping'}">
+                        <a class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">
+                            Xác Nhận
+                        </a>
+
+                    </div>
                 </td>
 
 
@@ -839,66 +252,10 @@
             </tr>
             </tbody>
         </table>
-        <!--                    <th scope="col">ID</th>-->
-        <!--                    <th scope="col">Tên Người Nhận</th>-->
-        <!--                    <th scope="col">Số Điện Thoại</th>-->
-        <!--                    <th scope="col">Địa Chỉ</th>-->
-        <!--                    <th scope="col">Phương Thức Thanh Toán</th>-->
-        <!--                    <th scope="col">Tổng Tiền</th>-->
-        <!--                    <th scope="col">Ghi Chú</th>-->
 
-        <!--                    <th scope="col">Loại Hóa Đơn</th>-->
-        <!--                    <th scope="col">Trạng Thái</th>-->
-        <!--                    <th scope="col">Chức Năng</th>-->
-        <!--                </tr>-->
-        <!--                </thead>-->
-        <!--                <tbody>-->
-        <!--                <tr th:each="hoaDon : ${listHD}" th:if="${hoaDon.trangThai == 5}">-->
-        <!--                    <td th:text="${hoaDon.id}"></td>-->
-        <!--                    <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>-->
-
-        <!--                    <td th:text="${hoaDon.khachHang == null ? '' : hoaDon.khachHang.soDienThoai}"></td>-->
-
-        <!--                    <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>-->
-
-        <!--                    <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : 'N/A'}"></td>-->
-
-
-        <!--                    <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>-->
-
-        <!--                    <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : 'N/A'}"></td>-->
-        <!--                    <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>-->
-
-        <!--                    <td>-->
-        <!--  <span th:classappend="${hoaDon.trangThai == 5 ? 'status success' : 'status paid'}">-->
-        <!--    <i th:if="${hoaDon.trangThai == 5}" class="fas fa-check-circle"></i>-->
-        <!--    <i th:if="${hoaDon.trangThai != 5}" class="fas fa-credit-card"></i>-->
-        <!--    <span th:text="${hoaDon.trangThai == 5 ? 'Giao Hàng Thành Công' : ''}"></span>-->
-        <!--  </span>-->
 
         <div>
-<!--            <ul class="pagination">-->
-<!--                <li th:class="${currentPage == 1} ? 'disabled' : ''">-->
-<!--                    <a th:href="@{/hoadontest(pageNo=${currentPage - 1}, tab=${activeTab})}">Trước</a>-->
-<!--                </li>-->
-<!--                <li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${i == currentPage} ? 'active' : ''">-->
-<!--                    <a th:href="@{/hoadontest(pageNo=${i}, tab=${activeTab})}" th:text="${i}"></a>-->
-<!--                </li>-->
-<!--                <li th:class="${currentPage == totalPages} ? 'disabled' : ''">-->
-<!--                    <a th:href="@{/hoadontest(pageNo=${currentPage + 1}, tab=${activeTab})}">Sau</a>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--            <ul class="pagination justify-content-center">-->
-<!--                <li class="page-item" th:class="${currentPage == 1} ? 'disabled' : ''">-->
-<!--                    <a class="page-link" th:href="@{/admin/hoadon(pageNo=${currentPage - 1}, tab=${activeTab})}">First</a>-->
-<!--                </li>-->
-<!--                <li th:each="i : ${#numbers.sequence(1, totalPages)}" class="page-item" th:class="${i == currentPage} ? 'active' : ''">-->
-<!--                    <a class="page-link" th:href="@{/admin/hoadon(pageNo=${i}, tab=${activeTab})}" th:text="${i}"></a>-->
-<!--                </li>-->
-<!--                <li class="page-item" th:class="${currentPage == totalPages} ? 'disabled' : ''">-->
-<!--                    <a class="page-link" th:href="@{/admin/hoadon(pageNo=${currentPage + 1}, tab=${activeTab})}">Last</a>-->
-<!--                </li>-->
-<!--            </ul>-->
+
             <ul class="pagination justify-content-center">
                 <!-- Nút "First" dẫn đến trang đầu tiên -->
                 <li class="page-item" th:class="${currentPage == 1} ? 'disabled' : ''">
