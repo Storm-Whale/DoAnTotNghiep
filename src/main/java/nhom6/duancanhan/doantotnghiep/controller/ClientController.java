@@ -398,6 +398,7 @@ public class ClientController {
                     .tongTien(tongTien).ghiChu(ghiChu)
                     .trangThai(2).loaiHoaDon("Truc tuyen")
                     .build();
+
             if (pttt == 2) {
                 hoaDon.setTrangThaiThanhToan(0); // COD chưa thanh toán
             } else {

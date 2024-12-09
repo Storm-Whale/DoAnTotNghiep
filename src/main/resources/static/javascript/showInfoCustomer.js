@@ -123,6 +123,12 @@ document.querySelector('form').addEventListener('submit', function (event) {
     if (!name || /^\s/.test(name)) {
         isValid = false;
         errorName.textContent = 'Tên không được để trống và không được bắt đầu bằng dấu cách.';
+    } else if (/^\d/.test(name)) {
+        isValid = false;
+        errorName.textContent = 'Tên không được bắt đầu bằng số.';
+    } else if (name.length > 50) {
+        isValid = false;
+        errorName.textContent = 'Tên không được dài quá 50 ký tự.';
     }
 
     // Kiểm tra Email
@@ -130,13 +136,22 @@ document.querySelector('form').addEventListener('submit', function (event) {
     if (!emailRegex.test(email)) {
         isValid = false;
         errorEmail.textContent = 'Email không hợp lệ.';
+    } else if (/^\d/.test(email)) {
+        isValid = false;
+        errorEmail.textContent = 'Email không được bắt đầu bằng số.';
+    } else if (/^[A-Z]/.test(email)) {
+        isValid = false;
+        errorEmail.textContent = 'Email không được bắt đầu bằng chữ hoa.';
+    } else if (email.length > 100) {
+        isValid = false;
+        errorEmail.textContent = 'Email không được dài quá 100 ký tự.';
     }
 
-    // Kiểm tra Số điện thoại
-    const phoneRegex = /^\d{10,11}$/;
+    // Kiểm tra Số điện thoại (bắt đầu bằng số 0 và độ dài 10-11 ký tự)
+    const phoneRegex = /^0\d{9,10}$/;
     if (!phoneRegex.test(phone)) {
         isValid = false;
-        errorPhone.textContent = 'Số điện thoại phải là số, độ dài 10-11 ký tự.';
+        errorPhone.textContent = 'Số điện thoại phải bắt đầu bằng số 0 và có độ dài 10-11 ký tự.';
     }
 
     // Kiểm tra Ngày sinh
@@ -146,6 +161,12 @@ document.querySelector('form').addEventListener('submit', function (event) {
     } else if (new Date(dob) > new Date()) {
         isValid = false;
         errorDob.textContent = 'Ngày sinh không được là ngày trong tương lai.';
+    } else {
+        const age = new Date().getFullYear() - new Date(dob).getFullYear();
+        if (age > 120) {
+            isValid = false;
+            errorDob.textContent = 'Tuổi không được quá 120.';
+        }
     }
 
     // Ngăn form gửi đi nếu không hợp lệ
@@ -153,6 +174,7 @@ document.querySelector('form').addEventListener('submit', function (event) {
         event.preventDefault();
     }
 });
+
 
 
 

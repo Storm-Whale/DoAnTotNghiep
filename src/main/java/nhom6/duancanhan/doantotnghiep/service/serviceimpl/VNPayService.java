@@ -14,7 +14,7 @@ import java.util.*;
 @Service
 public class VNPayService {
 
-    public String createOrder(BigDecimal total, String orderInfor, String urlReturn) {
+    public String createOrder(BigDecimal total, String urlReturn) {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
@@ -22,20 +22,23 @@ public class VNPayService {
         String vnp_TmnCode = VNPayConfig.vnp_TmnCode;
         String orderType = "order-type";
 
+        // Sử dụng "Thanh toán hóa đơn" làm tiêu đề
+        String orderInfor = "Thanh toán hóa đơn";
+
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
         vnp_Params.put("vnp_Amount", String.valueOf(chuyentien(total)));
         vnp_Params.put("vnp_CurrCode", "VND");
-
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", orderInfor);
         vnp_Params.put("vnp_OrderType", orderType);
 
+        vnp_Params.put("vnp_BankCode", "NCB");
+
         String locate = "vn";
         vnp_Params.put("vnp_Locale", locate);
-
         urlReturn += VNPayConfig.vnp_Returnurl;
         vnp_Params.put("vnp_ReturnUrl", urlReturn);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
@@ -49,38 +52,36 @@ public class VNPayService {
         String vnp_ExpireDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
-        List fieldNames = new ArrayList(vnp_Params.keySet());
+        List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
         Collections.sort(fieldNames);
         StringBuilder hashData = new StringBuilder();
         StringBuilder query = new StringBuilder();
-        Iterator itr = fieldNames.iterator();
-        while (itr.hasNext()) {
-            String fieldName = (String) itr.next();
-            String fieldValue = (String) vnp_Params.get(fieldName);
+
+        for (String fieldName : fieldNames) {
+            String fieldValue = vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                //Build hash data
-                hashData.append(fieldName);
-                hashData.append('=');
-                try {
-                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                    //Build query
-                    query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
-                    query.append('=');
-                    query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                if (itr.hasNext()) {
-                    query.append('&');
-                    hashData.append('&');
-                }
+                // Build hash data
+                hashData.append(fieldName).append('=').append(encodeValue(fieldValue)).append('&');
+                // Build query
+                query.append(encodeValue(fieldName)).append('=').append(encodeValue(fieldValue)).append('&');
             }
         }
-        String queryUrl = query.toString();
+
+        // Xóa ký tự & cuối cùng
+        hashData.setLength(hashData.length() - 1);
+        query.setLength(query.length() - 1);
+
         String vnp_SecureHash = VNPayConfig.hmacSHA512(VNPayConfig.vnp_HashSecret, hashData.toString());
-        queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-        String paymentUrl = VNPayConfig.vnp_PayUrl + "?" + queryUrl;
-        return paymentUrl;
+        query.append("&vnp_SecureHash=").append(vnp_SecureHash);
+        return VNPayConfig.vnp_PayUrl + "?" + query.toString();
+    }
+
+    private String encodeValue(String value) {
+        try {
+            return URLEncoder.encode(value, StandardCharsets.US_ASCII.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Error encoding value: " + value, e);
+        }
     }
 
     public int orderReturn(HttpServletRequest request) {
