@@ -396,9 +396,8 @@ public class ClientController {
                     .sdt(diaChi.getSoDienThoai()).emailNguoiNhan(khachHang.getEmail())
                     .diaChi(diaChi).phuongThucThanhToan(phuongThucThanhToan).phieuGiamGia(phieuGiamGia)
                     .tongTien(tongTien).ghiChu(ghiChu)
-                    .trangThai(1).loaiHoaDon("Truc tuyen")
+                    .trangThai(2).loaiHoaDon("Truc tuyen")
                     .build();
-
             if (pttt == 2) {
                 hoaDon.setTrangThaiThanhToan(0); // COD chưa thanh toán
             } else {

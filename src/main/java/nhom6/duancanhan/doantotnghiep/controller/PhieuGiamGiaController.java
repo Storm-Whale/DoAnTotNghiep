@@ -13,10 +13,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -58,7 +61,6 @@ public class PhieuGiamGiaController {
         // Duyệt và cập nhật trạng thái
         for (PhieuGiamGia phieuGiamGia : listPGG) {
             boolean needUpdate = false;
-
             // Kiểm tra và cập nhật trạng thái dựa trên số lượng
             if (phieuGiamGia.getSoLuong() == 0) {
                 phieuGiamGia.setTrangThai(0); // Inactive
@@ -149,9 +151,79 @@ public class PhieuGiamGiaController {
     @PostMapping("/update/{id}")
     public String update(
             @PathVariable("id") Integer id,
-            @Valid @ModelAttribute("phieuGiamGia") PhieuGiamGia phieuGiamGia,
+            @ModelAttribute("phieuGiamGia") PhieuGiamGia phieuGiamGia,
             BindingResult bindingResult,
+            @RequestParam(value = "ngayBatDauOriginal", required = false) String ngayBatDauOriginal,
             Model model) {
+        // Validate mã phiếu giảm giá
+        if (phieuGiamGia.getMaPhieuGiamGia() == null || phieuGiamGia.getMaPhieuGiamGia().trim().isEmpty()) {
+            bindingResult.rejectValue("maPhieuGiamGia", "NotBlank", "Mã phiếu giảm giá không được để trống");
+        }
+        // Validate tên phiếu giảm giá
+        if (phieuGiamGia.getTenPhieuGiamGia() == null || phieuGiamGia.getTenPhieuGiamGia().trim().isEmpty()) {
+            bindingResult.rejectValue("tenPhieuGiamGia", "NotBlank", "Tên phiếu giảm giá không được để trống");
+        } else if (phieuGiamGia.getTenPhieuGiamGia().length() > 50) {
+            bindingResult.rejectValue("tenPhieuGiamGia", "Size", "Tên phiếu giảm giá không được vượt quá 50 ký tự");
+        }
+        // Validate điều kiện
+        if (phieuGiamGia.getDieuKien() == null) {
+            bindingResult.rejectValue("dieuKien", "NotNull", "Điều kiện giảm không được để trống");
+        } else if (phieuGiamGia.getDieuKien().compareTo(BigDecimal.valueOf(100000)) < 0) {
+            bindingResult.rejectValue("dieuKien", "Min", "Điều kiện giảm phải lớn hơn hoặc bằng 100,000đ");
+        }
+        // Validate ngày bắt đầu
+        if (phieuGiamGia.getNgayBatDau() == null) {
+            // Nếu ngày bắt đầu null, thử khôi phục từ original
+            if (StringUtils.hasText(ngayBatDauOriginal)) {
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date originalDate = sdf.parse(ngayBatDauOriginal);
+                    phieuGiamGia.setNgayBatDau(originalDate);
+                } catch (ParseException e) {
+                    bindingResult.rejectValue("ngayBatDau", "error.phieuGiamGia", "Ngày bắt đầu không hợp lệ");
+                }
+            } else {
+                bindingResult.rejectValue("ngayBatDau", "NotNull", "Ngày bắt đầu không được để trống");
+            }
+        }
+        // Validate ngày kết thúc
+        if (phieuGiamGia.getNgayKetThuc() == null) {
+            bindingResult.rejectValue("ngayKetThuc", "NotNull", "Ngày kết thúc không được để trống");
+        }
+        // Validate giá trị giảm
+        if (phieuGiamGia.getGiaTriGiam() == null) {
+            bindingResult.rejectValue("giaTriGiam", "NotNull", "Giá trị giảm không được để trống");
+        } else {
+            if (phieuGiamGia.getGiaTriGiam().compareTo(BigDecimal.ZERO) < 0) {
+                bindingResult.rejectValue("giaTriGiam", "Min", "Giá trị giảm phải lớn hơn hoặc bằng 0");
+            }
+
+            // Kiểm tra giá trị giảm khi kiểu giảm giá là 1 (%)
+            if (phieuGiamGia.getKieuGiamGia() == 1 &&
+                    phieuGiamGia.getGiaTriGiam().compareTo(BigDecimal.valueOf(100)) > 0) {
+                bindingResult.rejectValue("giaTriGiam", "Max", "Giá trị giảm không được lớn hơn 100% khi giảm theo phần trăm");
+            }
+        }
+        if (phieuGiamGia.getKieuGiamGia() == 0) {
+            // Kiểm tra giá trị giảm phải bằng giá trị tối đa
+            if (phieuGiamGia.getGiaTriGiam() != null && phieuGiamGia.getGiaTriMax() != null) {
+                if (phieuGiamGia.getGiaTriGiam().compareTo(phieuGiamGia.getGiaTriMax()) != 0) {
+                    bindingResult.rejectValue("giaTriGiam", "error.phieuGiamGia",
+                            "Khi giảm theo giá tiền, giá trị giảm phải bằng giá trị tối đa");
+                }
+            }
+        }
+        // Validate giá trị tối đa
+        if (phieuGiamGia.getGiaTriMax() == null) {
+            bindingResult.rejectValue("giaTriMax", "NotNull", "Giá trị tối đa không được để trống");
+        } else if (phieuGiamGia.getGiaTriMax().compareTo(BigDecimal.valueOf(10000)) < 0) {
+            bindingResult.rejectValue("giaTriMax", "Min", "Giá trị tối đa phải lớn hơn hoặc bằng 10,000đ");
+        }
+        // Validate số lượng
+        if (phieuGiamGia.getSoLuong() < 0) {
+            bindingResult.rejectValue("soLuong", "Min", "Số lượng phiếu giảm giá không được là số âm");
+        }
+        // Các validate về ngày
         // Lấy ngày hiện tại (đặt về đầu ngày)
         Calendar calToday = Calendar.getInstance();
         calToday.set(Calendar.HOUR_OF_DAY, 0);
@@ -159,20 +231,6 @@ public class PhieuGiamGiaController {
         calToday.set(Calendar.SECOND, 0);
         calToday.set(Calendar.MILLISECOND, 0);
         Date today = calToday.getTime();
-        // Kiểm tra ngày bắt đầu không được là ngày trong quá khứ
-        if (phieuGiamGia.getNgayBatDau() != null) {
-            Calendar calNgayBatDau = Calendar.getInstance();
-            calNgayBatDau.setTime(phieuGiamGia.getNgayBatDau());
-            calNgayBatDau.set(Calendar.HOUR_OF_DAY, 0);
-            calNgayBatDau.set(Calendar.MINUTE, 0);
-            calNgayBatDau.set(Calendar.SECOND, 0);
-            calNgayBatDau.set(Calendar.MILLISECOND, 0);
-
-            // Kiểm tra ngày bắt đầu không được là ngày trong quá khứ
-            if (calNgayBatDau.getTime().before(today)) {
-                bindingResult.rejectValue("ngayBatDau", "error.phieuGiamGia", "Ngày bắt đầu không được là ngày trong quá khứ");
-            }
-        }
         // Kiểm tra ngày kết thúc không được là ngày trong quá khứ
         if (phieuGiamGia.getNgayKetThuc() != null) {
             Calendar calNgayKetThuc = Calendar.getInstance();
@@ -181,17 +239,15 @@ public class PhieuGiamGiaController {
             calNgayKetThuc.set(Calendar.MINUTE, 0);
             calNgayKetThuc.set(Calendar.SECOND, 0);
             calNgayKetThuc.set(Calendar.MILLISECOND, 0);
-
             // Kiểm tra ngày kết thúc không được là ngày trong quá khứ
             if (calNgayKetThuc.getTime().before(today)) {
                 bindingResult.rejectValue("ngayKetThuc", "error.phieuGiamGia", "Ngày kết thúc không được là ngày trong quá khứ");
             }
         }
         // Kiểm tra ngày kết thúc phải sau hoặc bằng ngày bắt đầu
-        if (phieuGiamGia.getNgayBatDau() != null
-                && phieuGiamGia.getNgayKetThuc() != null
+        if (phieuGiamGia.getNgayBatDau() != null && phieuGiamGia.getNgayKetThuc() != null
                 && phieuGiamGia.getNgayKetThuc().before(phieuGiamGia.getNgayBatDau())) {
-            bindingResult.rejectValue("ngayKetThuc", "error.phieuGiamGia", "Ngày kết thúc phải sau hoặc bằng ngày bắt đầu");
+            bindingResult.rejectValue("ngayKetThuc", "error.phieuGiamG ia", "Ngày kết thúc phải sau hoặc bằng ngày bắt đầu");
         }
         // Kiểm tra ngày bắt đầu không được vượt quá 1 năm từ ngày hiện tại
         if (phieuGiamGia.getNgayBatDau() != null) {
@@ -203,14 +259,6 @@ public class PhieuGiamGiaController {
             if (phieuGiamGia.getNgayBatDau().after(oneYearLater)) {
                 bindingResult.rejectValue("ngayBatDau", "error.phieuGiamGia", "Ngày bắt đầu không được vượt quá 1 năm từ ngày hiện tại");
             }
-        }
-        if (phieuGiamGia.getSoLuong() < 0) {
-            bindingResult.rejectValue("soLuong", "error.phieuGiamGia", "Số lượng phiếu giảm giá cập nhật không được là số âm");
-        }
-        // Kiểm tra giá trị giảm khi kiểu giảm giá là 1 (%)
-        if (phieuGiamGia.getKieuGiamGia() == 1 && phieuGiamGia.getGiaTriGiam() != null
-                && phieuGiamGia.getGiaTriGiam().compareTo(BigDecimal.valueOf(100)) > 0) {
-            bindingResult.rejectValue("giaTriGiam", "error.phieuGiamGia", "Giá trị giảm không được lớn hơn 100% khi giảm theo phần trăm.");
         }
         // Nếu có lỗi, trả về lại form sửa và hiển thị lỗi
         if (bindingResult.hasErrors()) {
@@ -237,7 +285,6 @@ public class PhieuGiamGiaController {
                 calNgayKetThuc.set(Calendar.MINUTE, 59);
                 calNgayKetThuc.set(Calendar.SECOND, 59);
                 calNgayKetThuc.set(Calendar.MILLISECOND, 999);
-
                 // Kiểm tra và set trạng thái
                 if (today.compareTo(calNgayBatDau.getTime()) >= 0 &&
                         today.compareTo(calNgayKetThuc.getTime()) <= 0) {
@@ -252,11 +299,10 @@ public class PhieuGiamGiaController {
                 }
             }
         }
-
-        // Cập nhật thông tin nếu không có lỗi
-        phieuGiamGiaService.update(id, phieuGiamGia);
-        return "redirect:/admin/phieu-giam-gia/index";
-    }
+    // Cập nhật thông tin nếu không có lỗi
+    phieuGiamGiaService.update(id, phieuGiamGia);
+    return "redirect:/admin/phieu-giam-gia/index";
+}
 
     @PostMapping("/update-status/{id}")
     @Transactional
@@ -264,7 +310,9 @@ public class PhieuGiamGiaController {
         Optional<PhieuGiamGia> phieuGiamGiaOptional = phieuGiamGiaService.getById(id);
         if (phieuGiamGiaOptional.isPresent()) {
             PhieuGiamGia phieuGiamGia = phieuGiamGiaOptional.get();
-            phieuGiamGia.setTrangThai(0);
+            // Chuyển đổi trạng thái
+            int currentStatus = phieuGiamGia.getTrangThai();
+            phieuGiamGia.setTrangThai(currentStatus == 1 ? 0 : 1);
             phieuGiamGiaService.updateStatus(id, phieuGiamGia);
         }
         return "redirect:/admin/phieu-giam-gia/index";
@@ -361,9 +409,17 @@ public class PhieuGiamGiaController {
         }
         if (phieuGiamGia.getKieuGiamGia() == 1 && phieuGiamGia.getGiaTriGiam() != null
                 && phieuGiamGia.getGiaTriGiam().compareTo(BigDecimal.valueOf(100)) > 0) {
-            bindingResult.rejectValue("giaTriGiam", "error.phieuGiamGia", "Giá trị giảm không được lớn hơn 100% khi giảm theo phần trăm.");
+            bindingResult.rejectValue("giaTriGiam", "error.phieuGiamGia",
+                    "Giá trị giảm không được lớn hơn 100% khi giảm theo phần trăm.");
         }
-
+        if (phieuGiamGia.getKieuGiamGia() == 0) {
+            if (phieuGiamGia.getGiaTriGiam() != null && phieuGiamGia.getGiaTriMax() != null) {
+                if (phieuGiamGia.getGiaTriGiam().compareTo(phieuGiamGia.getGiaTriMax()) != 0) {
+                    bindingResult.rejectValue("giaTriGiam", "error.phieuGiamGia",
+                            "Khi giảm theo giá tiền, giá trị giảm phải bằng giá trị tối đa");
+                }
+            }
+        }
         if (bindingResult.hasErrors()) {
             return "/admin/PhieuGiamGia/Add";
         }

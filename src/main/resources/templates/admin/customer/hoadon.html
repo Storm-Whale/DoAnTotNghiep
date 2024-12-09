@@ -210,7 +210,6 @@
                   hoaDon.trangThai == 4 ? 'Đang Giao Hàng' :
                   hoaDon.trangThai == 5 ? 'Hoàn Thành' :
                   hoaDon.trangThai == 6 ? 'Đã Hủy' : 'Chưa Thanh Toán'}"></td>
-
                 <td>
                     <div class="d-flex justify-content-start align-items-center">
                         <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary btn-sm mr-2">
@@ -246,16 +245,10 @@
 
                     </div>
                 </td>
-
-
-
             </tr>
             </tbody>
         </table>
-
-
         <div>
-
             <ul class="pagination justify-content-center">
                 <!-- Nút "First" dẫn đến trang đầu tiên -->
                 <li class="page-item" th:class="${currentPage == 1} ? 'disabled' : ''">
@@ -449,12 +442,7 @@
         const tenPhuongThuc = document.getElementById('phuongthucFilter').value;
         window.location.href = `/admin/hoadon/filter/tenPhuongThuc?tenPhuongThuc=${tenPhuongThuc}&pageNo=1&pageSize=10`;
     }
-
-
-
 </script>
-
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>
