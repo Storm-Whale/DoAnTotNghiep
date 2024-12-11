@@ -31,4 +31,6 @@ public interface TaiKhoanService {
     TaiKhoan findByTTKAndMK (String username, String password);
 //    Optional<TaiKhoan> findByResetCode(String resetCode);
     TaiKhoanDTO saveTaiKhoan(TaiKhoanDTO taiKhoan);
+
+    TaiKhoan findById (Integer id);
 }

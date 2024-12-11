@@ -80,4 +80,9 @@ public class NhanVienServiceImpl implements NhanVienService {
         return nhanVienRepository.existsBySdt(sdt);
     }
 
+    @Override
+    public boolean isEmailExist(String email) {
+        return nhanVienRepository.existsByEmail(email);
+    }
+
 }

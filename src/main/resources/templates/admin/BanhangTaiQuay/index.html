@@ -289,8 +289,10 @@
 
 </style>
                     <div class="diaChiCheck">
-                        <form id="addressForm" style="display: none;" th:action="@{/admin/taiquay/cap-nhat-hoa-don}" method="post">
+                        <form id="addressForm" style="display: none;" th:action="@{/admin/taiquay/cap-nhat-hoa-don}" method="post" onsubmit="return validateForm()">
+<!--                        <form id="addressForm" style="display: none;" th:action="@{/admin/taiquay/cap-nhat-hoa-don}" method="post">-->
                             <input type="hidden" name="idHoaDon" th:value="${hoaDon.id}" />
+                            <input type="hidden" id="khachHangId1" th:value="${hoaDon.khachHang != null ? hoaDon.khachHang.id : ''}" />
 
                             <label for="diaChi">Địa chỉ:</label>
                             <input type="text" id="diaChi" name="diaChi" th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : ''}" />
@@ -299,15 +301,71 @@
                             <input type="text" id="soDienThoai1" name="soDienThoai"
                                    th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.soDienThoai : ''}" />
 
+
+
                             <label for="tenNguoiNhan">Tên người nhận:</label>
                             <input type="text" id="tenNguoiNhan" name="tenNguoiNhan" th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.tenKhachHang : ''}" />
 
                             <label for="ghiChu">Ghi chú:</label>
                             <input type="text" id="ghiChu" name="ghiChu" th:value="${hoaDon.ghiChu}">
 
-                            <button type="submit">Cập nhật</button>
+                            <button type="submit" style="margin-top: 15px">Cập nhật</button>
                         </form>
                     </div>
+
+                    <script>
+
+                    // validate dia chỉ  332
+                        function validateForm() {
+                            const diaChi = document.getElementById("diaChi").value.trim();
+                            const soDienThoai = document.getElementById("soDienThoai1").value.trim();
+                            const tenNguoiNhan = document.getElementById("tenNguoiNhan").value.trim();
+
+                            // Kiểm tra nếu đã có khách hàng (sử dụng hidden input để kiểm tra trạng thái)
+                            const khachHangId = document.getElementById("khachHangId1")?.value;
+
+                            if (!khachHangId) {
+                                // Trường hợp khách lẻ: Không được để trống trường nào
+                                if (!diaChi || !soDienThoai || !tenNguoiNhan) {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Thông báo',
+                                        text: 'Vui lòng nhập đầy đủ: Địa chỉ, Số điện thoại, và Tên người nhận!',
+                                        confirmButtonText: 'OK'
+                                    });
+                                    return false;
+                                }
+                            } else {
+                                // Trường hợp đã có khách hàng: Cho phép bỏ trống số điện thoại
+                                if (!diaChi || !tenNguoiNhan) {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Thông báo',
+                                        text: 'Vui lòng nhập đầy đủ: Địa chỉ và Tên người nhận!',
+                                        confirmButtonText: 'OK'
+                                    });
+                                    return false;
+                                }
+                            }
+
+                            // Kiểm tra số điện thoại hợp lệ nếu có nhập
+                            if (soDienThoai && !/^\d{10,15}$/.test(soDienThoai)) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Số điện thoại không hợp lệ!',
+                                    text: 'Vui lòng nhập số từ 10 đến 15 ký tự.',
+                                    confirmButtonText: 'OK'
+                                });
+                                return false;
+                            }
+
+                            // Nếu qua được các kiểm tra
+                            return true;
+                        }
+
+
+                    </script>
+
                 </div>
                 <div class="payment-info">
                     <p style="margin-top: 7px;margin-bottom: 7px;"><b><i class="bi bi-diamond-fill fs3">Thông tin thanh
@@ -339,6 +397,39 @@
                                 <span class="slider"></span>
                             </label>
                         </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const toggleAddress = document.getElementById('toggleAddress');
+                                const addressForm = document.getElementById('addressForm');
+                                const khachHang = document.getElementById("khachHangId");
+                                const diaChi = document.getElementById("diaChi");
+
+                                // Kiểm tra và hiển thị form địa chỉ nếu có khách hàng
+                                function checkAndShowAddressForm() {
+                                    if (khachHang && khachHang.value.trim() !== "") {
+                                        addressForm.style.display = 'block'; // Hiển thị form địa chỉ
+                                        toggleAddress.checked = true; // Đánh dấu checkbox
+                                    } else {
+                                        addressForm.style.display = 'none'; // Ẩn form địa chỉ
+                                        toggleAddress.checked = false; // Bỏ đánh dấu checkbox
+                                    }
+                                }
+
+                                // Gọi hàm kiểm tra khi trang được tải
+                                checkAndShowAddressForm();
+
+                                // Lắng nghe sự kiện thay đổi của checkbox
+                                toggleAddress.addEventListener('change', function() {
+                                    if (toggleAddress.checked) {
+                                        addressForm.style.display = 'block'; // Hiển thị form địa chỉ
+                                    } else {
+                                        addressForm.style.display = 'none'; // Ẩn form địa chỉ
+                                    }
+                                });
+
+                                // Phần còn lại của mã không thay đổi...
+                            });
+                        </script>
                         <div id="themnhanhkhachhang" class="dialogmodal">
                         <div class="modal__center">
                             <div class="thongBao">
@@ -444,6 +535,43 @@
                         </button>
                         <a href="#" class="modal__close">&times;</a>
                     </form>
+
+
+<script>
+    document.getElementById('btnCheckout').addEventListener('click', function() {
+        fetch('/admin/taiquay/thanhtoan', { method: 'GET' })
+            .then(response => response.text())
+            .then(result => {
+                if (result.includes("Hóa đơn chưa có sản phẩm")) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Không thể thanh toán',
+                        text: result,
+                        confirmButtonText: 'OK'
+                    });
+                } else if (result.includes("Không thể thanh toán")) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi thanh toán',
+                        text: result,
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    // Xử lý tải file PDF
+                    window.location.href = result;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Có lỗi xảy ra',
+                    text: 'Vui lòng thử lại sau.',
+                    confirmButtonText: 'OK'
+                });
+            });
+    });
+</script>
                     <!-- Modal HTML -->
                     <div id="customerModal" class="modal" style="display:none;">
                         <div class="modal-content">
@@ -713,24 +841,31 @@
         }
     }
 </script>
-<!--js confirm print pdf for hd-->
+<!--811-->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const btnCheckout = document.getElementById('btnCheckout');
         const paymentForm = document.getElementById('paymentForm');
-        // Kiểm tra đường dẫn hiện tại
-        function isOnTaiQuayPage() {
-            return window.location.pathname === '/admin/taiquay';
+
+        // Kiểm tra số lượng sản phẩm trong hóa đơn
+        function checkProductsInInvoice() {
+            const productRows = document.querySelectorAll('#cartTable1 tr');
+            console.log('Số lượng sản phẩm:', productRows.length);
+            return productRows.length > 0;
         }
+
         // Kiểm tra phương thức thanh toán
         function isPaymentMethodSelected() {
             const paymentMethods = document.getElementsByName("phuongThucThanhToan");
             return Array.from(paymentMethods).some(method => method.checked);
         }
-        function checkDiaChiRequired() {
+
+        // Kiểm tra địa chỉ khách hàng
+        function checkCustomerAddress() {
             const khachHang = document.getElementById("khachHangId");
             const diaChi = document.getElementById("diaChi");
-            // Kiểm tra nếu có khách hàng nhưng chưa có địa chỉ
+
+            // Nếu có khách hàng nhưng chưa có địa chỉ
             if (khachHang && khachHang.value.trim() !== "" &&
                 (!diaChi || diaChi.value.trim() === "")) {
                 Swal.fire({
@@ -739,7 +874,6 @@
                     text: 'Vui lòng nhập địa chỉ cho khách hàng trước khi thanh toán!',
                     confirmButtonText: 'Nhập địa chỉ',
                     preConfirm: () => {
-                        // Hiển thị form nhập địa chỉ
                         const addressForm = document.getElementById('addressForm');
                         if (addressForm) {
                             addressForm.style.display = 'block';
@@ -750,31 +884,19 @@
             }
             return true;
         }
-        btnCheckout.addEventListener('click', function(event) {
-            const khachHang = document.getElementById("khachHangId");
-            const addressForm = document.getElementById('addressForm');
-            const diaChi = document.getElementById("diaChi");
 
-            // Nếu có khách hàng nhưng không có địa chỉ, tự động hiển thị form
-            if (khachHang && khachHang.value.trim() !== "" &&
-                (!diaChi || diaChi.value.trim() === "")) {
-                if (addressForm) {
-                    addressForm.style.display = 'block';
-                }
-            }
-            // Nếu đang ở trang danh sách, không cho phép thanh toán
-            if (isOnTaiQuayPage()) {
+        // Hàm xử lý thanh toán
+        function submitPayment() {
+            // Kiểm tra số lượng sản phẩm
+            if (!checkProductsInInvoice()) {
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Thông báo',
-                    text: 'Bạn cần chọn một hóa đơn để tiến hành thanh toán!',
+                    title: 'Không thể thanh toán',
+                    text: 'Hóa đơn chưa có sản phẩm',
                     confirmButtonText: 'OK'
                 });
                 return;
             }
-            // Lấy ID hóa đơn từ URL
-            const pathParts = window.location.pathname.split('/');
-            const hoaDonId = pathParts[pathParts.length - 1];
 
             // Kiểm tra phương thức thanh toán
             if (!isPaymentMethodSelected()) {
@@ -786,6 +908,15 @@
                 });
                 return;
             }
+
+            // Kiểm tra địa chỉ khách hàng
+            if (!checkCustomerAddress()) {
+                return;
+            }
+
+            // Lấy ID hóa đơn từ URL
+            const pathParts = window.location.pathname.split('/');
+            const hoaDonId = pathParts[pathParts.length - 1];
 
             // Kiểm tra khách hàng
             const khachHangInput = document.getElementById("khachHangId");
@@ -803,24 +934,17 @@
                         window.location.href = `/admin/taiquay/detail/${hoaDonId}`;
                     } else {
                         // Tiếp tục thanh toán với khách lẻ
-                        submitPaymentForm(hoaDonId, true);
+                        processPayment(hoaDonId, true);
                     }
                 });
             } else {
                 // Nếu đã có khách hàng, gửi form
-                submitPaymentForm(hoaDonId, false);
+                processPayment(hoaDonId, false);
             }
-            // Kiểm tra địa chỉ
-            if (!checkDiaChiRequired()) {
-                return;
-            }
-        });
+        }
 
-        function submitPaymentForm(hoaDonId, themKhachHang) {
-            // Kiểm tra địa chỉ trước khi submit
-            if (!checkDiaChiRequired()) {
-                return;
-            }
+        // Hàm xử lý thanh toán chi tiết
+        function processPayment(hoaDonId, themKhachHang) {
             const formData = new FormData(paymentForm);
             formData.append("themKhachHang", themKhachHang);
 
@@ -828,7 +952,55 @@
                 method: "GET",
             })
                 .then((response) => response.text())
-                .then((pdfUrl) => handleInvoiceResponse(pdfUrl))
+                .then((pdfUrl) => {
+                    if (pdfUrl) {
+                        Swal.fire({
+                            title: 'Thanh toán',
+                            text: "Bạn có muốn xác nhận hóa đơn này?",
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Xác Nhận',
+                            cancelButtonText: 'Hủy',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    title: 'Xác nhận thanh toán hóa đơn thành công!',
+                                    html: `
+                                <div>
+                                    <p>Hóa đơn đã được lưu</p>
+                                    <a href="#" id="invoiceDownloadLink" style="color: blue; text-decoration: underline;">
+                                        Xem hóa đơn
+                                    </a>
+                                </div>
+                            `,
+                                    icon: 'success',
+                                    didRender: () => {
+                                        const downloadLink = document.getElementById('invoiceDownloadLink');
+                                        downloadLink.addEventListener('click', function(e) {
+                                            e.preventDefault();
+                                            window.open(pdfUrl, '_blank');
+                                        });
+                                    },
+                                    didClose: () => {
+                                        window.location.href = "/admin/taiquay";
+                                    }
+                                });
+                            } else {
+                                window.location.href = "/admin/taiquay";
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: 'Không thể tạo file PDF!',
+                        }).then(() => {
+                            window.location.href = "/admin/taiquay";
+                        });
+                    }
+                })
                 .catch((error) => {
                     console.error("Lỗi khi xử lý thanh toán:", error);
                     Swal.fire({
@@ -841,55 +1013,8 @@
                 });
         }
 
-        function handleInvoiceResponse(pdfUrl) {
-            if (pdfUrl) {
-                Swal.fire({
-                    title: 'Than htoán',
-                    text: "Bạn có muốn xác nhận hóa đơn này?",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Xác Nhận',
-                    cancelButtonText: 'Hủy',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({
-                            title: 'Xác nhận thanh toán hóa đơn thành công!',
-                            html: `
-                        <div>
-                            <p>Hóa đơn đã được lưu</p>
-                            <a href="#" id="invoiceDownloadLink" style="color: blue; text-decoration: underline;">
-                                Xem hóa đơn
-                            </a>
-                        </div>
-                    `,
-                            icon: 'success',
-                            didRender: () => {
-                                const downloadLink = document.getElementById('invoiceDownloadLink');
-                                downloadLink.addEventListener('click', function(e) {
-                                    e.preventDefault();
-                                    window.open(pdfUrl, '_blank');
-                                });
-                            },
-                            didClose: () => {
-                                window.location.href = "/admin/taiquay";
-                            }
-                        });
-                    } else {
-                        window.location.href = "/admin/taiquay";
-                    }
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi',
-                    text: 'Không thể tạo file PDF!',
-                }).then(() => {
-                    window.location.href = "/admin/taiquay";
-                });
-            }
-        }
+        // Sự kiện click nút thanh toán
+        btnCheckout.addEventListener('click', submitPayment);
     });
 </script>
 

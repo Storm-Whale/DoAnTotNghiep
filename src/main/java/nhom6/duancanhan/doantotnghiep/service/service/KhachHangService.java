@@ -30,7 +30,6 @@ public interface KhachHangService {
      KhachHang findById(Integer id);
 
      boolean isSoDienThoaiExist(String soDienThoai);
-
-
+     boolean isEmailExist(String soDienThoai);
 
 }

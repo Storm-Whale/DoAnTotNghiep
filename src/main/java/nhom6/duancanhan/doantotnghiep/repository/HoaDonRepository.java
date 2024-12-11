@@ -53,6 +53,11 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findHoaDonByKhachHangId(Integer khachHangId);
     List<HoaDon> findHoaDonByKhachHangIdAndTrangThai(Integer khachHangId, int trangThai);
 
+    Page<HoaDon> findByKhachHang_IdAndTrangThai(Integer khachHangId, Integer trangThai, Pageable pageable);
+
+    Page<HoaDon> findByNguoiTao_Id(Integer nguoiTaoId, Pageable pageable);
+
+
 
 //    @Query("SELECT hd FROM HoaDon hd JOIN hd.diaChi dc JOIN hd.phuongThucThanhToan ptt WHERE " +
 //            "(hd.tenNguoiNhan LIKE %:keyword% OR hd.sdt LIKE %:keyword% OR hd.emailNguoiNhan LIKE %:keyword% OR " +

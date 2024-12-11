@@ -86,9 +86,9 @@ public class KhachHang {
 
 
     @Column(name = "trang_thai")
-    @NotNull(message = "Trạng thái không trống")
-    @Min(value = 0, message = "Invalid gender value")
-    @Max(value = 1, message = "Invalid gender value")
+//    @NotNull(message = "Trạng thái không trống")
+//    @Min(value = 0, message = "Invalid gender value")
+//    @Max(value = 1, message = "Invalid gender value")
     private Integer trangThai;
 
     @Column(name= "ngay_tao")

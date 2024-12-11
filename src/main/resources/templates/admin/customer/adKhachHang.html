@@ -79,10 +79,13 @@
   <div class="row">
     <div class="col-sm-6">
       <div class="form-group">
-      <label>Ảnh Đại Diện</label>
-        <input type="file" th:field="*{anhUrlFile}" class="form-control"/>
+        <label>Ảnh Đại Diện</label>
+        <input type="file" name="anhUrlFile" th:field="*{anhUrlFile}" class="form-control"/>
+
         <span th:if="${#fields.hasErrors('anhUrl')}" th:errors="*{anhUrl}" style="color: red; margin-top: 6px"></span>
-        <img th:if="${khachHang.anhUrl}" th:src="@{'/' + ${khachHang.anhUrl}}"
+
+        <!-- Hiển thị ảnh đại diện hoặc ảnh mặc định -->
+        <img th:src="${khachHang.anhUrl != null && !khachHang.anhUrl.isEmpty() ? '/' + khachHang.anhUrl : 'file:D:/DoAnTotNghiep/DoAnTotNghiep/upload/u.png'}"
              alt="Ảnh khách hàng" style="width: 200px; height: auto;"/>
       </div>
     </div>
@@ -91,13 +94,13 @@
       <label class="form-label">Tên Khách Hàng</label>
       <input type="text" class="form-control" th:field="*{ten}">
       <span th:if="${#fields.hasErrors('ten')}" th:errors="*{ten}" style="color: red; margin-top: 6px"></span>
-
     </div>
 
     <div class="col-sm-6">
       <label  class="form-label">Ngày Sinh</label>
-      <input type="date" class="form-control" th:field="*{ngaySinh}">
+      <input type="date" class="form-control"  id="ngaySinh" th:field="*{ngaySinh}">
       <span th:if="${#fields.hasErrors('ngaySinh')}" th:errors="*{ngaySinh}"  style="color: red; margin-top: 6px"></span>
+<!--      <span id="ngaySinhError" style="color: red; margin-top: 10px; margin-bottom: 10px;"></span>-->
     </div>
 
     <div class="col-sm-6">
@@ -115,7 +118,6 @@
         </label>
       </div>
       <span th:if="${#fields.hasErrors('gioiTinh')}" th:errors="*{gioiTinh}"  style="color: red; margin-top: 6px"></span>
-
     </div>
 
     <div class="col-sm-6">
@@ -128,27 +130,26 @@
       <label class="form-label">Email</label>
       <input type="text" class="form-control"  th:field="*{email}">
       <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"  style="color: red; margin-top: 6px"></span>
-
     </div>
 
-    <div class="col-sm-6">
-      <label class="form-label">Trạng Thái</label>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="" value="0" th:field="*{trangThai}">
-        <label class="form-check-label">
-          Không Hoạt Động
-        </label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name=""  value="1" th:field="*{trangThai}">
-        <label class="form-check-label">
-          Hoạt Động
-        </label>
-      </div>
-      <span th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"  style="color: red; margin-top: 6px"></span>
-
-    </div>
+<!--    <div class="col-sm-6">-->
+<!--      <label class="form-label">Trạng Thái</label>-->
+<!--      <div class="form-check">-->
+<!--        <input class="form-check-input" type="radio" name="" value="0" th:field="*{trangThai}">-->
+<!--        <label class="form-check-label">-->
+<!--          Không Hoạt Động-->
+<!--        </label>-->
+<!--      </div>-->
+<!--      <div class="form-check">-->
+<!--        <input class="form-check-input" type="radio" name=""  value="1" th:field="*{trangThai}">-->
+<!--        <label class="form-check-label">-->
+<!--          Hoạt Động-->
+<!--        </label>-->
+<!--      </div>-->
+<!--      <span th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"  style="color: red; margin-top: 6px"></span>-->
+<!--    </div>-->
     <div>
+
       <button  style="width: 100px; height: 40px; float: left; text-align: center; margin-top: 10px" class="btn btn-danger">Submit</button>
     </div>
   </div>
@@ -158,4 +159,6 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>
+<script>
+</script>
 </html>

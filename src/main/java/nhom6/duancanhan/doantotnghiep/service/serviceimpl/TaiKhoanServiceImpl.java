@@ -85,4 +85,9 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
     public TaiKhoanDTO saveTaiKhoan(TaiKhoanDTO taiKhoan) {
         return forgotRepository.save(taiKhoan);
     }
+
+    @Override
+    public TaiKhoan findById(Integer id) {
+        return taiKhoanRepository.findById(id).orElse(null);
+    }
 }
