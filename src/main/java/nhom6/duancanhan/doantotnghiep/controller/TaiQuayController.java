@@ -11,6 +11,8 @@ import nhom6.duancanhan.doantotnghiep.entity.PhieuGiamGia;
 import nhom6.duancanhan.doantotnghiep.entity.PhuongThucThanhToan;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamGioHang;
+import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
+import nhom6.duancanhan.doantotnghiep.entity.VaiTro;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.*;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
@@ -25,8 +27,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -485,7 +489,12 @@ public class TaiQuayController {
         model.addAttribute("diaChi", diaChiObj);
         return "/admin/BanhangTaiQuay/addNhanhKhachHang";
     }
-
+    @Autowired
+    VaiTroService vaiTroService;
+    @Autowired
+    GioHangService gioHangService;
+    @Autowired
+    TaiKhoanService taiKhoanService;
     @PostMapping("/add")
     public String add(@Valid @ModelAttribute("khachHangThemNhanh") KhachHang khachHang,
                       BindingResult result, Model model,
@@ -495,38 +504,41 @@ public class TaiQuayController {
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
                 .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
 
-        // Kiểm tra tên khách hàng
-        if (khachHang.getTen() != null && !khachHang.getTen().matches("^[a-zA-Z ]+$")) {
-            result.rejectValue("ten", "error.khachHang", "Tên khách hàng chỉ được chứa chữ cái và khoảng trắng.");
+//        // Kiểm tra tên khách hàng
+//        if (khachHang.getTen() != null && !khachHang.getTen().matches("^[a-zA-Z ]+$")) {
+//            result.rejectValue("ten", "error.khachHang", "Tên khách hàng chỉ được chứa chữ cái và khoảng trắng.");
+//        }        // Tạo mới tài khoản
+        TaiKhoan taiKhoan = new TaiKhoan();
+        taiKhoan.setTenDangNhap(khachHang.getSoDienThoai());
+        taiKhoan.setMatKhau(khachHang.getSoDienThoai());
+        taiKhoan.setTrangThai(1);
+        VaiTro vaiTro = vaiTroService.findById(3);
+        if (vaiTro != null) {
+            taiKhoan.setVaiTro(vaiTro);
+        } else {
+            model.addAttribute("error", "Vai trò không tồn tại.");
+          return "/admin/BanhangTaiQuay/addNhanhKhachHang";
         }
+        taiKhoanService.addTaiKhoan(taiKhoan);
+        khachHang.setTaiKhoan(taiKhoan);
 
         String email = khachHang.getEmail();
 
         // Kiểm tra email không phải là chuỗi rỗng
         if (email != null && !email.isEmpty()) {
             // Kiểm tra email bắt đầu bằng chữ thường
-            if (!Character.isLowerCase(email.charAt(0))) {
-                result.rejectValue("email", "error.khachHang", "Email phải bắt đầu bằng chữ thường.");
-            }
+//            if (!Character.isLowerCase(email.charAt(0))) {
+//                result.rejectValue("email", "error.khachHang", "Email phải bắt đầu bằng chữ thường.");
+//            }
 
             // Kiểm tra email đã tồn tại
             if (khachHangService.isEmailExist(email)) {
-                result.rejectValue("email", "error.khachHang", "Email đã tồn tại.");
-            }
-        }
-// ngaySinh
-        if (khachHang.getNgaySinh() != null) {
-            LocalDate ngaySinh = khachHang.getNgaySinh();
-            LocalDate today = LocalDate.now();
-            int age = Period.between(ngaySinh, today).getYears();
-
-            if (age < 0 || age > 150) {
-                result.rejectValue("ngaySinh", "error.khachHang", "Tuổi phải trong khoảng từ 0 đến 150.");
+                result.rejectValue("email", "error.khachHangThemNhanh", "Email đã tồn tại.");
             }
         }
 // SoDienThoai
         if (khachHangService.isSoDienThoaiExist(khachHang.getSoDienThoai())) {
-            result.rejectValue("soDienThoai", "error.khachHang", "Số điện thoại đã tồn tại.");
+            result.rejectValue("soDienThoai", "error.khachHangThemNhanh", "Số điện thoại đã tồn tại.");
         }
 
         if (result.hasErrors()) {
@@ -535,8 +547,40 @@ public class TaiQuayController {
             }
             return "/admin/BanhangTaiQuay/addNhanhKhachHang";
         }
+        // Xử lý tệp tải lên
+        MultipartFile anhUrlFile = khachHang.getAnhUrlFile();
+        if (anhUrlFile == null || anhUrlFile.isEmpty()) {
+            khachHang.setAnhUrl("u.png");
+        } else {
+            // Kiểm tra file ảnh hợp lệ
+            String contentType = anhUrlFile.getContentType();
+            if (!contentType.startsWith("image/")) {
+                result.rejectValue("anhUrl", "error.khachHang", "Tệp tải lên không phải là hình ảnh.");
+            } else {
+                try {
+                    // Tạo tên file duy nhất bằng UUID
+                    String fileName = UUID.randomUUID() + "_" + anhUrlFile.getOriginalFilename();
+                    // Đường dẫn thư mục lưu file (ngoài thư mục dự án)
+                    String uploadDir = System.getProperty("user.dir") + "/upload/";
+                    File uploadFolder = new File(uploadDir);
+                    if (!uploadFolder.exists()) {
+                        uploadFolder.mkdirs();
+                    }
+
+                    File uploadFile = new File(uploadDir + fileName);
+                    anhUrlFile.transferTo(uploadFile);
+
+                    khachHang.setAnhUrl(fileName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    model.addAttribute("uploadError", "Lỗi khi tải lên tệp.");
+                    return "/admin/BanhangTaiQuay/addNhanhKhachHang";
+                }
+            }
+        }
 
         khachHangService.addKhachHang(khachHang);
+        gioHangService.addGioHang(khachHang);
 
         // Cập nhật khách hàng cho hóa đơn
         if (hoaDon != null || hoaDon.getKhachHang() != null) {

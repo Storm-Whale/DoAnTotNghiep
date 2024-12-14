@@ -201,40 +201,17 @@ public class KhachHangController {
         taiKhoanService.addTaiKhoan(taiKhoan);
         khachHang.setTaiKhoan(taiKhoan);
 
-
-
-        // Kiểm tra tên khách hàng
-        if (khachHang.getTen() != null && !khachHang.getTen().matches("^[a-zA-Z ]+$")) {
-            result.rejectValue("ten", "error.khacHang", "Tên khách hàng chỉ được chứa chữ cái và khoảng trắng.");
-        }
-
         // Kiểm tra email không phải là chuỗi rỗng
         String email = khachHang.getEmail();
         if (email != null && !email.isEmpty()) {
-            if (!Character.isLowerCase(email.charAt(0))) {
-                result.rejectValue("email", "error.khachHang", "Email phải bắt đầu bằng chữ thường.");
-            }
             if (khachHangService.isEmailExist(email)) {
                 result.rejectValue("email", "error.khachHang", "Email đã tồn tại.");
-            }
-        }
-
-// ngaySinh
-        if (khachHang.getNgaySinh() != null) {
-            LocalDate ngaySinh = khachHang.getNgaySinh();
-            LocalDate today = LocalDate.now();
-            int age = Period.between(ngaySinh, today).getYears();
-
-            if (age < 0 || age > 150) {
-                result.rejectValue("ngaySinh", "error.khachHang", "Tuổi phải trong khoảng từ 0 đến 150.");
             }
         }
 // SoDienThoai
         if (khachHangService.isSoDienThoaiExist(khachHang.getSoDienThoai())) {
             result.rejectValue("soDienThoai", "error.khachHang", "Số điện thoại đã tồn tại.");
         }
-
-
         // Nếu có lỗi, thêm tất cả các lỗi vào model để hiển thị
         if (result.hasErrors()) {
             model.addAttribute("fieldErrors", result.getFieldErrors());
