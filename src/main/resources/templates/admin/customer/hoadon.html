@@ -157,24 +157,26 @@
             <a class="nav-link" href="/admin/hoadon" th:classappend="${activeTab == 'all' ? 'active' : ''}">Danh Sách Hóa Đơn</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/admin/hoadon/tai-quay" th:classappend="${activeTab == 'tai-quay' ? 'active' : ''}">Tại quầy</a>
+            <a class="nav-link" href="/admin/hoadon/tai-quay" th:classappend="${activeTab == 'tai-quay' ? 'active' : ''}">Chờ Xác Nhận</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/admin/hoadon/online" th:classappend="${activeTab == 'online' ? 'active' : ''}">Online</a>
+            <a class="nav-link" href="/admin/hoadon/online" th:classappend="${activeTab == 'online' ? 'active' : ''}">Xác Nhận Đơn Hàng</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/admin/hoadon/prepare" th:classappend="${activeTab == 'prepare' ? 'active' : ''}">Đang Chuẩn Bị Hàng</a>
+            <a class="nav-link" href="/admin/hoadon/prepare" th:classappend="${activeTab == 'prepare' ? 'active' : ''}">Giao Hàng</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/admin/hoadon/shipping" th:classappend="${activeTab == 'shipping' ? 'active' : ''}">Đang Giao Hàng</a>
+            <a class="nav-link" href="/admin/hoadon/shipping" th:classappend="${activeTab == 'shipping' ? 'active' : ''}">Giao Hàng Thành Công</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/admin/hoadon/delivered" th:classappend="${activeTab == 'delivered' ? 'active' : ''}">Giao Hàng Thành Công</a>
+            <a class="nav-link" href="/admin/hoadon/delivered" th:classappend="${activeTab == 'delivered' ? 'active' : ''}">Giao Hàng Thất Bại</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/hoadon/pass" th:classappend="${activeTab == 'pass' ? 'active' : ''}">Hoàn Thành Đơn Hàng</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="/admin/hoadon/fall" th:classappend="${activeTab == 'fall' ? 'active' : ''}">Đã Hủy</a>
         </li>
-
     </ul>
 
 
@@ -203,13 +205,15 @@
                 <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>
                 <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : ''}"></td>
                 <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
-                <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : 'N/A'}"></td>
+                <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : ''}"></td>
                 <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>
-                <td th:text="${hoaDon.trangThai == 2 ? 'Chờ Xác Nhận' :
-                  hoaDon.trangThai == 3 ? 'Đang Chuẩn Bị Hàng' :
-                  hoaDon.trangThai == 4 ? 'Đang Giao Hàng' :
-                  hoaDon.trangThai == 5 ? 'Hoàn Thành' :
-                  hoaDon.trangThai == 6 ? 'Đã Hủy' : 'Chưa Thanh Toán'}"></td>
+                <td th:text="${ hoaDon.trangThai == 1 ? 'Chờ Xác Nhận' :
+                hoaDon.trangThai == 2 ? 'Xác Nhận Đơn Hàng' :
+                  hoaDon.trangThai == 3 ? 'Giao Hàng' :
+                  hoaDon.trangThai == 4 ? 'Giao Hàng Thành Công' :
+                  hoaDon.trangThai == 5 ? 'Giao Hàng Thất Bại' :
+                   hoaDon.trangThai == 6 ? 'Hoàn Thành Đơn Hàng' :
+                  hoaDon.trangThai == 7 ? 'Đã Hủy' : 'Chưa Thanh Toán'}"></td>
 
                 <td>
                     <div class="d-flex justify-content-start align-items-center">
@@ -230,12 +234,24 @@
                         Hủy Đơn
                     </a>
                 </div>
-                    <div class="mb-3" th:if="${activeTab == 'prepare'}">
+
+                    <div class="mb-3" th:if="${activeTab == 'tai-quay'}">
                         <a class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">
                             Xác Nhận
                         </a>
                         <a type="button" class="btn btn-outline-danger" th:attr="data-id=${hoaDon.id}">
                             Hủy Đơn
+                        </a>
+                    </div>
+                    <div class="mb-3" th:if="${activeTab == 'prepare'}">
+                        <a class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">
+                            Xác Nhận
+                        </a>
+<!--                        <a type="button" class="btn btn-outline-danger" th:attr="data-id=${hoaDon.id}">-->
+<!--                            Hủy Đơn-->
+<!--                        </a>-->
+                        <a type="button" class="btn btn-outline-warning" th:attr="data-id=${hoaDon.id}">
+                            Giao Hàng Thất Bại
                         </a>
                     </div>
 
@@ -451,6 +467,61 @@
     }
 
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll(".btn-outline-warning");
+
+        buttons.forEach(button => {
+            button.addEventListener("click", function () {
+                const hoaDonId = this.getAttribute("data-id");
+                const confirmed = confirm("Đơn Hàng Đã Giao Thất Bại?");
+
+                if (confirmed) {
+                    fetch(`/admin/hoadon/fall-order/${hoaDonId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ trangThai: 5 })
+                    })
+                        .then(response => {
+                            // Kiểm tra mã trạng thái
+                            if (response.ok) {
+                                // Chuyển đổi phản hồi thành văn bản
+                                return response.text().then(text => {
+                                    try {
+                                        // Cố gắng phân tích cú pháp thành JSON
+                                        return JSON.parse(text);
+                                    } catch (e) {
+                                        // Nếu không phải JSON, trả về thông điệp văn bản
+                                        return { message: text }; // Trả về một đối tượng với thông điệp
+                                    }
+                                });
+                            } else {
+                                return Promise.reject("Có lỗi xảy ra .");
+                            }
+                        })
+                        .then(data => {
+                            alert(data.message || "Đơn hàng đã giao thất bại!"); // Sử dụng thông điệp từ server nếu có
+
+                            // Lưu trạng thái tab hiện tại trước khi tải lại
+                            const activeTab = document.querySelector('.nav-link.active');
+                            if (activeTab) {
+                                sessionStorage.setItem('activeTab', activeTab.getAttribute('id'));
+                            }
+
+                            window.location.reload(); // Tải lại trang sau khi cập nhật thành công
+                        })
+                        .catch(error => {
+                            alert(error);
+                            console.error("Lỗi:", error);
+                            setTimeout(() => {
+                                window.location.reload(); // Tải lại trang
+                            }, 1000);
+                        });
+                }
+            });
+        });
+    });
 
 </script>
 

@@ -9,6 +9,7 @@ import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
 //import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 
 
+import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
@@ -233,5 +234,6 @@ public class HoaDonServiceImpl implements HoaDonService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return hoaDonRepository.findByTrangThai(trangThai, pageable);
     }
+
 
 }
