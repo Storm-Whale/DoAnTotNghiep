@@ -207,6 +207,7 @@
                 <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
                 <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : ''}"></td>
                 <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>
+
                 <td th:text="${ hoaDon.trangThai == 1 ? 'Chờ Xác Nhận' :
                 hoaDon.trangThai == 2 ? 'Xác Nhận Đơn Hàng' :
                   hoaDon.trangThai == 3 ? 'Giao Hàng' :
@@ -214,6 +215,13 @@
                   hoaDon.trangThai == 5 ? 'Giao Hàng Thất Bại' :
                    hoaDon.trangThai == 6 ? 'Hoàn Thành Đơn Hàng' :
                   hoaDon.trangThai == 7 ? 'Đã Hủy' : 'Chưa Thanh Toán'}"></td>
+
+
+                <td th:text="${hoaDon.trangThai == 2 ? 'Chờ Xác Nhận' :
+                  hoaDon.trangThai == 3 ? 'Đang Chuẩn Bị Hàng' :
+                  hoaDon.trangThai == 4 ? 'Đang Giao Hàng' :
+                  hoaDon.trangThai == 5 ? 'Hoàn Thành' :
+                  hoaDon.trangThai == 6 ? 'Đã Hủy' : 'Chưa Thanh Toán'}"></td>
 
                 <td>
                     <div class="d-flex justify-content-start align-items-center">
@@ -262,16 +270,10 @@
 
                     </div>
                 </td>
-
-
-
             </tr>
             </tbody>
         </table>
-
-
         <div>
-
             <ul class="pagination justify-content-center">
                 <!-- Nút "First" dẫn đến trang đầu tiên -->
                 <li class="page-item" th:class="${currentPage == 1} ? 'disabled' : ''">
@@ -467,6 +469,7 @@
     }
 
 
+
     document.addEventListener("DOMContentLoaded", function () {
         const buttons = document.querySelectorAll(".btn-outline-warning");
 
@@ -523,9 +526,8 @@
         });
     });
 
+
 </script>
-
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>

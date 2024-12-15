@@ -7,19 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
     <style>
-        /* Global Form Styling */
-        /* Giới hạn kích thước ảnh preview */
-        .preview-img {
-            display: block;
-            margin-top: 10px;
-            width: 100px; /* Chiều rộng tối đa */
-            height: auto; /* Tự động điều chỉnh tỷ lệ */
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            object-fit: cover; /* Đảm bảo hình ảnh được cắt gọn nếu cần */
-        }
-
-        /* Điều chỉnh form layout */
+        /* Định dạng container của form */
         .form-container {
             max-width: 800px;
             margin: 20px auto;
@@ -27,30 +15,34 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             background-color: #f9f9f9;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .form-row {
+        /* Định dạng hàng và cột */
+        .row {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
         }
 
-        .form-group {
-            flex: 1 1 48%; /* Cân chỉnh 2 cột */
-            margin-bottom: 15px;
+        .col-sm-6 {
+            flex: 1 1 48%; /* Hai cột cân bằng */
         }
 
-        .form-group label {
+        /* Định dạng label */
+        .form-label {
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
         }
 
+        /* Định dạng input và select */
         .form-control {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .form-control:focus {
@@ -58,25 +50,47 @@
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
         }
 
-        /* Nút submit */
-        .btn-primary {
-            width: 100px;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
+        /* Định dạng radio buttons */
+        .form-check-label {
+            margin-left: 5px;
+        }
+
+        .form-check-input {
+            margin-right: 5px;
+        }
+
+        /* Định dạng thông báo lỗi */
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        /* Định dạng nút submit */
+        .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
             border: none;
             border-radius: 4px;
-            text-align: center;
-            font-weight: bold;
+            padding: 10px 20px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
+        .btn-danger:hover {
+            background-color: #c82333;
         }
 
-
-
+        /* Định dạng ảnh đại diện */
+        .form-group img {
+            display: block;
+            margin-top: 10px;
+            width: 100px; /* Chiều rộng cố định */
+            height: auto; /* Duy trì tỉ lệ */
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body class="container-fluid">
@@ -86,89 +100,199 @@
 
 <section class="page-content">
     <h3 style="margin-top: 10px; margin-bottom: 10px; text-align: center">Cập Nhập Nhân Viên</h3>
-    <form th:action="@{/admin/nhanvien/update}" th:object="${nhanVien}" enctype="multipart/form-data" method="post" class="form-container">
-        <div class="form-row">
-            <div class="form-group col-sm-6">
-                <label for="id">ID</label>
-                <input type="text" id="id" class="form-control" th:field="*{id}" required>
+    <form class="form-container" id="khachHangForm" th:action="@{/admin/nhanvien/update}" th:object="${nhanVien}" enctype="multipart/form-data" method="post">
+        <div class="row">
+            <!-- ID -->
+            <div class="col-sm-6">
+                <label for="id" class="form-label">ID</label>
+                <input type="text" class="form-control" id="id" name="id" placeholder="Nhập ID" th:field="*{id}" readonly>
+                <span class="error-message" id="idError"></span>
             </div>
 
-            <div class="form-group col-sm-6">
-                <label for="anhUrlFile">Ảnh Đại Diện</label>
-                <input type="file" id="anhUrlFile" th:field="*{anhUrlFile}" class="form-control">
-                <span th:if="${#fields.hasErrors('anhUrl')}" th:errors="*{anhUrl}" style="color: red; margin-top: 6px"></span>
-                <img th:if="${nhanVien.anhUrl}" th:src="@{'/' + ${nhanVien.anhUrl}}" alt="Ảnh hiện tại" class="preview-img">
+            <!-- Ảnh Đại Diện -->
+            <div class="col-sm-6">
+                <label for="anhUrlFile" class="form-label">Ảnh Đại Diện</label>
+                <input type="file" id="anhUrlFile" th:field="*{anhUrlFile}"  class="form-control" onchange="previewImage(event)" />
+                <img
+                        id="previewImg"
+                        th:src="${nhanVien.anhUrl != null && !nhanVien.anhUrl.isEmpty() ? '/' + nhanVien.anhUrl : 'file:D:/DoAnTotNghiep/DoAnTotNghiep/upload/u.png'}"
+                        alt="Ảnh nhanVien" style="width: 200px; height: auto;"/>
             </div>
 
-            <div class="form-group col-sm-6">
-                <label for="ten">Tên Khách Hàng</label>
-                <input type="text" id="ten" class="form-control" th:field="*{ten}">
-                <span class="error-text" th:if="${#fields.hasErrors('ten')}" th:errors="*{ten}"></span>
+            <!-- Tên -->
+            <div class="col-sm-6">
+                <label for="ten" class="form-label">Tên Khách Hàng</label>
+                <input type="text" class="form-control" id="ten" name="ten" th:field="*{ten}" placeholder="Nhập tên khách hàng">
+                <span class="error-message" id="tenError"></span>
             </div>
 
-            <div class="form-group col-sm-6">
-                <label for="ngaySinh">Ngày Sinh</label>
-                <input type="date" id="ngaySinh" class="form-control" th:field="*{ngaySinh}">
-                <span class="error-text" th:if="${#fields.hasErrors('ngaySinh')}" th:errors="*{ngaySinh}"></span>
+            <!-- Ngày Sinh -->
+            <div class="col-sm-6">
+                <label for="ngaySinh" class="form-label">Ngày Sinh</label>
+                <input type="date" class="form-control" id="ngaySinh" th:field="*{ngaySinh}" name="ngaySinh">
+                <span class="error-message" id="ngaySinhError"></span>
             </div>
 
-            <div class="form-group col-sm-6">
-                <label for="sdt">Số Điện Thoại</label>
-                <input type="number" id="sdt" class="form-control" th:field="*{sdt}">
-                <span class="error-text" th:if="${#fields.hasErrors('sdt')}" th:errors="*{sdt}"></span>
+            <!-- Số Điện Thoại -->
+            <div class="col-sm-6">
+                <label for="number" class="form-label">Số Điện Thoại</label>
+                <input type="number" class="form-control" id="number" th:field="*{sdt}" name="soDienThoai" placeholder="Nhập số điện thoại">
+                <span class="error-message" id="numberError"></span>
             </div>
 
-            <div class="form-group col-sm-6">
+            <!-- Email -->
+            <div class="col-sm-6">
+                <label for="email" class="form-label">Email</label>
+                <input type="text" class="form-control" id="email" th:field="*{email}" name="email" placeholder="Nhập email">
+                <span class="error-message" id="emailError"></span>
+            </div>
+
+            <!-- Giới Tính -->
+            <div class="col-sm-6">
                 <label class="form-label">Giới Tính</label>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name=""  value="1" th:field="*{gioiTinh}" checked>
-                    <label class="form-check-label">
-                        Nam
-                    </label>
+                    <input class="form-check-input" type="radio" id="gioiTinhNam" th:field="*{gioiTinh}" name="gioiTinh" value="1" checked>
+                    <label for="gioiTinhNam" class="form-check-label">Nam</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name=""  value="0" th:field="*{gioiTinh}">
-                    <label class="form-check-label">
-                        Nu
-                    </label>
+                    <input class="form-check-input" type="radio" id="gioiTinhNu" th:field="*{gioiTinh}" name="gioiTinh" value="0">
+                    <label for="gioiTinhNu" class="form-check-label">Nữ</label>
                 </div>
-                <span  th:if="${#fields.hasErrors('gioiTinh')}" th:errors="*{gioiTinh}"  style="color: red; margin-top: 10px;margin-bottom: 10px"></span>
-
             </div>
 
-
-            <div class="form-group col-sm-6">
-                <label class="form-label">Trạng Thái</label>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="" value="0" th:field="*{trangThai}">
-                    <label class="form-check-label">
-                        Khong Hoat Dong
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name=""  value="1" th:field="*{trangThai}">
-                    <label class="form-check-label">
-                        Hoat Dong
-                    </label>
-                </div>
-                <span  th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"  style="color: red; margin-top: 10px;margin-bottom: 10px"></span>
-            </div>
-
-            <div class="form-group col-sm-6">
-                <label for="email">Email</label>
-                <input type="email" id="email" class="form-control" th:field="*{email}">
-                <span class="error-text" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            <!-- Nút Submit -->
+            <div class="col-sm-12">
+                <button type="submit" style="margin-top: 20px;" class="btn btn-danger">Submit</button>
             </div>
         </div>
-        <div>
-        <button type="submit" class="btn btn-danger">Submit</button>
-
-        </div>
-    </form>
-    <a href="/admin/nhanvien"><button style="width: 100px; margin-left: 10px; text-align: center" class="btn btn-danger">Back</button></a>
+    </form>    <a href="/admin/nhanvien"><button style="width: 100px; margin-left: 10px; text-align: center" class="btn btn-danger">Back</button></a>
 
 </section>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>
+<script>
+    document.getElementById('khachHangForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Ngăn form gửi nếu có lỗi
+        let isValid = true;
+
+        // Kiểm tra ID (bắt buộc và tối đa 50 ký tự)
+        const idInput = document.getElementById('id');
+        if (idInput.value.trim() === '' || idInput.value.length > 50) {
+            showError('idError', 'ID không được để trống và tối đa 50 ký tự.');
+            markInvalid(idInput);
+            isValid = false;
+        } else {
+            clearError('idError');
+            markValid(idInput);
+        }
+
+        // Kiểm tra Tên (phải là tiếng Việt, tối đa 50 ký tự)
+        const tenInput = document.getElementById('ten');
+        const tenRegex = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơĂẮẰẲẴẶẤẦẨẪẬÉÈỀỂỄỆỈỊỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲỴÝỶỸỳỵýỷỹ\s]+$/;
+        if (tenInput.value.trim() === '' || tenInput.value.length > 50 || !tenRegex.test(tenInput.value)) {
+            showError('tenError', 'Tên phải là tiếng Việt, không chứa số hoặc ký tự đặc biệt và tối đa 50 ký tự.');
+            markInvalid(tenInput);
+            isValid = false;
+        } else {
+            clearError('tenError');
+            markValid(tenInput);
+        }
+
+        // Kiểm tra Ngày sinh (phải là ngày quá khứ và tuổi từ 0-150)
+        const ngaySinhInput = document.getElementById('ngaySinh');
+        const ngaySinhValue = new Date(ngaySinhInput.value);
+        const today = new Date();
+        const age = today.getFullYear() - ngaySinhValue.getFullYear();
+        if (
+            ngaySinhInput.value === '' ||
+            ngaySinhValue >= today ||
+            age < 0 ||
+            age > 150
+        ) {
+            showError('ngaySinhError', 'Ngày sinh phải là ngày quá khứ và tuổi từ 0-150.');
+            markInvalid(ngaySinhInput);
+            isValid = false;
+        } else {
+            clearError('ngaySinhError');
+            markValid(ngaySinhInput);
+        }
+
+        // Kiểm tra Số điện thoại (phải là 10 số)
+        const numberInput = document.getElementById('number');
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(numberInput.value)) {
+            showError('numberError', 'Số điện thoại phải có 10 số.');
+            markInvalid(numberInput);
+            isValid = false;
+        } else {
+            clearError('numberError');
+            markValid(numberInput);
+        }
+
+// Kiểm tra Email (định dạng email hợp lệ và điều kiện bổ sung)
+        const emailInput = document.getElementById('email');
+// Biểu thức regex: Bắt đầu bằng chữ thường, tiếp theo là các ký tự email hợp lệ
+        const emailRegex = /^[a-z][a-z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (emailInput.value.trim() === '' || !emailRegex.test(emailInput.value)) {
+            showError('emailError', 'Email không hợp lệ. Phải bắt đầu bằng chữ thường, không số hoặc chữ hoa.');
+            markInvalid(emailInput);
+            isValid = false;
+        } else {
+            clearError('emailError');
+            markValid(emailInput);
+        }
+
+        // Nếu tất cả đều hợp lệ, cho phép gửi form
+        if (isValid) {
+            this.submit();
+            alert('Update Thành Công...');
+        }
+    });
+
+    // Hiển thị lỗi
+    function showError(elementId, message) {
+        const errorElement = document.getElementById(elementId);
+        errorElement.innerText = message;
+    }
+
+    // Xóa lỗi
+    function clearError(elementId) {
+        const errorElement = document.getElementById(elementId);
+        errorElement.innerText = '';
+    }
+
+    // Đánh dấu ô input không hợp lệ
+    function markInvalid(inputElement) {
+        inputElement.classList.add('is-invalid');
+    }
+
+    // Đánh dấu ô input hợp lệ
+    function markValid(inputElement) {
+        inputElement.classList.remove('is-invalid');
+    }
+</script>
+<script>
+    function previewImage(event) {
+        const fileInput = event.target;
+        const previewImg = document.getElementById('previewImg');
+
+        // Kiểm tra xem file có tồn tại và là hình ảnh không
+        if (fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            if (file.type.startsWith('image/')) {
+                // Hiển thị ảnh xem trước
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("Vui lòng chọn tệp hình ảnh hợp lệ!");
+                fileInput.value = ""; // Reset file input nếu không hợp lệ
+            }
+        }
+    }
+</script>
 </html>

@@ -7,36 +7,41 @@
   <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-  }
-
   .form-container {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     max-width: 800px;
     margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
 
-  .form-group {
-    margin-bottom: 15px;
+  /* Định dạng hàng và cột */
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
   }
 
+  .col-sm-6 {
+    flex: 1 1 48%; /* Hai cột cân bằng */
+  }
+
+  /* Định dạng label */
   .form-label {
+    display: block;
     font-weight: bold;
     margin-bottom: 5px;
-    display: block;
   }
 
+  /* Định dạng input và select */
   .form-control {
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    padding: 10px;
     width: 100%;
-    transition: border-color 0.3s;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s, box-shadow 0.3s;
   }
 
   .form-control:focus {
@@ -44,28 +49,48 @@
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
 
-  .btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  /* Định dạng radio buttons */
+  .form-check-label {
+    margin-left: 5px;
   }
 
-  .btn:hover {
-    background-color: #0056b3;
+  .form-check-input {
+    margin-right: 5px;
   }
 
+  /* Định dạng thông báo lỗi */
   .error-message {
     color: red;
+    font-size: 0.9em;
     margin-top: 5px;
   }
 
-  .radio-label {
-    margin-right: 15px;
+  /* Định dạng nút submit */
+  .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
   }
+
+  .btn-danger:hover {
+    background-color: #c82333;
+  }
+
+  /* Định dạng ảnh đại diện */
+  .form-group img {
+    display: block;
+    margin-top: 10px;
+    width: 100px; /* Chiều rộng cố định */
+    height: auto; /* Duy trì tỉ lệ */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+
 
 </style>
 <body class="container-fluid">
@@ -75,87 +100,164 @@
 
 <section class="page-content">
   <h3 style="margin-top: 10px; margin-bottom: 10px; text-align: center">Thêm Mới Khách Hàng</h3>
-  <form class="form-container" th:action="@{/admin/khachhang/add}" th:object="${khachHang}" enctype="multipart/form-data" method="post">
-  <div class="row">
-    <div class="col-sm-6">
-      <div class="form-group">
-      <label>Ảnh Đại Diện</label>
-        <input type="file" th:field="*{anhUrlFile}" class="form-control"/>
-        <span th:if="${#fields.hasErrors('anhUrl')}" th:errors="*{anhUrl}" style="color: red; margin-top: 6px"></span>
-        <img th:if="${khachHang.anhUrl}" th:src="@{'/' + ${khachHang.anhUrl}}"
-             alt="Ảnh khách hàng" style="width: 200px; height: auto;"/>
+  <form class="form-container" id="khachHangForm" th:action="@{/admin/khachhang/add}" th:object="${khachHang}" enctype="multipart/form-data" method="post">
+    <div class="row">
+      <!-- Ảnh Đại Diện -->
+      <div class="col-sm-6">
+        <label for="currentAnhUrl" class="form-label">Ảnh Đại Diện</label>
+        <input type="file" id="currentAnhUrl" th:field="*{anhUrlFile}"  class="form-control" onchange="previewImage(event)" />
+        <img
+                id="previewImg"
+                th:src="${khachHang.anhUrl != null && !khachHang.anhUrl.isEmpty() ? '/' + khachHang.anhUrl : 'file:///D:/DoAnTotNghiep/DoAnTotNghiep/upload/u.png'}"
+                alt="Ảnh khách hàng" style="width: 200px; height: auto;"/>
+      </div>
+
+      <!-- Tên -->
+      <div class="col-sm-6">
+        <label for="ten" class="form-label">Tên Khách Hàng</label>
+        <input type="text" class="form-control" id="ten" name="ten" th:field="*{ten}" placeholder="Nhập tên khách hàng">
+        <span class="error-message" id="tenError"></span>
+      </div>
+
+      <!-- Ngày Sinh -->
+      <div class="col-sm-6">
+        <label for="ngaySinh" class="form-label">Ngày Sinh</label>
+        <input type="date" class="form-control" id="ngaySinh" th:field="*{ngaySinh}" name="ngaySinh">
+        <span class="error-message" id="ngaySinhError"></span>
+      </div>
+
+      <!-- Số Điện Thoại -->
+      <div class="col-sm-6">
+        <label for="number" class="form-label">Số Điện Thoại</label>
+        <input type="number" class="form-control" id="number" th:field="*{soDienThoai}" name="soDienThoai" placeholder="Nhập số điện thoại">
+        <span class="error-message" id="numberError"></span>
+        <span th:if="${#fields.hasErrors('soDienThoai')}" th:errors="*{soDienThoai}" style="color: red; margin-top: 6px"></span>
+
+      </div>
+
+      <!-- Email -->
+      <div class="col-sm-6">
+        <label for="email" class="form-label">Email</label>
+        <input type="text" class="form-control" id="email" th:field="*{email}" name="email" placeholder="Nhập email">
+        <span class="error-message" id="emailError"></span>
+        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: red; margin-top: 6px"></span>
+
+      </div>
+
+      <!-- Giới Tính -->
+      <div class="col-sm-6">
+        <label class="form-label">Giới Tính</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="gioiTinhNam" th:field="*{gioiTinh}" name="gioiTinh" value="1" checked>
+          <label for="gioiTinhNam" class="form-check-label">Nam</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="gioiTinhNu" th:field="*{gioiTinh}" name="gioiTinh" value="0">
+          <label for="gioiTinhNu" class="form-check-label">Nữ</label>
+        </div>
+      </div>
+
+      <!-- Nút Submit -->
+      <div class="col-sm-12">
+        <button type="submit" style="margin-top: 20px;" class="btn btn-danger">Submit</button>
       </div>
     </div>
-
-    <div class="col-sm-6">
-      <label class="form-label">Tên Khách Hàng</label>
-      <input type="text" class="form-control" th:field="*{ten}">
-      <span th:if="${#fields.hasErrors('ten')}" th:errors="*{ten}" style="color: red; margin-top: 6px"></span>
-
-    </div>
-
-    <div class="col-sm-6">
-      <label  class="form-label">Ngày Sinh</label>
-      <input type="date" class="form-control" th:field="*{ngaySinh}">
-      <span th:if="${#fields.hasErrors('ngaySinh')}" th:errors="*{ngaySinh}"  style="color: red; margin-top: 6px"></span>
-    </div>
-
-    <div class="col-sm-6">
-      <label class="form-label">Giới Tính</label>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name=""  value="1" th:field="*{gioiTinh}" checked >
-        <label class="form-check-label">
-          Nam
-        </label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name=""  value="0" th:field="*{gioiTinh}">
-        <label class="form-check-label">
-          Nu
-        </label>
-      </div>
-      <span th:if="${#fields.hasErrors('gioiTinh')}" th:errors="*{gioiTinh}"  style="color: red; margin-top: 6px"></span>
-
-    </div>
-
-    <div class="col-sm-6">
-      <label  class="form-label">SDT</label>
-      <input type="number" class="form-control"  th:field="*{soDienThoai}">
-      <span th:if="${#fields.hasErrors('soDienThoai')}" th:errors="*{soDienThoai}"  style="color: red; margin-top: 6px"></span>
-    </div>
-
-    <div class="col-sm-6">
-      <label class="form-label">Email</label>
-      <input type="text" class="form-control"  th:field="*{email}">
-      <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"  style="color: red; margin-top: 6px"></span>
-
-    </div>
-
-    <div class="col-sm-6">
-      <label class="form-label">Trạng Thái</label>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="" value="0" th:field="*{trangThai}">
-        <label class="form-check-label">
-          Không Hoạt Động
-        </label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name=""  value="1" th:field="*{trangThai}">
-        <label class="form-check-label">
-          Hoạt Động
-        </label>
-      </div>
-      <span th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"  style="color: red; margin-top: 6px"></span>
-
-    </div>
-    <div>
-      <button  style="width: 100px; height: 40px; float: left; text-align: center; margin-top: 10px" class="btn btn-danger">Submit</button>
-    </div>
-  </div>
   </form>
+
+    <script>
+      document.getElementById('khachHangForm').addEventListener('submit', function (e) {
+      e.preventDefault(); // Ngăn form gửi nếu có lỗi
+      let isValid = true;
+
+      // Kiểm tra Tên (phải là tiếng Việt, tối đa 50 ký tự)
+      const tenInput = document.getElementById('ten');
+      const tenRegex = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơĂẮẰẲẴẶẤẦẨẪẬÉÈỀỂỄỆỈỊỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲỴÝỶỸỳỵýỷỹ\s]+$/;
+      if (tenInput.value.trim() === '' || tenInput.value.length > 50 || !tenRegex.test(tenInput.value)) {
+      showError('tenError', 'Tên phải là tiếng Việt, không chứa số hoặc ký tự đặc biệt và tối đa 50 ký tự.');
+      markInvalid(tenInput);
+      isValid = false;
+    } else {
+      clearError('tenError');
+      markValid(tenInput);
+    }
+
+      // Kiểm tra Ngày sinh (phải là ngày quá khứ và tuổi từ 0-150)
+      const ngaySinhInput = document.getElementById('ngaySinh');
+      const ngaySinhValue = new Date(ngaySinhInput.value);
+      const today = new Date();
+      const age = today.getFullYear() - ngaySinhValue.getFullYear();
+      if (
+      ngaySinhInput.value === '' ||
+      ngaySinhValue >= today ||
+      age < 0 ||
+      age > 150
+      ) {
+      showError('ngaySinhError', 'Ngày sinh phải là ngày quá khứ và tuổi từ 0-150.');
+      markInvalid(ngaySinhInput);
+      isValid = false;
+    } else {
+      clearError('ngaySinhError');
+      markValid(ngaySinhInput);
+    }
+
+      // Kiểm tra Số điện thoại (phải là 10 số)
+      const numberInput = document.getElementById('number');
+      const phoneRegex = /^[0-9]{10}$/;
+      if (!phoneRegex.test(numberInput.value)) {
+      showError('numberError', 'Số điện thoại phải có 10 số.');
+      markInvalid(numberInput);
+      isValid = false;
+    } else {
+      clearError('numberError');
+      markValid(numberInput);
+    }
+
+// Kiểm tra Email (định dạng email hợp lệ và điều kiện bổ sung)
+      const emailInput = document.getElementById('email');
+// Biểu thức regex: Bắt đầu bằng chữ thường, tiếp theo là các ký tự email hợp lệ
+      const emailRegex = /^[a-z][a-z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+      if (emailInput.value.trim() === '' || !emailRegex.test(emailInput.value)) {
+      showError('emailError', 'Email không hợp lệ. Phải bắt đầu bằng chữ thường, không số hoặc chữ hoa.');
+      markInvalid(emailInput);
+      isValid = false;
+    } else {
+      clearError('emailError');
+      markValid(emailInput);
+    }
+
+      // Nếu tất cả đều hợp lệ, cho phép gửi form
+      if (isValid) {
+      this.submit();
+    }
+    });
+
+      // Hiển thị lỗi
+      function showError(elementId, message) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.innerText = message;
+    }
+
+      // Xóa lỗi
+      function clearError(elementId) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.innerText = '';
+    }
+
+      // Đánh dấu ô input không hợp lệ
+      function markInvalid(inputElement) {
+      inputElement.classList.add('is-invalid');
+    }
+
+      // Đánh dấu ô input hợp lệ
+      function markValid(inputElement) {
+      inputElement.classList.remove('is-invalid');
+    }
+  </script>
   <a href="/admin/khachhang"><button style="width: 100px; margin-left: 10px; margin-top: 10px;text-align: center" class="btn btn-danger">Back</button></a>
 </section>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>
+
 </html>

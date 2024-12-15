@@ -241,55 +241,55 @@ async function updateAddress() {
     }
 }
 
-
 function validateAddressForm() {
     let isValid = true;
 
     // Reset all error messages
     document.querySelectorAll('.text-danger').forEach(el => el.classList.add('d-none'));
 
-    // Validate name
+    // Validate name: cannot start with a number
     const name = document.getElementById('name').value.trim();
-    if (name === '') {
+    if (name === '' || /^\d/.test(name) || name.length > 20) {
         document.getElementById('nameError').classList.remove('d-none');
         isValid = false;
     }
 
-    // Validate phone number
+    // Validate phone number: should be a valid phone number with 10-11 digits
     const phone = document.getElementById('phone').value.trim();
-    const phoneRegex = /^[0-9]{10,11}$/; // Accepts 10-11 digit numbers
+    const phoneRegex = /^0[0-9]{9,10}$/; // Starts with '0' and followed by 9-10 digits
     if (!phoneRegex.test(phone)) {
         document.getElementById('phoneError').classList.remove('d-none');
         isValid = false;
     }
 
-    // Validate city
+    // Validate city: cannot start with a number
     const city = document.getElementById('city').value.trim();
-    if (city === '') {
+    if (city === '' || /^\d/.test(city) || city.length > 20) {
         document.getElementById('cityError').classList.remove('d-none');
         isValid = false;
     }
 
-    // Validate district
+    // Validate district: cannot start with a number
     const district = document.getElementById('district').value.trim();
-    if (district === '') {
+    if (district === '' || /^\d/.test(district) || district.length > 20) {
         document.getElementById('districtError').classList.remove('d-none');
         isValid = false;
     }
 
-    // Validate ward
+    // Validate ward: cannot start with a number
     const ward = document.getElementById('ward').value.trim();
-    if (ward === '') {
+    if (ward === '' || /^\d/.test(ward) || ward.length > 20) {
         document.getElementById('wardError').classList.remove('d-none');
         isValid = false;
     }
 
-    // Validate detail address
+    // Validate detail address: cannot start with a number
     const detailAddress = document.getElementById('detailAddress').value.trim();
-    if (detailAddress === '') {
+    if (detailAddress === '' || detailAddress.length > 200) {
         document.getElementById('detailAddressError').classList.remove('d-none');
         isValid = false;
     }
 
     return isValid;
 }
+

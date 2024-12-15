@@ -93,7 +93,8 @@
                             Tài Khoản Của Tôi
                         </button>
                     </h2>
-                    <div id="accountCollapse" class="accordion-collapse collapse" aria-labelledby="headingAccount" data-bs-parent="#sidebarAccordion">
+                    <div id="accountCollapse" class="accordion-collapse collapse" aria-labelledby="headingAccount"
+                         data-bs-parent="#sidebarAccordion">
                         <div class="accordion-body">
                             <div class="list-group">
                                 <a th:href="@{/client/showInfoCustomer}" class="list-group-item list-group-item-action">Hồ Sơ</a>
@@ -111,7 +112,8 @@
                             Mua Hàng
                         </button>
                     </h2>
-                    <div id="ordersCollapse" class="accordion-collapse collapse show" aria-labelledby="headingOrders" data-bs-parent="#sidebarAccordion">
+                    <div id="ordersCollapse" class="accordion-collapse collapse show" aria-labelledby="headingOrders"
+                         data-bs-parent="#sidebarAccordion">
                         <div class="accordion-body">
                             <div class="list-group">
                                 <a th:href="@{/client/showInfoBill}" class="list-group-item list-group-item-action active">Đơn Mua</a>
@@ -178,26 +180,34 @@
                     <div class="card-body">
                         <div class="row align-items-center" th:each="hdct : ${hoadon.hoaDonChiTietList}">
                             <div class="col-md-2 text-center">
-                                <img th:src="@{/{anhUrl} (anhUrl = ${hdct.sanPhamChiTiet.sanPham.anhUrl})}" class="img-thumbnail" alt="Product Image"
+                                <img th:src="@{/{anhUrl} (anhUrl = ${hdct.sanPhamChiTiet.sanPham.anhUrl})}" class="img-thumbnail"
+                                     alt="Product Image"
                                      style="height: 100px; width: 100px; object-fit: cover">
                             </div>
                             <div class="col-md-8">
                                 <p th:text="${hdct.sanPhamChiTiet.sanPham.tenSanPham}" style="color: black"></p>
                                 <p><small
-                                        th:text="'Phân loại : ' +  ${hdct.sanPhamChiTiet.mauSac.tenMauSac} + ' - ' + ${hdct.sanPhamChiTiet.kichCo.tenKichCo}" style="color: black"></small>
+                                        th:text="'Phân loại : ' +  ${hdct.sanPhamChiTiet.mauSac.tenMauSac} + ' - ' + ${hdct.sanPhamChiTiet.kichCo.tenKichCo}"
+                                        style="color: black"></small>
                                 </p>
                                 <p th:text="'Số lượng : x' + ${hdct.soLuong}" style="color: black"></p>
                             </div>
                             <div class="col-md-2 text-end">
-                                <p class="text-decoration" th:text="${#numbers.formatDecimal(hdct.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + ' đ'" style="color: black"></p>
+                                <p class="text-decoration"
+                                   th:text="${#numbers.formatDecimal(hdct.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + ' đ'"
+                                   style="color: black"></p>
                             </div>
                         </div>
-                        <form th:id="'deleteForm' + ${hoadon.id}"
-                              th:action="@{/admin/hoadon/delete_client/{idHD} (idHD=${hoadon.id})}"
-                              method="GET">
-                            <button type="button" class="btn btn-primary"
-                                    th:onclick="'confirmDelete(event, ' + ${hoadon.id} + ')'">Hủy đơn hàng</button>
-                        </form>
+                        <div th:if="${hoadon.trangThai == 1 || hoadon.trangThai == 2}">
+                            <form th:id="'deleteForm' + ${hoadon.id}"
+                                  th:action="@{/admin/hoadon/delete_client/{idHD} (idHD=${hoadon.id})}"
+                                  method="GET">
+
+                                <button type="button" class="btn btn-primary"
+                                        th:onclick="'confirmDelete(event, ' + ${hoadon.id} + ')'">Hủy đơn hàng
+                                </button>
+                            </form>
+                        </div>
                     </div>
                     <div class="card-footer">
                         <h6 class="text-danger d-flex justify-content-end"

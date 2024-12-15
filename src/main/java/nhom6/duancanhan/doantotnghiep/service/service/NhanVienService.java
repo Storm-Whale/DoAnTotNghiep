@@ -27,4 +27,6 @@ public interface NhanVienService {
     NhanVien findById(Integer id);
 
     boolean isSdtExist(String sdt);
+
+    boolean isEmailExist(String email);
 }

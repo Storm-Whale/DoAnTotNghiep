@@ -90,93 +90,162 @@
 <nav th:replace="~{admin/fragments/nav :: nav}"></nav>
 
 <section class="page-content">
-    <form th:action="@{/admin/taiquay/add}" th:object="${khachHangThemNhanh}" method="post">
+    <form th:action="@{/admin/taiquay/add}" id="khachHangForm" th:object="${khachHangThemNhanh}" enctype="multipart/form-data"  method="post">
         <div class="row">
+            <!-- Ảnh Đại Diện -->
             <div class="col-sm-6">
-                <label class="form-label">Ảnh Đại Diện</label>
-                <input type="text" class="form-control" th:field="*{anhUrl}">
+                <label for="currentAnhUrl" class="form-label">Ảnh Đại Diện</label>
+                <input type="file" id="currentAnhUrl" th:field="*{anhUrlFile}"  class="form-control" onchange="previewImage(event)" />
+                <img
+                        id="previewImg"
+                        th:src="${khachHangThemNhanh.anhUrl != null && !khachHangThemNhanh.anhUrl.isEmpty() ? '/' + khachHangThemNhanh.anhUrl : 'file:///D:/DoAnTotNghiep/DoAnTotNghiep/upload/u.png'}"
+                        alt="Ảnh khách hàng" style="width: 200px; height: auto;"/>
             </div>
 
+            <!-- Tên -->
             <div class="col-sm-6">
-                <label class="form-label">Tên Khách Hàng</label>
-                <input type="text" class="form-control" th:field="*{ten}">
-                <span th:if="${#fields.hasErrors('ten')}" th:errors="*{ten}" style="color: red; margin-top: 6px"></span>
-
+                <label for="ten" class="form-label">Tên Khách Hàng</label>
+                <input type="text" class="form-control" id="ten" name="ten" th:field="*{ten}" placeholder="Nhập tên khách hàng">
+                <span class="error-message" id="tenError"></span>
             </div>
 
+            <!-- Ngày Sinh -->
             <div class="col-sm-6">
-                <label  class="form-label">Ngày Sinh</label>
-                <input type="date" class="form-control" th:field="*{ngaySinh}">
-                <span th:if="${#fields.hasErrors('ngaySinh')}" th:errors="*{ngaySinh}" style="color: red; margin-top: 6px"></span>
+                <label for="ngaySinh" class="form-label">Ngày Sinh</label>
+                <input type="date" class="form-control" id="ngaySinh" th:field="*{ngaySinh}" name="ngaySinh">
+                <span class="error-message" id="ngaySinhError"></span>
             </div>
 
+            <!-- Số Điện Thoại -->
             <div class="col-sm-6">
-                <label class="form-label">Giới Tính</label>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name=""  value="1" th:field="*{gioiTinh}" checked>
-                    <label class="form-check-label">
-                        Nam
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name=""  value="0" th:field="*{gioiTinh}" >
-                    <label class="form-check-label">
-                        Nu
-                    </label>
-                </div>
-                <span th:if="${#fields.hasErrors('gioiTinh')}" th:errors="*{gioiTinh}" style="color: red; margin-top: 6px"></span>
-
-            </div>
-
-            <div class="col-sm-6">
-                <label  class="form-label">SDT</label>
-                <input type="number" class="form-control"  th:field="*{soDienThoai}">
+                <label for="number" class="form-label">Số Điện Thoại</label>
+                <input type="number" class="form-control" id="number" th:field="*{soDienThoai}" name="soDienThoai" placeholder="Nhập số điện thoại">
+                <span class="error-message" id="numberError"></span>
                 <span th:if="${#fields.hasErrors('soDienThoai')}" th:errors="*{soDienThoai}" style="color: red; margin-top: 6px"></span>
 
             </div>
 
+            <!-- Email -->
             <div class="col-sm-6">
-                <label class="form-label">Email</label>
-                <input type="text" class="form-control"  th:field="*{email}">
+                <label for="email" class="form-label">Email</label>
+                <input type="text" class="form-control" id="email" th:field="*{email}" name="email" placeholder="Nhập email">
+                <span class="error-message" id="emailError"></span>
                 <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: red; margin-top: 6px"></span>
+
             </div>
 
-
-            <!--    <div class="col-sm-6">-->
-            <!--      <label class="form-label">Tài Khoản</label>-->
-            <!--      <select class="form-select" aria-label="Default select example" th:field="*{taiKhoan}">-->
-            <!--        <option th:each="taiKhoan : ${listTK}" th:value="${taiKhoan.id}"  th:text="${taiKhoan.id}"></option>-->
-            <!--      </select>-->
-            <!--    </div>-->
-
+            <!-- Giới Tính -->
             <div class="col-sm-6">
-                <label class="form-label">Trạng Thái</label>
+                <label class="form-label">Giới Tính</label>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="" value="0" th:field="*{trangThai}">
-                    <label class="form-check-label">
-                        Không Hoạt Động
-                    </label>
+                    <input class="form-check-input" type="radio" id="gioiTinhNam" th:field="*{gioiTinh}" name="gioiTinh" value="1" checked>
+                    <label for="gioiTinhNam" class="form-check-label">Nam</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name=""  value="1" th:field="*{trangThai}">
-                    <label class="form-check-label">
-                        Hoạt Động
-                    </label>
+                    <input class="form-check-input" type="radio" id="gioiTinhNu" th:field="*{gioiTinh}" name="gioiTinh" value="0">
+                    <label for="gioiTinhNu" class="form-check-label">Nữ</label>
                 </div>
-                <span th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}" style="color: red; margin-top: 6px"></span>
-
             </div>
-            <button type="submit"
-                    style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
-                Thêm Khách Hàng
-            </button>
+
+            <!-- Nút Submit -->
+            <div class="col-sm-12">
+                <button type="submit" style="margin-top: 20px;" class="btn btn-danger">Submit</button>
+            </div>
         </div>
-        <a href="#" class="modal__close">&times;</a>
     </form>
 </section>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>
+<script>
+    document.getElementById('khachHangForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Ngăn form gửi nếu có lỗi
+        let isValid = true;
 
+        // Kiểm tra Tên (phải là tiếng Việt, tối đa 50 ký tự)
+        const tenInput = document.getElementById('ten');
+        const tenRegex = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơĂẮẰẲẴẶẤẦẨẪẬÉÈỀỂỄỆỈỊỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲỴÝỶỸỳỵýỷỹ\s]+$/;
+        if (tenInput.value.trim() === '' || tenInput.value.length > 50 || !tenRegex.test(tenInput.value)) {
+            showError('tenError', 'Tên phải là tiếng Việt, không chứa số hoặc ký tự đặc biệt và tối đa 50 ký tự.');
+            markInvalid(tenInput);
+            isValid = false;
+        } else {
+            clearError('tenError');
+            markValid(tenInput);
+        }
+
+        // Kiểm tra Ngày sinh (phải là ngày quá khứ và tuổi từ 0-150)
+        const ngaySinhInput = document.getElementById('ngaySinh');
+        const ngaySinhValue = new Date(ngaySinhInput.value);
+        const today = new Date();
+        const age = today.getFullYear() - ngaySinhValue.getFullYear();
+        if (
+            ngaySinhInput.value === '' ||
+            ngaySinhValue >= today ||
+            age < 0 ||
+            age > 150
+        ) {
+            showError('ngaySinhError', 'Ngày sinh phải là ngày quá khứ và tuổi từ 0-150.');
+            markInvalid(ngaySinhInput);
+            isValid = false;
+        } else {
+            clearError('ngaySinhError');
+            markValid(ngaySinhInput);
+        }
+
+        // Kiểm tra Số điện thoại (phải là 10 số)
+        const numberInput = document.getElementById('number');
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(numberInput.value)) {
+            showError('numberError', 'Số điện thoại phải có 10 số.');
+            markInvalid(numberInput);
+            isValid = false;
+        } else {
+            clearError('numberError');
+            markValid(numberInput);
+        }
+
+// Kiểm tra Email (định dạng email hợp lệ và điều kiện bổ sung)
+        const emailInput = document.getElementById('email');
+// Biểu thức regex: Bắt đầu bằng chữ thường, tiếp theo là các ký tự email hợp lệ
+        const emailRegex = /^[a-z][a-z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (emailInput.value.trim() === '' || !emailRegex.test(emailInput.value)) {
+            showError('emailError', 'Email không hợp lệ. Phải bắt đầu bằng chữ thường, không số hoặc chữ hoa.');
+            markInvalid(emailInput);
+            isValid = false;
+        } else {
+            clearError('emailError');
+            markValid(emailInput);
+        }
+
+        // Nếu tất cả đều hợp lệ, cho phép gửi form
+        if (isValid) {
+            this.submit();
+        }
+    });
+
+    // Hiển thị lỗi
+    function showError(elementId, message) {
+        const errorElement = document.getElementById(elementId);
+        errorElement.innerText = message;
+    }
+
+    // Xóa lỗi
+    function clearError(elementId) {
+        const errorElement = document.getElementById(elementId);
+        errorElement.innerText = '';
+    }
+
+    // Đánh dấu ô input không hợp lệ
+    function markInvalid(inputElement) {
+        inputElement.classList.add('is-invalid');
+    }
+
+    // Đánh dấu ô input hợp lệ
+    function markValid(inputElement) {
+        inputElement.classList.remove('is-invalid');
+    }
+</script>
 
 </html>

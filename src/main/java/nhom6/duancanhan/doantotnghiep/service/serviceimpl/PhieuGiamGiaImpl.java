@@ -63,7 +63,9 @@ public class PhieuGiamGiaImpl implements PhieuGiamGiaService {
         Optional<PhieuGiamGia> existingPhieuGiamGia = phieuGiamGiaRepository.findById(id);
         if (existingPhieuGiamGia.isPresent()) {
             PhieuGiamGia updatedPhieuGiamGia = existingPhieuGiamGia.get();
-            updatedPhieuGiamGia.setTrangThai(phieuGiamGia.getTrangThai()); // Cập nhật trạng thái
+            // Chuyển đổi trạng thái ngược lại
+            int currentStatus = updatedPhieuGiamGia.getTrangThai();
+            updatedPhieuGiamGia.setTrangThai(currentStatus == 1 ? 0 : 1);
             phieuGiamGiaRepository.save(updatedPhieuGiamGia); // Lưu lại
         }
     }

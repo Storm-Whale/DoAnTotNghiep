@@ -166,6 +166,16 @@
                              (hd.trangThai == 5 ? 'Giao hàng thành công' :
                              'Đơn hàng bị hủy')))}" style="font-weight: bold"></h4>
                 </div>
+                <div th:if="${hd.trangThai == 1 || hd.trangThai == 2}">
+                    <form th:id="'deleteForm' + ${hd.id}"
+                          th:action="@{/admin/hoadon/delete_client/{idHD} (idHD=${hd.id})}"
+                          method="GET">
+
+                        <button type="button" class="btn btn-primary"
+                                th:onclick="'confirmDelete(event, ' + ${hd.id} + ')'">Hủy đơn hàng
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <!-- Progress -->

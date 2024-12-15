@@ -11,89 +11,124 @@
 <header th:replace="~{admin/fragments/header :: header}"></header>
 <nav th:replace="~{admin/fragments/nav :: nav}"></nav>
 <style>
-  /* Định dạng chung cho body */
+  /* Reset một số thuộc tính mặc định */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-  /* Tiêu đề */
-  h2 {
-    color: #4a4a4a;
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+
+  /* Phần nội dung chính */
+  .page-content {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Tiêu đề trang */
+  .page-title {
+    font-size: 24px;
+    color: #ff6600; /* Màu cam đặc trưng của FPT Shop */
     margin-bottom: 20px;
     text-align: center;
-    font-size: 24px;
-    font-weight: bold;
   }
 
-  /* Bảng */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Đầu bảng */
-  thead {
-    background-color: #343a40;
-    color: #ffffff;
-  }
-
-  thead th {
-    text-align: left;
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  /* Thân bảng */
-  tbody tr {
-    border-bottom: 1px solid #ddd;
-  }
-
-  tbody tr:nth-child(even) {
+  /* Thông tin hóa đơn */
+  .invoice-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
     background-color: #f9f9f9;
   }
 
-  tbody td {
-    padding: 10px;
-    font-size: 14px;
+  .invoice-info h3 {
+    font-size: 20px;
+    color: #333;
   }
 
-  /* Hàng cuối hiển thị tổng tiền */
-  label {
-    font-weight: bold;
-    display: block;
-    margin-top: 10px;
+  .invoice-info p {
     font-size: 16px;
+    margin: 5px 0;
   }
 
-  div {
+  /* Tiêu đề sản phẩm */
+  .product-title {
+    font-size: 20px;
+    color: #ff6600;
+    margin: 20px 0 10px;
+  }
+
+  /* Bảng hóa đơn */
+  .invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  .invoice-table th, .invoice-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+
+  .invoice-table th {
+    background-color: #0056b3;
+    color: white;
+  }
+
+  .invoice-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  .invoice-table tr:hover {
+    background-color: #e0e0e0;
+  }
+
+  /* Nút quay lại */
+  .btn {
     display: inline-block;
-    font-size: 18px;
-    font-weight: bold;
+    padding: 10px 20px;
+    background-color: #ff6600;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
   }
 
-  /* Hiệu ứng khi di chuột */
-  tbody tr:hover {
-    background-color: #f1f1f1;
+  .btn:hover {
+    background-color: #e55b00; /* Màu cam đậm hơn khi hover */
   }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    table {
-      font-size: 12px;
-    }
-
-    h2 {
-      font-size: 20px;
-    }
-
-    label {
-      font-size: 14px;
-    }
+  button {
+    border: none;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
   }
-
 </style>
 <section class="page-content">
-  <h2>Chi tiết hóa đơn ID: <span th:text="${hoaDon.id}"></span></h2>
+  <h1 class="page-title">Chi tiết hóa đơn</h1>
+  <div class="invoice-info">
+    <h3 class="invoice-id"><b>Tên Khách Hàng: </b> <span th:text="${hoaDon.khachHang.ten}"></span></h3>
+    <p><strong>Ngày tạo:</strong> <span th:text="${hoaDon.ngayTao}"></span></p>
+    <p><strong>Trạng thái:</strong>
+      <span th:text="${hoaDon.trangThai == 2 ? 'Đã thanh toán' : 'Chưa thanh toán'}"></span>
+    </p>
+    <p><strong>Tổng tiền:</strong>
+      <span th:text="${hoaDon.trangThai == 2 ? #numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT') : '' } + ' đ'"></span>
+    </p>
+  </div>
+
+  <h3 class="product-title">Sản phẩm:</h3>
   <table class="table">
     <thead>
     <tr>
@@ -111,13 +146,11 @@
       <td th:text="${chiTiet.soLuong}"></td>
       <td th:text="${#numbers.formatDecimal(chiTiet.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
       <td th:text="${#numbers.formatDecimal(chiTiet.soLuong * chiTiet.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
-      <td>
-      </td>
     </tr>
     </tbody>
   </table>
 
-  <a th:href="@{'/admin/khachhang'}" class="btn btn-primary" style="margin-top: 15px"><button>Back</button></a>
+  <a th:href="@{'/admin/khachhang'}" class="btn btn-primary" style="margin-top: 15px">Back</a>
 
 </section>
 </body>

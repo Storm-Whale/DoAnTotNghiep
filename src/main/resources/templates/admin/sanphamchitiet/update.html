@@ -114,99 +114,167 @@
             </p>
         </div>
 
-        <div class="container">
+        <div class="container card">
             <h5 class="mb-3" style="text-align: center">Thông tin sản phẩm</h5>
             <form id="updateForm" method="post" enctype="multipart/form-data">
                 <input id="idspct" type="hidden" th:value="${old_product_details.id}">
-                <div class="mb-3">
-                    <label for="idSP" class="form-label" style="font-size: 15px;">Sản Phẩm</label>
-                    <div class="d-flex align-items-center">
-                        <input type="hidden" name="id_sp" th:value="${idSP}">
-                        <input class="form-control" id="idSP" type="text" th:value="${old_product_details.getTenSanPham()}" readonly>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <!-- Cột trái: Thông tin cơ bản -->
+                        <div class="col-12 col-lg-8 p-4 rounded">
+                            <div class="row">
+                                <!-- Sản Phẩm -->
+                                <div class="col-12 col-md-6 mb-3">
+                                    <div class="card border-0">
+                                        <div class="card-header">
+                                            Sản Phẩm
+                                        </div>
+                                        <div class="card-body">
+                                            <input type="hidden" name="id_sp" th:value="${idSP}">
+                                            <input class="form-control" id="idSP" type="text"
+                                                   th:value="${old_product_details.getTenSanPham()}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Màu Sắc -->
+                                <div class="col-12 col-md-6 mb-3">
+                                    <div class="card border-0">
+                                        <div class="card-header">
+                                            Màu Sắc
+                                        </div>
+                                        <div class="card-body">
+                                            <select id="idMauSac" class="form-control js-select2" name="id_mau_sac" required>
+                                                <option th:each="color : ${mau_sacs}"
+                                                        th:value="${color.getId()}"
+                                                        th:text="${color.getTenMauSac()}"
+                                                        th:selected="${old_product_details != null and old_product_details.tenMauSac == color.tenMauSac}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Kích Cỡ -->
+                                <div class="col-12 col-md-6 mb-3">
+                                    <div class="card border-0">
+                                        <div class="card-header">
+                                            Kích Cỡ
+                                        </div>
+                                        <div class="card-body">
+                                            <select id="idChatLieu" class="form-control js-select2" name="id_kich_co" required>
+                                                <option th:each="size : ${kich_cos}"
+                                                        th:value="${size.getId()}"
+                                                        th:text="${size.getTenKichCo()}"
+                                                        th:selected="${old_product_details != null and old_product_details.tenKichCo == size.tenKichCo}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Số Lượng -->
+                                <div class="col-12 col-md-6 mb-3">
+                                    <div class="card border-0">
+                                        <div class="card-header">
+                                            Số Lượng
+                                        </div>
+                                        <div class="card-body">
+                                            <input type="number" class="form-control" id="soLuong"
+                                                   placeholder="Nhập số lượng"
+                                                   th:value="${old_product_details.soLuong}"
+                                                   name="so_luong" min="1" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cột phải: Chi tiết bổ sung -->
+                        <div class="col-12 col-lg-4 p-4">
+                            <!-- Giá -->
+                            <div class="card mb-3 border-0">
+                                <div class="card-header">
+                                    Giá
+                                </div>
+                                <div class="card-body">
+                                    <input type="number" class="form-control" id="gia"
+                                           placeholder="Nhập giá sản phẩm"
+                                           th:value="${old_product_details.gia}"
+                                           name="gia" step="any" min="0" required>
+                                </div>
+                            </div>
+
+                            <!-- Trạng Thái -->
+                            <div class="card border-0">
+                                <div class="card-header">
+                                    Trạng Thái
+                                </div>
+                                <div class="card-body">
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="trang_thai" id="dangHoatDong"
+                                               value="1" th:checked="${old_product_details.trangThai == 1}">
+                                        <label class="btn btn-outline-secondary" for="dangHoatDong">
+                                            Đang Hoạt Động
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="trang_thai" id="ngungHoatDong"
+                                               value="0" th:checked="${old_product_details.trangThai == 0}">
+                                        <label class="btn btn-outline-secondary" for="ngungHoatDong">
+                                            Ngưng Hoạt Động
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Error Message for Sản Phẩm -->
-                    <div class="error-message" id="error-idSP">Sản Phẩm không được để trống.</div>
-                </div>
 
-                <div class="mb-3">
-                    <label for="idMauSac" class="form-label mt-3" style="font-size: 15px;">Màu Sắc</label>
-                    <div class="d-flex align-items-center">
-                        <select id="idMauSac" class="form-control js-select2" name="id_mau_sac" required>
-                            <option th:each="color : ${mau_sacs}" th:value="${color.getId()}" th:text="${color.getTenMauSac()}"
-                                    th:selected="${old_product_details != null and old_product_details.tenMauSac == color.tenMauSac}">
-                            </option>
-                        </select>
+                    <!-- Ảnh -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    Danh Sách Ảnh
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex flex-wrap">
+                                        <div th:each="anh : ${listAnh}" class="text-center me-3 mb-3">
+                                            <img th:src="@{/{anhUrl} (anhUrl = ${anh.anhUrl})}"
+                                                 th:alt="${anh.anhUrl}"
+                                                 th:data-id="${anh.id}"
+                                                 class="image-hover"
+                                                 style="width: 100px; height: auto;"
+                                                 onclick="toggleBorder(this, this.getAttribute('data-id'))">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Error message for idMauSac (Màu Sắc) -->
-                    <div class="error-message" id="error-idMauSac">Màu Sắc không được để trống.</div>
-                </div>
 
-                <div class="mb-3">
-                    <label for="idChatLieu" class="form-label" style="font-size: 15px;">Kích Cỡ</label>
-                    <div class="d-flex align-items-center">
-                        <select id="idChatLieu" class="form-control js-select2" name="id_kich_co" required>
-                            <option th:each="size : ${kich_cos}" th:value="${size.getId()}" th:text="${size.getTenKichCo()}"
-                                    th:selected="${old_product_details != null and old_product_details.tenKichCo == size.tenKichCo}">
-                            </option>
-                        </select>
+                    <!-- Tải Ảnh Mới -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <input type="file" name="images" class="form-control"
+                                           accept="image/*" id="fileUpload" multiple>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Error message for idChatLieu (Kích Cỡ) -->
-                    <div class="error-message" id="error-idChatLieu">Kích Cỡ không được để trống.</div>
-                </div>
 
-                <div class="mb-3">
-                    <label for="soLuong" class="form-label" style="font-size: 15px;">Số Lượng</label>
-                    <input type="number" class="form-control" id="soLuong" placeholder="Nhập số lượng"
-                           th:value="${old_product_details.soLuong}" style="font-size: 15px;" name="so_luong" min="1" required>
-                    <!-- Error message for soLuong (Số Lượng) -->
-                    <div class="error-message" id="error-soLuong">Số Lượng phải lớn hơn 0.</div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="gia" class="form-label" style="font-size: 15px;">Giá</label>
-                    <input type="number" class="form-control" id="gia" placeholder="Nhập giá sản phẩm"
-                           style="font-size: 15px;" name="gia" th:value="${old_product_details.gia}" step="any" min="0" required>
-                    <!-- Error message for gia (Giá) -->
-                    <div class="error-message" id="error-gia">Giá phải lớn hơn hoặc bằng 0.</div>
-                </div>
-
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="trang_thai" id="dangHoatDong" value="1"
-                           th:checked="${old_product_details.trangThai == 1}" style="font-size: 15px;">
-                    <label class="form-check-label" for="dangHoatDong" style="font-size: 15px;">Đang Hoạt Động</label>
-                </div>
-
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="trang_thai" id="ngungHoatDong" value="0"
-                           th:checked="${old_product_details.trangThai == 0}" style="font-size: 15px;">
-                    <label class="form-check-label" for="ngungHoatDong" style="font-size: 15px;">Ngưng Hoạt Động</label>
-                </div>
-
-                <!-- Phần HTML để hiển thị danh sách ảnh -->
-                <div class="mt-2">
-                    <label style="font-size: 15px;">Danh Sách Ảnh</label>
-                    <div class="d-flex flex-wrap mt-3" style="max-width: 100%;">
-                        <div th:each="anh : ${listAnh}" class="text-center me-3 mb-3">
-                            <img th:src="@{/{anhUrl} (anhUrl = ${anh.anhUrl})}"
-                                 th:alt="${anh.anhUrl}"
-                                 th:data-id="${anh.id}"
-                                 class="image-hover" style="width: 100px; height: auto;"
-                                 onclick="toggleBorder(this, this.getAttribute('data-id'))">
+                    <!-- Nút Submit -->
+                    <div class="row mt-3 mb-3">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg" onclick="return validateForm()">
+                                Cập Nhật
+                            </button>
                         </div>
                     </div>
                 </div>
-
-                <div class="mt-2 mb-3">
-                    <input type="file" name="images" class="form-control" accept="image/*" id="fileUpload" multiple>
-                    <!-- Error message for fileUpload (Ảnh) -->
-                    <div class="error-message" id="error-fileUpload">Vui lòng chọn ít nhất một ảnh.</div>
-                </div>
-
-                <div class="text-center">
-                    <input type="submit" class="btn btn-primary" onclick="return validateForm()" value="Sửa"/>
-                </div>
             </form>
-
         </div>
     </div>
     <div class="overlay" id="overlay" style="display: none;"></div>
@@ -224,7 +292,8 @@
                     <div class="mb-3">
                         <label for="ten" class="form-label">Tên</label>
                         <input type="text" id="ten" name="ten" class="form-control" placeholder="Nhập tên">
-                        <div id="errorTen" class="text-danger mt-2" style="display:none;">Tên không được để trống hoặc bắt đầu bằng dấu cách!</div>
+                        <div id="errorTen" class="text-danger mt-2" style="display:none;">Tên không được để trống hoặc bắt đầu bằng dấu cách!
+                        </div>
                     </div>
                     <button type="button" class="btn btn-success" onclick="themNhanh()">Thêm</button>
                     <button type="button" class="btn btn-secondary" onclick="anForm()">Hủy</button>

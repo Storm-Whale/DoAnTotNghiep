@@ -59,7 +59,6 @@
             <div class="container-fluid mb-4" style="font-size: 15px;">
                 <div class="border p-4 shadow-sm" style="border-radius: 12px;">
                     <div class="row g-3">
-
                         <!-- Product Name -->
                         <div class="col-md-4">
                             <label for="tenSanPham" class="form-label">Tên Sản Phẩm</label>
@@ -134,6 +133,9 @@
 
                         <!-- Search Button -->
                         <div class="col-md-12 d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary" style="border-radius: 8px; margin-right: 5px">
+                                <a th:href="@{/admin/products/index}">Làm mới</a>
+                            </button>
                             <button type="submit" class="btn btn-primary" style="border-radius: 8px;">
                                 Tìm kiếm
                             </button>
@@ -148,7 +150,7 @@
             <table class="table table-bordered text-center" style="font-size: 15px;">
                 <thead>
                 <tr>
-                    <th colspan="9" class="text-start">
+                    <th colspan="10" class="text-start">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="mb-0">Danh Sách Sản Phẩm</h3>
                             <button class="btn btn-outline-primary" style="border-radius: 8px;">
@@ -161,6 +163,7 @@
                 </tr>
                 <tr>
                     <th>STT</th>
+                    <th>Ảnh sản phẩm</th>
                     <th>Tên sản phẩm</th>
                     <th>Tên thương hiệu</th>
                     <th>Tên chất liệu</th>
@@ -173,18 +176,19 @@
                 </thead>
                 <tbody>
                 <tr th:if="${sp_moi != null && sp_moi.getId() != null}">
-                    <td>1</td> <!-- Sản phẩm mới luôn có index là 1 -->
-                    <td th:text="${sp_moi.tenSanPham}"></td>
-                    <td th:text="${sp_moi.tenThuongHieu}"></td>
-                    <td th:text="${sp_moi.tenChatLieu}"></td>
-                    <td th:text="${sp_moi.tenTayAo}"></td>
-                    <td th:text="${sp_moi.tenCoAo}"></td>
-                    <td th:text="${sp_moi.ngayTao}"></td>
-                    <td>
+                    <td class="align-middle">1</td> <!-- Sản phẩm mới luôn có index là 1 -->
+                    <td class="align-middle"><img th:src="'/' + ${sp_moi.anhUrl}" height="100px" style="object-fit: cover"></td>
+                    <td class="align-middle" th:text="${sp_moi.tenSanPham}"></td>
+                    <td class="align-middle" th:text="${sp_moi.tenThuongHieu}"></td>
+                    <td class="align-middle" th:text="${sp_moi.tenChatLieu}"></td>
+                    <td class="align-middle" th:text="${sp_moi.tenTayAo}"></td>
+                    <td class="align-middle" th:text="${sp_moi.tenCoAo}"></td>
+                    <td class="align-middle" th:text="${sp_moi.ngayTao}"></td>
+                    <td class="align-middle">
                         <span class="badge bg-success" th:if="${sp_moi.trangThai == 1}">Hoạt động</span>
                         <span class="badge bg-danger" th:if="${sp_moi.trangThai == 0}">Ngưng hoạt động</span>
                     </td>
-                    <td>
+                    <td class="align-middle">
                         <button class="btn btn-primary btn-sm" style="border-radius: 8px;">
                             <a th:href="@{/admin/products/find_by_id/{id}(id=${sp_moi.id})}" style="color: white;">Chi Tiết</a>
                         </button>
@@ -198,18 +202,19 @@
                 </tr>
                 <tr th:each="product, index : ${products}">
                     <!-- Nếu có sp_moi, bắt đầu index từ 2 -->
-                    <td th:text="${sp_moi != null && sp_moi.getId() != null ? index.index + 2 : index.index + 1}"></td>
-                    <td th:text="${product.tenSanPham}"></td>
-                    <td th:text="${product.tenThuongHieu}"></td>
-                    <td th:text="${product.tenChatLieu}"></td>
-                    <td th:text="${product.tenTayAo}"></td>
-                    <td th:text="${product.tenCoAo}"></td>
-                    <td th:text="${product.ngayTao}"></td>
-                    <td>
+                    <td class="align-middle" th:text="${sp_moi != null && sp_moi.getId() != null ? index.index + 2 : index.index + 1}"></td>
+                    <td class="align-middle"><img th:src="'/' + ${product.anhUrl}" height="100px" style="object-fit: cover"></td>
+                    <td class="align-middle" th:text="${product.tenSanPham}"></td>
+                    <td class="align-middle" th:text="${product.tenThuongHieu}"></td>
+                    <td class="align-middle" th:text="${product.tenChatLieu}"></td>
+                    <td class="align-middle" th:text="${product.tenTayAo}"></td>
+                    <td class="align-middle" th:text="${product.tenCoAo}"></td>
+                    <td class="align-middle" th:text="${product.ngayTao}"></td>
+                    <td class="align-middle">
                         <span class="badge bg-success" th:if="${product.trangThai == 1}">Hoạt động</span>
                         <span class="badge bg-danger" th:if="${product.trangThai == 0}">Ngưng hoạt động</span>
                     </td>
-                    <td>
+                    <td class="align-middle">
                         <button class="btn btn-primary btn-sm" style="border-radius: 8px;">
                             <a th:href="@{/admin/products/find_by_id/{id}(id=${product.id})}" style="color: white;">Chi Tiết</a>
                         </button>

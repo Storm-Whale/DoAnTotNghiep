@@ -43,34 +43,34 @@ public class KhachHang {
     private Integer id;
 
     @Column(name = "ten")
-    @NotEmpty(message = "Tên không được để trống")
-    @Size(max = 100, message = "Tên không được vượt quá 100 ký tự")
+//    @NotEmpty(message = "Tên không được để trống")
+//    @Size(max = 100, message = "Tên không được vượt quá 100 ký tự")
     private String ten;
 
 
     @Column(name = "ngay_sinh")
-    @NotNull(message = "Ngày sinh không trống")
-    @Past(message = "Ngày sinh của bạn không pải ngày hiện tại và tương lai")
+//    @NotNull(message = "Ngày sinh không trống")
+//    @Past(message = "Ngày sinh của bạn không pải ngày hiện tại và tương lai")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate ngaySinh;
 
 
     @Column(name = "gioi_tinh")
-    @NotNull(message = "Giới tính không trống")
-    @Min(value = 0, message = "Invalid gender value")
-    @Max(value = 1, message = "Invalid gender value")
+//    @NotNull(message = "Giới tính không trống")
+//    @Min(value = 0, message = "Invalid gender value")
+//    @Max(value = 1, message = "Invalid gender value")
     private Integer gioiTinh;
 
 
     @Column(name = "sdt")
-    @Pattern(regexp = "^[0-9]{10}$", message = "SDT phải là 10 số và không được trống")
-    @Size(max = 100, message = "SDT không được vượt quá 100 ký tự")
+//    @Pattern(regexp = "^[0-9]{10}$", message = "SDT phải là 10 số và không được trống")
+//    @Size(max = 100, message = "SDT không được vượt quá 100 ký tự")
     private String soDienThoai;
 
     @Column(name = "email")
-    @NotBlank(message = "Email không trống")
-    @Email(message = "Vui lòng cung cấp địa chỉ email hợp lệ")
-    @Size(max = 100, message = "Email không được vượt quá 100 ký tự")
+//    @NotBlank(message = "Email không trống")
+//    @Email(message = "Vui lòng cung cấp địa chỉ email hợp lệ")
+//    @Size(max = 100, message = "Email không được vượt quá 100 ký tự")
     private String email;
 
 
@@ -86,9 +86,9 @@ public class KhachHang {
 
 
     @Column(name = "trang_thai")
-    @NotNull(message = "Trạng thái không trống")
-    @Min(value = 0, message = "Invalid gender value")
-    @Max(value = 1, message = "Invalid gender value")
+//    @NotNull(message = "Trạng thái không trống")
+//    @Min(value = 0, message = "Invalid gender value")
+//    @Max(value = 1, message = "Invalid gender value")
     private Integer trangThai;
 
     @Column(name= "ngay_tao")

@@ -57,9 +57,22 @@
       <p class="text-danger" th:if="${#fields.hasErrors('kieuGiamGia')}" th:errors="*{kieuGiamGia}"></p>
     </div>
 
+<!--    <div class="col-md-6">-->
+<!--      <label class="form-label">Ngày bắt đầu</label>-->
+<!--      <input type="date" class="form-control" name="ngayBatDau" th:field="${phieuGiamGia.ngayBatDau}" >-->
+<!--      <p class="text-danger" th:if="${#fields.hasErrors('ngayBatDau')}" th:errors="*{ngayBatDau}"></p>-->
+<!--    </div>-->
     <div class="col-md-6">
       <label class="form-label">Ngày bắt đầu</label>
-      <input type="date" class="form-control" name="ngayBatDau" th:field="${phieuGiamGia.ngayBatDau}" >
+      <input type="date" class="form-control" id="ngayBatDau" name="ngayBatDau"
+             th:field="${phieuGiamGia.ngayBatDau}"
+             th:value="${phieuGiamGia.ngayBatDau != null ? #dates.format(phieuGiamGia.ngayBatDau, 'yyyy-MM-dd') : ngayBatDauOriginal}"
+             th:attr="data-initial-date=${phieuGiamGia.ngayBatDau != null ? #dates.format(phieuGiamGia.ngayBatDau, 'yyyy-MM-dd') : ngayBatDauOriginal}"
+             onchange="checkDateValidity()"
+             required>
+      <!-- Thêm trường ẩn để lưu giá trị ban đầu -->
+      <input type="hidden" name="ngayBatDauOriginal" id="ngayBatDauOriginal"
+             th:value="${phieuGiamGia.ngayBatDau != null ? #dates.format(phieuGiamGia.ngayBatDau, 'yyyy-MM-dd') : ngayBatDauOriginal}">
       <p class="text-danger" th:if="${#fields.hasErrors('ngayBatDau')}" th:errors="*{ngayBatDau}"></p>
     </div>
 
@@ -102,6 +115,35 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </section>
 </body>
+<script>
+  function checkDateValidity() {
+    var inputElement = document.getElementById('ngayBatDau');
+    var originalInput = document.getElementById('ngayBatDauOriginal');
+    // Ưu tiên lấy giá trị từ trường ẩn
+    var initialDate = originalInput.value || inputElement.getAttribute('data-initial-date');
+    // Nếu không có giá trị ban đầu, bỏ qua
+    if (!initialDate) return;
+    // Chuyển đổi ngày input thành đối tượng Date
+    var selectedDate = new Date(initialDate);
+    // Lấy ngày hiện tại (đặt về đầu ngày)
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    // Kiểm tra và disable nếu ngày trong quá khứ
+    if (selectedDate < today) {
+      inputElement.disabled = true;
+      inputElement.classList.add('bg-light');
+      // Nếu input bị disabled, đặt lại giá trị ban đầu
+      inputElement.value = initialDate;
+      originalInput.value = initialDate;
+    } else {
+      inputElement.disabled = false;
+      inputElement.classList.remove('bg-light');
+    }
+  }
+  // Gọi hàm khi trang load
+  window.onload = checkDateValidity;
+  document.addEventListener('DOMContentLoaded', checkDateValidity);
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>
 </html>

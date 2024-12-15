@@ -85,4 +85,9 @@ public class KhachHangServiceImpl implements KhachHangService {
             return khachHangRepository.existsBySoDienThoai(soDienThoai);
 
     }
+
+    @Override
+    public boolean isEmailExist(String email) {
+        return khachHangRepository.existsByEmail(email);
+    }
 }
