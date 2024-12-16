@@ -30,11 +30,6 @@
             <td th:text="${#numbers.formatDecimal(spct.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
             <td th:text="${spct.soLuong}"></td>
             <td th:text="${spct.trangThai}"></td>
-<!--            <td>-->
-<!--                <a th:href="@{/admin/taiquay/add-sanpham-hdct/{id}(id=${spct.id})}">-->
-<!--                    <button class="btn btn-success btn-sm" style="border-radius: 8px; text-align: center">+</button>-->
-<!--                </a>-->
-<!--            <td>-->
             <td>
                 <a href="javascript:void(0);"
                    th:onclick="'addSanPhamToCart(' + ${spct.id} + ', ' + ${spct.soLuong} + ')'">
@@ -113,7 +108,6 @@
                         th:selected="${coao.id == coAoId and coAoId != null}">
                 </option>
             </select>
-
             <!-- Input tìm kiếm sản phẩm -->
             <!--                        <input type="text" id="productSearch" placeholder="Nhập tên sản phẩm" th:value="${keyword}" name="keyword" oninput="submitForm()">-->
             <input type="text" id="productSearch" placeholder="Nhập tên sản phẩm" th:value="${keyword}" name="keyword"
@@ -121,58 +115,62 @@
             <button id="btnSearch">Tìm kiếm</button>
         </div>
     </form>
-<!--    <div th:if="${error}" style="color: red; margin-bottom: 10px;">-->
-<!--        <p th:text="${error}"></p>-->
-<!--    </div>-->
 </div>
-<!-- Phân trang-->
 <div th:fragments="nav">
-                <nav>
-                    <ul class="pagination justify-content-center">
-                        <!-- First button -->
-                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link"
-                               th:href="@{'/admin/taiquay/sanpham?page=0&size=' + ${size} + '&keyword=' + ${keyword != null ? keyword : ''}
+    <nav>
+        <ul class="pagination justify-content-center">
+            <!-- First button -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{'/admin/taiquay/sanpham?page=0&size=' + ${size} + '&keyword=' + ${keyword != null ? keyword : ''}
                                + '&kichCoId=' + ${kichCoId != null ? kichCoId : ''}
                                + '&mauSacId=' + ${mauSacId != null ? mauSacId : ''}
                                + '&thuongHieuId=' + ${thuongHieuId != null ? thuongHieuId : ''}
                                + '&chatLieuId=' + ${chatLieuId != null ? chatLieuId : ''}
                                + '&tayAoId=' + ${tayAoId != null ? tayAoId : ''}
                                + '&coAoId=' + ${coAoId != null ? coAoId : '' }
-                               + '#sanpham'}"
-                               aria-label="First">First</a>
-                        </li>
-                        <!-- Page numbers -->
-                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
-                            th:classappend="${i == currentPage + 1} ? 'active'">
-                            <a class="page-link"
-                               th:href="@{'/admin/taiquay/sanpham?page=' + (${i} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword != null ? keyword : ''}
+                               + '#sanpham'}">First</a>
+            </li>
+            <!-- Nút previous -->
+            <li class="page-item" th:if="${currentPage > 2}">
+                <span class="page-link">...</span>
+            </li>
+            <!-- Các trang -->
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(
+                (currentPage > 2 ? currentPage - 2 : 0),
+                (currentPage + 2 < totalPages ? currentPage + 2 : totalPages - 1)
+                    )}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{'/admin/taiquay/sanpham?page=' + ${i} + '&size=' + ${size} +'&keyword=' + ${keyword != null ? keyword : ''}
                                + '&kichCoId=' + ${kichCoId != null ? kichCoId : ''}
                                + '&mauSacId=' + ${mauSacId != null ? mauSacId : ''}
                                + '&thuongHieuId=' + ${thuongHieuId != null ? thuongHieuId : ''}
                                + '&chatLieuId=' + ${chatLieuId != null ? chatLieuId : ''}
                                + '&tayAoId=' + ${tayAoId != null ? tayAoId : ''}
                                + '&coAoId=' + ${coAoId != null ? coAoId : '' }
-                               + '#sanpham'}"
-                               th:text="${i}"></a>
-                        </li>
-                        <!-- Last button -->
-                        <li class="page-item"
-                            th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link"
-                               th:href="@{'/admin/taiquay/sanpham?page=' + (${totalPages} - 1) + '&size=' + ${size} + '&keyword=' + ${keyword != null ? keyword : ''}
+                               + '#sanpham' }"
+                   th:text="${i + 1}"></a>
+            </li>
+            <!-- Nút next -->
+            <li class="page-item" th:if="${currentPage < totalPages - 3}">
+                <span class="page-link">...</span>
+            </li>
+            <!-- Last button -->
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{'/admin/taiquay/sanpham?page=' + (${totalPages} - 1) + '&size=' + ${size} +'&keyword=' + ${keyword != null ? keyword : ''}
                                + '&kichCoId=' + ${kichCoId != null ? kichCoId : ''}
                                + '&mauSacId=' + ${mauSacId != null ? mauSacId : ''}
                                + '&thuongHieuId=' + ${thuongHieuId != null ? thuongHieuId : ''}
                                + '&chatLieuId=' + ${chatLieuId != null ? chatLieuId : ''}
                                + '&tayAoId=' + ${tayAoId != null ? tayAoId : ''}
                                + '&coAoId=' + ${coAoId != null ? coAoId : '' }
-                               + '#sanpham'}"
-                               aria-label="Last">Last</a>
-                        </li>
-                    </ul>
-                </nav>
+                               + '#sanpham'}">Last</a>
+            </li>
+        </ul>
+    </nav>
 </div>
+
 <div th:fragments="script">
     <script>
         function submitForm() {
@@ -197,7 +195,7 @@
                 })
                     .then(response => response.text())
                     .then(html => {
-// Cập nhật lại phần table sản phẩm
+                // Cập nhật lại phần table sản phẩm
                         document.getElementById('sanphamTable').innerHTML = html;
                     })
                     .catch(error => console.error('Error:', error));
@@ -210,7 +208,6 @@
             const url = `/admin/taiquay/sanpham?page=${currentPage}&size=${selectedSize}#sanpham`;
             window.location.href = url;
         }
-
         //function nhập số lượng sản phẩm
         function addSanPhamToCart(id,availableQuantity) {
             Swal.fire({

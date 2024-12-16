@@ -61,6 +61,11 @@ public class KieuCoAoServiceImpl implements KieuCoAoService {
     }
 
     @Override
+    public boolean existsByTenCoAo(String tenCoAo) {
+        return kieuCoAoRepository.existsByTenCoAo(tenCoAo);
+    }
+
+    @Override
     public List<KieuCoAo> getKieuCoAoByTrangThai(int trangThai) {
         return null;
     }

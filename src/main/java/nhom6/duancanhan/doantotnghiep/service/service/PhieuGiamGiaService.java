@@ -34,5 +34,8 @@ public interface PhieuGiamGiaService {
 
     List<PhieuGiamGiaResponse> getPGGByTrangThai(Integer trangThai);
 
+
+    PhieuGiamGia findById(Integer id);
+
     String generateMaPhieuGiamGia();
 }

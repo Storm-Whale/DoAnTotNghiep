@@ -23,4 +23,6 @@ public interface KieuTayAoRepository extends JpaRepository<KieuTayAo, Integer> {
             select kta.tenTayAo from KieuTayAo kta
         """)
     List<String> findAllTenKieuTayAo();
+    boolean existsByTenTayAo(String tenTayAo);
+
 }

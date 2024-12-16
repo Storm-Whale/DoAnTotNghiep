@@ -30,4 +30,5 @@ public interface KieuCoAoService {
 
     List<KieuCoAo> searchByTenCoAo(String tenCoAo);
     List<String> getAllTenKieuCoAo();
+    boolean existsByTenCoAo(String tenCoAo);
 }

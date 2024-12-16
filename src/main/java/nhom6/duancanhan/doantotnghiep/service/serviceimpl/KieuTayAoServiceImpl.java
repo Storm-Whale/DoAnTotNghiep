@@ -65,6 +65,11 @@ public class KieuTayAoServiceImpl implements KieuTayAoService {
     }
 
     @Override
+    public boolean existsByTenTayAo(String tenTayAo) {
+        return kieuTayAoRepository.existsByTenTayAo(tenTayAo);
+    }
+
+    @Override
     public List<KieuTayAo> getKieuTayAoByTrangThai(int trangThai) {
         return null;
     }

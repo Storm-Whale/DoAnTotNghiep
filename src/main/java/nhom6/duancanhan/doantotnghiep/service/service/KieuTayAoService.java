@@ -30,4 +30,6 @@ public interface KieuTayAoService {
 
     Page<KieuTayAo> phanTrangTheoTen(String tenTayAo, int pageNo, int pageSize);
     List<String> getAllKieuTayAo();
+    boolean existsByTenTayAo(String tenTayAo);
+
 }

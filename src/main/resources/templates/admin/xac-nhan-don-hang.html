@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Xác Nhận Đơn Hàng</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<script>
+    // Lấy URL hiện tại
+    const currentUrl = new URL(window.location.href);
+    const hoaDonId = currentUrl.searchParams.get('hoaDonId');
+    // Gửi request xác nhận
+    fetch(`/admin/taiquay/xac-nhan-don-hang?hoaDonId=${hoaDonId}`)
+        .then(response => {
+            if (!response.ok) {
+                // Xử lý lỗi
+                return response.text().then(errorMessage => {
+                    throw new Error(errorMessage);
+                });
+            }
+            return response.text();
+        })
+        .then(message => {
+            // Hiển thị thông báo thành công
+            alert(message);
+            window.close();
+        })
+        .catch(error => {
+            // Hiển thị thông báo lỗi
+            alert(error.message);
+            window.close();
+        });
+</script>
+</body>
+</html>

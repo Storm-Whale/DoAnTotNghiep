@@ -34,4 +34,18 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Inte
     Optional<PhieuGiamGia> findByMaPhieuGiamGia(String maPhieuGiamGia);
 
     List<PhieuGiamGia> findPhieuGiamGiaByTrangThai(Integer trangThai);
+
+    // Phương thức để tìm các phiếu giảm giá ở trạng thái tạm dừng
+    @Query("SELECT p FROM PhieuGiamGia p WHERE " +
+            "(:keyword IS NULL OR p.maPhieuGiamGia LIKE %:keyword% OR p.tenPhieuGiamGia LIKE %:keyword%) " +
+            "AND (:ngayBatDau IS NULL OR p.ngayBatDau >= :ngayBatDau) " +
+            "AND (:ngayKetThuc IS NULL OR p.ngayKetThuc <= :ngayKetThuc) " +
+            "AND (:kieuGiamGia IS NULL OR p.kieuGiamGia = :kieuGiamGia) " +
+            "AND p.trangThai = 2")
+    Page<PhieuGiamGia> findByTrangThaiTemporaryStopped(
+            @Param("keyword") String keyword,
+            @Param("ngayBatDau") Date ngayBatDau,
+            @Param("ngayKetThuc") Date ngayKetThuc,
+            @Param("kieuGiamGia") Integer kieuGiamGia,
+            Pageable pageable);
 }
