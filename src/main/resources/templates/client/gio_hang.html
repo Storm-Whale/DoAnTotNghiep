@@ -94,7 +94,12 @@
                 <!-- Lặp qua từng sản phẩm trong danh sách sản phẩm của thương hiệu -->
                 <div class="cart-item" th:each="spgh : ${entry.value}">
                     <!-- Checkbox để chọn sản phẩm -->
-                    <input id="select-product" class="form-check-input me-3 product-checkbox" type="checkbox">
+                    <input
+                            id="select-product"
+                            class="form-check-input me-3 product-checkbox"
+                            type="checkbox"
+                            th:data-product-id="${spgh.sanPhamGioHang.id}"
+                    >
                     <!-- Hình ảnh sản phẩm -->
                     <img th:src="@{/{anhUrl} (anhUrl = ${spgh.anhUrl})}" alt="Sản phẩm">
                     <div class="cart-item-details">
@@ -162,6 +167,10 @@
         crossorigin="anonymous">
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:inline="javascript">
+    const addedProductId = /*[[${addedProductId}]]*/ null;
+    console.log(addedProductId)
+</script>
 <script th:src="@{/javascript/gioHang.js}"></script>
 </body>
 </html>

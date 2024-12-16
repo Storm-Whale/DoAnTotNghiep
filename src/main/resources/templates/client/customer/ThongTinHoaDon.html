@@ -215,6 +215,28 @@
                     </div>
                 </a>
             </div>
+            <div th:if="${!hoaDons.isEmpty()}" class="text-center mt-3">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <!-- Nút chuyển đến trang đầu tiên -->
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/client/showInfoBill(type=${type}, page=0)}">First</a>
+                        </li>
+
+                        <!-- Các trang lân cận -->
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                            th:classappend="${currentPage == i} ? 'active'">
+                            <a class="page-link" th:href="@{/client/showInfoBill(type=${type}, page=${i})}" th:text="${i + 1}"></a>
+                        </li>
+                        
+                        <!-- Nút chuyển đến trang cuối cùng -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/client/showInfoBill(type=${type}, page=${totalPages - 1})}">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </div>

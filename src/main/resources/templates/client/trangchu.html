@@ -36,10 +36,7 @@
             </div>
 
             <!-- Cart Icon -->
-            <a th:if="${session.user != null}" th:href="@{/client/gio-hang}" class="me-4">
-                <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
-            </a>
-            <a th:if="${session.user == null}" th:href="@{/login/login-client}" class="me-4">
+            <a th:href="@{/client/gio-hang}" class="me-4">
                 <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
             </a>
             <!-- User Dropdown -->

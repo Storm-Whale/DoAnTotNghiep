@@ -1,12 +1,9 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
-import nhom6.duancanhan.doantotnghiep.entity.KieuCoAo;
 import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
-import nhom6.duancanhan.doantotnghiep.repository.KieuCoAoRepository;
 import nhom6.duancanhan.doantotnghiep.repository.ThuongHieuRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.ThuongHieuService;
 import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -58,15 +55,21 @@ public class ThuongHieuServiceImpl implements ThuongHieuService {
     @Override
     public List<String> getAllTenThuongHieu() {
         return DatabaseOperationHandler.handleDatabaseOperation(
-                () -> thuongHieuRepossitory.findAllTenThuongHieu()
+                thuongHieuRepossitory::findAllTenThuongHieu
                 , "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu"
         );
     }
 
     @Override
+<<<<<<< HEAD
+    public List<ThuongHieu> getAllThuongHieuByTrangThai(int trangThai) {
+        return thuongHieuRepossitory.findAllByTrangThai(trangThai);
+    }
+=======
     public boolean existsByTenThuongHieu(String tenThuongHieu) {
         return thuongHieuRepossitory.existsByTenThuongHieu(tenThuongHieu);
     }
 
 
+>>>>>>> 25025b7a04466b9b44b88e581f850a3437257c3d
 }
