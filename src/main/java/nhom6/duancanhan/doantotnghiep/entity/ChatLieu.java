@@ -6,6 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -22,7 +25,11 @@ public class ChatLieu extends BaseEntity{
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "ten_chat_lieu")
+    @NotBlank(message = "Tên chất liệu không được để trống!")
+    @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Tên chất liệu không được chứa ký tự đặc biệt!")
+    @Pattern(regexp = "^[^\\s].*[^\\s]$", message = "Tên chất liệu không được chứa khoảng trắng ở đầu hoặc cuối!")
+    @Size(max = 19, message = "Name must be 20 characters")
+    @Column(name = "ten_chat_lieu",unique = true)
     private String tenChatLieu;
 
     @Column(name = "trang_thai")

@@ -19,4 +19,12 @@ public interface KichCoService {
     void updateKichCo(Integer id, KichCo kichCo);
 
     void updateKichCoById(Integer id, KichCo kichCo);
+
+    Page<KichCo> timKiemVaPhanTrang(String tenKichCo, Integer trangThai, int pageNo, int pageSize);
+
+    Page<KichCo> phanTrangTheoTrangThai(Integer trangThai, int pageNo, int pageSize);
+
+    Page<KichCo> phanTrangTheoTen(String tenKichCo, int pageNo, int pageSize);
+
+    boolean existsByTenKichCo(String tenKichCo);
 }

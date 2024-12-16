@@ -63,5 +63,10 @@ public class ThuongHieuServiceImpl implements ThuongHieuService {
         );
     }
 
+    @Override
+    public boolean existsByTenThuongHieu(String tenThuongHieu) {
+        return thuongHieuRepossitory.existsByTenThuongHieu(tenThuongHieu);
+    }
+
 
 }

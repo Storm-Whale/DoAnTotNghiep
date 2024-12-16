@@ -22,4 +22,6 @@ public interface ThuongHieuService {
 
 
     List<String> getAllTenThuongHieu();
+
+    boolean existsByTenThuongHieu(String tenThuongHieu);
 }

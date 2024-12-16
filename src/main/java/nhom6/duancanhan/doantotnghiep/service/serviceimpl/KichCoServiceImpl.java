@@ -52,4 +52,28 @@ public class KichCoServiceImpl implements KichCoService {
     public void updateKichCoById(Integer id, KichCo kichCo) {
         kichCoRepository.save(kichCo);
     }
+
+    @Override
+    public Page<KichCo> timKiemVaPhanTrang(String tenKichCo, Integer trangThai, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return kichCoRepository.findByCriteria(tenKichCo, trangThai, pageable);
+    }
+
+    @Override
+    public Page<KichCo> phanTrangTheoTrangThai(Integer trangThai, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return kichCoRepository.findByTrangThai(trangThai, pageable);
+
+    }
+
+    @Override
+    public Page<KichCo> phanTrangTheoTen(String tenKichCo, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return kichCoRepository.findKichCoByTen(tenKichCo, pageable);
+    }
+
+    @Override
+    public boolean existsByTenKichCo(String tenKichCo) {
+        return kichCoRepository.existsByTenKichCo(tenKichCo);
+    }
 }

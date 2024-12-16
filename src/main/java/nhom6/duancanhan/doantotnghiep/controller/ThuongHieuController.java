@@ -1,7 +1,9 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
+import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.entity.KieuCoAo;
+import nhom6.duancanhan.doantotnghiep.entity.MauSac;
 import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
 import nhom6.duancanhan.doantotnghiep.service.service.ThuongHieuService;
@@ -10,7 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +68,43 @@ public class ThuongHieuController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("thuongHieu") ThuongHieu thuongHieu, Model model) {
+    public String add(@ModelAttribute("thuongHieu") @Valid ThuongHieu thuongHieu,
+                      BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                      Model model){
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên thương hiệu");
+            String tenThuongHieu = thuongHieu.getTenThuongHieu();
+            if (thuongHieu.getTenThuongHieu().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu không được để trống!");
+                return "redirect:/admin/thuong-hieu";
+            }
+
+            // Check leading/trailing whitespaces
+            if (!thuongHieu.getTenThuongHieu().trim().equals(thuongHieu.getTenThuongHieu())) {
+                bindingResult.rejectValue("tenThuongHieu", "tenThuongHieu.whitespace", "Tên thương hiệu không được chứa khoảng trắng ở đầu hoặc cuối!");
+                return "redirect:/admin/thuong-hieu";
+            }
+            // Check length
+            else if (tenThuongHieu.length() > 20) {
+                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu không được quá 20 kí tự!");
+                return "redirect:/admin/thuong-hieu";
+            }
+            // Check for special characters
+            else if (thuongHieu.getTenThuongHieu().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu không được chứa ký tự đặc biệt!");
+                return "redirect:/admin/thuong-hieu";
+            }
+
+            // Check duplicates (implement database logic)
+            else if (thuongHieuService.existsByTenThuongHieu(tenThuongHieu)) {
+                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu đã tồn tại!");
+                return "redirect:/admin/thuong-hieu";
+            }
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.thuongHieu", bindingResult);
+            redirectAttributes.addFlashAttribute("thuongHieu", thuongHieu);
+            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+            return "redirect:/admin/thuong-hieu";
+        }
         thuongHieu.setTrangThai(1);
         thuongHieuService.addThuongHieu(thuongHieu);
         return "redirect:/admin/thuong-hieu";
@@ -81,15 +121,18 @@ public class ThuongHieuController {
     }
 
     @PostMapping("/update/{id}")
-    public String update(@PathVariable("id") Integer id, @ModelAttribute("thuongHieu") ThuongHieu thuongHieu) {
+    public String update(@PathVariable("id") Integer id,
+                         @ModelAttribute("thuongHieu") @Valid ThuongHieu thuongHieu,
+                         BindingResult bindingResult) {
         Optional<ThuongHieu> existingThuongHieuOpt = thuongHieuService.detail(id);
-        if (existingThuongHieuOpt.isPresent()) {
+        if (bindingResult.hasErrors() || existingThuongHieuOpt.isEmpty()) {
+            return "/admin/sanpham/ThuongHieu/Update";
+        }
             ThuongHieu existingThuongHieu = existingThuongHieuOpt.get();
             thuongHieu.setNgayTao(existingThuongHieu.getNgayTao());
             thuongHieu.setId(existingThuongHieu.getId());
             thuongHieuService.updateThuongHieu(id, thuongHieu);
-            return "redirect:/admin/thuong-hieu";
-        }
+
         return "redirect:/admin/thuong-hieu";
     }
 

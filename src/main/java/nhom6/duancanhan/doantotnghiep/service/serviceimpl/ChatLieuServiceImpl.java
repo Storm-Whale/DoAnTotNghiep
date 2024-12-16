@@ -47,6 +47,11 @@ public class ChatLieuServiceImpl implements ChatLieuService {
     }
 
     @Override
+    public void deleteChatLieu() {
+        deleteChatLieu(null);
+    }
+
+    @Override
     public void deleteChatLieu(Integer id) {
         chatLieuRepository.deleteById(id);
     }
@@ -62,4 +67,10 @@ public class ChatLieuServiceImpl implements ChatLieuService {
     public void updateChatLieuById(Integer id, ChatLieu chatLieu) {
         chatLieuRepository.save(chatLieu);
     }
+
+    @Override
+    public boolean existsByTenChatLieu(String tenChatLieu) {
+        return chatLieuRepository.existsByTenChatLieu(tenChatLieu);
+    }
+
 }

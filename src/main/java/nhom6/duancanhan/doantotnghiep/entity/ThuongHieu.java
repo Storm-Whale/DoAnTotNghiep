@@ -7,6 +7,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
@@ -25,7 +28,11 @@ public class ThuongHieu extends BaseEntity{
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "ten_thuong_hieu")
+    @NotBlank(message = "Tên thương hiệu không được để trống!")
+    @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Tên thương hiệu không được chứa ký tự đặc biệt!")
+    @Pattern(regexp = "^[^\\s].*[^\\s]$", message = "Tên thương hiệu không được chứa khoảng trắng ở đầu hoặc cuối!")
+    @Size(max = 19, message = "Name must be 20 characters")
+    @Column(name = "ten_thuong_hieu",unique = true)
     private String tenThuongHieu;
 
     @Column(name = "trang_thai")

@@ -1,7 +1,9 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
+import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.entity.ChatLieu;
+import nhom6.duancanhan.doantotnghiep.entity.MauSac;
 import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
 import nhom6.duancanhan.doantotnghiep.service.service.ChatLieuService;
 import nhom6.duancanhan.doantotnghiep.service.service.SanPhamService;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +67,42 @@ public class ChatLieuController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("chatLieu") ChatLieu chatLieu, BindingResult bindingResult, Model model) {
+    public String add(@ModelAttribute("chatLieu") @Valid ChatLieu chatLieu,
+                      BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                      Model model) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên chất liệu");
+            String tenChatLieu = chatLieu.getTenChatLieu();
+            if (chatLieu.getTenChatLieu().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được để trống!");
+                return "redirect:/admin/chatlieu";
+            }
+
+            // Check leading/trailing whitespaces
+            if (!chatLieu.getTenChatLieu().trim().equals(chatLieu.getTenChatLieu())) {
+                bindingResult.rejectValue("tenChatLieu", "tenChatLieu.whitespace", "Tên chất liệu không được chứa khoảng trắng ở đầu hoặc cuối!");
+            }
+            // Check length
+            else if (tenChatLieu.length() > 20) {
+                redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được quá 20 kí tự!");
+                return "redirect:/admin/chatlieu";
+            }
+            // Check for special characters
+            else if (chatLieu.getTenChatLieu().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+                redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được chứa ký tự đặc biệt!");
+                return "redirect:/admin/chatlieu";
+            }
+
+            // Check duplicates (implement database logic)
+            else if (chatLieuService.existsByTenChatLieu(tenChatLieu)) {
+                redirectAttributes.addFlashAttribute("error", "Tên chất liệu đã tồn tại!");
+                return "redirect:/admin/chatlieu";
+            }
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.chatLieu", bindingResult);
+            redirectAttributes.addFlashAttribute("chatLieu", chatLieu);
+            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+            return "redirect:/admin/chatlieu";
+        }
         chatLieu.setTrangThai(1);
         chatLieuService.addChatLieu(chatLieu);
         return "redirect:/admin/chatlieu";
@@ -80,16 +118,18 @@ public class ChatLieuController {
     }
 
     @PostMapping("/update/{id}")
-    public String update(@PathVariable("id") Integer id, @ModelAttribute("chatLieu") ChatLieu chatLieu) {
+    public String update(@PathVariable("id") Integer id,
+                         @ModelAttribute("chatLieu") @Valid ChatLieu chatLieu,
+                         BindingResult bindingResult) {
         Optional<ChatLieu> existingChatLieuOpt = chatLieuService.detail(id);
-        if (existingChatLieuOpt.isPresent()) {
+        if (bindingResult.hasErrors() || existingChatLieuOpt.isEmpty()) {
+            return "/admin/sanpham/ChatLieu/Update";
+        }
             ChatLieu existingChatLieu = existingChatLieuOpt.get();
             chatLieu.setNgayTao(existingChatLieu.getNgayTao());
             chatLieu.setId(existingChatLieu.getId());
             chatLieuService.updateChatLieu(id, chatLieu);
             return "redirect:/admin/chatlieu";
-        }
-        return "redirect:/admin/chatlieu";
     }
 
     @PostMapping("/updatett/{id}")

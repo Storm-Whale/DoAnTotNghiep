@@ -46,4 +46,9 @@ public class MauSacServiceImpl implements MauSacService {
     public void updateMauSacById(Integer id, MauSac mauSac) {
         mauSacRepository.save(mauSac);
     }
+
+    @Override
+    public boolean existsByTenMauSac(String tenMauSac) {
+        return mauSacRepository.existsByTenMauSac(tenMauSac);
+    }
 }

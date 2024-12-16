@@ -20,12 +20,18 @@
             <h2>Quản Lý Thương Hiệu</h2>
         </div>
     </div>
+    <div th:if="${error != null}" class="alert alert-danger" role="alert">
+        <span th:text="${error}"></span>
+    </div>
     <div class="row mb-4">
         <div class="col-md-12">
             <form th:action="@{/admin/thuong-hieu/add}" th:object="${thuongHieu}" method="post" class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label">Tên Thương Hiệu</label>
                     <input type="text" class="form-control"  th:field="*{tenThuongHieu}" placeholder="Nhập tên thương hiệu">
+                    <div th:if="${#fields.hasErrors('tenThuongHieu')}" th:errors="*{tenThuongHieu}" class="text-danger">
+                        <span th:errors="*{tenThuongHieu}"></span>
+                    </div>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
                     <button type="submit" class="btn btn-success">
