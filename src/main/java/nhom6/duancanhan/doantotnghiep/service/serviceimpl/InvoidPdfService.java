@@ -34,7 +34,8 @@ public class InvoidPdfService {
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
         //
-        String fontPath = "D:/FALL_2024/DATN/DoAnTotNghiep/src/main/resources/times.ttf"; // Thay bằng đường dẫn tới file font hỗ trợ Unicode (VD: Times New Roman)
+        String fontPath = "D:/DoAnTotNghiep/DoAnTotNghiep/src/main/resources/times.ttf";
+        // Thay bằng đường dẫn tới file font hỗ trợ Unicode (VD: Times New Roman)
 //        D:\FALL_2024\DATN\DoAnTotNghiep\src\main\resources
 //        String fontPath = "D:/FALL_2024/DATN/DoAnTotNghiep/src/main/resources/times.ttf"; // Thay bằng đường dẫn tới file font hỗ trợ Unicode (VD: Times New Roman)
         PdfFont font = PdfFontFactory.createFont(fontPath, PdfEncodings.IDENTITY_H);
