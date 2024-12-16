@@ -52,11 +52,6 @@ public class KieuTayAoServiceImpl implements KieuTayAoService {
     }
 
     @Override
-    public void deleteKieuTayAo(Integer id) {
-        kieuTayAoRepository.deleteById(id);
-    }
-
-    @Override
     public List<String> getAllKieuTayAo() {
         return DatabaseOperationHandler.handleDatabaseOperation(
                 () -> kieuTayAoRepository.findAllTenKieuTayAo()
@@ -65,13 +60,10 @@ public class KieuTayAoServiceImpl implements KieuTayAoService {
     }
 
     @Override
-    public List<KieuTayAo> getKieuTayAoByTrangThai(int trangThai) {
-        return null;
-    }
-
-    @Override
-    public List<KieuTayAo> getKieuTayAoByTen(String tenTayAo) {
-        return null;
+    public List<KieuTayAo> getAllKieuTayAoByKieuTayAo(int trangThai) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() ->
+                        kieuTayAoRepository.findAllByTrangThai(trangThai)
+                , "Lỗi khi lấy dữ liêu từ cơ sở dữ liệu");
     }
 
     @Override

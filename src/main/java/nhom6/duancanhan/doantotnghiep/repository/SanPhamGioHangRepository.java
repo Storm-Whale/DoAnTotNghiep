@@ -8,13 +8,9 @@ import java.util.List;
 
 @Repository
 public interface SanPhamGioHangRepository extends JpaRepository<SanPhamGioHang, Integer> {
-//    List<SanPhamGioHang> findAllByGioHangId(Integer idGioHang);
-      List<SanPhamGioHang> findAllByGioHangId(Integer gioHangId);
-//    List<SanPhamGioHang> findByIdGioHangAndIdSpct(Integer id, Integer idSpct);
-
       List<SanPhamGioHang> findByGioHangIdAndTrangThai(Integer gioHangId, Integer trangThai);
 
-      boolean existsBySanPhamChiTietIdAndTrangThai(Integer sanPhamChiTietId, Integer trangThai);
+      boolean existsBySanPhamChiTietIdAndTrangThaiAndGioHangId(Integer sanPhamChiTietId, Integer trangThai, Integer gioHangId);
 
       SanPhamGioHang findSanPhamGioHangByGioHangIdAndSanPhamChiTietIdAndTrangThai(Integer gioHangId, Integer sanPhamChiTietId, Integer trangThai);
 }

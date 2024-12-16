@@ -23,4 +23,6 @@ public interface ChatLieuService {
     List<String> getAllTenChatLieu();
 
     void updateChatLieuById(Integer id, ChatLieu chatLieu);
+
+    List<ChatLieu> getAllChatLieuByTrangThai(int trangThai);
 }

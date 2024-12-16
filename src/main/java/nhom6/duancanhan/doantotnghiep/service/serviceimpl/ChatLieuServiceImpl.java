@@ -62,4 +62,11 @@ public class ChatLieuServiceImpl implements ChatLieuService {
     public void updateChatLieuById(Integer id, ChatLieu chatLieu) {
         chatLieuRepository.save(chatLieu);
     }
+
+    @Override
+    public List<ChatLieu> getAllChatLieuByTrangThai(int trangThai) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() ->
+                        chatLieuRepository.findAllByTrangThai(trangThai)
+                , "Lỗi khi lấy dữ liêu từ cơ sở dữ liệu");
+    }
 }
