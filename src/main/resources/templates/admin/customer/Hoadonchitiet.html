@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -191,6 +190,19 @@
                     <div class="col-md-4">
                         <textarea id="ghiChu" name="ghiChu" rows="1" class="form-control" th:text="${hoaDon.ghiChu}"></textarea>
                     </div>
+                    <div class="col-md-4">
+                        <p><strong>Trạng Thái:</strong>
+                            <span th:switch="${hoaDon.trangThai}">
+            <span th:case="1">Chờ Xác Nhận</span>
+            <span th:case="2">Xác Nhận Đơn Hàng</span>
+            <span th:case="4">Giao Hàng</span>
+            <span th:case="5">Giao Hàng Thành Công</span>
+            <span th:case="6">Giao Hàng Thất Bại</span>
+            <span th:case="7">Đã Hủy</span>
+            <span th:case="*">Trạng Thái Không Xác Định</span>
+        </span>
+                        </p>
+                    </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-2 text-end">
@@ -235,6 +247,8 @@
                                th:value="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : ''}" />
                     </div>
 
+
+
                 </div>
                 <div class="row mt-4">
                     <div class="col-md-12 text-center">
@@ -258,7 +272,7 @@
                 <th scope="col">Tổng Tiền</th>
             </tr>
             </thead>
-            <form th:action="@{/admin/hoadon/updateHoaDonct/{id}(id=${hoaDon.id})}" method="post">
+            <form >
                 <tbody>
                 <tr th:each="item,stt : ${hoaDonChiTietList}">
                     <td th:text="${item.id}"></td>
@@ -359,6 +373,7 @@
                     } else {
                         // Cập nhật số lượng tồn kho
                         // Redirect về trang chi tiết hóa đơn
+                        console.log(`Redirecting to /admin/hoadon/detail/${hoaDonId}`);
                         window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
                     }
                 })
@@ -370,6 +385,7 @@
                         text: 'Có lỗi xảy ra, vui lòng thử lại.'
                     });
                     inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
+                    window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
                 });
         }
     }
@@ -437,6 +453,7 @@
                 } else {
                     // Cập nhật giá trị hiện tại
                     // Redirect về trang chi tiết hóa đơn
+                    console.log(`Redirecting to /admin/hoadon/detail/${hoaDonId}`);
                     window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
                 }
             }).catch(error => {
@@ -445,8 +462,10 @@
                 icon: 'error',
                 title: 'Lỗi',
                 text: 'Có lỗi xảy ra, vui lòng thử lại.'
+
             });
             quantityInput.value = currentQuantity; // Khôi phục lại giá trị cũ
+            window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
         });
     }
 </script>

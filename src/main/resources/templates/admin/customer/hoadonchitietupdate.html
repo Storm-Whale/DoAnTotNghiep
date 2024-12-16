@@ -152,57 +152,84 @@
             padding: 20px 0;
         }
 
-        .status-step {
-            text-align: center;
-            position: relative;
-            flex: 1;
-        }
 
-        .status-step .icon {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #28a745; /* Green border for active/completed */
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #fff;
-        }
 
-        .status-step.active .icon {
-            background-color: #28a745;
-        }
 
-        .status-step .icon img {
-            width: 30px;
-            height: 30px;
-        }
 
-        .status-step .status-text {
-            margin-top: 10px;
-            font-weight: bold;
-            color: #333;
-        }
+        /*.progress-container {*/
+        /*    display: flex;*/
+        /*    align-items: center;*/
+        /*    justify-content: space-between;*/
+        /*    width: 80%;*/
+        /*    position: relative;*/
+        /*}*/
+        /*.progress-container {*/
+        /*    display: flex;*/
+        /*    justify-content: space-between;*/
+        /*    align-items: center;*/
+        /*    width: 100%;*/
+        /*    position: relative;*/
+        /*}*/
 
-        .status-step .time-text {
-            margin-top: 5px;
-            font-size: 12px;
-            color: #666;
-        }
+        /*.step {*/
+        /*    display: flex;*/
+        /*    flex-direction: column;*/
+        /*    align-items: center;*/
+        /*    position: relative;*/
+        /*    text-align: center;*/
+        /*    flex: 1;*/
+        /*}*/
 
-        .status-line {
-            height: 3px;
-            background-color: #ccc; /* Default line */
-            flex: 1;
-            position: relative;
-            top: -25px;
-            z-index: 0;
-        }
+        /*.step .icon {*/
+        /*    background-color: #ccc;*/
+        /*    border-radius: 50%;*/
+        /*    width: 50px;*/
+        /*    height: 50px;*/
+        /*    display: flex;*/
+        /*    justify-content: center;*/
+        /*    align-items: center;*/
+        /*    z-index: 2;*/
+        /*    transition: background-color 0.3s ease;*/
+        /*}*/
 
-        .status-line.completed {
-            background-color: #28a745; /* Green for completed */
-        }
+        /*.step.completed .icon {*/
+        /*    background-color: #28a745; !* Màu xanh cho hoàn thành *!*/
+        /*    color: white;*/
+        /*}*/
 
+        /*.step.in-progress .icon {*/
+        /*    background-color: #ffc107; !* Màu vàng cho trạng thái hiện tại *!*/
+        /*}*/
+        /*.step.in-fall .icon {*/
+        /*    background-color: #ff3b3b; !* Màu vàng cho trạng thái hiện tại *!*/
+        /*}*/
+        /*.step.in-pass .icon {*/
+        /*    background-color: #28a745; !* Màu vàng cho trạng thái hiện tại *!*/
+        /*}*/
+        /*.step p {*/
+        /*    margin-top: 10px;*/
+        /*    font-size: 14px;*/
+        /*    color: #333;*/
+        /*}*/
+
+        /*.step .line {*/
+        /*    position: absolute;*/
+        /*    top: 50%;*/
+        /*    left: 0;*/
+        /*    height: 4px;*/
+        /*    background-color: #28a745;*/
+        /*    width: 100%;*/
+        /*    z-index: 1;*/
+        /*}*/
+
+        /*.step.completed ~ .step .line {*/
+        /*    background-color: #28a745;*/
+        /*}*/
+        /*.icon img {*/
+        /*    width: 50px; !* Điều chỉnh chiều rộng ảnh (có thể thay đổi) *!*/
+        /*    height: 50px; !* Điều chỉnh chiều cao ảnh *!*/
+        /*    object-fit: contain; !* Giữ nguyên tỉ lệ ảnh, không bị méo *!*/
+        /*}*/
 
     </style>
 </head>
@@ -232,47 +259,167 @@
     </div>
     <br>
     <h3>Hóa Đơn</h3>
+
     <button class="btn btn-success btn-sm" th:onclick="|exportHoaDonById(${hoaDon.id})|">
         <i class="fas fa-file-excel"></i> Xuất EX
     </button>
     <br>
 
-<!--    <div class="order-status" th:if="${hoaDon.trangThai == 2}">-->
-
-<!--        <div class="status-step" th:classappend="${hoaDon.trangThai == 1} ? 'completed' : ''">-->
-<!--            <div class="icon">-->
-<!--                <img src="https://e7.pngegg.com/pngimages/485/757/png-clipart-purchase-order-sales-order-purchasing-order-gourmet-meal-miscellaneous-angle-thumbnail.png" alt="Đơn Hàng Đã Đặt">-->
+<!--    <div class="order-status" th:if="${hoaDon.trangThai == 4}">-->
+<!--        <div class="progress-container">-->
+<!--            &lt;!&ndash; Trạng thái 1: Chờ xác nhận &ndash;&gt;-->
+<!--            <div class="step completed">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://png.pngtree.com/png-vector/20191011/ourlarge/pngtree-invoice-icon-png-image_1817550.jpg" alt="Chờ xác nhận">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Chờ xác nhận</p>-->
 <!--            </div>-->
-<!--            <p class="status-text">Đơn Hàng Chờ Xác Nhận</p>-->
-<!--            <p class="time-text">20:07 10-12-2024</p>-->
-<!--        </div>-->
-<!--        <div class="status-line" th:classappend="${hoaDon.trangThai > 1} ? 'completed' : ''"></div>-->
 
-<!--        <div class="status-step" th:classappend="${hoaDon.trangThai == 2} ? 'completed' : ''">-->
-<!--            <div class="icon">-->
-<!--                <img src="https://png.pngtree.com/png-clipart/20230504/original/pngtree-preparation-line-icon-png-image_9139050.png" alt="Đơn Hàng Đã Thanh Toán">-->
+<!--            &lt;!&ndash; Trạng thái 2: Chỉnh sửa đơn &ndash;&gt;-->
+<!--            <div class="step completed">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://png.pngtree.com/png-clipart/20231004/original/pngtree-icon-indicating-package-delivery-with-confirmation-of-order-reaching-destination-vector-png-image_12952005.png" alt="Chỉnh sửa đơn">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Xác Nhận Đơn Hàng</p>-->
 <!--            </div>-->
-<!--            <p class="status-text">Đơn Hàng Đang Được Chuẩn Bị</p>-->
-<!--            <p class="time-text">21:33 10-12-2024</p>-->
-<!--        </div>-->
-<!--        <div class="status-line" th:classappend="${hoaDon.trangThai == 2} ? 'completed' : ''"></div>-->
 
-<!--        <div class="status-step" th:classappend="${hoaDon.trangThai == 3} ? 'completed' : ''">-->
-<!--            <div class="icon">-->
-<!--                <img src="https://file.hstatic.net/1000191021/file/9-icon-shipper_874c5ac017894898a2661829cc2f8f87_grande.jpg" alt="Đã Giao Cho ĐVVC">-->
+<!--            &lt;!&ndash; Trạng thái 3: Xác nhận &ndash;&gt;-->
+<!--            <div class="step completed">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://media.istockphoto.com/id/1186665850/vi/vec-to/xe-t%E1%BA%A3i-giao-h%C3%A0ng-v%E1%BA%ADn-chuy%E1%BB%83n-nhanh-thi%E1%BA%BFt-k%E1%BA%BF-bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-%C4%91%C6%B0%E1%BB%9Dng-minh-h%E1%BB%8Da-vector-cho-c%C3%A1c-%E1%BB%A9ng-d%E1%BB%A5ng.jpg?s=612x612&w=0&k=20&c=DQ_gRIc2TOB1p6jFH_7LjPqb6Ecbz1UfNWUoUT6aju4=" alt="Xác nhận">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Giao Hàng</p>-->
 <!--            </div>-->
-<!--            <p class="status-text">Đang Giao Hàng</p>-->
-<!--            <p class="time-text">19:33 11-12-2024</p>-->
-<!--        </div>-->
-<!--        <div class="status-line" th:classappend="${hoaDon.trangThai > 3} ? 'completed' : ''"></div>-->
 
-<!--        <div class="status-step" th:classappend="${hoaDon.trangThai == 4} ? 'active' : ''">-->
-<!--            <div class="icon">-->
-<!--                <img src="https://e7.pngegg.com/pngimages/331/960/png-clipart-computer-icons-document-notice-angle-text.png" alt="Chờ Giao Hàng">-->
+<!--            &lt;!&ndash; Trạng thái 4: Chờ giao hàng &ndash;&gt;-->
+<!--            <div class="step in-progress">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://chuinoxnoi.com/wp-content/uploads/2020/11/giao-nhan-icon-1.png" alt="Chờ giao hàng">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Giao Hàng Thành Công</p>-->
 <!--            </div>-->
-<!--            <p class="status-text">Giao Hàng Thành Công</p>-->
 <!--        </div>-->
 <!--    </div>-->
+
+<!--    <div class="order-status" th:if="${hoaDon.trangThai == 5}">-->
+<!--        <div class="progress-container">-->
+<!--            &lt;!&ndash; Trạng thái 1: Chờ xác nhận &ndash;&gt;-->
+<!--            <div class="step completed">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://png.pngtree.com/png-vector/20191011/ourlarge/pngtree-invoice-icon-png-image_1817550.jpg" alt="Chờ xác nhận">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Chờ xác nhận</p>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Trạng thái 2: Chỉnh sửa đơn &ndash;&gt;-->
+<!--            <div class="step completed">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://png.pngtree.com/png-clipart/20231004/original/pngtree-icon-indicating-package-delivery-with-confirmation-of-order-reaching-destination-vector-png-image_12952005.png" alt="Chỉnh sửa đơn">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Xác Nhận Đơn Hàng</p>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Trạng thái 3: Xác nhận &ndash;&gt;-->
+<!--            <div class="step completed">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://media.istockphoto.com/id/1186665850/vi/vec-to/xe-t%E1%BA%A3i-giao-h%C3%A0ng-v%E1%BA%ADn-chuy%E1%BB%83n-nhanh-thi%E1%BA%BFt-k%E1%BA%BF-bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-%C4%91%C6%B0%E1%BB%9Dng-minh-h%E1%BB%8Da-vector-cho-c%C3%A1c-%E1%BB%A9ng-d%E1%BB%A5ng.jpg?s=612x612&w=0&k=20&c=DQ_gRIc2TOB1p6jFH_7LjPqb6Ecbz1UfNWUoUT6aju4=" alt="Xác nhận">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Giao Hàng</p>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Trạng thái 4: Chờ giao hàng &ndash;&gt;-->
+<!--            <div class="step in-fall">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://chuinoxnoi.com/wp-content/uploads/2020/11/giao-nhan-icon-1.png" alt="Chờ giao hàng">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Giao Hàng Thất Bại</p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="order-status" th:if="${hoaDon.trangThai == 6}">-->
+<!--        <div class="progress-container">-->
+<!--            &lt;!&ndash; Trạng thái 1: Chờ xác nhận &ndash;&gt;-->
+<!--            <div class="step completed">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://png.pngtree.com/png-vector/20191011/ourlarge/pngtree-invoice-icon-png-image_1817550.jpg" alt="Chờ xác nhận">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Chờ xác nhận</p>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Trạng thái 2: Chỉnh sửa đơn &ndash;&gt;-->
+<!--            <div class="step completed">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://png.pngtree.com/png-clipart/20231004/original/pngtree-icon-indicating-package-delivery-with-confirmation-of-order-reaching-destination-vector-png-image_12952005.png" alt="Chỉnh sửa đơn">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Xác Nhận Đơn Hàng</p>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Trạng thái 3: Xác nhận &ndash;&gt;-->
+<!--            <div class="step completed">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://media.istockphoto.com/id/1186665850/vi/vec-to/xe-t%E1%BA%A3i-giao-h%C3%A0ng-v%E1%BA%ADn-chuy%E1%BB%83n-nhanh-thi%E1%BA%BFt-k%E1%BA%BF-bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-%C4%91%C6%B0%E1%BB%9Dng-minh-h%E1%BB%8Da-vector-cho-c%C3%A1c-%E1%BB%A9ng-d%E1%BB%A5ng.jpg?s=612x612&w=0&k=20&c=DQ_gRIc2TOB1p6jFH_7LjPqb6Ecbz1UfNWUoUT6aju4=" alt="Xác nhận">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Giao Hàng</p>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Trạng thái 4: Chờ giao hàng &ndash;&gt;-->
+<!--            <div class="step in-progress">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://chuinoxnoi.com/wp-content/uploads/2020/11/giao-nhan-icon-1.png" alt="Chờ giao hàng">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Giao Hàng Thành Công</p>-->
+<!--            </div>-->
+
+<!--            <div class="step in-pass">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://png.pngtree.com/png-vector/20220609/ourmid/pngtree-successful-delivery-icon-outline-vector-png-image_4937531.png" alt="Chờ giao hàng">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Hoàn Thành Đơn Hàng</p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="order-status" th:if="${hoaDon.trangThai == 7}">-->
+<!--        <div class="progress-container">-->
+<!--            &lt;!&ndash; Trạng thái 1: Chờ xác nhận &ndash;&gt;-->
+<!--            <div class="step completed">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://png.pngtree.com/png-vector/20191011/ourlarge/pngtree-invoice-icon-png-image_1817550.jpg" alt="Chờ xác nhận">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Chờ xác nhận</p>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Trạng thái 2: Chỉnh sửa đơn &ndash;&gt;-->
+<!--            <div class="step completed">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://png.pngtree.com/png-clipart/20231004/original/pngtree-icon-indicating-package-delivery-with-confirmation-of-order-reaching-destination-vector-png-image_12952005.png" alt="Chỉnh sửa đơn">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Xác Nhận Đơn Hàng</p>-->
+<!--            </div>-->
+<!--            <div class="step huy">-->
+<!--                <div class="icon">-->
+<!--                    <img src="https://pos.nvncdn.com/10b235-41050/art/20190219_iPx0I4QFCANpK9p1EgnkeFlV.png" alt="Chờ xác nhận">-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <p>Đã Hủy</p>-->
+<!--            </div>-->
+
+
+<!--        </div>-->
 
     <!-- Styled box for order details -->
     <div class="card p-3 mb-4">
@@ -281,11 +428,12 @@
                         <p><strong>Tên Khách Hàng:</strong> <span th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></span></p>
                         <p><strong>Trạng Thái:</strong>
                             <span th:switch="${hoaDon.trangThai}">
-                            <span th:case="2">Chờ Xác Nhận</span>
-                            <span th:case="3">Đang Chuẩn Bị Hàng</span>
-                            <span th:case="4">Đang Giao Hàng</span>
+                            <span th:case="1">Chờ Xác Nhận</span>
+                            <span th:case="2">Xác Nhận Đơn Hàng</span>
+                            <span th:case="4">Giao Hàng</span>
                             <span th:case="5">Giao Hàng Thành Công</span>
-                            <span th:case="6">Đã Hủy</span>
+                            <span th:case="6">Giao Hàng Thất Bại</span>
+                                   <span th:case="7">Đã Hủy</span>
                             <span th:case="*">Trạng Thái Không Xác Định</span> <!-- Dùng cho trường hợp mặc định -->
                         </span>
                         </p>

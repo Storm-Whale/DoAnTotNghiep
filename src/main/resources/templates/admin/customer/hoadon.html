@@ -241,8 +241,29 @@
                     <a type="button" class="btn btn-outline-danger" th:attr="data-id=${hoaDon.id}">
                         Hủy Đơn
                     </a>
+                    <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
+                        Trở Lại
+                    </a>
                 </div>
 
+                    <div class="mb-3" th:if="${activeTab == 'delivered'}">
+
+                        <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
+                            Trở Lại
+                        </a>
+                    </div>
+                    <div class="mb-3" th:if="${activeTab == 'pass'}">
+
+                        <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
+                            Trở Lại
+                        </a>
+                    </div>
+                    <div class="mb-3" th:if="${activeTab == 'fall'}">
+
+                        <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
+                            Trở Lại
+                        </a>
+                    </div>
                     <div class="mb-3" th:if="${activeTab == 'tai-quay'}">
                         <a class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">
                             Xác Nhận
@@ -261,13 +282,18 @@
                         <a type="button" class="btn btn-outline-warning" th:attr="data-id=${hoaDon.id}">
                             Giao Hàng Thất Bại
                         </a>
+                        <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
+                            Trở Lại
+                        </a>
                     </div>
 
                     <div class="mb-3" th:if="${activeTab == 'shipping'}">
                         <a class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">
                             Xác Nhận
                         </a>
-
+                        <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
+                            Trở Lại
+                        </a>
                     </div>
                 </td>
             </tr>
@@ -519,6 +545,61 @@
                             console.error("Lỗi:", error);
                             setTimeout(() => {
                                 window.location.reload(); // Tải lại trang
+                            }, 1000);
+                        });
+                }
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll(".btn-outline-info"); // Đúng class nút cần thêm sự kiện
+
+        buttons.forEach(button => {
+            button.addEventListener("click", function () {
+                const hoaDonId = this.getAttribute("data-id");
+                const confirmed = confirm("Bạn có muốn chuyển trạng thái hóa đơn này?");
+
+                if (confirmed) {
+                    fetch(`/admin/hoadon/update-reload/${hoaDonId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ trangThai: 3 }) // Cập nhật trạng thái thành 3
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // Chuyển đổi phản hồi thành văn bản
+                                return response.text().then(text => {
+                                    try {
+                                        // Phân tích thành JSON nếu có thể
+                                        return JSON.parse(text);
+                                    } catch (e) {
+                                        // Nếu không phải JSON, trả về văn bản
+                                        return { message: text };
+                                    }
+                                });
+                            } else {
+                                return Promise.reject("Có lỗi xảy ra khi cập nhật trạng thái hóa đơn.");
+                            }
+                        })
+                        .then(data => {
+                            alert(data.message || "Trạng thái hóa đơn đã được cập nhật thành công!");
+
+                            // Lưu trạng thái tab hiện tại trước khi tải lại
+                            const activeTab = document.querySelector('.nav-link.active');
+                            if (activeTab) {
+                                sessionStorage.setItem('activeTab', activeTab.getAttribute('id'));
+                            }
+
+                            window.location.reload(); // Tải lại trang sau khi cập nhật thành công
+                        })
+                        .catch(error => {
+                            alert(error);
+                            console.error("Lỗi:", error);
+                            setTimeout(() => {
+                                window.location.reload(); // Tải lại trang sau lỗi
                             }, 1000);
                         });
                 }

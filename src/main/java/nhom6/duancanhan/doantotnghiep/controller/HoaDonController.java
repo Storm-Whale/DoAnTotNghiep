@@ -344,7 +344,40 @@ public String showDetail(@PathVariable Integer id, Model model) {
         }
 
     }
+    @PutMapping("/update-reload/{id}")
+    public ResponseEntity<?> updatereload(@PathVariable("id") Integer id, @RequestBody Map<String, Integer> payload) {
+        try {
+            HoaDon hoaDon = hoaDonService.findById(id);
 
+            if (hoaDon == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hóa đơn không hợp lệ");
+            }
+
+            // Cập nhật trạng thái tùy vào giá trị hiện tại của trạng thái
+            if (hoaDon.getTrangThai() == 2) {
+                hoaDon.setTrangThai(1); // Trạng thái chuyển từ 'Chờ Xác Nhận' sang 'Đang Chuẩn Bị Hàng'
+
+            }else if (hoaDon.getTrangThai() == 3) {
+                hoaDon.setTrangThai(2); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đang Vận Chuyển'
+            } else if (hoaDon.getTrangThai() == 4) {
+                hoaDon.setTrangThai(3); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đang Vận Chuyển'
+            } else if (hoaDon.getTrangThai() == 5) {
+                hoaDon.setTrangThai(4); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đã Giao'
+            }  else if (hoaDon.getTrangThai() == 6) {
+                hoaDon.setTrangThai(5); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đã Giao'
+            } else if (hoaDon.getTrangThai() == 7) {
+                hoaDon.setTrangThai(6); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đã Giao'
+            }else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Trạng thái không hợp lệ để cập nhật");
+            }
+
+            hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            return ResponseEntity.ok("Cập nhật trạng thái thành công");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
+        }
+
+    }
     @PutMapping("/cancel-order/{id}")
     public ResponseEntity<?> cancelOrder(@PathVariable("id") Integer id) {
         try {
@@ -794,49 +827,49 @@ public void exportHoaDon(@RequestParam(value = "page", defaultValue = "1") int p
         }
     }
 
-//    @PostMapping("/updateHoaDon/{id}")
-//    public String updateHoaDon(
-//            @PathVariable("id") Integer id,
-//            @RequestParam("ghiChu") String ghiChu,
-//            @RequestParam("soDienThoai") String soDienThoai,
-//            @RequestParam("diaChi") String diaChi,
-//            @RequestParam("tenKhachHang") String tenKhachHang,
-//            RedirectAttributes redirectAttributes) {
-//
-//        // Log các giá trị nhận được
-//        System.out.println("ID: " + id);
-//        System.out.println("Ghi Chú: " + ghiChu);
-//        System.out.println("Số Điện Thoại: " + soDienThoai);
-//        System.out.println("Địa Chỉ: " + diaChi);
-//        System.out.println("Tên Khách Hàng: " + tenKhachHang);
-//
-//        // Tìm hóa đơn
-//        HoaDon hoaDon = hoaDonService.findById(id);
-//        if (hoaDon == null) {
-//            throw new IllegalArgumentException("Hóa đơn không tồn tại!");
-//        }
-//
-//        // Cập nhật thông tin
-//        hoaDon.setGhiChu(ghiChu);
-////        hoaDon.setTenNguoiNhan(tenKhachHang);
-//        if (hoaDon.getKhachHang() == null) {
-//            hoaDon.setKhachHang(new KhachHang());  // Tạo mới đối tượng Khách Hàng nếu chưa có
-//        }
-//        hoaDon.getKhachHang().setTen(tenKhachHang);
-//        if (hoaDon.getDiaChi() == null) {
-//            hoaDon.setDiaChi(new DiaChi());
-//        }
-//        hoaDon.getDiaChi().setSoDienThoai(soDienThoai);
-//        hoaDon.getDiaChi().setDiaChiChiTiet(diaChi);
-//
-//        // Lưu hóa đơn
-//        hoaDonService.updateHoaDon(id, hoaDon);
-//
-//        // Thông báo thành công
-//        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật hóa đơn thành công!");
-//
-//        return "redirect:/admin/hoadon/detail/" + id;
-//    }
+    @PostMapping("/updateHoaDon/{id}")
+    public String updateHoaDon(
+            @PathVariable("id") Integer id,
+            @RequestParam("ghiChu") String ghiChu,
+            @RequestParam("soDienThoai") String soDienThoai,
+            @RequestParam("diaChi") String diaChi,
+            @RequestParam("tenKhachHang") String tenKhachHang,
+            RedirectAttributes redirectAttributes) {
+
+        // Log các giá trị nhận được
+        System.out.println("ID: " + id);
+        System.out.println("Ghi Chú: " + ghiChu);
+        System.out.println("Số Điện Thoại: " + soDienThoai);
+        System.out.println("Địa Chỉ: " + diaChi);
+        System.out.println("Tên Khách Hàng: " + tenKhachHang);
+
+        // Tìm hóa đơn
+        HoaDon hoaDon = hoaDonService.findById(id);
+        if (hoaDon == null) {
+            throw new IllegalArgumentException("Hóa đơn không tồn tại!");
+        }
+
+        // Cập nhật thông tin
+        hoaDon.setGhiChu(ghiChu);
+//        hoaDon.setTenNguoiNhan(tenKhachHang);
+        if (hoaDon.getKhachHang() == null) {
+            hoaDon.setKhachHang(new KhachHang());  // Tạo mới đối tượng Khách Hàng nếu chưa có
+        }
+        hoaDon.getKhachHang().setTen(tenKhachHang);
+        if (hoaDon.getDiaChi() == null) {
+            hoaDon.setDiaChi(new DiaChi());
+        }
+        hoaDon.getDiaChi().setSoDienThoai(soDienThoai);
+        hoaDon.getDiaChi().setDiaChiChiTiet(diaChi);
+
+        // Lưu hóa đơn
+        hoaDonService.updateHoaDon(id, hoaDon);
+
+        // Thông báo thành công
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật hóa đơn thành công!");
+
+        return "redirect:/admin/hoadon/detail/" + id;
+    }
 
 //    @PostMapping("/updatéHD/{id}")
 //    public ResponseEntity<Map<String, Object>> updateSanPhamHDCT(
@@ -937,6 +970,7 @@ public void exportHoaDon(@RequestParam(value = "page", defaultValue = "1") int p
             // Nếu có lỗi xảy ra, trả về phản hồi lỗi với thông báo lỗi
             response.put("error", "Có lỗi xảy ra: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+
         }
     }
 
