@@ -39,4 +39,6 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
             Pageable pageable);
 
     boolean existsBySoDienThoai(String soDienThoai);
+
+    boolean existsByEmail(String email);
 }

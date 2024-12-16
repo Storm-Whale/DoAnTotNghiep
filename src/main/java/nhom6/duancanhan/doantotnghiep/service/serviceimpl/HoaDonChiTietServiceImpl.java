@@ -2,6 +2,7 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
+import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonChiTietService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,4 +64,16 @@ public class HoaDonChiTietServiceImpl implements HoaDonChiTietService {
     public List<HoaDonChiTiet> findByKhachHangId(Integer khachHangId) {
         return hoaDonChiTietRepository.findByKhachHangId(khachHangId);
     }
+
+    @Override
+    public HoaDonChiTiet findById(Integer id) {
+        return hoaDonChiTietRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Không tìm thấy hoá đơn với id : " + id));
+    }
+@Override
+
+public List<HoaDonChiTiet> findAllByHoaDonId(Integer hoaDonId) {
+    return hoaDonChiTietRepository.findAllByHoaDonId(hoaDonId);
+}
+
+
 }

@@ -2,19 +2,27 @@ package nhom6.duancanhan.doantotnghiep.controller;
 
 
 import jakarta.validation.Valid;
+import nhom6.duancanhan.doantotnghiep.entity.GioHang;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
+import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
+import nhom6.duancanhan.doantotnghiep.entity.VaiTro;
+import nhom6.duancanhan.doantotnghiep.repository.GioHangRepository;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
+import nhom6.duancanhan.doantotnghiep.service.service.GioHangService;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
 import nhom6.duancanhan.doantotnghiep.service.service.KhachHangService;
 import nhom6.duancanhan.doantotnghiep.service.service.TaiKhoanService;
+import nhom6.duancanhan.doantotnghiep.service.service.VaiTroService;
 import nhom6.duancanhan.doantotnghiep.util.FileUploadUtil;
 import nhom6.duancanhan.doantotnghiep.util.UploadImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +37,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -48,12 +58,25 @@ public class KhachHangController {
     @Autowired
     private UploadImage uploadImage;
 
+    @Autowired
+    VaiTroService vaiTroService;
+    @Autowired
+    GioHangService gioHangService;
+
+    @Autowired
+    HoaDonChiTietService hoaDonChiTietService;
+    @Autowired
+    HoaDonRepository hoaDonRepository;
+
+    @Autowired
+    HoaDonService hoaDonService;
+
     @GetMapping("")
     public String searchKhachHang(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "trangThai", required = false) Integer trangThai,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size,
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "5") int size,
             Model model
     ) {
         // Xử lý keyword và loại bỏ khoảng trắng
@@ -64,10 +87,6 @@ public class KhachHangController {
             }
         }
 
-        // Reset trang nếu là tìm kiếm mới
-        if (keyword != null || trangThai != null) {
-            page = 0; // Đặt về trang đầu tiên
-        }
 
         // Kiểm tra page và size hợp lệ
         if (page < 0) page = 0;
@@ -101,21 +120,6 @@ public class KhachHangController {
     }
 
 
-
-//    @GetMapping("{pageNo}")
-//    public String phanTrang(@PathVariable(value = "pageNo") int pageNo, Model model) {
-//        int pageSize = 3;
-//        Page<KhachHang> page = khachHangService.phanTrang(pageNo,pageSize);
-//        List<KhachHang> listKH = page.getContent();
-//        model.addAttribute("khachHang",new KhachHang());
-//        model.addAttribute("listKH",listKH);
-//        model.addAttribute("listTK",taiKhoanService.getAll());
-//        model.addAttribute("currentPage ", pageNo);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems",page.getTotalElements());
-//        return "/admin/customer/khachhang";
-//    }
-
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") Integer id, Model model) {
         model.addAttribute("khachHang", khachHangService.detail(id));
@@ -123,16 +127,14 @@ public class KhachHangController {
         model.addAttribute("listTK", taiKhoanService.getAll());
         return "/admin/customer/khachhang";
     }
-    @Autowired
-    HoaDonChiTietService hoaDonChiTietService;
-    @Autowired
-    HoaDonRepository hoaDonRepository;
 
-    @Autowired
-    HoaDonService hoaDonService;
+
+
     @GetMapping("/hoa-don/{khachHangId}")
     public String viewHoaDonByKhachHang(
             @PathVariable("khachHangId") Integer khachHangId,
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "5") int size,
             Model model
     ) {
         // Lấy thông tin khách hàng
@@ -142,65 +144,74 @@ public class KhachHangController {
             return "error-page"; // Trả về trang lỗi nếu cần
         }
 
-        // Lấy danh sách hóa đơn của khách hàng
-//        List<HoaDonChiTiet> hoaDonChiTietListList = hoaDonChiTietService.findByKhachHangId(khachHangId);
-        List<HoaDon> danhSachHoaDon  = hoaDonRepository.findByKhachHang_IdAndTrangThai(khachHangId,2);
-
+        // Tạo Pageable để phân trang
+        Pageable pageable = PageRequest.of(page, size);
+        Page<HoaDon> hoaDonPage = hoaDonRepository.findByKhachHang_IdAndTrangThai(khachHangId, 2, pageable);
+        List<HoaDon> danhSachHoaDon = hoaDonRepository.findByKhachHang_IdAndTrangThai(khachHangId, 2);
         // Đẩy dữ liệu vào model
         model.addAttribute("khachHang", khachHang);
-        model.addAttribute("danhSachHoaDon", danhSachHoaDon);
+        model.addAttribute("hoaDonPage", hoaDonPage); // Đối tượng phân trang
+        model.addAttribute("listKH", khachHangService.getAll());
+        model.addAttribute("listTK", taiKhoanService.getAll());
 
+        model.addAttribute("currentPage", page);      // Trang hiện tại
+        model.addAttribute("totalPages", hoaDonPage.getTotalPages()); // Tổng số trang
         return "/admin/customer/hoadonKhachHang"; // Trả về view hiển thị hóa đơn
     }
 
     @Autowired
     HoaDonChiTietRepository hoaDonChiTietRepository;
+
     @GetMapping("/hoa-don/{hoaDonId}/chi-tiet")
     public String xemChiTietHoaDon(
             @PathVariable Integer hoaDonId,
             Model model
     ) {
-        // Tìm thông tin hóa đơn
         HoaDon hoaDon = hoaDonRepository.findById(hoaDonId)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn với ID: " + hoaDonId));
-
-        // Lấy danh sách sản phẩm trong hóa đơn
         List<HoaDonChiTiet> danhSachSanPham = hoaDonChiTietRepository.findByHoaDon_Id(hoaDonId);
-
-        // Gán dữ liệu vào model
         model.addAttribute("hoaDon", hoaDon);
         model.addAttribute("danhSachSanPham", danhSachSanPham);
-        return "/admin/customer/chi-tiet-hoa-don"; // Tên view hiển thị
+        return "/admin/customer/chi-tiet-hoa-don";
     }
 
     @GetMapping("/view_add")
     public String viewadd(@ModelAttribute("khachHang") KhachHang khachHang) {
-//        model.addAttribute("khachHang",khachHangService.getAll());
-//        model.addAttribute("listTK", taiKhoanService.getAll());
         return "/admin/customer/adKhachHang";
     }
     @PostMapping("/add")
     public String add(
             @Valid @ModelAttribute("khachHang") KhachHang khachHang,
-//            @RequestParam(value = "anhUrlFile", required = false) MultipartFile anhUrlFile,
             BindingResult result,
             Model model) {
 
-        MultipartFile anhUrlFile = khachHang.getAnhUrlFile();
-        if (anhUrlFile == null || anhUrlFile.isEmpty()) {
-            result.rejectValue("anhUrl", "error.khachHang", "Vui lòng chọn tệp ảnh.");
+
+        // Tạo mới tài khoản
+        TaiKhoan taiKhoan = new TaiKhoan();
+        taiKhoan.setTenDangNhap(khachHang.getSoDienThoai());
+        taiKhoan.setMatKhau(khachHang.getSoDienThoai());
+        taiKhoan.setTrangThai(1);
+        VaiTro vaiTro = vaiTroService.findById(3);
+        if (vaiTro != null) {
+            taiKhoan.setVaiTro(vaiTro);
         } else {
-            String contentType = anhUrlFile.getContentType();
-            if (!contentType.startsWith("image/")) {
-                result.rejectValue("anhUrl", "error.khachHang", "Tệp tải lên không phải là hình ảnh.");
+            model.addAttribute("error", "Vai trò không tồn tại.");
+            return "/admin/customer/adKhachHang";
+        }
+        taiKhoanService.addTaiKhoan(taiKhoan);
+        khachHang.setTaiKhoan(taiKhoan);
+
+        // Kiểm tra email không phải là chuỗi rỗng
+        String email = khachHang.getEmail();
+        if (email != null && !email.isEmpty()) {
+            if (khachHangService.isEmailExist(email)) {
+                result.rejectValue("email", "error.khachHang", "Email đã tồn tại.");
             }
         }
-
-        // Kiểm tra số điện thoại đã tồn tại
+// SoDienThoai
         if (khachHangService.isSoDienThoaiExist(khachHang.getSoDienThoai())) {
             result.rejectValue("soDienThoai", "error.khachHang", "Số điện thoại đã tồn tại.");
         }
-
         // Nếu có lỗi, thêm tất cả các lỗi vào model để hiển thị
         if (result.hasErrors()) {
             model.addAttribute("fieldErrors", result.getFieldErrors());
@@ -208,35 +219,40 @@ public class KhachHangController {
         }
 
         // Xử lý tệp tải lên
+        MultipartFile anhUrlFile = khachHang.getAnhUrlFile();
+        if (anhUrlFile == null || anhUrlFile.isEmpty()) {
+            khachHang.setAnhUrl("u.png");
+        } else {
+            // Kiểm tra file ảnh hợp lệ
+            String contentType = anhUrlFile.getContentType();
+            if (!contentType.startsWith("image/")) {
+                result.rejectValue("anhUrl", "error.khachHang", "Tệp tải lên không phải là hình ảnh.");
+            } else {
+                try {
+                    // Tạo tên file duy nhất bằng UUID
+                    String fileName = UUID.randomUUID() + "_" + anhUrlFile.getOriginalFilename();
+                    // Đường dẫn thư mục lưu file (ngoài thư mục dự án)
+                    String uploadDir = System.getProperty("user.dir") + "/upload/";
+                    File uploadFolder = new File(uploadDir);
+                    if (!uploadFolder.exists()) {
+                        uploadFolder.mkdirs();
+                    }
 
-            try {
-                // Tạo tên file duy nhất bằng UUID
-                String fileName = UUID.randomUUID() + "_" + anhUrlFile.getOriginalFilename();
+                    File uploadFile = new File(uploadDir + fileName);
+                    anhUrlFile.transferTo(uploadFile);
 
-                // Đường dẫn thư mục lưu file (ngoài thư mục dự án)
-                String uploadDir = System.getProperty("user.dir") + "/upload/";
-                File uploadFolder = new File(uploadDir);
-                if (!uploadFolder.exists()) {
-                    uploadFolder.mkdirs(); // Tạo thư mục nếu chưa tồn tại
+                    khachHang.setAnhUrl(fileName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    model.addAttribute("uploadError", "Lỗi khi tải lên tệp.");
+                    return "/admin/customer/adKhachHang";
                 }
-
-                // Tạo file trên server
-                File uploadFile = new File(uploadDir + fileName);
-                anhUrlFile.transferTo(uploadFile); // Lưu file
-
-                // Gán tên file vào entity
-                khachHang.setAnhUrl(fileName);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                model.addAttribute("uploadError", "Lỗi khi tải lên tệp.");
-                return "/admin/customer/adKhachHang";
             }
-
-        // Lưu khách hàng vào cơ sở dữ liệu
+        }
+        khachHang.setTrangThai(1);
         khachHangService.addKhachHang(khachHang);
-
-        return "redirect:/admin/khachhang"; // Chuyển hướng về danh sách khách hàng
+        gioHangService.addGioHang(khachHang);
+        return "redirect:/admin/khachhang";
     }
 
     @GetMapping("/view_update/{id}")
@@ -251,60 +267,68 @@ public class KhachHangController {
     @PostMapping("/update")
     public String update(
             @Valid @ModelAttribute("khachHang") KhachHang khachHang,
-//            @RequestParam(value = "anhUrlFile", required = false) MultipartFile anhUrlFile,
             BindingResult result,
-            Model model) throws Exception{
-
-        // Kiểm tra lỗi xác thực
-//        if (result.hasErrors()) {
-//            for (FieldError error : result.getFieldErrors()) {
-//                model.addAttribute(error.getField(), error.getDefaultMessage());
-//            }
-//            return "/admin/customer/updateKhachHang";
-//        }
-
-        // Lấy thông tin khách hàng từ DB để giữ ảnh cũ nếu không có ảnh mới
+            Model model) throws Exception {
         KhachHang existingKhachHang = khachHangService.findById(khachHang.getId());
         if (existingKhachHang == null) {
             model.addAttribute("error", "Không tìm thấy khách hàng.");
             return "/admin/customer/updateKhachHang";
         }
+        TaiKhoan taiKhoan = existingKhachHang.getTaiKhoan();
+        if (taiKhoan == null) {
+            taiKhoan = new TaiKhoan();
+            taiKhoan.setTenDangNhap(khachHang.getSoDienThoai());
+            taiKhoan.setMatKhau(khachHang.getSoDienThoai());
+            taiKhoan.setTrangThai(1);
+            VaiTro vaiTro = vaiTroService.findById(3);
+            if (vaiTro != null) {
+                taiKhoan.setVaiTro(vaiTro);
+            } else {
+                model.addAttribute("error", "Vai trò không tồn tại.");
+                return "/admin/customer/updateKhachHang";
+            }
+            taiKhoanService.addTaiKhoan(taiKhoan);
+        } else {
+            taiKhoan.setTenDangNhap(khachHang.getSoDienThoai());
+            taiKhoan.setMatKhau(khachHang.getSoDienThoai());
+            taiKhoanService.updateTaiKhoan(taiKhoan.getId(), taiKhoan);
+        }
+        khachHang.setTaiKhoan(taiKhoan);
 
-        uploadImage.deleteOldImage(existingKhachHang.getAnhUrl());
-
+        // ảnh
         MultipartFile anhUrlFile = khachHang.getAnhUrlFile();
         if (anhUrlFile != null && !anhUrlFile.isEmpty()) {
+            // Kiểm tra file ảnh hợp lệ
             String contentType = anhUrlFile.getContentType();
             if (!contentType.startsWith("image/")) {
                 result.rejectValue("anhUrl", "error.khachHang", "Tệp tải lên không phải là hình ảnh.");
+                khachHang.setAnhUrl(existingKhachHang.getAnhUrl()); // Giữ lại ảnh cũ nếu lỗi
+                model.addAttribute("fieldErrors", result.getFieldErrors());
+                return "/admin/customer/updateKhachHang";
             }
-        } else {
-            // Nếu không tải lên tệp mới, giữ ảnh cũ
-            khachHang.setAnhUrl(existingKhachHang.getAnhUrl());
-        }
-
-        // Nếu có lỗi, thêm tất cả các lỗi vào model để hiển thị
-        if (result.hasErrors()) {
-            model.addAttribute("fieldErrors", result.getFieldErrors());
-            return "/admin/customer/updateKhachHang";
-        }
-
-        // Xử lý tệp tải lên (nếu có)
-        if (anhUrlFile != null && !anhUrlFile.isEmpty()) {
+            // Lưu ảnh mới
             try {
-               String fileName = uploadImage.saveImage(anhUrlFile);
-                // Gán tên tệp (hoặc đường dẫn) vào thuộc tính `anhUrl`
-                khachHang.setAnhUrl(fileName);
+                String fileName = UUID.randomUUID() + "_" + anhUrlFile.getOriginalFilename();
+                String uploadDir = System.getProperty("user.dir") + "/upload/";
+                File uploadFolder = new File(uploadDir);
+                if (!uploadFolder.exists()) {
+                    uploadFolder.mkdirs();
+                }
+                File uploadFile = new File(uploadDir + fileName);
+                anhUrlFile.transferTo(uploadFile);
+                khachHang.setAnhUrl(fileName); // Lưu tên ảnh mới
             } catch (IOException e) {
+                e.printStackTrace();
                 model.addAttribute("uploadError", "Lỗi khi tải lên tệp.");
                 return "/admin/customer/updateKhachHang";
             }
         } else {
-            // Giữ lại ảnh cũ
             khachHang.setAnhUrl(existingKhachHang.getAnhUrl());
         }
-        // Lưu thông tin khách hàng vào database
+
+        khachHang.setTrangThai(1);
         khachHangService.updateKhachHang(khachHang);
+
         return "redirect:/admin/khachhang";
     }
 

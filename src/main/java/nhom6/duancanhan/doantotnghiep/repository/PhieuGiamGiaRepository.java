@@ -14,6 +14,10 @@ import java.util.Optional;
 
 @Repository
 public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Integer> {
+    boolean existsByMaPhieuGiamGia(String maPhieuGiamGia);
+
+    // Tìm phiếu cuối cùng theo ID giảm dần
+    PhieuGiamGia findTopByOrderByIdDesc();
     @Query("SELECT p FROM PhieuGiamGia p WHERE " +
             "(:keyword IS NULL OR " +
             "(LOWER(p.maPhieuGiamGia) LIKE LOWER(CONCAT('%', :keyword, '%')) " +

@@ -4,18 +4,24 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 import jakarta.transaction.Transactional;
 import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
+
+
+//import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
+
+
+import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
-import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepo;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +31,7 @@ import java.util.Optional;
 public class HoaDonServiceImpl implements HoaDonService {
 
     private final HoaDonRepository hoaDonRepository;
-   private HoaDonRepo hoaDonRepo;
+
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
 
@@ -39,19 +45,36 @@ public class HoaDonServiceImpl implements HoaDonService {
     public List<HoaDon> getAll() {
         return hoaDonRepository.findAll();
     }
-
-
-    @Override
-    public Page<HoaDon> phanTrang(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
-        return this.hoaDonRepository.findAll(pageable);
+    public Page<HoaDon> phanTrang(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize); // Bắt đầu từ trang 0
+        return hoaDonRepository.findAll(pageable);
     }
 
-    @Override
-    public Page<HoaDonDTO> phanTrang2(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
-        return this.hoaDonRepo.findAll(pageable);
+
+//    @Override
+//    public Page<HoaDon> phanTrang(int page, int pageSize) {
+//        Pageable pageable = PageRequest.of(page - 1, pageSize);
+//        return this.hoaDonRepository.findAll(pageable);
+//    }
+//    public Page<HoaDon> phanTrang(PageRequest pageRequest) {
+//        return hoaDonRepository.findAll(pageRequest);
+//    }
+
+
+    // Phương thức phân trang cho Tab 2 (ví dụ: phân trang theo trạng thái 5)
+    public Page<HoaDon> phanTrangTaiQuay(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);  // Tạo Pageable từ page và pageSize
+        return hoaDonRepository.findByTrangThai(5, pageable);  // Tìm hóa đơn có trạng thái 5
     }
+
+
+
+//    @Override
+//    public Page<HoaDonDTO> phanTrang2(int page, int pageSize) {
+//        Pageable pageable = PageRequest.of(page - 1, pageSize);
+//        return this.hoaDonRepo.findAll(pageable);
+//    }
+
 
     @Override
     public Optional<HoaDon> detail(Integer id) {
@@ -158,7 +181,58 @@ public class HoaDonServiceImpl implements HoaDonService {
             return hoaDonRepository.searchByKeyword(keyword, pageable);
         }
     }
+    @Override
+    public Page<HoaDon> getHoaDonByTrangThai(Integer trangThai, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("ngayTao").descending());
+        return hoaDonRepository.findByTrangThai(trangThai, pageable);
+    }
 
+    @Override
+    public Page<HoaDon> findHoaDonByTenPhuongThuc(String tenPhuongThuc, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+
+        if ("all".equals(tenPhuongThuc)) {
+            return hoaDonRepository.findAll(pageable);
+        } else {
+            return hoaDonRepository.findByTenPhuongThuc(tenPhuongThuc, pageable);
+        }
+    }
+    public Page<HoaDon> getHoaDons(int trangThai, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return hoaDonRepository.findByTrangThai(trangThai, pageable);
+    }
+
+    public Page<HoaDon> getHoaDonsByTrangThai(int trangThai, int page, int size) {
+        return hoaDonRepository.findByTrangThai(trangThai, PageRequest.of(page, size));
+    }
+
+    public Page<HoaDon> getAllHoaDons(int page, int size) {
+        return hoaDonRepository.findAll(PageRequest.of(page, size));
+    }
+
+    public Page<HoaDon> getHoaDonsByStatus(int trangThai, int page, int size) {
+        if (trangThai == 0) {
+            return getAllHoaDons(page, size);  // Trạng thái 0 lấy tất cả hóa đơn
+        }
+        return getHoaDonsByTrangThai(trangThai, page, size);
+    }
+    public Page<HoaDon> phanTrangTheoTrangThai(int pageNo, int pageSize, int trangThai) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return hoaDonRepository.findByTrangThai(trangThai, pageable);
+    }
+
+    public List<HoaDon> getByTrangThai(int trangThai) {
+        return hoaDonRepository.findByTrangThai(trangThai); // Gọi phương thức từ repository
+    }
+    public Page<HoaDon> getAllWithPagination(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return hoaDonRepository.findAll(pageable);
+    }
+
+    public Page<HoaDon> getByTrangThaiWithPagination(int trangThai, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return hoaDonRepository.findByTrangThai(trangThai, pageable);
+    }
 
 
 }

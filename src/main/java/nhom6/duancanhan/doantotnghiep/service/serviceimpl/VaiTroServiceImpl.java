@@ -16,4 +16,9 @@ public class VaiTroServiceImpl implements VaiTroService {
     public List<VaiTro> getAll() {
         return vaiTroRepository.findAll();
     }
+
+    @Override
+    public VaiTro findById(Integer id) {
+        return vaiTroRepository.findById(id).orElse(null);
+    }
 }

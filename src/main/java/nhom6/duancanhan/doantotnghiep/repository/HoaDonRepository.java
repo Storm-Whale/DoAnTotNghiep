@@ -53,6 +53,11 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findHoaDonByKhachHangId(Integer khachHangId);
     List<HoaDon> findHoaDonByKhachHangIdAndTrangThai(Integer khachHangId, int trangThai);
 
+    Page<HoaDon> findByKhachHang_IdAndTrangThai(Integer khachHangId, Integer trangThai, Pageable pageable);
+
+    Page<HoaDon> findByNguoiTao_Id(Integer nguoiTaoId, Pageable pageable);
+
+
 
 //    @Query("SELECT hd FROM HoaDon hd JOIN hd.diaChi dc JOIN hd.phuongThucThanhToan ptt WHERE " +
 //            "(hd.tenNguoiNhan LIKE %:keyword% OR hd.sdt LIKE %:keyword% OR hd.emailNguoiNhan LIKE %:keyword% OR " +
@@ -69,13 +74,31 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
             "CAST(hd.tongTien AS string) LIKE %:keyword% OR hd.ghiChu LIKE %:keyword%)")
     Page<HoaDon> findByKeywordInAllFields(@Param("keyword") String keyword, Pageable pageable);
         // Custom query with conditional handling of 'all'
-        Page<HoaDon> findByTrangThai(int trangThai, Pageable pageable);
+//        Page<HoaDon> findByTrangThai(int trangThai, Pageable pageable);
 
 
     @Query("SELECT h FROM HoaDon h WHERE (:loaiHoaDon = 'all' OR h.loaiHoaDon = :loaiHoaDon)")
     Page<HoaDon> findByLoaiHoaDon(@Param("loaiHoaDon") String loaiHoaDon, Pageable pageable);
-    @Query("SELECT h FROM HoaDon h JOIN h.khachHang k " +
-            "WHERE (k.soDienThoai LIKE %:keyword% OR k.ten LIKE %:keyword%)")
-    Page<HoaDon> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    @Query("SELECT h FROM HoaDon h " +
+            "LEFT JOIN h.phuongThucThanhToan ptt " +
+            "WHERE (:tenPhuongThuc = 'all' OR ptt.tenPhuongThuc = :tenPhuongThuc)")
+    Page<HoaDon> findByTenPhuongThuc(@Param("tenPhuongThuc") String tenPhuongThuc, Pageable pageable);
 
+    //    @Query("SELECT h FROM HoaDon h JOIN h.khachHang k " +
+//            "WHERE (k.soDienThoai LIKE %:keyword% OR k.ten LIKE %:keyword%)")
+@Query("SELECT h FROM HoaDon h " +
+        "LEFT JOIN h.khachHang k " +
+        "LEFT JOIN h.diaChi dc " +
+        "WHERE (k.ten LIKE %:keyword% OR dc.soDienThoai LIKE %:keyword%)")
+    Page<HoaDon> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    @Query(value = "SELECT h FROM HoaDon h " +
+            "LEFT JOIN FETCH h.khachHang " +
+            "LEFT JOIN FETCH h.diaChi " +
+            "LEFT JOIN FETCH h.phuongThucThanhToan " +
+            "WHERE h.trangThai = :trangThai",
+            countQuery = "SELECT COUNT(h) FROM HoaDon h WHERE h.trangThai = :trangThai")
+    Page<HoaDon> findByTrangThai(@Param("trangThai") Integer trangThai, Pageable pageable);
+
+    Page<HoaDon> findByTrangThai(int trangThai, Pageable pageable);
+    List<HoaDon> findByTrangThai(int trangThai);
 }

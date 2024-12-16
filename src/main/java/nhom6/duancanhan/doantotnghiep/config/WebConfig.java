@@ -11,15 +11,12 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-//@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private AuthenticationInterceptor authenticationInterceptor;
+    @Autowired
+    private RoleAccessInterceptor roleAccessInterceptor;
 
-//    @Bean
-//    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
-//        return new HiddenHttpMethodFilter();
-//    }
     @Bean
     public FilterRegistrationBean<HiddenHttpMethodFilter> hiddenHttpMethodFilter() {
         FilterRegistrationBean<HiddenHttpMethodFilter> filterBean = new FilterRegistrationBean<>();
@@ -32,10 +29,16 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:///D:/FALL_2024/DATN/DoAnTotNghiep/upload/");
     }
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(authenticationInterceptor)
-//                .addPathPatterns("/admin/**") // Áp dụng cho đường dẫn này
-//                .excludePathPatterns("/login", "/css/**", "/js/**"); // Ngoại trừ các đường dẫn không cần kiểm tra
-//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(roleAccessInterceptor)
+                .addPathPatterns("/admin/**") // Kiểm tra tất cả các đường dẫn bắt đầu bằng /admin/
+                .excludePathPatterns(
+                        "/login/login-client",  // Trang đăng nhập duy nhất
+                        "/access-denied",       // Trang thông báo truy cập bị từ chối
+                        "/css/**",              // Loại trừ các tài nguyên tĩnh
+                        "/js/**",
+                        "/images/**"
+                );
+    }
 }

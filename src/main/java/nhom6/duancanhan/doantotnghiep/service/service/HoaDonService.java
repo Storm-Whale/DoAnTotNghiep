@@ -4,6 +4,7 @@ import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ public interface HoaDonService {
     List<HoaDon> getAll();
 
     Page<HoaDon> phanTrang(int pageNo, int pageSize);
+//public Page<HoaDon> phanTrang(PageRequest pageRequest);
 
     Optional<HoaDon> detail(Integer id);
 
@@ -38,6 +40,12 @@ public interface HoaDonService {
     public Page<HoaDon> findHoaDonByStatus(String status, int pageNo, int pageSize);
     public Page<HoaDon> findHoaDonByLoaiHoaDon(String loaiHoaDon, int pageNo, int pageSize);
     public Page<HoaDon> searchHoaDon(String keyword, int pageNo, int pageSize);
-    public Page<HoaDonDTO> phanTrang2(int page, int pageSize);
 
+    public Page<HoaDon> getHoaDonByTrangThai(Integer trangThai, int page, int size);
+    public Page<HoaDon> phanTrangTaiQuay(int page, int pageSize);
+    public Page<HoaDon> findHoaDonByTenPhuongThuc(String tenPhuongThuc, int pageNo, int pageSize);
+    public Page<HoaDon> phanTrangTheoTrangThai(int pageNo, int pageSize, int trangThai) ;
+    public List<HoaDon> getByTrangThai(int trangThai);
+    public Page<HoaDon> getAllWithPagination(int pageNo, int pageSize);
+    public Page<HoaDon> getByTrangThaiWithPagination(int trangThai, int pageNo, int pageSize);
 }

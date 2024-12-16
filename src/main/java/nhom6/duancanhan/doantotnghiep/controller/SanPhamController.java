@@ -2,6 +2,7 @@ package nhom6.duancanhan.doantotnghiep.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamRequest;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/products")
@@ -40,12 +42,13 @@ public class SanPhamController {
             @RequestParam(name = "keyword", required = false) String keyword, @RequestParam(name = "status", required = false) Integer status,
             @RequestParam(name = "thuongHieuId", required = false) Integer thuongHieuId, @RequestParam(name = "chatLieuId", required = false) Integer chatLieuId,
             @RequestParam(name = "tayAoId", required = false) Integer tayAoId, @RequestParam(name = "coAoId", required = false) Integer coAoId,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size, @PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(name = "size", required = false, defaultValue = "5") Integer size, @PageableDefault(size = 5) Pageable pageable,
             Model model, @ModelAttribute("sp_moi") SanPhamResponse spMoi
     ) {
         // Sử dụng size từ @RequestParam để phân trang
         Page<SanPhamResponse> products = sanPhamService.timKiemSanPham(
-                keyword, status, thuongHieuId, chatLieuId, tayAoId, coAoId, pageable.getPageNumber(), size);
+                keyword, status, thuongHieuId, chatLieuId, tayAoId, coAoId, pageable.getPageNumber(), size
+        );
 
         model.addAttribute("products", products.getContent());
 
@@ -67,6 +70,8 @@ public class SanPhamController {
                 startPage = Math.max(0, totalPages - 5);
             }
         }
+
+        log.info("Status : {}", status);
 
         // Truyền các giá trị vào model
         model.addAttribute("keyword", keyword);
@@ -113,6 +118,16 @@ public class SanPhamController {
             return "/admin/sanpham/create";
         }
 
+        if (productRequest.getTenSanPham().length() > 100) {
+            model.addAttribute("tenSanPhamDai", "Tên sản phẩm của bạn quá dài");
+            return "/admin/sanpham/create";
+        }
+
+        if (productRequest.getTenSanPham().matches("^\\d.*")) {
+            model.addAttribute("batdaubangso", "Không được bắt đầu bằng số");
+            return "/admin/sanpham/create";
+        }
+
         if (productRequest.getTenSanPham().startsWith(" ")) {
             model.addAttribute("loiDeCachHaiDau", "Không bắt đầu bằng dấu cách");
             return "/admin/sanpham/create";
@@ -151,7 +166,19 @@ public class SanPhamController {
             }
         }
         String tenSP = productRequest.getTenSanPham();
-        productRequest.setTenSanPham(tenSP);
+
+        String[] words = tenSP.split(" ");
+        StringBuilder result = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                result.append(word.substring(0, 1).toUpperCase())
+                        .append(word.substring(1).toLowerCase())
+                        .append(" ");
+            }
+        }
+
+        productRequest.setTenSanPham(result.toString().trim());
         productRequest.setTrangThai(1);
         SanPhamResponse sanPhamResponse = sanPhamService.storeSanPham(productRequest);
         qrGeneratorCode.generateQRCodeForProduct(productRequest);
@@ -193,6 +220,16 @@ public class SanPhamController {
             // Kiểm tra dấu cách ở đầu hoặc cuối
             if (tenSP.startsWith(" ") || tenSP.endsWith(" ")) {
                 model.addAttribute("productNameError", "Tên sản phẩm không được có dấu cách ở đầu hoặc cuối");
+                hasErrors = true;
+            }
+
+            if (tenSP.length() > 100) {
+                model.addAttribute("productNameError", "Tên sản phẩm của bạn quá dài");
+                hasErrors = true;
+            }
+
+            if (tenSP.matches("^\\d.*")) {
+                model.addAttribute("productNameError", "Không được bắt đầu bằng số");
                 hasErrors = true;
             }
         }
@@ -247,8 +284,19 @@ public class SanPhamController {
         SanPhamResponse existingProduct = sanPhamService.getSanPhamById(id);
         String oldImageUrl = existingProduct.getAnhUrl();
 
+        String[] words = tenSP.split(" ");
+        StringBuilder result = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                result.append(word.substring(0, 1).toUpperCase())
+                        .append(word.substring(1).toLowerCase())
+                        .append(" ");
+            }
+        }
+
         SanPhamRequest sanPhamRequest = SanPhamRequest.builder()
-                .tenSanPham(tenSP.trim()).idChatLieu(idChatLieu).idThuongHieu(idThuongHieu).idCoAo(idCoAo)
+                .tenSanPham(result.toString().trim()).idChatLieu(idChatLieu).idThuongHieu(idThuongHieu).idCoAo(idCoAo)
                 .idTayAo(idTayAo).trangThai(trangThai).build();
 
         if (!anhSanPham.isEmpty()) {

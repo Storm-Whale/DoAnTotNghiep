@@ -31,4 +31,6 @@ public interface NhanVienRepository extends JpaRepository<NhanVien,Integer> {
             Pageable pageable);
 
     boolean existsBySdt(String sdt);
+
+    boolean existsByEmail(String email);
 }

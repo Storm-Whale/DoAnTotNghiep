@@ -396,7 +396,7 @@ public class ClientController {
                     .sdt(diaChi.getSoDienThoai()).emailNguoiNhan(khachHang.getEmail())
                     .diaChi(diaChi).phuongThucThanhToan(phuongThucThanhToan).phieuGiamGia(phieuGiamGia)
                     .tongTien(tongTien).ghiChu(ghiChu)
-                    .trangThai(1).loaiHoaDon("Trực Tuyến")
+                    .trangThai(2).loaiHoaDon("Truc tuyen")
                     .build();
 
             if (pttt == 2) {
@@ -440,10 +440,10 @@ public class ClientController {
             // Xử lý thanh toán VNPay nếu pttt = 5
             if (pttt == 5) {
                 try {
-                    String orderInfo = "Thanh toan don hang " + savedHoaDon.getId();
+//                    String orderInfo = "Thanh toan don hang " + savedHoaDon.getId();
                     String urlReturn = "http://localhost:8080/client";
 
-                    String vnpayPaymentUrl = vnPayService.createOrder(tongTien, orderInfo, urlReturn);
+                    String vnpayPaymentUrl = vnPayService.createOrder(tongTien, urlReturn);
 
                     // Return payment URL for VNPay
                     return ResponseEntity.ok()

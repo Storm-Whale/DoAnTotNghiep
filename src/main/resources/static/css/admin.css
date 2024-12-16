@@ -274,7 +274,7 @@ body {
     grid-gap: 30px;
 }
 
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
 @media screen and (max-width: 767px) {
     .page-header,
     .page-content {

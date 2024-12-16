@@ -93,90 +93,102 @@
         <div class="container">
             <h5 class="mb-3" style="text-align: center">Thông tin sản phẩm</h5>
             <form action="#" th:action="@{/admin/products/store}" th:object="${product}" method="post" enctype="multipart/form-data">
-                <div>
-                    <div class="mb-3">
-                        <label for="tenSanPham" class="form-label" style="font-size: 15px;">Tên sản phẩm</label>
-                        <input type="text" class="form-control" id="tenSanPham" placeholder="Nhập tên sản phẩm"
-                               style="font-size: 15px;" th:field="*{tenSanPham}">
-                        <p class="text-danger" th:if="${#fields.hasErrors('tenSanPham')}" th:errorclass="error" th:errors="*{tenSanPham}"></p>
-                        <p class="text-danger" th:if="${trungTenSanPham != null}" th:text="${trungTenSanPham}"></p>
-                        <p class="text-danger" th:if="${loiDeCachHaiDau != null}" th:text="${loiDeCachHaiDau}"></p>
-                    </div>
-                </div>
                 <div class="row">
-                    <div class="col-6 mb-3">
-                        <label for="idThuongHieu" class="form-label" style="font-size: 15px;">Thương Hiệu</label>
-                        <div class="d-flex align-items-center">
-                            <select id="idThuongHieu" class="form-control js-select2" th:field="*{idThuongHieu}">
-                                <option value="" selected>Chọn thương hiệu</option>
-                                <option th:each="thuonghieu : ${thuongHieus}"
-                                        th:value="${thuonghieu.getId()}" th:text="${thuonghieu.getTenThuongHieu()}">
-                                </option>
-                            </select>
-                            <button type="button" class="btn btn-primary btn-btnQuickAddThuongHieu ms-2" onclick="hienForm('/admin/thuong-hieu/quick-add')">Thêm</button>
+                    <div class="col-4">
+                        <!-- Phần upload ảnh -->
+                        <div class="mb-3">
+                            <label for="images" class="form-label" style="font-size: 15px;">Upload Ảnh</label>
+                            <input type="file" th:field="*{anhSanPham}" name="imageFiles" id="images" class="form-control" accept="image/*" onchange="previewImage(event)">
+                            <p class="text-danger" th:if="${#fields.hasErrors('anhSanPham')}" th:errorclass="error" th:errors="*{anhSanPham}"></p>
+
+                            <p class="text-danger" th:if="${chuaTaiFile != null}" th:text="${chuaTaiFile}"></p>
+                            <p class="text-danger" th:if="${loiSizeAnh != null}" th:text="${loiSizeAnh}"></p>
+                            <p class="text-danger" th:if="${loiTypeAnh != null}" th:text="${loiTypeAnh}"></p>
+
+                            <!-- Vùng hiển thị ảnh preview -->
+                            <div id="imagePreviewContainer" style="margin-top: 10px; text-align: center;">
+                                <img id="imagePreview" src="#" alt="Ảnh tải lên" style="width: 410px; height: 400px; display: none; object-fit: cover;" />
+                            </div>
                         </div>
-                        <p class="text-danger" th:if="${#fields.hasErrors('idThuongHieu')}" th:errorclass="error" th:errors="*{idThuongHieu}"></p>
                     </div>
 
-                    <div class="col-6 mb-3">
-                        <label for="idChatLieu" class="form-label" style="font-size: 15px;">Chất liệu</label>
-                        <div class="d-flex align-items-center">
-                            <select id="idChatLieu" class="form-control js-select2" th:field="*{idChatLieu}">
-                                <option value="" selected>Chọn chất liệu</option>
-                                <option th:each="chatlieu : ${chatLieus}"
-                                        th:value="${chatlieu.getId()}" th:text="${chatlieu.getTenChatLieu()}">
-                                </option>
-                            </select>
-                            <button type="button" class="btn btn-primary btn-btnQuickAddChatLieu ms-2" onclick="hienForm('/admin/chatlieu/quick-add')">Thêm</button>
+                    <div class="col-8">
+                        <div>
+                            <div class="mb-3">
+                                <label for="tenSanPham" class="form-label" style="font-size: 15px;">Tên sản phẩm</label>
+                                <input type="text" class="form-control" id="tenSanPham" placeholder="Nhập tên sản phẩm"
+                                       style="font-size: 15px;" th:field="*{tenSanPham}">
+                                <p class="text-danger" th:if="${#fields.hasErrors('tenSanPham')}" th:errorclass="error" th:errors="*{tenSanPham}"></p>
+                                <p class="text-danger" th:if="${trungTenSanPham != null}" th:text="${trungTenSanPham}"></p>
+                                <p class="text-danger" th:if="${loiDeCachHaiDau != null}" th:text="${loiDeCachHaiDau}"></p>
+                                <p class="text-danger" th:if="${tenSanPhamDai != null}" th:text="${tenSanPhamDai}"></p>
+                                <p class="text-danger" th:if="${batdaubangso != null}" th:text="${batdaubangso}"></p>
+                            </div>
                         </div>
-                        <p class="text-danger" th:if="${#fields.hasErrors('idChatLieu')}" th:errorclass="error" th:errors="*{idChatLieu}"></p>
-                    </div>
-                </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label for="idThuongHieu" class="form-label" style="font-size: 15px;">Thương Hiệu</label>
+                                <div class="d-flex align-items-center">
+                                    <select id="idThuongHieu" class="form-control js-select2" th:field="*{idThuongHieu}">
+                                        <option value="" selected>Chọn thương hiệu</option>
+                                        <option th:each="thuonghieu : ${thuongHieus}"
+                                                th:value="${thuonghieu.getId()}" th:text="${thuonghieu.getTenThuongHieu()}">
+                                        </option>
+                                    </select>
+                                    <button type="button" class="btn btn-primary btn-btnQuickAddThuongHieu ms-2" onclick="hienForm('/admin/thuong-hieu/quick-add')">Thêm</button>
+                                </div>
+                                <p class="text-danger" th:if="${#fields.hasErrors('idThuongHieu')}" th:errorclass="error" th:errors="*{idThuongHieu}"></p>
+                            </div>
 
-                <div class="row">
-                    <div class="col-6 mb-3">
-                        <label for="idCoAo" class="form-label" style="font-size: 15px;">Kiểu cổ áo</label>
-                        <div class="d-flex align-items-center">
-                            <select id="idCoAo" class="form-control js-select2" th:field="*{idCoAo}">
-                                <option value="" selected>Chọn kiểu cổ áo</option>
-                                <option th:each="coao : ${kieuCoAos}"
-                                        th:value="${coao.getId()}" th:text="${coao.getTenCoAo()}">
-                                </option>
-                            </select>
-                            <button type="button" class="btn btn-primary btn-btnQuickAddKieuCoAo ms-2" onclick="hienForm('/admin/kieu-co-ao/quick-add')">Thêm</button>
+                            <div class="col-6 mb-3">
+                                <label for="idChatLieu" class="form-label" style="font-size: 15px;">Chất liệu</label>
+                                <div class="d-flex align-items-center">
+                                    <select id="idChatLieu" class="form-control js-select2" th:field="*{idChatLieu}">
+                                        <option value="" selected>Chọn chất liệu</option>
+                                        <option th:each="chatlieu : ${chatLieus}"
+                                                th:value="${chatlieu.getId()}" th:text="${chatlieu.getTenChatLieu()}">
+                                        </option>
+                                    </select>
+                                    <button type="button" class="btn btn-primary btn-btnQuickAddChatLieu ms-2" onclick="hienForm('/admin/chatlieu/quick-add')">Thêm</button>
+                                </div>
+                                <p class="text-danger" th:if="${#fields.hasErrors('idChatLieu')}" th:errorclass="error" th:errors="*{idChatLieu}"></p>
+                            </div>
                         </div>
-                        <p class="text-danger" th:if="${#fields.hasErrors('idCoAo')}" th:errorclass="error" th:errors="*{idCoAo}"></p>
-                    </div>
 
-                    <div class="col-6 mb-3">
-                        <label for="idTayAo" class="form-label" style="font-size: 15px;">Kiểu tay áo</label>
-                        <div class="d-flex align-items-center">
-                            <select id="idTayAo" class="form-control js-select2" th:field="*{idTayAo}">
-                                <option value="" selected>Chọn kiểu tay áo</option>
-                                <option th:each="tayao : ${kieuTayAos}"
-                                        th:value="${tayao.getId()}" th:text="${tayao.getTenTayAo()}">
-                                </option>
-                            </select>
-                            <button type="button" class="btn btn-primary btn-btnQuickAddKieuTayAo ms-2" onclick="hienForm('/admin/kieu-tay-ao/quick-add')">Thêm</button>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label for="idCoAo" class="form-label" style="font-size: 15px;">Kiểu cổ áo</label>
+                                <div class="d-flex align-items-center">
+                                    <select id="idCoAo" class="form-control js-select2" th:field="*{idCoAo}">
+                                        <option value="" selected>Chọn kiểu cổ áo</option>
+                                        <option th:each="coao : ${kieuCoAos}"
+                                                th:value="${coao.getId()}" th:text="${coao.getTenCoAo()}">
+                                        </option>
+                                    </select>
+                                    <button type="button" class="btn btn-primary btn-btnQuickAddKieuCoAo ms-2" onclick="hienForm('/admin/kieu-co-ao/quick-add')">Thêm</button>
+                                </div>
+                                <p class="text-danger" th:if="${#fields.hasErrors('idCoAo')}" th:errorclass="error" th:errors="*{idCoAo}"></p>
+                            </div>
+
+                            <div class="col-6 mb-3">
+                                <label for="idTayAo" class="form-label" style="font-size: 15px;">Kiểu tay áo</label>
+                                <div class="d-flex align-items-center">
+                                    <select id="idTayAo" class="form-control js-select2" th:field="*{idTayAo}">
+                                        <option value="" selected>Chọn kiểu tay áo</option>
+                                        <option th:each="tayao : ${kieuTayAos}"
+                                                th:value="${tayao.getId()}" th:text="${tayao.getTenTayAo()}">
+                                        </option>
+                                    </select>
+                                    <button type="button" class="btn btn-primary btn-btnQuickAddKieuTayAo ms-2" onclick="hienForm('/admin/kieu-tay-ao/quick-add')">Thêm</button>
+                                </div>
+                                <p class="text-danger" th:if="${#fields.hasErrors('idTayAo')}" th:errorclass="error" th:errors="*{idTayAo}"></p>
+                            </div>
                         </div>
-                        <p class="text-danger" th:if="${#fields.hasErrors('idTayAo')}" th:errorclass="error" th:errors="*{idTayAo}"></p>
+                        <div class="mb-3">
+                            <label for="moTa" class="form-label" style="font-size: 15px;">Mô tả</label>
+                            <textarea class="form-control" id="moTa" rows="3" style="font-size: 15px;" th:field="*{moTa}"></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="mb-3">
-                    <label for="moTa" class="form-label" style="font-size: 15px;">Mô tả</label>
-                    <textarea class="form-control" id="moTa" rows="3" style="font-size: 15px;" th:field="*{moTa}"></textarea>
-                </div>
-
-                <!-- Phần upload ảnh -->
-                <div class="mb-3">
-                    <label for="images" class="form-label" style="font-size: 15px;">Upload Ảnh</label>
-                    <input type="file" th:field="*{anhSanPham}" name="imageFiles" id="images" class="form-control" accept="image/*">
-                    <p class="text-danger" th:if="${#fields.hasErrors('anhSanPham')}" th:errorclass="error" th:errors="*{anhSanPham}"></p>
-
-
-                    <p class="text-danger" th:if="${chuaTaiFile != null}" th:text="${chuaTaiFile}"></p>
-                    <p class="text-danger" th:if="${loiSizeAnh != null}" th:text="${loiSizeAnh}"></p>
-                    <p class="text-danger" th:if="${loiTypeAnh != null}" th:text="${loiTypeAnh}"></p>
                 </div>
 
                 <div class="text-center">
@@ -217,4 +229,25 @@
 <!-- JavaScript của Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script th:src="@{/javascript/san_pham.js}"></script>
+<script>
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('imagePreview');
+        const container = document.getElementById('imagePreviewContainer');
+
+        if (file) {
+            const reader = new FileReader();
+
+            // Đọc nội dung của file
+            reader.onload = function(e) {
+                preview.src = e.target.result; // Hiển thị ảnh
+                preview.style.display = 'block'; // Hiện ảnh khi đã tải lên
+            };
+
+            reader.readAsDataURL(file); // Đọc file dưới dạng URL
+        } else {
+            preview.style.display = 'none'; // Ẩn ảnh nếu không có file
+        }
+    }
+</script>
 </html>

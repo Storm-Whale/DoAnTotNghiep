@@ -25,9 +25,16 @@ function toggleBorder(imgElement, imageId) {
     }
 }
 
-// Lắng nghe sự kiện thay đổi file
-document.getElementById("fileUpload").addEventListener("change", function () {
-    const files = this.files;
+// Xử lý sự kiện khi tải ảnh lên
+document.getElementById('fileUpload').addEventListener('change', function(event) {
+    // Lấy danh sách các tệp đã chọn
+    const files = event.target.files;
+
+    // Kiểm tra xem có ảnh được chọn không
+    if (files.length === 0) {
+        document.getElementById('error-fileUpload').style.display = 'block';
+        return;
+    }
 
     // Kiểm tra số lượng file được tải lên với số lượng ảnh đã chọn
     if (files.length > selectedImages) {
@@ -48,6 +55,64 @@ document.getElementById("fileUpload").addEventListener("change", function () {
 
         // Xóa các file đã chọn để người dùng chọn lại
         this.value = "";
+        return;
+    }
+
+    // Ẩn thông báo lỗi nếu có ảnh được chọn
+    document.getElementById('error-fileUpload').style.display = 'none';
+
+    // Lấy container chứa danh sách ảnh
+    const imageContainer = document.querySelector('.d-flex.flex-wrap');
+
+    // Xóa các ảnh cũ
+    imageContainer.innerHTML = '';
+
+    // Reset trạng thái chọn ảnh
+    selectedImages = 0;
+    selectedImageIds = [];
+
+    // Duyệt qua từng tệp và tạo preview
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Kiểm tra xem tệp có phải là ảnh không
+        if (!file.type.startsWith('image/')) {
+            continue;
+        }
+
+        // Tạo đối tượng FileReader để đọc ảnh
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            // Tạo phần tử div chứa ảnh
+            const imageWrapper = document.createElement('div');
+            imageWrapper.className = 'text-center me-3 mb-3';
+
+            // Tạo phần tử ảnh
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = file.name;
+            img.className = 'image-hover';
+            img.style.width = '100px';
+            img.style.height = 'auto';
+
+            // Gán sự kiện click để chọn/bỏ chọn ảnh
+            // Sử dụng một ID tạm thời cho ảnh mới tải lên
+            const temporaryId = `new-image-${i}`;
+            img.setAttribute('data-id', temporaryId);
+            img.onclick = function() {
+                toggleBorder(this, temporaryId);
+            };
+
+            // Thêm ảnh vào wrapper
+            imageWrapper.appendChild(img);
+
+            // Thêm wrapper vào container
+            imageContainer.appendChild(imageWrapper);
+        };
+
+        // Đọc tệp ảnh
+        reader.readAsDataURL(file);
     }
 });
 

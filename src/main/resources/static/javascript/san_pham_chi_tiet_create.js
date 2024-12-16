@@ -18,72 +18,83 @@ function updateColorDetails() {
         detailContainer.classList.add("border", "rounded", "p-3", "mb-3");
 
         detailContainer.innerHTML = `
-                <!-- Color Detail Section (Assuming this is within a loop with a unique index) -->
                 <div class="color-detail" data-index="${index}">
                     <h5 class="mb-3">Chi tiết cho ${colorName}</h5>
                     <input type="hidden" name="colorDetails[${index}].idMauSac" value="${colorId}">
+        
+                    <!-- Sử dụng Flexbox để chia bố cục -->
+                    <div class="d-flex">
+                        <!-- Phần ảnh (ảnh sản phẩm) ở bên trái -->
+                        <div class="me-4" style="flex: 0 0 400px; text-align: center;">
+                            <label class="form-label">Ảnh sản phẩm</label>
+                            <input type="file"
+                                   class="form-control images-input"
+                                   name="colorDetails[${index}].images"
+                                   multiple
+                                   accept="image/*"
+                                   required
+                                   onchange="previewImage(event)">
+                            <div class="text-danger warning-text images-warning mt-1" style="display: none;">
+                                Vui lòng tải lên ít nhất một ảnh sản phẩm!
+                            </div>
+                            
+                            <!-- Vùng hiển thị ảnh tải lên -->
+                            <div id="imagePreviewContainer" style="margin-top: 10px;">
+                                <img id="imagePreview" src="#" alt="Ảnh tải lên" style="width: 390px; height: 300px;display: none; object-fit: cover" />
+                            </div>
+                        </div>
+    
+                        <!-- Các thông tin còn lại ở bên phải -->
+                        <div style="flex: 1;">
+                            <!-- Giá (Price) -->
+                            <div class="mb-3">
+                                <label class="form-label">Giá</label>
+                                <input type="number"
+                                       class="form-control gia-input"
+                                       name="colorDetails[${index}].gia"
+                                       step="any"
+                                       min="0"
+                                       required
+                                       placeholder="Nhập giá sản phẩm"
+                                       oninput="removeWarning(this)">
+                                <div class="text-danger warning-text gia-warning mt-1" style="display: none;">
+                                    Vui lòng nhập giá hợp lệ!
+                                </div>
+                            </div>
+                        
+                            <!-- Kích thước (Size) -->
+                            <div class="mb-3">
+                                <label class="form-label">Kích thước</label>
+                                <div class="d-flex align-items-center">
+                                    <select class="form-control js-select2 kichCo-select"
+                                            name="colorDetails[${index}].idKichCos"
+                                            multiple required
+                                            onchange="removeWarning(this)">
+                                        ${kichCoList.map(size => `
+                                            <option value="${size.id}">${size.tenKichCo}</option>
+                                        `).join('')}
+                                    </select>
+                                    <button type="button" class="btn btn-primary btn-btnQuickAddKichCo ms-2" onclick="hienForm('/admin/kichco/quick-add')">Thêm</button>
+                                </div>
+                                <div class="text-danger warning-text kichCo-warning mt-2" style="display: none;">
+                                    Vui lòng chọn ít nhất một kích thước!
+                                </div>
+                            </div>     
                 
-                    <!-- Giá (Price) -->
-                    <div class="mb-3">
-                        <label class="form-label">Giá</label>
-                        <input type="number"
-                               class="form-control gia-input"
-                               name="colorDetails[${index}].gia"
-                               step="any"
-                               min="0"
-                               required
-                               placeholder="Nhập giá sản phẩm"
-                               oninput="removeWarning(this)">
-                        <div class="text-danger warning-text gia-warning mt-1" style="display: none;">
-                            Vui lòng nhập giá hợp lệ!
-                        </div>
-                    </div>
-                
-                    <!-- Kích thước (Size) -->
-                    <div class="mb-3">
-                        <label class="form-label">Kích thước</label>
-                        <div class="d-flex align-items-center">
-                            <select class="form-control js-select2 kichCo-select"
-                                    name="colorDetails[${index}].idKichCos"
-                                    multiple required
-                                    onchange="removeWarning(this)">
-                                ${kichCoList.map(size => `
-                                    <option value="${size.id}">${size.tenKichCo}</option>
-                                `).join('')}
-                            </select>
-                            <button type="button" class="btn btn-primary btn-btnQuickAddKichCo ms-2" onclick="hienForm('/admin/kichco/quick-add')">Thêm</button>
-                        </div>
-                        <div class="text-danger warning-text kichCo-warning mt-2" style="display: none;">
-                            Vui lòng chọn ít nhất một kích thước!
-                        </div>
-                    </div>     
-                    <!-- Số lượng (Quantity) -->
-                    <div class="mb-3">
-                        <label class="form-label">Số lượng</label>
-                        <input type="number"
-                               class="form-control soLuong-input"
-                               name="colorDetails[${index}].soLuong"
-                               min="1"
-                               required
-                               placeholder="Nhập số lượng"
-                               oninput="removeWarning(this)">
-                        <div class="text-danger warning-text soLuong-warning mt-1" style="display: none;">
-                            Vui lòng nhập số lượng ít nhất là 1!
-                        </div>
-                    </div>
-                
-                    <!-- Ảnh sản phẩm (Product Images) -->
-                    <div class="mb-3">
-                        <label class="form-label">Ảnh sản phẩm</label>
-                        <input type="file"
-                               class="form-control images-input"
-                               name="colorDetails[${index}].images"
-                               multiple
-                               accept="image/*"
-                               required
-                               onchange="removeWarning(this)">
-                        <div class="text-danger warning-text images-warning mt-1" style="display: none;">
-                            Vui lòng tải lên ít nhất một ảnh sản phẩm!
+                            <!-- Số lượng (Quantity) -->
+                            <div class="mb-3">
+                                <label class="form-label">Số lượng</label>
+                                <input type="number"
+                                       class="form-control soLuong-input"
+                                       name="colorDetails[${index}].soLuong"
+                                       min="1"
+                                       required
+                                       placeholder="Nhập số lượng"
+                                       oninput="removeWarning(this)">
+                                <div class="text-danger warning-text soLuong-warning mt-1" style="display: none;">
+                                    Vui lòng nhập số lượng ít nhất là 1!
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -249,3 +260,23 @@ document.getElementById('form-spct').addEventListener('submit', function(e) {
             });
     }
 });
+
+function previewImage(event) {
+    // Lấy phần tử img để hiển thị ảnh tải lên
+    var imagePreview = document.getElementById('imagePreview');
+
+    // Kiểm tra nếu có ảnh được chọn
+    if (event.target.files && event.target.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            // Cập nhật thuộc tính src của img với ảnh vừa tải lên
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = "block";  // Hiển thị ảnh preview
+        }
+
+        // Đọc ảnh dưới dạng URL
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+

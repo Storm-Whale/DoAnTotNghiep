@@ -25,4 +25,8 @@ public interface HoaDonChiTietService {
     public List<HoaDonChiTiet> findByHoaDonId(Integer hoaDonId);
 
     List<HoaDonChiTiet> findByKhachHangId(Integer khachHangId);
+
+    public HoaDonChiTiet findById(Integer id);
+
+    public List<HoaDonChiTiet> findAllByHoaDonId(Integer hoaDonId);
 }
