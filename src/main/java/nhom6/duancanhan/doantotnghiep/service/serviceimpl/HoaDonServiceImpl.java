@@ -234,5 +234,14 @@ public class HoaDonServiceImpl implements HoaDonService {
         return hoaDonRepository.findByTrangThai(trangThai, pageable);
     }
 
+    @Override
+    public Page<HoaDon> findByTrangThai(Integer trangThai, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (trangThai != null) {
+            return hoaDonRepository.findByTrangThai(trangThai, pageable);
+        } else {
+            return hoaDonRepository.findAll(pageable);
+        }
+    }
 
 }

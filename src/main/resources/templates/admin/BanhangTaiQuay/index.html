@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -296,22 +296,27 @@
 
                             <label for="diaChi">Địa chỉ:</label>
                             <input type="text" id="diaChi" name="diaChi" th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : ''}" />
+<!--                            <div class="error-message" th:if="${errorDiaChi}" th:text="${errorDiaChi}"></div>-->
 
                             <label for="soDienThoai1">Số điện thoại:</label>
                             <input type="text" id="soDienThoai1" name="soDienThoai"
                                    th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.soDienThoai : ''}" />
+<!--                            <div class="error-message" th:if="${errorSoDienThoai}" th:text="${errorSoDienThoai}"></div>-->
+
                             <label for="tenNguoiNhan">Tên người nhận:</label>
                             <input type="text" id="tenNguoiNhan" name="tenNguoiNhan" th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.tenKhachHang : ''}" />
+<!--                            <div class="error-message" th:if="${errorTenNguoiNhan}" th:text="${errorTenNguoiNhan}"></div>-->
 
                             <label for="ghiChu">Ghi chú:</label>
                             <input type="text" id="ghiChu" name="ghiChu" th:value="${hoaDon.ghiChu}">
+<!--                            <div class="error-message" th:if="${errorGhiChu}" th:text="${errorGhiChu}"></div>-->
 
                             <button type="submit" style="margin-top: 15px">Cập nhật</button>
                         </form>
                     </div>
 
-                    <script>
 
+                    <script>
                     // validate dia chỉ  332
                         function validateForm() {
                             const diaChi = document.getElementById("diaChi").value.trim();
@@ -346,11 +351,11 @@
                             }
 
                             // Kiểm tra số điện thoại hợp lệ nếu có nhập
-                            if (soDienThoai && !/^\d{10,15}$/.test(soDienThoai)) {
+                            if (soDienThoai && !/^\d{10}$/.test(soDienThoai)) {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Số điện thoại không hợp lệ!',
-                                    text: 'Vui lòng nhập số từ 10 đến 15 ký tự.',
+                                    text: 'SDT phải là 10 số.',
                                     confirmButtonText: 'OK'
                                 });
                                 return false;
@@ -368,7 +373,9 @@
                     <p style="margin-top: 7px;margin-bottom: 7px;"><b><i class="bi bi-diamond-fill fs3">Thông tin thanh
                         toán</i></b></p>
 
-                    <div style="display: flex; align-items: center; gap: 20px;">
+
+
+                    <div style="display: flex; align-items: center; gap: 20px;" onsubmit="return validateInput()">
                         <form id="searchFormKhachHang" th:action="@{/admin/taiquay/tim-kiem}" method="get"
                               style="display: flex; align-items: center; gap: 10px;">
                             <input type="text" id="soDienThoai" name="soDienThoai" required
@@ -384,6 +391,27 @@
                             </button>
 
                         </form>
+
+                        <script>
+                            function validateInput() {
+                                const inputField = document.getElementById('soDienThoai');
+                                const inputValue = inputField.value.trim();
+
+                                if (inputValue.length > 50) {
+                                    alert('Vui lòng nhập tối đa 50 ký tự.');
+                                    return false;
+                                }
+                                inputField.value = inputValue;
+
+                                const phoneRegex = /^\d{10}$/;
+                                if (!phoneRegex.test(inputValue)) {
+                                    alert('Số điện thoại phải là 10 chữ số.');
+                                    return false;
+                                }
+
+                                return true; // Cho phép form được gửi
+                            }
+                        </script>
 
 
 

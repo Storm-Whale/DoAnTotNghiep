@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +59,7 @@ public class NhanVienController {
     private UploadImage uploadImage;
 
     @GetMapping("")
-    public String searchKhachHang(
+    public String searchNhanVien(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "trangThai", required = false) Integer trangThai,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -88,9 +89,13 @@ public class NhanVienController {
         }
 
         // Tạo danh sách số trang
-        List<Integer> pageNumbers = totalPages > 0
-                ? IntStream.range(0, totalPages).boxed().collect(Collectors.toList())
-                : Collections.emptyList();
+        List<Integer> pageNumbers = new ArrayList<>();
+        int startPage = Math.max(0, page - 2);
+        int endPage = Math.min(totalPages - 1, page + 2);
+
+        for (int i = startPage; i <= endPage; i++) {
+            pageNumbers.add(i);
+        }
 
         // Đẩy dữ liệu ra model
         model.addAttribute("nhanVien", new NhanVien());
@@ -110,28 +115,45 @@ public class NhanVienController {
     @Autowired
     private HoaDonRepository hoaDonRepository;
 
-    @GetMapping("/hoa-don/{id}")
-    public String getHoaDonsByNhanVien(@PathVariable("id") Integer nhanVienId,
-                                       @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                       @RequestParam(value = "size", required = false, defaultValue = "5") int size,
-                                       Model model) {
+    @GetMapping("/hoa-don/{nhanVienId}")
+    public String getHoaDonsByNhanVien(
+            @PathVariable("nhanVienId") Integer nhanVienId,
+            @RequestParam(value = "status", required = false, defaultValue = "all") String status,
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "5") int size,
+            Model model) {
+        NhanVien nhanVien = nhanVienService.findById(nhanVienId);
+        if (nhanVien == null) {
+            model.addAttribute("error", "Khách hàng không tồn tại");
+            return "error-page"; // Trả về trang lỗi nếu cần
+        }
+
+
+        // Lấy danh sách hóa đơn theo trạng thái và nhân viên
         Pageable pageable = PageRequest.of(page, size);
 
-        // Sử dụng Pageable để lấy dữ liệu phân trang
-        Page<HoaDon> hoaDonPage = hoaDonRepository.findByNguoiTao_Id(nhanVienId, pageable);
+        // Lấy danh sách hóa đơn theo trạng thái và khách hàng
+        Page<HoaDon> hoaDonPage;
+        if ("all".equalsIgnoreCase(status)) {
+            hoaDonPage = hoaDonRepository.findByKhachHang_Id(nhanVienId, pageable);
+        } else {
+            hoaDonPage = hoaDonRepository.findByKhachHang_IdAndTrangThai(nhanVienId, Integer.parseInt(status), pageable);
+        }
 
+        // Kiểm tra nếu không có dữ liệu
         // Thêm dữ liệu vào model
         model.addAttribute("nhanVien", nhanVienService.detailNhanVien(nhanVienId));
+        model.addAttribute("nhanVien", nhanVien);
+        model.addAttribute("hoaDonPage", hoaDonPage);
         model.addAttribute("listTK", taiKhoanService.getAll());
         model.addAttribute("listNV", nhanVienService.getAll());
         model.addAttribute("listVT", vaiTroService.getAll());
-        model.addAttribute("hoaDonPage", hoaDonPage);  // Đối tượng phân trang
-
-        // Thêm thông tin phân trang vào model
-        model.addAttribute("currentPage", page);  // Trang hiện tại
-        model.addAttribute("totalPages", hoaDonPage.getTotalPages());  // Tổng số trang
+        model.addAttribute("status", status); // Trạng thái hiện tại để hiển thị đúng trong select
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", hoaDonPage.getTotalPages());
         return "/admin/nhanvien/nhan-vien-hoa-don"; // Tên file Thymeleaf để hiển thị danh sách hóa đơn
     }
+
 
     @GetMapping("/{id}")
     public String xemChiTietHoaDon(@PathVariable("id") Integer idHoaDon, Model model) {

@@ -465,6 +465,33 @@ public class TaiQuayController {
             diaChiObj = diaChiService.newDiaChi(diaChi, tenNguoiNhan, soDienThoai, null);
         }
 
+//        boolean hasErrors = false;
+//
+//        // Kiểm tra độ dài của từng trường
+//        if (hoaDon.getDiaChi() != null && hoaDon.getDiaChi().getDiaChiChiTiet().length() > 50) {
+//            model.addAttribute("errorDiaChi", "Địa chỉ không được vượt quá 50 ký tự.");
+//            hasErrors = true;
+//        }
+//
+//        if (hoaDon.getDiaChi().getSoDienThoai() != null && hoaDon.getDiaChi().getSoDienThoai().length() > 50) {
+//            model.addAttribute("errorSoDienThoai", "Số điện thoại không được vượt quá 50 ký tự.");
+//            hasErrors = true;
+//        }
+//
+//        if (hoaDon.getDiaChi().getTenKhachHang() != null && hoaDon.getDiaChi().getTenKhachHang().length() > 50) {
+//            model.addAttribute("errorTenNguoiNhan", "Tên người nhận không được vượt quá 50 ký tự.");
+//            hasErrors = true;
+//        }
+//
+//        if (hoaDon.getGhiChu() != null && hoaDon.getGhiChu().length() > 50) {
+//            model.addAttribute("errorGhiChu", "Ghi chú không được vượt quá 50 ký tự.");
+//            hasErrors = true;
+//        }
+//
+//        // Nếu có lỗi, trả về trang cập nhật với thông báo lỗi
+//        if (hasErrors) {
+//            return "redirect:/admin/taiquay/detail/" + idHoaDon;; // Thay đổi đường dẫn đến trang cập nhật
+//        }
 
 
         hoaDon.setDiaChi(diaChiObj);

@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -79,14 +80,12 @@ public class KhachHangController {
             @RequestParam(value = "size", required = false, defaultValue = "5") int size,
             Model model
     ) {
-        // Xử lý keyword và loại bỏ khoảng trắng
         if (keyword != null) {
             keyword = keyword.trim();
             if (keyword.isEmpty()) {
                 keyword = null;
             }
         }
-
 
         // Kiểm tra page và size hợp lệ
         if (page < 0) page = 0;
@@ -103,9 +102,13 @@ public class KhachHangController {
         }
 
         // Tạo danh sách số trang
-        List<Integer> pageNumbers = totalPages > 0
-                ? IntStream.range(0, totalPages).boxed().collect(Collectors.toList())
-                : Collections.emptyList();
+        List<Integer> pageNumbers = new ArrayList<>();
+        int startPage = Math.max(0, page - 2);
+        int endPage = Math.min(totalPages - 1, page + 2);
+
+        for (int i = startPage; i <= endPage; i++) {
+            pageNumbers.add(i);
+        }
 
         // Đẩy dữ liệu ra model
         model.addAttribute("khachHang", new KhachHang());
@@ -133,6 +136,7 @@ public class KhachHangController {
     @GetMapping("/hoa-don/{khachHangId}")
     public String viewHoaDonByKhachHang(
             @PathVariable("khachHangId") Integer khachHangId,
+            @RequestParam(value = "status", required = false, defaultValue = "all") String status,
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "size", required = false, defaultValue = "5") int size,
             Model model
@@ -146,17 +150,24 @@ public class KhachHangController {
 
         // Tạo Pageable để phân trang
         Pageable pageable = PageRequest.of(page, size);
-        Page<HoaDon> hoaDonPage = hoaDonRepository.findByKhachHang_Id(khachHangId, pageable);
-//        List<HoaDon> danhSachHoaDon = hoaDonRepository.findByKhachHang_IdAndTrangThai(khachHangId);
+
+        // Lấy danh sách hóa đơn theo trạng thái và khách hàng
+        Page<HoaDon> hoaDonPage;
+        if ("all".equalsIgnoreCase(status)) {
+            hoaDonPage = hoaDonRepository.findByKhachHang_Id(khachHangId, pageable);
+        } else {
+            hoaDonPage = hoaDonRepository.findByKhachHang_IdAndTrangThai(khachHangId, Integer.parseInt(status), pageable);
+        }
+
         // Đẩy dữ liệu vào model
         model.addAttribute("khachHang", khachHang);
-        model.addAttribute("hoaDonPage", hoaDonPage); // Đối tượng phân trang
+        model.addAttribute("hoaDonPage", hoaDonPage);
         model.addAttribute("listKH", khachHangService.getAll());
         model.addAttribute("listTK", taiKhoanService.getAll());
-
-        model.addAttribute("currentPage", page);      // Trang hiện tại
-        model.addAttribute("totalPages", hoaDonPage.getTotalPages()); // Tổng số trang
-        return "/admin/customer/hoadonKhachHang"; // Trả về view hiển thị hóa đơn
+        model.addAttribute("status", status);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", hoaDonPage.getTotalPages());
+        return "/admin/customer/hoaDonKhachHang"; // Trả về view hiển thị hóa đơn
     }
 
     @Autowired
