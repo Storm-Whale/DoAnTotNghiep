@@ -47,6 +47,11 @@ public class ChatLieuServiceImpl implements ChatLieuService {
     }
 
     @Override
+    public void deleteChatLieu() {
+        deleteChatLieu(null);
+    }
+
+    @Override
     public void deleteChatLieu(Integer id) {
         chatLieuRepository.deleteById(id);
     }
@@ -64,9 +69,16 @@ public class ChatLieuServiceImpl implements ChatLieuService {
     }
 
     @Override
+<<<<<<< HEAD
     public List<ChatLieu> getAllChatLieuByTrangThai(int trangThai) {
         return DatabaseOperationHandler.handleDatabaseOperation(() ->
                         chatLieuRepository.findAllByTrangThai(trangThai)
                 , "Lỗi khi lấy dữ liêu từ cơ sở dữ liệu");
     }
+=======
+    public boolean existsByTenChatLieu(String tenChatLieu) {
+        return chatLieuRepository.existsByTenChatLieu(tenChatLieu);
+    }
+
+>>>>>>> 25025b7a04466b9b44b88e581f850a3437257c3d
 }

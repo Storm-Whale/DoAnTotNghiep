@@ -22,4 +22,5 @@ public interface MauSacService {
 
     void updateMauSacById(Integer id, MauSac mauSac);
 
+    boolean existsByTenMauSac(String tenMauSac);
 }

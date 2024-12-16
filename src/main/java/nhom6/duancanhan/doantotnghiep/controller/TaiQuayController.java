@@ -64,6 +64,7 @@ public class TaiQuayController {
     private final KieuCoAoService kieuCoAoService;
     private final KieuTayAoService kieuTayAoService;
     private final InvoidPdfService invoidPdfService;
+    private final ForgotPasswordService forgotPasswordService;
 
     @Autowired
     SanPhamGioHangRepository sanPhamGioHangRepository;
@@ -87,7 +88,7 @@ public class TaiQuayController {
 
     private String maPhieuGiamGia = "";
 
-    public TaiQuayController(SanPhamChiTietService sanPhamChiTietService, SanPhamService sanPhamService, MauSacService mauSacService, KichCoService kichCoService, HoaDonService hoaDonService, KhachHangService khachHangService, PhieuGiamGiaService phieuGiamGiaService, ThuongHieuService thuongHieuService, ChatLieuService chatLieuService, KieuCoAoService kieuCoAoService, KieuTayAoService kieuTayAoService, InvoidPdfService invoidPdfService) {
+    public TaiQuayController(SanPhamChiTietService sanPhamChiTietService, SanPhamService sanPhamService, MauSacService mauSacService, KichCoService kichCoService, HoaDonService hoaDonService, KhachHangService khachHangService, PhieuGiamGiaService phieuGiamGiaService, ThuongHieuService thuongHieuService, ChatLieuService chatLieuService, KieuCoAoService kieuCoAoService, KieuTayAoService kieuTayAoService, InvoidPdfService invoidPdfService, ForgotPasswordService forgotPasswordService) {
         this.sanPhamChiTietService = sanPhamChiTietService;
         this.sanPhamService = sanPhamService;
         this.mauSacService = mauSacService;
@@ -100,6 +101,7 @@ public class TaiQuayController {
         this.kieuCoAoService = kieuCoAoService;
         this.kieuTayAoService = kieuTayAoService;
         this.invoidPdfService = invoidPdfService;
+        this.forgotPasswordService = forgotPasswordService;
     }
 
     // TODO: SHOWINDEX
@@ -634,16 +636,6 @@ public class TaiQuayController {
                 hoaDon.setKhachHang(khachHang);
             }
         }
-
-//        // dia chị khi thanh toán
-//        if (hoaDon.getKhachHang() != null) {
-//            // Kiểm tra nếu khách hàng chưa có địa chỉ
-//            if (hoaDon.getDiaChi() == null) {
-//                return "Khách hàng đã có trong hóa đơn, nhưng chưa có địa chỉ. Vui lòng thêm địa chỉ trước khi thanh toán.";
-//            }
-//        }
-
-
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByHoaDonId(idHoaDon);
             // Kiểm tra nếu chưa có sản phẩm trong hóa đơn
             if (hoaDonChiTietList.isEmpty()) {
@@ -704,7 +696,6 @@ public class TaiQuayController {
                     System.out.println("Không tìm thấy phiếu giảm giá phù hợp");
                 }
             }
-//        hoaDon.setTongTien(tongTienSauGiam);
             // Nếu có phiếu giảm giá được áp dụng
             if (apDungPgg) {
                 hoaDon.setPhieuGiamGia(phieuGiamGiaApdung);
@@ -714,31 +705,57 @@ public class TaiQuayController {
                 hoaDon.setPhieuGiamGia(null);
                 hoaDon.setTongTien(tongTien);
             }
-//        model.addAttribute("tongTien", tongTien);
             PhuongThucThanhToan phuongThuc = phuongThucThanhToanRepository.findById(phuongThucId).orElse(null);
             hoaDon.setPhuongThucThanhToan(phuongThuc);
             if (hoaDon.getKhachHang() != null) {
-                hoaDon.setTrangThai(2); // Chờ xác nhận
+                hoaDon.setTrangThai(1); // Chờ xác nhận
             } else {
-                hoaDon.setTrangThai(5); // Đã thanh toán
+                hoaDon.setTrangThai(6); // Đã thanh toán
             }
-//        hoaDon.setKhachHang(themKhachHang);
+            if (hoaDon.getKhachHang() != null && hoaDon.getKhachHang().getEmail() != null){
+                forgotPasswordService.sendHoaDon(hoaDon.getKhachHang().getEmail(), hoaDon.getId());
+            }
             hoaDonRepository.save(hoaDon);
 
             byte[] pdfData = invoidPdfService.generateInvoicePdf(hoaDon);
 
             String fileName = "invoice_" + hoaDon.getId() + ".pdf";
-            Path path = Paths.get("D://DoAnTotNghiep//DoAnTotNghiep//upload/" + fileName);
+            Path path = Paths.get("D://FALL_2024//DATN//DoAnTotNghiep//upload/" + fileName);
             Files.write(path, pdfData);
 //        D://FALL_2024//DATN//DoAnTotNghiep//upload/
             // Return the file URL to the frontend
-            String fileUrl = "D://DoAnTotNghiep//DoAnTotNghiep//upload/" + fileName;
+            String fileUrl = "D://FALL_2024//DATN//DoAnTotNghiep//upload/" + fileName;
             model.addAttribute("pdfUrl", fileUrl);
             return "/uploads/" + fileName;
-            // Thêm logic để thêm khách hàng mới nếu người dùng chọn thêm khách hàng
-            // Lấy chi tiết hóa đơn
         }
 
+
+        //TODO: xac nhan don hang
+        @GetMapping("/xac-nhan-don-hang")
+        public ResponseEntity<String> xacNhanDonHang(@RequestParam("hoaDonId") Integer hoaDonId) {
+            try {
+                HoaDon hoaDon = hoaDonRepository.findById(hoaDonId)
+                        .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại"));
+                // Kiểm tra trạng thái hóa đơn
+                if (hoaDon.getTrangThai() == 4) {
+                    hoaDon.setTrangThai(6);
+                    hoaDonRepository.save(hoaDon);
+                    return ResponseEntity.ok("Xác nhận đơn hàng thành công! Cảm ơn quý khách");
+                } else if (hoaDon.getTrangThai() == 6) {
+                    return ResponseEntity.badRequest().body("Đơn hàng đã được xác nhận trước đó.");
+                } else {
+                    return ResponseEntity.badRequest().body("Hiện chưa thể xác nhận đơn hàng!");
+                }
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Có lỗi xảy ra: " + e.getMessage());
+            }
+        }
+    @GetMapping("/xac-nhan")
+    public String xacNhanView(@RequestParam("hoaDonId") Integer hoaDonId, Model model) {
+        model.addAttribute("hoaDonId", hoaDonId);
+        return "/admin/xac-nhan-don-hang";
+    }
 
     //  TODO ADDSP
     @GetMapping("/add-sanpham-hdct/{id}")
@@ -789,7 +806,6 @@ public class TaiQuayController {
                     hdct.setSoLuong(hdct.getSoLuong() + 1);
                     sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
                     sanPhamChiTietRepository.save(sanPhamChiTiet);
-
                     BigDecimal tongTien = hoaDonChiTietList.stream()
                             .map(h -> h.getSanPhamChiTiet().getGia().multiply(BigDecimal.valueOf(h.getSoLuong())))
                             .reduce(BigDecimal.ZERO, BigDecimal::add);

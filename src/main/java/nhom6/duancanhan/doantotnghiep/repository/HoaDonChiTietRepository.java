@@ -24,4 +24,5 @@ public interface HoaDonChiTietRepository extends JpaRepository<HoaDonChiTiet,Int
 
 
     List<HoaDonChiTiet> findByHoaDon_Id(Integer hoaDonId);
+
 }

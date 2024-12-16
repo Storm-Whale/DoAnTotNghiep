@@ -23,6 +23,9 @@
     <div th:if="${error != null}" class="alert alert-danger" role="alert">
         <span th:text="${error}"></span>
     </div>
+    <div th:if="${success != null}" class="alert alert-success" role="alert">
+        <span th:text="${success}"></span>
+    </div>
     <div class="row mb-4">
         <div class="col-md-12">
             <!-- Form to add 'Kieu Co Ao' -->
@@ -41,11 +44,6 @@
                     </button>
                 </div>
             </form>
-
-<!--            <form th:action="@{/admin/kieu-co-ao/search}" method="get" class="d-flex">-->
-<!--                <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm tên kiểu cổ áo" class="form-control me-2">-->
-<!--                <button type="submit" class="btn btn-primary">Tìm kiếm</button>-->
-<!--            </form>-->
         </div>
     </div>
 

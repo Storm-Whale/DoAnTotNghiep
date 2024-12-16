@@ -31,6 +31,10 @@ public interface KieuCoAoRepository extends JpaRepository<KieuCoAo, Integer> {
             select kca.tenCoAo from KieuCoAo kca 
         """)
     List<String> findAllTenKieuCoAo();
+<<<<<<< HEAD
 
     List<KieuCoAo> findAllByTrangThai(Integer trangThai);
+=======
+    boolean existsByTenCoAo(String tenCoAo);
+>>>>>>> 25025b7a04466b9b44b88e581f850a3437257c3d
 }

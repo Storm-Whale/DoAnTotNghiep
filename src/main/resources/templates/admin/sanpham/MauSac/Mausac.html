@@ -20,12 +20,18 @@
             <h2>Quản Lý Màu Sắc</h2>
         </div>
     </div>
+    <div th:if="${error != null}" class="alert alert-danger" role="alert">
+        <span th:text="${error}"></span>
+    </div>
     <div class="row mb-4">
         <div class="col-md-12">
             <form th:action="@{/admin/mausac/add}" th:object="${mauSac}" method="post" class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label">Tên Màu Sắc</label>
                     <input type="text" class="form-control"  th:field="*{tenMauSac}" placeholder="Nhập tên màu sắc">
+                    <div th:if="${#fields.hasErrors('tenMauSac')}" th:errors="*{tenMauSac}" class="text-danger">
+                    <span th:errors="*{tenMauSac}"></span>
+                </div>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
                     <button type="submit" class="btn btn-success">
@@ -112,28 +118,28 @@
 </section>
 
 <!-- Add KCA -->
-<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form th:action="@{/admin/mausac/add}" th:object="${mauSac}" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel">Thêm Màu Sắc</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="ten" class="form-label">Tên Màu Sắc</label>
-                        <input type="text" class="form-control" id="ten" th:field="*{tenMauSac}" placeholder="Nhập tên màu sắc">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="submit" class="btn btn-primary">Lưu</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+<!--<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog">-->
+<!--        <div class="modal-content">-->
+<!--            <form th:action="@{/admin/mausac/add}" th:object="${mauSac}" method="post">-->
+<!--                <div class="modal-header">-->
+<!--                    <h5 class="modal-title" id="addModalLabel">Thêm Màu Sắc</h5>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="ten" class="form-label">Tên Màu Sắc</label>-->
+<!--                        <input type="text" class="form-control" id="ten" th:field="*{tenMauSac}" placeholder="Nhập tên màu sắc">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>-->
+<!--                    <button type="submit" class="btn btn-primary">Lưu</button>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

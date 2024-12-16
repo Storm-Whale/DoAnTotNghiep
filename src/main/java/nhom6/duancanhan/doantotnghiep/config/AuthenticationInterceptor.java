@@ -20,7 +20,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
         List<String> dynamicURLPrefixes = Arrays.asList(
                 "/admin/khachhang/update-client/", "/dia-chi/",
-                "/admin/hoadon/delete_client/"
+                "/admin/hoadon/delete_client/",
+                "/admin/taiquay/xac-nhan-don-hang/",
+                "/admin/taiquay/xac-nhan/"
         );
 
         for (String prefix : dynamicURLPrefixes) {

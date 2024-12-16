@@ -61,7 +61,15 @@ public class ThuongHieuServiceImpl implements ThuongHieuService {
     }
 
     @Override
+<<<<<<< HEAD
     public List<ThuongHieu> getAllThuongHieuByTrangThai(int trangThai) {
         return thuongHieuRepossitory.findAllByTrangThai(trangThai);
     }
+=======
+    public boolean existsByTenThuongHieu(String tenThuongHieu) {
+        return thuongHieuRepossitory.existsByTenThuongHieu(tenThuongHieu);
+    }
+
+
+>>>>>>> 25025b7a04466b9b44b88e581f850a3437257c3d
 }

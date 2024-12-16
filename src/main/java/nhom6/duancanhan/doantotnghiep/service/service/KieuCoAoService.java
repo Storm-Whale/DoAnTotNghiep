@@ -27,6 +27,10 @@ public interface KieuCoAoService {
     Page<KieuCoAo> timKiemVaPhanTrang(String tenCoAo, Integer trangThai, int page, int size);
 
     List<String> getAllTenKieuCoAo();
+<<<<<<< HEAD
 
     List<KieuCoAo> getAllKieuCoAoByTrangThai(int trangThai);
+=======
+    boolean existsByTenCoAo(String tenCoAo);
+>>>>>>> 25025b7a04466b9b44b88e581f850a3437257c3d
 }

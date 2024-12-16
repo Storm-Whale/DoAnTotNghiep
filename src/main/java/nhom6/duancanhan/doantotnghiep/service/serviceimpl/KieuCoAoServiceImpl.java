@@ -61,10 +61,20 @@ public class KieuCoAoServiceImpl implements KieuCoAoService {
     }
 
     @Override
+<<<<<<< HEAD
     public List<KieuCoAo> getAllKieuCoAoByTrangThai(int trangThai) {
         return DatabaseOperationHandler.handleDatabaseOperation(() ->
                         kieuCoAoRepository.findAllByTrangThai(trangThai)
                 , "Lỗi khi lấy dữ liêu từ cơ sở dữ liệu");
+=======
+    public boolean existsByTenCoAo(String tenCoAo) {
+        return kieuCoAoRepository.existsByTenCoAo(tenCoAo);
+    }
+
+    @Override
+    public List<KieuCoAo> getKieuCoAoByTrangThai(int trangThai) {
+        return null;
+>>>>>>> 25025b7a04466b9b44b88e581f850a3437257c3d
     }
 
     @Override

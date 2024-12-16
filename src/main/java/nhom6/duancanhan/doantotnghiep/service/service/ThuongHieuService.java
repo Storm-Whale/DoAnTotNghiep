@@ -22,5 +22,9 @@ public interface ThuongHieuService {
 
     List<String> getAllTenThuongHieu();
 
+<<<<<<< HEAD
     List<ThuongHieu> getAllThuongHieuByTrangThai(int trangThai);
+=======
+    boolean existsByTenThuongHieu(String tenThuongHieu);
+>>>>>>> 25025b7a04466b9b44b88e581f850a3437257c3d
 }

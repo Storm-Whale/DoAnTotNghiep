@@ -8,6 +8,37 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        .table-hover tbody tr:hover {
+            background-color: rgba(0,0,0,0.075);
+            transition: background-color 0.3s ease;
+        }
+        .badge {
+            padding: 0.4em 0.6em;
+            border-radius: 0.25rem;
+            font-weight: normal;
+        }
+        /* Đảm bảo tất cả nằm trên 1 dòng và có khoảng cách đều */
+        .col-12.d-flex {
+            display: flex;
+            flex-wrap: nowrap; /* Không cho phép xuống dòng */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            gap: 8px; /* Tạo khoảng cách giữa các phần tử */
+        }
+
+        /* Thu nhỏ chiều rộng của input để vừa với 2 nút */
+        input[name="keyword"] {
+            flex: 1; /* Input chiếm không gian linh hoạt */
+            min-width: 200px; /* Đảm bảo không quá nhỏ */
+        }
+
+        /* Cố định chiều rộng của nút */
+        button.btn,
+        a.btn {
+            flex-shrink: 0; /* Không cho nút co lại */
+            white-space: nowrap; /* Đảm bảo nội dung nút không bị cắt */
+        }
+    </style>
 </head>
 <body class="container-fluid">
 <article th:replace="~{admin/fragments/article :: article}"></article>
@@ -20,57 +51,128 @@
             <h2>Phiếu Giảm Giá</h2>
         </div>
     </div>
+<!--    <div class="row mb-4">-->
+<!--        <div class="col-12">-->
+<!--            <form id="filterForm2" method="get" action="/admin/phieu-giam-gia/index" class="row g-3 align-items-end">-->
+<!--                &lt;!&ndash; Search input and buttons &ndash;&gt;-->
+<!--                <div class="col-md-6 d-flex">-->
+<!--                    <input name="keyword" th:value="${keyword}" type="text" class="form-control me-2" placeholder="Tìm kiếm...">-->
+<!--                    <button type="submit" class="btn btn-primary me-2">-->
+<!--                        Tìm Kiếm-->
+<!--                    </button>-->
+<!--                    <a href="/admin/phieu-giam-gia/index" class="btn btn-secondary">-->
+<!--                        Làm mới-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--                <div class="col-md-3">-->
+<!--                    <label for="startDate" class="form-label">Ngày bắt đầu</label>-->
+<!--                    <input type="date" id="startDate" name="ngayBatDau" class="form-control" th:value="${ngayBatDau}"-->
+<!--                           onchange="submitForm2()">-->
+<!--                </div>-->
+<!--                <div class="col-md-3">-->
+<!--                    <label for="endDate" class="form-label">Ngày kết thúc</label>-->
+<!--                    <input type="date" id="endDate" name="ngayKetThuc" class="form-control" th:value="${ngayKetThuc}"-->
+<!--                           onchange="submitForm2()">-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Loại giảm giá &ndash;&gt;-->
+<!--                <div class="col-md-3">-->
+<!--                    <label for="kieuGiamGia" class="form-label">Loại giảm giá</label>-->
+<!--                    <select id="kieuGiamGia" name="kieuGiamGia" class="form-select" th:value="${kieuGiamGia}"-->
+<!--                            onchange="submitForm2()">-->
+<!--                        <option value="">Chọn</option>-->
+<!--                        <option value="1" th:selected="${kieuGiamGia == 1}">%</option>-->
+<!--                        <option value="0" th:selected="${kieuGiamGia == 0}">VND</option>-->
+<!--                    </select>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Trạng thái &ndash;&gt;-->
+<!--                <div class="col-md-3">-->
+<!--                    <label for="trangThai" class="form-label">Trạng thái</label>-->
+<!--                    <select id="trangThai" name="trangThai" class="form-select" th:value="${trangThai}"-->
+<!--                            onchange="submitForm2()">-->
+<!--                        <option value="">Chọn</option>-->
+<!--                        <option value="1" th:selected="${trangThai == 1}">Active</option>-->
+<!--                        <option value="0" th:selected="${trangThai == 0}">Inactive</option>-->
+<!--                    </select>-->
+<!--                </div>-->
+
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--&lt;!&ndash;    <div class="row mb-3">&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="col-12 text-end">&ndash;&gt;-->
+<!--&lt;!&ndash;            <a class="btn btn-outline-info" th:href="@{'/admin/phieu-giam-gia/add'}">&ndash;&gt;-->
+<!--&lt;!&ndash;                <i class="fas fa-plus-circle"></i> Thêm mới +&ndash;&gt;-->
+<!--&lt;!&ndash;            </a>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--    <div class="row mb-3">-->
+<!--        <div class="col-12 text-end">-->
+<!--            <a class="btn btn-info"-->
+<!--                    th:href="@{'/admin/phieu-giam-gia/add'}">-->
+<!--                <i class="fas fa-plus-circle"></i> Thêm mới +-->
+<!--            </a>-->
+<!--        </div>-->
+<!--    </div>-->
     <div class="row mb-4">
-        <div class="col-md-12">
-            <form id="filterForm2" method="get" action="/admin/phieu-giam-gia/index" class="row g-3">
-                <div class="col-md-6 d-flex">
-                    <input name="keyword" th:value="${keyword}" type="text" class="form-control me-2"
-                           style="height: 35px; line-height: 1;" placeholder="Search...">
-                    <button type="submit" class="btn btn-outline-primary me-2" style="height: 35px; line-height: 1;">
-                        Search
-                    </button>
-                </div>
-                <div class="col-md-6 d-flex">
-                    <div class="ms-auto">
-                        <a class="btn btn-outline-info btn-sm" th:href="@{'/admin/phieu-giam-gia/add'}">
-                            <i class="fas fa-info-circle"></i> + Thêm mới
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <label for="startDate" class="form-label">Ngày bắt đầu</label>
-                    <input type="date" id="startDate" name="ngayBatDau" class="form-control" th:value="${ngayBatDau}"
-                           onchange="submitForm2()">
-                </div>
-                <div class="col-md-3">
-                    <label for="endDate" class="form-label">Ngày kết thúc</label>
-                    <input type="date" id="endDate" name="ngayKetThuc" class="form-control" th:value="${ngayKetThuc}"
-                           onchange="submitForm2()">
-                </div>
+        <form id="filterForm2" method="get" action="/admin/phieu-giam-gia/index">
+            <div class="col-12 d-flex align-items-center mb-3 gap-2">
+                <input name="keyword" th:value="${keyword}" type="text" class="form-control"
+                       placeholder="Tìm kiếm...">
+                <button type="submit" class="btn btn-primary">
+                    Tìm Kiếm
+                </button>
+                <a href="/admin/phieu-giam-gia/index" class="btn btn-secondary">
+                    Làm mới
+                </a>
+            </div>
+            <!-- Dòng 2: Bộ lọc -->
+        <div class="col-12 d-flex gap-3">
+            <!-- Ngày bắt đầu -->
+            <div class="flex-grow-1">
+                <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                <input type="date" id="startDate" name="ngayBatDau" class="form-control" th:value="${ngayBatDau}"
+                       onchange="submitForm2()">
+            </div>
 
-                <!-- Loại giảm giá -->
-                <div class="col-md-3">
-                    <label for="kieuGiamGia" class="form-label">Loại giảm giá</label>
-                    <select id="kieuGiamGia" name="kieuGiamGia" class="form-select" th:value="${kieuGiamGia}"
-                            onchange="submitForm2()">
-                        <option value="">Chọn</option>
-                        <option value="1" th:selected="${kieuGiamGia == 1}">%</option>
-                        <option value="0" th:selected="${kieuGiamGia == 0}">VND</option>
-                    </select>
-                </div>
+            <!-- Ngày kết thúc -->
+            <div class="flex-grow-1">
+                <label for="endDate" class="form-label">Ngày kết thúc</label>
+                <input type="date" id="endDate" name="ngayKetThuc" class="form-control" th:value="${ngayKetThuc}"
+                       onchange="submitForm2()">
+            </div>
 
-                <!-- Trạng thái -->
-                <div class="col-md-3">
-                    <label for="trangThai" class="form-label">Trạng thái</label>
-                    <select id="trangThai" name="trangThai" class="form-select" th:value="${trangThai}"
-                            onchange="submitForm2()">
-                        <option value="">Chọn</option>
-                        <option value="1" th:selected="${trangThai == 1}">Active</option>
-                        <option value="0" th:selected="${trangThai == 0}">Inactive</option>
-                    </select>
-                </div>
+            <!-- Loại giảm giá -->
+            <div class="flex-grow-1">
+                <label for="kieuGiamGia" class="form-label">Loại giảm giá</label>
+                <select id="kieuGiamGia" name="kieuGiamGia" class="form-select" th:value="${kieuGiamGia}"
+                        onchange="submitForm2()">
+                    <option value="">Chọn</option>
+                    <option value="1" th:selected="${kieuGiamGia == 1}">%</option>
+                    <option value="0" th:selected="${kieuGiamGia == 0}">VND</option>
+                </select>
+            </div>
 
-            </form>
+            <!-- Trạng thái -->
+            <div class="flex-grow-1">
+                <label for="trangThai" class="form-label">Trạng thái</label>
+                <select id="trangThai" name="trangThai" class="form-select" th:value="${trangThai}"
+                        onchange="submitForm2()">
+                    <option value="">Chọn</option>
+                    <option value="1" th:selected="${trangThai == 1}">Active</option>
+                    <option value="0" th:selected="${trangThai == 0}">Inactive</option>
+                </select>
+            </div>
+        </div>
+        </form>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12 text-end">
+            <a class="btn btn-info" th:href="@{'/admin/phieu-giam-gia/add'}">
+                <i class="fas fa-plus-circle"></i> Thêm mới +
+            </a>
         </div>
     </div>
 
@@ -104,45 +206,39 @@
             <td th:text="${#dates.format(phieuGiamGia.ngayKetThuc, 'yyyy-MM-dd')}"></td>
             <td th:text="${phieuGiamGia.kieuGiamGia == 1 ? phieuGiamGia.giaTriGiam + ' %' : #numbers.formatDecimal(phieuGiamGia.giaTriGiam, 1, 'COMMA', 0, 'POINT') + ' đ'}"></td>
             <td th:text="${#numbers.formatDecimal(phieuGiamGia.giaTriMax, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
-            <!--            <td th:text="${phieuGiamGia.trangThai == 1 ? 'Active' : 'Inactive'}"></td>-->
             <td th:switch="${phieuGiamGia.trangThai}">
                 <span th:case="1" class="badge bg-success">
-                    <i class="fas fa-check-circle"></i>Active
+                    <i class="fas fa-check-circle"></i> Hoạt Động
                 </span>
                             <span th:case="0" class="badge bg-danger">
-                    <i class="fas fa-times-circle"></i>Inactive
+                    <i class="fas fa-times-circle"></i> Ngừng Hoạt Động
+                </span>
+                            <span th:case="2" class="badge bg-warning">
+                    <i class="fas fa-pause-circle"></i> Tạm Dừng
                 </span>
                             <span th:case="*" class="badge bg-secondary">
-                    <i class="fas fa-question-circle"></i>Unknown
+                    <i class="fas fa-question-circle"></i> Unknown
                 </span>
             </td>
             <td>
                 <form class="d-inline-block">
                     <a class="btn btn-info btn-sm" th:href="@{'/admin/phieu-giam-gia/detail/' + ${phieuGiamGia.id}}">
-                        <i class="fas fa-info-circle"></i> Detail
+                        <i class="fas fa-info-circle"></i> Chi Tiết
                     </a>
                 </form>
                 <form class="d-inline-block">
                     <a class="btn btn-warning btn-sm" th:href="@{'/admin/phieu-giam-gia/edit/' + ${phieuGiamGia.id}}">
-                        <i class="fas fa-info-circle"></i> Update
+                        <i class="fas fa-info-circle"></i> Cập Nhật
                     </a>
                 </form>
-<!--                <form class="d-inline-block" th:action="@{'/admin/phieu-giam-gia/update-status/' + ${phieuGiamGia.id}}"-->
-<!--                      method="post">-->
-<!--                    <button type="submit" class="btn btn-danger btn-sm"-->
-<!--                            onclick="return confirm('Xác nhận dừng hoạt động phiếu giảm giá?');">-->
-<!--                        <i class="fas fa-trash-alt"></i> End-->
-<!--                    </button>-->
-<!--                </form>-->
-<!--                <form class="d-inline-block" th:action="@{'/admin/phieu-giam-gia/update-status/' + ${phieuGiamGia.id}}"-->
-<!--                      method="post">-->
-<!--                    <button type="submit" class="btn"-->
-<!--                            th:classappend="${phieuGiamGia.trangThai == 1} ? 'btn-danger' : 'btn-success'"-->
-<!--                            th:text="${phieuGiamGia.trangThai == 1} ? 'Inactive' : 'Active'"-->
-<!--                            onclick="return confirm('Xác nhận thay đổi trạng thái phiếu giảm giá?');">-->
-<!--                        <i class="fas" th:classappend="${phieuGiamGia.trangThai == 1} ? 'fa-trash-alt' : 'fa-check'"></i>-->
-<!--                    </button>-->
-<!--                </form>-->
+                <form class="d-inline-block" th:action="@{'/admin/phieu-giam-gia/tam-dung/' + ${phieuGiamGia.id}}" method="post">
+                    <button type="submit" class="btn btn-sm"
+                            th:classappend="${phieuGiamGia.trangThai == 2} ? 'btn-success' : 'btn-danger'"
+                            th:text="${phieuGiamGia.trangThai == 2} ? 'Kích Hoạt' : 'Tạm Dừng'"
+                            onclick="return confirm('Xác nhận thay đổi trạng thái phiếu giảm giá?');">
+                        <i class="fas" th:classappend="${phieuGiamGia.trangThai == 2} ? 'fa-play-circle' : 'fa-pause-circle'"></i>
+                    </button>
+                </form>
             </td>
         </tr>
         </tbody>

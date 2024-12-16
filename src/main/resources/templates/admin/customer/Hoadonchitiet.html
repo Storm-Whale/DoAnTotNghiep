@@ -1,76 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Quản Lý Hóa Đơn</title>-->
-<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">-->
-<!--    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>-->
-<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">-->
-<!--    <link rel="stylesheet" th:href="@{/css/admin.css}">-->
-<!--</head>-->
-<!--<body class="container-fluid">-->
-<!--<article th:replace="~{admin/fragments/article :: article}"></article>-->
-<!--<header th:replace="~{admin/fragments/header :: header}"></header>-->
-<!--<nav th:replace="~{admin/fragments/nav :: nav}"></nav>-->
-
-<!--<section class="page-content my-4">-->
-<!--    <div class="row mb-3">-->
-<!--        <div class="col-md-6">-->
-<!--            <h2>Danh Sách Hóa Đơn</h2>-->
-<!--        </div>-->
-<!--        <div class="col-md-6">-->
-<!--            <br>-->
-<!--            <form th:action="@{/admin/hoadon/search}" method="get" class="d-flex">-->
-<!--                <input type="text" class="form-control me-2" placeholder="Tìm kiếm..." name="keyword" id="keyword" />-->
-<!--                <button type="submit" class="btn btn-link p-0">-->
-<!--                    <img src="https://img.icons8.com/win8/200/228BE6/google-web-search.png" alt="Search" style="width: 40px; height: 40px; border-radius: 8px;" />-->
-<!--                </button>-->
-<!--            </form>-->
-
-<!--        </div>-->
-
-
-<!--    </div>-->
-
-
-<!--    <div class="z">-->
-<!--        <a class="small" href="/admin/hoadon">< Trở Lại</a>-->
-<!--    </div>-->
-<!--    <br>-->
-<!--    <h3>Hóa Đơn</h3>-->
-<!--    <table class="table table-bordered table-hover">-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th scope="col">ID Sản Phẩm</th>-->
-
-<!--            <th scope="col">Tên Sản Phẩm</th>-->
-<!--            <th scope="col">Màu Sắc</th>-->
-<!--            <th scope="col">Size</th>-->
-<!--            <th scope="col">Số Lượng</th>-->
-<!--            <th scope="col">Giá</th>-->
-<!--            <th scope="col">Tổng Tiền</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr th:each="item : ${hoaDonChiTietList}">-->
-<!--            <td th:text="${item.sanPhamChiTiet.id}"></td>-->
-<!--            <td th:text="${item.sanPhamChiTiet.sanPham.tenSanPham}"></td>-->
-<!--            <td th:text="${item.sanPhamChiTiet.mauSac.tenMauSac}"></td>-->
-<!--            <td th:text="${item.sanPhamChiTiet.kichCo.tenKichCo}"></td>-->
-<!--            <td th:text="${item.soLuong}"></td>-->
-<!--&lt;!&ndash;            <td th:text="${item.gia}"></td>&ndash;&gt;-->
-<!--            <td th:text="${item.sanPhamChiTiet.gia}"></td>-->
-<!--            <td th:text="${item.sanPhamChiTiet.gia * item.soLuong}"></td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--    </table>-->
-<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
-<!--</section>-->
-<!--</body>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
-<!--<script th:src="@{/javascript/admin.js}"></script>-->
-<!--</html>-->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -83,6 +10,104 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        .card {
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            background-color: #fff;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .d-flex {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin: 0;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        strong {
+            color: #000;
+            font-weight: bold;
+        }
+
+        span {
+            font-weight: normal;
+            color: #333;
+        }
+
+        .card p {
+            font-size: 14px;
+        }
+
+        .card p span {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .card .d-flex p {
+            flex: 1;
+        }
+
+        .card .d-flex p strong {
+            font-weight: 600;
+        }
+
+        .card .d-flex p span {
+            font-weight: normal;
+        }
+
+
+        /* Căn chỉnh ô số lượng */
+        .quantity-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Nút cộng, trừ */
+        .quantity-btn {
+            background-color: transparent;  /* Bỏ nền */
+
+            border: none;  /* Bỏ viền */
+            font-size: 22px;  /* Kích thước chữ vừa phải */
+            font-weight: bold;  /* Làm chữ đậm */
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .quantity-display {
+            font-size: 20px;
+
+            min-width: 30px;
+            text-align: center;
+            padding: 5px;
+            margin: 0 5px;
+        }
+
+
+
+
+
+    </style>
 </head>
 <body class="container-fluid">
 <article th:replace="~{admin/fragments/article :: article}"></article>
@@ -117,86 +142,331 @@
 
     <!-- Styled box for order details -->
     <div class="card p-3 mb-4">
-        <h5 class="card-title">Thông Tin Hóa Đơn</h5>
-        <div class="d-flex justify-content-between">
-            <p><strong>Tên Khách Hàng:</strong> <span th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></span></p>
-<!--            <p><strong>Trạng Thái:</strong> <span th:text="${hoaDon.trangThai}"></span></p>-->
-            <p><strong>Trạng Thái:</strong>
-                <span th:switch="${hoaDon.trangThai}">
-        <span th:case="2">Chờ Xác Nhận</span>
-        <span th:case="3">Đang Chuẩn Bị Hàng</span>
-        <span th:case="4">Đang Giao Hàng</span>
-        <span th:case="5">Giao Hàng Thành Công</span>
-        <span th:case="6">Đã Hủy</span>
-        <span th:case="*">Trạng Thái Không Xác Định</span> <!-- Dùng cho trường hợp mặc định -->
-    </span>
-            </p>
+        <h5 class="card-title text-center">Thông Tin Hóa Đơn</h5>
+        <div class="d-flex justify-content-between mb-3">
+<!--            <p><strong>Tên Khách Hàng:</strong> <span th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></span></p>-->
+<!--            <p><strong>Trạng Thái:</strong>-->
+<!--                <span th:switch="${hoaDon.trangThai}">-->
+<!--                <span th:case="2">Chờ Xác Nhận</span>-->
+<!--                <span th:case="3">Đang Chuẩn Bị Hàng</span>-->
+<!--                <span th:case="4">Đang Giao Hàng</span>-->
+<!--                <span th:case="5">Giao Hàng Thành Công</span>-->
+<!--                <span th:case="6">Đã Hủy</span>-->
+<!--                <span th:case="*">Trạng Thái Không Xác Định</span> &lt;!&ndash; Dùng cho trường hợp mặc định &ndash;&gt;-->
+<!--            </span>-->
+<!--            </p>-->
+<!--        </div>-->
+<!--        <div class="d-flex justify-content-between mb-3">-->
+<!--            <p><strong>Ngày Tạo:</strong> <span th:text="${hoaDon.ngayTao}"></span></p>-->
+<!--            <p><strong>Ghi Chú:</strong> <span th:text="${hoaDon.ghiChu}"></span></p>-->
+<!--        </div>-->
+<!--        <div class="d-flex justify-content-between mb-3">-->
+<!--            <p><strong>Ngày Thanh Toán:</strong><span th:text="${hoaDon.ngaySua}"></span></p>-->
+<!--            <p><strong>Tổng Tiền Hóa Đơn:</strong> <span th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span></p>-->
+<!--        </div>-->
+<!--        <div class="d-flex justify-content-between mb-3">-->
+<!--            <p><strong>Số Điện Thoại:</strong> <span th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.soDienThoai}"></span></p>-->
+<!--            <p><strong>Giảm Giá:</strong> <span th:text="${hoaDon.phieuGiamGia == null ? '' : hoaDon.phieuGiamGia.giaTriGiam}"></span></p>-->
+<!--        </div>-->
+<!--        <div class="d-flex justify-content-between mb-3">-->
+<!--            <p><strong>Địa Chỉ Giao:</strong> <span th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></span></p>-->
+<!--        </div>-->
+<!--        <div class="d-flex justify-content-between">-->
+<!--            <p><strong>Thanh Toán:</strong> <span th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span></p>-->
+<!--        </div>-->
+<!--    </div>-->
+            <form th:action="@{/admin/hoadon/updateHoaDon/{id}(id=${hoaDon.id})}" method="post" class="p-4 border rounded shadow-sm bg-light">
+                <h5 class="mb-3 text-center">Cập Nhật Hóa Đơn</h5>
+                <div class="row mb-3">
+                    <div class="col-md-2 text-end">
+                        <label for="ngayTao" class="form-label"><strong>Ngày Tạo:</strong></label>
+                    </div>
+                    <div class="col-md-4">
+                        <p id="ngayTao" class="form-control-plaintext" th:text="${hoaDon.ngayTao}"></p>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <label for="ghiChu" class="form-label"><strong>Ghi Chú:</strong></label>
+                    </div>
+                    <div class="col-md-4">
+                        <textarea id="ghiChu" name="ghiChu" rows="1" class="form-control" th:text="${hoaDon.ghiChu}"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Trạng Thái:</strong>
+                            <span th:switch="${hoaDon.trangThai}">
+            <span th:case="1">Chờ Xác Nhận</span>
+            <span th:case="2">Xác Nhận Đơn Hàng</span>
+            <span th:case="4">Giao Hàng</span>
+            <span th:case="5">Giao Hàng Thành Công</span>
+            <span th:case="6">Giao Hàng Thất Bại</span>
+            <span th:case="7">Đã Hủy</span>
+            <span th:case="*">Trạng Thái Không Xác Định</span>
+        </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-2 text-end">
+                        <label for="ngayThanhToan" class="form-label"><strong>Ngày Thanh Toán:</strong></label>
+                    </div>
+                    <div class="col-md-4">
+                        <p id="ngayThanhToan" class="form-control-plaintext" th:text="${hoaDon.ngaySua}"></p>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <label for="tongTien" class="form-label"><strong>Tổng Tiền:</strong></label>
+                    </div>
+                    <div class="col-md-4">
+                        <p id="tongTien" class="form-control-plaintext text-success" th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-2 text-end">
+                        <label for="soDienThoai" class="form-label"><strong>Số Điện Thoại:</strong></label>
+                    </div>
+                    <div class="col-md-4">
+                        <input id="soDienThoai" type="text" name="soDienThoai" class="form-control" th:value="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.soDienThoai}" />
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <label for="giamGia" class="form-label"><strong>Giảm Giá:</strong></label>
+                    </div>
+                    <div class="col-md-4">
+                        <p id="giamGia" class="form-control-plaintext text-danger" th:text="${hoaDon.phieuGiamGia == null ? '' : hoaDon.phieuGiamGia.giaTriGiam}"></p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-2 text-end">
+                        <label for="diaChi" class="form-label"><strong>Địa Chỉ Giao:</strong></label>
+                    </div>
+                    <div class="col-md-4">
+                        <input id="diaChi" type="text" name="diaChi" class="form-control" th:value="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}" />
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <label for="tenKhachHang" class="form-label"><strong>Tên Khách Hàng:</strong></label>
+                    </div>
+                    <div class="col-md-4">
+                        <input id="tenKhachHang" type="text" name="tenKhachHang" class="form-control"
+                               th:value="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : ''}" />
+                    </div>
+
+
+
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                    </div>
+                </div>
+            </form>
+
 
         </div>
-        <div class="d-flex justify-content-between">
-            <p><strong>Ngày Tạo:</strong> <span th:text="${hoaDon.ngayTao}"></span></p>
+
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Tên Sản Phẩm</th>
+                <th scope="col">Màu Sắc</th>
+                <th scope="col">Size</th>
+                <th scope="col">Số Lượng</th>
+                <th scope="col">Giá</th>
+                <th scope="col">Tổng Tiền</th>
+            </tr>
+            </thead>
+            <form >
+                <tbody>
+                <tr th:each="item,stt : ${hoaDonChiTietList}">
+                    <td th:text="${item.id}"></td>
+                    <td th:text="${item.sanPhamChiTiet.sanPham.tenSanPham}"></td>
+                    <td th:text="${item.sanPhamChiTiet.mauSac.tenMauSac}"></td>
+                    <td th:text="${item.sanPhamChiTiet.kichCo.tenKichCo}"></td>
+                    <td>
+                        <button class="btn btn-sm btn-light"
+                                style="margin-right: 3px; background-color: #ffecee"
+                                th:attr="onclick='updateQuantity(' + ${item.id} + ', -1)'">-
+                        </button>
+                        <input type="number"
+                               class="quantity-input"
+                               th:id="'quantity-' + ${item.id}"
+                               th:value="${item.soLuong}"
+                               min="1"
+                               style="width: 30px; text-align: center; background-color: #ffecee" ;
+                               th:data-current-quantity="${item.soLuong}"
+                               th:data-stock-quantity="${item.sanPhamChiTiet.soLuong}"
+                               th:onchange="'updateQuantityDirectly(this, ' + ${item.id} + ')'">
+                        <button class="btn btn-sm btn-light"
+                                style="margin-left: 3px; background-color: #ffecee"
+                                th:attr="onclick='updateQuantity(' + ${item.id} + ', 1)'">+
+                        </button>
+                    </td>
 
 
+                    <td th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                    <td th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.gia * item.soLuong, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                </tr>
+                </tbody>
+                <!-- Nút cập nhật -->
+<!--                <button type="submit" class="btn btn-primary">Cập Nhật</button>-->
+            </form>
+        </table>
 
 
-            <p><strong>Ghi Chú:</strong> <span th:text="${hoaDon.ghiChu}"></span></p>
-        </div>
-        <div class="d-flex justify-content-between">
-            <p><strong>Ngày Thanh Toán:</strong> 2023-12-24</p>
-            <p><strong>Tổng Tiền Hóa Đơn:</strong><span th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span></p>
-        </div>
-        <div class="d-flex justify-content-between">
-            <p><strong>Số Điện Thoại:</strong><span th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.soDienThoai}"></span></p>
-            <p><strong>Giảm Giá:</strong> <span th:text="${hoaDon.phieuGiamGia == null ? '' : hoaDon.phieuGiamGia.giaTriGiam}"></span></p>
-        </div>
-        <div class="d-flex justify-content-between">
-            <p><strong>Địa Chỉ Giao:</strong>
-                <span th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></span>
-            </p>
-
-
-        </div>
-        <div class="d-flex justify-content-between">
-            <p><strong>Thanh Toán:</strong> <span th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></span></p>
-        </div>
-
-    </div>
-
-    <!-- Table for product details -->
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <th scope="col">ID Sản Phẩm</th>
-            <th scope="col">Tên Sản Phẩm</th>
-            <th scope="col">Màu Sắc</th>
-            <th scope="col">Size</th>
-            <th scope="col">Số Lượng</th>
-            <th scope="col">Giá</th>
-            <th scope="col">Tổng Tiền</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${hoaDonChiTietList}">
-            <td th:text="${item.sanPhamChiTiet.id}"></td>
-            <td th:text="${item.sanPhamChiTiet.sanPham.tenSanPham}"></td>
-            <td th:text="${item.sanPhamChiTiet.mauSac.tenMauSac}"></td>
-            <td th:text="${item.sanPhamChiTiet.kichCo.tenKichCo}"></td>
-            <td th:text="${item.soLuong}"></td>
-            <td th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.gia, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
-
-            <td th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.gia * item.soLuong, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
-
-        </tr>
-        </tbody>
-    </table>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </section>
 </body>
+
 <script>
     function exportHoaDonById(id) {
         var url = "/admin/hoadon/exportHoaDonChiTiet/" + id;
         window.location.href = url;  // Mở URL để tải file Excel
+    } // Hàm thay đổi số lượng
+
+
+    function updateQuantityDirectly(inputElement, hdctId) {
+        // Lấy ID hóa đơn từ URL
+        const pathParts = window.location.pathname.split('/');
+        const hoaDonId = pathParts[pathParts.length - 1]; // Giả sử ID hóa đơn là phần cuối cùng của URL
+        console.log(`Directly updating quantity for ID: ${hdctId}`);
+        let newQuantity = parseInt(inputElement.value);
+        const currentQuantity = parseInt(inputElement.getAttribute('data-current-quantity'));
+        // Kiểm tra số lượng tồn kho
+        const stockQuantity = parseInt(inputElement.getAttribute('data-stock-quantity')); // Thêm giá trị tồn kho
+        // Kiểm tra số lượng hợp lệ
+        if (isNaN(newQuantity) || newQuantity < 1) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Số lượng không hợp lệ. Vui lòng nhập số lượng lớn hơn 0.'
+            });
+            return;
+        }
+        // Kiểm tra số lượng tồn kho
+        if (newQuantity > stockQuantity) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: `Số lượng vượt quá số lượng tồn kho. Chỉ còn lại ${stockQuantity} sản phẩm.`
+            });
+            inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
+            return;
+        }
+        //
+        const delta = newQuantity - currentQuantity;
+
+        if (delta !== 0) {
+            const url = `/admin/hoadon/update-hoadon-hdct/${hdctId}`;
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `delta=${delta}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Cảnh Báo',
+                            text: data.error
+                        });
+                        inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
+                    } else {
+                        // Cập nhật số lượng tồn kho
+                        // Redirect về trang chi tiết hóa đơn
+                        console.log(`Redirecting to /admin/hoadon/detail/${hoaDonId}`);
+                        window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Có lỗi xảy ra, vui lòng thử lại.'
+                    });
+                    inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
+                    window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
+                });
+        }
+    }
+    function updateQuantity(hdctId, delta) {
+        // Lấy ID hóa đơn từ URL
+        const pathParts = window.location.pathname.split('/');
+        const hoaDonId = pathParts[pathParts.length - 1]; // Giả sử ID hóa đơn là phần cuối cùng của URL
+        const quantityInput = document.getElementById(`quantity-${hdctId}`);
+
+        let currentQuantity = parseInt(quantityInput.value);
+        let newQuantity = currentQuantity + delta;
+        // Kiểm tra số lượng tồn kho trước khi thay đổi
+        const stockQuantity = parseInt(quantityInput.getAttribute('data-stock-quantity')); // Lấy số lượng tồn kho
+
+        // if (newQuantity < 1) {
+        //     Swal.fire({
+        //         title: 'Xóa Sản Phẩm',
+        //         text: 'Bạn có muốn xóa sản phẩm này khỏi giỏ hàng không?',
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonText: 'Có, xóa ngay!',
+        //         cancelButtonText: 'Hủy'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             // Gọi API xóa sản phẩm
+        //             window.location.href = `/admin/taiquay/xoa-sanpham-hdct/${hdctId}`;
+        //         }
+        //     });
+        //     return;
+        // }
+        //kiem tra sl ton kho
+        if (newQuantity > stockQuantity) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: `Số lượng vượt quá số lượng tồn kho. Chỉ còn lại ${stockQuantity} sản phẩm.`
+            });
+            return;
+        }
+        // Cập nhật số lượng trong input
+        quantityInput.value = newQuantity;
+        // Cập nhật lại giá trị data-current-quantity trước khi gọi hàm khác
+        quantityInput.setAttribute('data-current-quantity', newQuantity);
+
+        const url = `/admin/hoadon/update-hoadon-hdct/${hdctId}`;
+        console.log(`Sending request to update quantity for ID: ${hdctId} with delta: ${delta}`);
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `delta=${delta}`
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cảnh Báo',
+                        text: data.error
+                    });
+                    quantityInput.value = currentQuantity; // Khôi phục lại giá trị cũ
+                } else {
+                    // Cập nhật giá trị hiện tại
+                    // Redirect về trang chi tiết hóa đơn
+                    console.log(`Redirecting to /admin/hoadon/detail/${hoaDonId}`);
+                    window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
+                }
+            }).catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Có lỗi xảy ra, vui lòng thử lại.'
+
+            });
+            quantityInput.value = currentQuantity; // Khôi phục lại giá trị cũ
+            window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
+        });
     }
 </script>
 
