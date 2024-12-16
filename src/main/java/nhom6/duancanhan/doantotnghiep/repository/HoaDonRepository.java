@@ -36,6 +36,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
 
     List<HoaDon> findByKhachHangId(Integer khachHangId);
     List<HoaDon> findByKhachHang_IdAndTrangThai(Integer khachHangId, Integer trangThai);
+//    List<HoaDon> findByKhachHang_IdAndTrangThai(Integer khachHangId);
 
     List<HoaDon> findByNguoiTao(NhanVien nguoiTao);
 
@@ -54,6 +55,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findHoaDonByKhachHangIdAndTrangThai(Integer khachHangId, int trangThai);
 
     Page<HoaDon> findByKhachHang_IdAndTrangThai(Integer khachHangId, Integer trangThai, Pageable pageable);
+    Page<HoaDon> findByKhachHang_Id(Integer khachHangId, Pageable pageable);
 
     Page<HoaDon> findByNguoiTao_Id(Integer nguoiTaoId, Pageable pageable);
 

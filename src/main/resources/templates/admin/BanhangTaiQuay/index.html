@@ -355,6 +355,7 @@
                                 });
                                 return false;
                             }
+
                             // Nếu qua được các kiểm tra
                             return true;
                         }
@@ -368,7 +369,7 @@
                         toán</i></b></p>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
-                        <form th:action="@{/admin/taiquay/tim-kiem}" method="get"
+                        <form id="searchFormKhachHang" th:action="@{/admin/taiquay/tim-kiem}" method="get"
                               style="display: flex; align-items: center; gap: 10px;">
                             <input type="text" id="soDienThoai" name="soDienThoai" required
                                    style="padding: 5px; border-radius: 5px; border: 1px solid #ddd; width: 200px;">
@@ -382,8 +383,9 @@
                                 Tìm kiếm
                             </button>
 
-
                         </form>
+
+
 
                         <style>
                             .error-message {
@@ -1015,6 +1017,7 @@
                 }
             });
         }
+
         // Sự kiện click nút thanh toán
         btnCheckout.addEventListener('click', submitPayment);
     });
@@ -1070,6 +1073,8 @@
         }
         //
         const delta = newQuantity - currentQuantity;
+        // Log delta
+        console.log(`Delta computed: ${delta}`);
 
         if (delta !== 0) {
             const url = `/admin/taiquay/update-sanpham-hdct/${hdctId}`;
@@ -1272,4 +1277,31 @@
         });
     });
 </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Thêm SweetAlert2 -->
+
+<script>
+    // Giả sử bạn có một biến toàn cục để kiểm tra trạng thái hóa đơn
+    let isInvoiceSelected = false; // Thay đổi giá trị này khi hóa đơn được chọn
+
+    document.getElementById('searchFormKhachHang').addEventListener('submit', function(event) {
+        const currentUrl = window.location.href;
+        if (currentUrl === "http://localhost:8080/admin/taiquay" && !isInvoiceSelected) {
+            event.preventDefault(); // Ngăn không cho gửi biểu mẫu
+            Swal.fire({
+                icon: 'warning',
+                title: 'Chọn hóa đơn trước',
+                text: 'Vui lòng chọn hóa đơn trước khi tìm kiếm khách hàng.',
+                confirmButtonText: 'OK'
+            });
+            return; // Không cho phép tìm kiếm khách hàng
+        }
+    });
+
+    // Hàm này sẽ được gọi khi hóa đơn được chọn
+    function selectInvoice() {
+        isInvoiceSelected = true; // Đánh dấu rằng hóa đơn đã được chọn
+    }
+</script>
+
 </html>

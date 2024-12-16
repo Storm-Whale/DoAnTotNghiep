@@ -135,6 +135,8 @@ public class ForgotPasServiceImpl implements ForgotPasswordService {
                 .append("</thead>")
                 .append("<tbody>");
 
+
+
         for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
             String productName = hoaDonChiTiet.getSanPhamChiTiet().getSanPham().getTenSanPham();
             String color = hoaDonChiTiet.getSanPhamChiTiet().getMauSac().getTenMauSac();
@@ -184,7 +186,6 @@ public class ForgotPasServiceImpl implements ForgotPasswordService {
                 .append("<p style='font-size: 16px; color: #555;'>Nếu bạn có bất kỳ câu hỏi nào về đơn hàng, vui lòng liên hệ với chúng tôi.</p>")
                 .append("<p style='font-size: 16px; color: #555;'>Trân trọng,<br><em>Đội ngũ hỗ trợ của Yagi Shop</em></p>")
                 .append("</div>");
-
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -197,8 +198,7 @@ public class ForgotPasServiceImpl implements ForgotPasswordService {
 
             helper.setTo(email);
             helper.setSubject("Thông tin hoá đơn từ Yagi Shop");
-            helper.setText(htmlContent.toString(), true);
-
+            helper.setText(htmlContent.toString(), true);// true cho biết rằng văn bản là HTML
             mailSender.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();

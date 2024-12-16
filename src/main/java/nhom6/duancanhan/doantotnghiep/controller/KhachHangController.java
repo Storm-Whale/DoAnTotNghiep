@@ -146,8 +146,8 @@ public class KhachHangController {
 
         // Tạo Pageable để phân trang
         Pageable pageable = PageRequest.of(page, size);
-        Page<HoaDon> hoaDonPage = hoaDonRepository.findByKhachHang_IdAndTrangThai(khachHangId, 2, pageable);
-        List<HoaDon> danhSachHoaDon = hoaDonRepository.findByKhachHang_IdAndTrangThai(khachHangId, 2);
+        Page<HoaDon> hoaDonPage = hoaDonRepository.findByKhachHang_Id(khachHangId, pageable);
+//        List<HoaDon> danhSachHoaDon = hoaDonRepository.findByKhachHang_IdAndTrangThai(khachHangId);
         // Đẩy dữ liệu vào model
         model.addAttribute("khachHang", khachHang);
         model.addAttribute("hoaDonPage", hoaDonPage); // Đối tượng phân trang

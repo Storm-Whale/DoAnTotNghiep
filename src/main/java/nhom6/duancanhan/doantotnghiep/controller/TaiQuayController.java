@@ -720,11 +720,11 @@ public class TaiQuayController {
             byte[] pdfData = invoidPdfService.generateInvoicePdf(hoaDon);
 
             String fileName = "invoice_" + hoaDon.getId() + ".pdf";
-            Path path = Paths.get("D://FALL_2024//DATN//DoAnTotNghiep//upload/" + fileName);
+            Path path = Paths.get("D://DoAnTotNghiep//DoAnTotNghiep//upload/" + fileName);
             Files.write(path, pdfData);
 //        D://FALL_2024//DATN//DoAnTotNghiep//upload/
             // Return the file URL to the frontend
-            String fileUrl = "D://FALL_2024//DATN//DoAnTotNghiep//upload/" + fileName;
+            String fileUrl = "D://DoAnTotNghiep//DoAnTotNghiep//upload/" + fileName;
             model.addAttribute("pdfUrl", fileUrl);
             return "/uploads/" + fileName;
         }

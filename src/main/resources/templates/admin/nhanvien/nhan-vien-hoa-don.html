@@ -209,7 +209,15 @@
     <tr th:each="hoaDon : ${hoaDonPage.content}">
       <td th:text="${hoaDon.id}"></td>
       <td th:text="${hoaDon.ngayTao}"></td>
-      <td th:text="${hoaDon.trangThai == 5 ? 'Đã thanh toán' : 'Chưa thanh toán'}"></td>
+
+      <td th:text="${hoaDon.trangThai == 1 ? 'Chờ xác nhận' :
+               hoaDon.trangThai == 2 ? 'Xác nhận đơn hàng' :
+               hoaDon.trangThai == 3 ? 'Giao hàng' :
+               hoaDon.trangThai == 4 ? 'Giao hàng thành công' :
+               hoaDon.trangThai == 5 ? 'Giao hàng thất bại' :
+               hoaDon.trangThai == 6 ? 'Hoàn thành đơn hàng' :
+               hoaDon.trangThai == 7 ? 'Hủy' :
+               'Trạng thái không xác định'}"></td>
       <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
       <td>
         <a th:href="@{/admin/nhanvien/{id}(id=${hoaDon.id})}" class="btn btn-primary">Xem chi tiết</a>
