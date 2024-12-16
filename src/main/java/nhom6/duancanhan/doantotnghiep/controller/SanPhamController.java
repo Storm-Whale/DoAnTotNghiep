@@ -329,17 +329,17 @@ public class SanPhamController {
     private void
     addSanPhamModelAttributes(Model model, SanPhamRequest sanPhamRequest) {
         model.addAttribute("product", sanPhamRequest);
-        model.addAttribute("thuongHieus", thuongHieuService.getAll());
-        model.addAttribute("chatLieus", chatLieuService.getAll());
-        model.addAttribute("kieuCoAos", kieuCoAoService.getAll());
-        model.addAttribute("kieuTayAos", kieuTayAoService.getAll());
+        model.addAttribute("thuongHieus", thuongHieuService.getAllThuongHieuByTrangThai(1));
+        model.addAttribute("chatLieus", chatLieuService.getAllChatLieuByTrangThai(1));
+        model.addAttribute("kieuCoAos", kieuCoAoService.getAllKieuCoAoByTrangThai(1));
+        model.addAttribute("kieuTayAos", kieuTayAoService.getAllKieuTayAoByKieuTayAo(1));
     }
 
     private void addSanPhamModelAttributes(Model model) {
-        model.addAttribute("thuongHieus", thuongHieuService.getAll());
-        model.addAttribute("chatLieus", chatLieuService.getAll());
-        model.addAttribute("kieuCoAos", kieuCoAoService.getAll());
-        model.addAttribute("kieuTayAos", kieuTayAoService.getAll());
+        model.addAttribute("thuongHieus", thuongHieuService.getAllThuongHieuByTrangThai(1));
+        model.addAttribute("chatLieus", chatLieuService.getAllChatLieuByTrangThai(1));
+        model.addAttribute("kieuCoAos", kieuCoAoService.getAllKieuCoAoByTrangThai(1));
+        model.addAttribute("kieuTayAos", kieuTayAoService.getAllKieuTayAoByKieuTayAo(1));
     }
 
     //  TODO: CREATE IMAGE QR FOR SP

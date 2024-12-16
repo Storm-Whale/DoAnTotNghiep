@@ -397,6 +397,8 @@ function guiDataThanhToan() {
         tongTienSauKhiTruMa = tongTien - tienShip;
     }
 
+    console.log(maPGG)
+
     const formData = new FormData();
     formData.append('listIDSPGH', JSON.stringify(listIDSPGH));
     formData.append('tongTien', tongTienSauKhiTruMa);

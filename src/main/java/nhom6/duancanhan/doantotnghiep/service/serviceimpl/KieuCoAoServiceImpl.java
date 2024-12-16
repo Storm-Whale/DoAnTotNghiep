@@ -61,6 +61,12 @@ public class KieuCoAoServiceImpl implements KieuCoAoService {
     }
 
     @Override
+<<<<<<< HEAD
+    public List<KieuCoAo> getAllKieuCoAoByTrangThai(int trangThai) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() ->
+                        kieuCoAoRepository.findAllByTrangThai(trangThai)
+                , "Lỗi khi lấy dữ liêu từ cơ sở dữ liệu");
+=======
     public boolean existsByTenCoAo(String tenCoAo) {
         return kieuCoAoRepository.existsByTenCoAo(tenCoAo);
     }
@@ -68,17 +74,13 @@ public class KieuCoAoServiceImpl implements KieuCoAoService {
     @Override
     public List<KieuCoAo> getKieuCoAoByTrangThai(int trangThai) {
         return null;
+>>>>>>> 25025b7a04466b9b44b88e581f850a3437257c3d
     }
 
     @Override
     public Page<KieuCoAo> phanTrangTheoTrangThai(int pageNo, int pageSize, int trangThai) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         return kieuCoAoRepository.findByTrangThai(trangThai, pageable);
-    }
-
-    @Override
-    public List<KieuCoAo> getKieuCoAoByTen(String tenCoAo) {
-        return null;
     }
 
     @Override
@@ -90,9 +92,5 @@ public class KieuCoAoServiceImpl implements KieuCoAoService {
     public Page<KieuCoAo> timKiemVaPhanTrang(String tenCoAo, Integer trangThai, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return kieuCoAoRepository.findByCriteria(tenCoAo, trangThai, pageable);
-    }
-    @Override
-        public List<KieuCoAo> searchByTenCoAo(String tenCoAo) {
-        return kieuCoAoRepository.findByTenCoAoContainingIgnoreCase(tenCoAo);
     }
 }

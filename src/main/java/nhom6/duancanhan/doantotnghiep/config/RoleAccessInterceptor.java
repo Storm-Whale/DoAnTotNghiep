@@ -10,7 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class RoleAccessInterceptor implements HandlerInterceptor{
+public class RoleAccessInterceptor implements HandlerInterceptor {
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
@@ -27,7 +28,7 @@ public class RoleAccessInterceptor implements HandlerInterceptor{
             );
             // Kiểm tra xem đường dẫn hiện tại có trong danh sách được phép không
             boolean isAllowedPath = allowedPaths.stream()
-                    .anyMatch(path -> requestURI.startsWith(path));
+                    .anyMatch(requestURI::startsWith);
 
             if (!isAllowedPath) {
                 // Chuyển hướng hoặc hiển thị thông báo

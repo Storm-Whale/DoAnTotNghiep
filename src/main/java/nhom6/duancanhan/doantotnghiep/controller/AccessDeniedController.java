@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class AccessDeniedController {
+
     @GetMapping("/access-denied")
     public String accessDenied(Model model, HttpSession session) {
         model.addAttribute("errorMessage", "Bạn cần đăng nhập với vai trò admin để thực hiện thao tác này.");
