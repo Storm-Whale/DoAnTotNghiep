@@ -33,10 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 14b06343e86fc8a1528c10ebd171020092c9abc8
 import java.io.IOException;
 
 import java.io.IOException;
@@ -47,17 +44,17 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-<<<<<<< HEAD
-import java.util.List;
-import java.util.Map;
-=======
+//<<<<<<< HEAD
+//import java.util.List;
+//import java.util.Map;
+//=======
 
 
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
->>>>>>> 14b06343e86fc8a1528c10ebd171020092c9abc8
+//>>>>>>> 14b06343e86fc8a1528c10ebd171020092c9abc8
 
 
 @Controller
