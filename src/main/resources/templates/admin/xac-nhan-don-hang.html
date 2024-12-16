@@ -9,6 +9,7 @@
     // Lấy URL hiện tại
     const currentUrl = new URL(window.location.href);
     const hoaDonId = currentUrl.searchParams.get('hoaDonId');
+
     // Gửi request xác nhận
     fetch(`/admin/taiquay/xac-nhan-don-hang?hoaDonId=${hoaDonId}`)
         .then(response => {
