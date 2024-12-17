@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
@@ -26,9 +27,16 @@ public class DiaChiController {
             @RequestParam(name = "city") String city,
             @RequestParam(name = "district") String district,
             @RequestParam(name = "ward") String ward,
-            @RequestParam(name = "detailAddress") String detailAddress
+            @RequestParam(name = "detailAddress") String detailAddress,
+            @RequestParam(name = "email", required = false) String email,
+            HttpSession session
     ) {
         KhachHang khachHang = khachHangService.detail(idKhachHang);
+        if (email != null) {
+            khachHang.setEmail(email);
+            khachHangService.updateKhachHang(khachHang);
+        }
+        session.setAttribute("user", khachHang);
         DiaChi diaChi = DiaChi.builder()
                 .khachHang(khachHang)
                 .tenKhachHang(name.trim())
@@ -52,9 +60,16 @@ public class DiaChiController {
             @RequestParam(name = "city") String city,
             @RequestParam(name = "district") String district,
             @RequestParam(name = "ward") String ward,
-            @RequestParam(name = "detailAddress") String detailAddress
+            @RequestParam(name = "detailAddress") String detailAddress,
+            @RequestParam(name = "email", required = false) String email,
+            HttpSession session
     ) {
         KhachHang khachHang = khachHangService.detail(idKhachHang);
+        if (email != null) {
+            khachHang.setEmail(email);
+            khachHangService.updateKhachHang(khachHang);
+        }
+        session.setAttribute("user", khachHang);
         DiaChi diaChi = diaChiService.getDiaChiById(idDiaChi);
         diaChi.setDiaChiChiTiet(detailAddress.trim());
         diaChi.setKhachHang(khachHang);

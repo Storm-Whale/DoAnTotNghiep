@@ -15,7 +15,6 @@ import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.*;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
 import nhom6.duancanhan.doantotnghiep.service.serviceimpl.VNPayService;
-import nhom6.duancanhan.doantotnghiep.util.ChangeNumberOfDetailProduct;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,7 +53,6 @@ public class ClientController {
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
     private final SanPhamGioHangRepository sanPhamGioHangRepository;
-    private final ChangeNumberOfDetailProduct changeNumberOfDetailProduct;
     private final PhuongThucThanhToanRepository phuongThucThanhToanRepository;
 
     //  TODO: Access Home Client
@@ -392,6 +390,9 @@ public class ClientController {
             }
         }
 
+        List<String> emails = khachHangRepository.findAllEmails();
+
+        model.addAttribute("emails", emails);
         model.addAttribute("user", khachHang);
         model.addAttribute("listSP", sanPhamGioHangCustomList);
         model.addAttribute("phiShip", phiShip);
@@ -697,7 +698,6 @@ public class ClientController {
         //  What For : Check xem có sản phẩm chi tiết có trong gio hàng không
         if (!sanPhamGioHangRepository.existsBySanPhamChiTietIdAndTrangThaiAndGioHangId(idspct, 1, gioHang.getId())) {
             // Nếu sản phẩm chi tiết không tồn tại trong giỏ hàng, thêm sản phẩm mới
-            changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, soluong, "-");
             KhachHang khachHang = khachHangRepository.findById(idKhachHang)
                     .orElseThrow(() -> new DataNotFoundException("Không tìm thấy khách hàng"));
             sanPhamGioHang = SanPhamGioHang.builder().gioHang(gioHang).sanPhamChiTiet(sanPhamChiTiet).soLuong(soluong).trangThai(1).build();
@@ -707,7 +707,6 @@ public class ClientController {
                     .findSanPhamGioHangByGioHangIdAndSanPhamChiTietIdAndTrangThai(idGioHang, idspct, 1);
             int soLuongSPGH = sanPhamGioHang.getSoLuong();
             sanPhamGioHang.setSoLuong(soLuongSPGH + soluong);
-            changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, soluong, "-");
         }
 
         return sanPhamGioHangRepository.save(sanPhamGioHang);

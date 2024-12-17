@@ -118,6 +118,11 @@ public class SanPhamController {
             return "/admin/sanpham/create";
         }
 
+        if (!productRequest.getTenSanPham().matches("^[a-zA-Z0-9\\s]*$")) {  // Check for special characters
+            model.addAttribute("invalidName", "Tên sản phẩm không được chứa ký tự đặc biệt");
+            return "/admin/sanpham/create";
+        }
+
         if (productRequest.getTenSanPham().length() > 100) {
             model.addAttribute("tenSanPhamDai", "Tên sản phẩm của bạn quá dài");
             return "/admin/sanpham/create";
@@ -230,6 +235,11 @@ public class SanPhamController {
 
             if (tenSP.matches("^\\d.*")) {
                 model.addAttribute("productNameError", "Không được bắt đầu bằng số");
+                hasErrors = true;
+            }
+
+            if (!tenSP.matches("^[a-zA-Z0-9\\s]*$")) {  // Check for special characters
+                model.addAttribute("productNameError", "Tên sản phẩm không được chứa ký tự đặc biệt");
                 hasErrors = true;
             }
         }

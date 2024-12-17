@@ -41,4 +41,9 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
     boolean existsBySoDienThoai(String soDienThoai);
 
     boolean existsByEmail(String email);
+
+    @Query(value = """
+            select kh.email from KhachHang kh where kh.email != ''
+        """)
+    List<String> findAllEmails();
 }

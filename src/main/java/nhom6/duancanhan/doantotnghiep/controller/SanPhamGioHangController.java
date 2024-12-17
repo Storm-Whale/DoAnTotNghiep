@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamGioHang;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamGioHangRepository;
-import nhom6.duancanhan.doantotnghiep.util.ChangeNumberOfDetailProduct;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,6 @@ import java.util.Map;
 public class SanPhamGioHangController {
 
     private final SanPhamGioHangRepository sanPhamGioHangRepository;
-    private final ChangeNumberOfDetailProduct changeNumberOfDetailProduct;
 
     //  TODO : Tăng Số Lượng Sản Phẩm Chi Tiết Trong Sản Phẩm Giỏ Hàng
     @PostMapping(value = "/plus-spgh/{idspgh}")
@@ -28,7 +26,6 @@ public class SanPhamGioHangController {
         int idspct = sanPhamGioHang.getSanPhamChiTiet().getId();
         sanPhamGioHang.setSoLuong(oldSoLuong + 1);
         sanPhamGioHangRepository.save(sanPhamGioHang);
-        changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, 1, "-");
     }
 
     //  TODO : Giảm Số Lượng Sản Phẩm Chi Tiết Trong Sản Phẩm Giỏ Hàng
@@ -40,7 +37,6 @@ public class SanPhamGioHangController {
         int idspct = sanPhamGioHang.getSanPhamChiTiet().getId();
         sanPhamGioHang.setSoLuong(oldSoLuong - 1);
         sanPhamGioHangRepository.save(sanPhamGioHang);
-        changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, 1, "+");
     }
 
     //  TODO : Tăng Or Giảm Số Lượng Sản Phẩm Chi Tiết Trong Sản Phẩm Giỏ Hàng
@@ -56,15 +52,6 @@ public class SanPhamGioHangController {
         int idspct = sanPhamGioHang.getSanPhamChiTiet().getId();
         sanPhamGioHang.setSoLuong(numberOfProduct);
         sanPhamGioHangRepository.save(sanPhamGioHang);
-
-        //  What For : So sánh để tăng or giảm số lượng trong sản phẩm chi tiết
-        if (numberOfProduct > oldSoLuong) {
-            int quantityDifference = numberOfProduct - oldSoLuong;
-            changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, quantityDifference, "-");
-        } else {
-            int quantityDifference = oldSoLuong - numberOfProduct;
-            changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, quantityDifference, "+");
-        }
     }
 
     //  TODO : Xóa Sản Phẩm Chi Tiết Khỏi Sản Phẩm Gio Hàng
@@ -74,7 +61,6 @@ public class SanPhamGioHangController {
         SanPhamGioHang sanPhamGioHang = findSanPhamGioHangById(idspgh);
         int soluong = sanPhamGioHang.getSoLuong();
         Integer idspct = sanPhamGioHang.getSanPhamChiTiet().getId();
-        changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, soluong, "+");
     }
 
     //  * Hàm tìm kiếm sản phẩm giỏ hàng by id

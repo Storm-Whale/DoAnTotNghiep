@@ -192,18 +192,27 @@ function validateForm() {
         showErrorMessage("error-idChatLieu", "Kích Cỡ không được để trống.");
     }
 
-    // Validate Số Lượng (soLuong) - required and minimum value
-    const soLuong = parseInt(document.getElementById("soLuong").value, 10);
-    if (isNaN(soLuong) || soLuong < 1) {
-        isValid = false;
-        showErrorMessage("error-soLuong", "Số Lượng phải lớn hơn 0.");
-    }
+    const maxGia = 999999999.99;
+    const maxSoLuong = 9999;
 
-    // Validate Giá (gia) - required and minimum value
+    // Kiểm tra giá
     const gia = parseFloat(document.getElementById("gia").value);
     if (isNaN(gia) || gia < 0) {
         isValid = false;
         showErrorMessage("error-gia", "Giá phải lớn hơn hoặc bằng 0.");
+    } else if (gia > maxGia) {
+        isValid = false;
+        showErrorMessage("error-gia", `Giá không được vượt quá ${maxGia}.`);
+    }
+
+    // Kiểm tra số lượng
+    const soLuong = parseInt(document.getElementById("soLuong").value, 10);
+    if (isNaN(soLuong) || soLuong < 1) {
+        isValid = false;
+        showErrorMessage("error-soLuong", "Số Lượng phải lớn hơn 0.");
+    } else if (soLuong > maxSoLuong) {
+        isValid = false;
+        showErrorMessage("error-soLuong", `Số Lượng không được vượt quá ${maxSoLuong}.`);
     }
 
     // Validate the file upload only if files are selected

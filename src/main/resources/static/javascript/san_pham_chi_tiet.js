@@ -50,6 +50,14 @@ function themNhanh() {
         return false;
     }
 
+    const specialCharRegex = /[^a-zA-Z0-9\s]/;
+    if (specialCharRegex.test(tenValue)) {
+        errorTen.textContent = 'Tên không được chứa ký tự đặc biệt!';
+        errorTen.style.display = 'block';
+        tenInput.focus();
+        return false;
+    }
+
     const dataForm = document.querySelector('#formQuick');
     if (!dataForm) {
         console.error('Form không tồn tại!');
