@@ -13,7 +13,7 @@
             <th>Kiểu cổ aó</th>
             <th>Giá</th>
             <th>Số lượng</th>
-            <th>Trạng thái</th>
+
             <th>Thao tác</th>
         </tr>
         </thead>
@@ -29,7 +29,7 @@
             <td th:text="${spct.sanPham.coAo.tenCoAo}"></td>
             <td th:text="${#numbers.formatDecimal(spct.gia, 1, 'COMMA', 0, 'POINT')} + 'đ'"></td>
             <td th:text="${spct.soLuong}"></td>
-            <td th:text="${spct.trangThai}"></td>
+
             <td>
                 <a href="javascript:void(0);"
                    th:onclick="'addSanPhamToCart(' + ${spct.id} + ', ' + ${spct.soLuong} + ')'">
