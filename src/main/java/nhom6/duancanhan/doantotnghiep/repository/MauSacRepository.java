@@ -15,6 +15,8 @@ public interface MauSacRepository extends JpaRepository<MauSac, Integer> {
         select ms.id from MauSac ms where ms.tenMauSac = :tenMauSac
     """)
     Integer findByTenMauSac(@Param("tenMauSac") String tenMauSac);
+
     boolean existsByTenMauSac(String tenMauSac);
 
+    List<MauSac> findAllByTrangThai(Integer trangThai);
 }

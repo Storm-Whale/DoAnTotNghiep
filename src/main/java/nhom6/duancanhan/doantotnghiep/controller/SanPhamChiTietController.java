@@ -121,8 +121,8 @@ public class SanPhamChiTietController {
 
     private void addSanPhamChiTietModelAttributes(Model model, SanPhamChiTietRequest sanPhamChiTietRequest) {
         model.addAttribute("product_detail", sanPhamChiTietRequest);
-        model.addAttribute("mau_sacs", mauSacService.getAll());
-        model.addAttribute("kich_cos", kichCoService.getAll());
+        model.addAttribute("mau_sacs", mauSacService.getMauSacByTrangThai(1));
+        model.addAttribute("kich_cos", kichCoService.getKichCoByTrangThai(1));
     }
 
     private SanPhamChiTietRequest buildSanPhamChiTietRequest(Integer idSP, Integer idMauSac, Integer idKichCo, Integer soLuong, Double gia) {

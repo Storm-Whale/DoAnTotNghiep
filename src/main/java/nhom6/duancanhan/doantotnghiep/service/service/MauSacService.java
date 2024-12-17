@@ -1,7 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
 
-import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.entity.MauSac;
 import org.springframework.data.domain.Page;
 
@@ -23,4 +22,6 @@ public interface MauSacService {
     void updateMauSacById(Integer id, MauSac mauSac);
 
     boolean existsByTenMauSac(String tenMauSac);
+
+    List<MauSac> getMauSacByTrangThai(int trangThai);
 }

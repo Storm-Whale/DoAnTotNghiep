@@ -27,4 +27,6 @@ public interface KichCoService {
     Page<KichCo> phanTrangTheoTen(String tenKichCo, int pageNo, int pageSize);
 
     boolean existsByTenKichCo(String tenKichCo);
+
+    List<KichCo> getKichCoByTrangThai(int trangThai);
 }

@@ -1,9 +1,9 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import nhom6.duancanhan.doantotnghiep.entity.KichCo;
-import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
 import nhom6.duancanhan.doantotnghiep.repository.KichCoRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.KichCoService;
+import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -75,5 +75,12 @@ public class KichCoServiceImpl implements KichCoService {
     @Override
     public boolean existsByTenKichCo(String tenKichCo) {
         return kichCoRepository.existsByTenKichCo(tenKichCo);
+    }
+
+    @Override
+    public List<KichCo> getKichCoByTrangThai(int trangThai) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() ->
+                        kichCoRepository.findAllBytrangThai(trangThai)
+                , "Lỗi khi lấy dữ liêu từ cơ sở dữ liệu");
     }
 }

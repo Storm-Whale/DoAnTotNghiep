@@ -1,13 +1,14 @@
 package nhom6.duancanhan.doantotnghiep.repository;
 
 import nhom6.duancanhan.doantotnghiep.entity.KichCo;
-import nhom6.duancanhan.doantotnghiep.entity.KieuCoAo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface KichCoRepository extends JpaRepository<KichCo, Integer> {
@@ -25,4 +26,6 @@ public interface KichCoRepository extends JpaRepository<KichCo, Integer> {
                                   Pageable pageable);
 
     boolean existsByTenKichCo(String tenKichCo);
+
+    List<KichCo> findAllBytrangThai(Integer trangThai);
 }
