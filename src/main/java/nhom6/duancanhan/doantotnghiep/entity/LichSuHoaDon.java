@@ -1,16 +1,14 @@
 package nhom6.duancanhan.doantotnghiep.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "lich_sua_hoa_don")
 public class LichSuHoaDon extends BaseEntity{
 
@@ -22,10 +20,4 @@ public class LichSuHoaDon extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "id_hoa_don")
     private HoaDon hoaDon;
-
-    @Column(name = "tieu_de")
-    private String tieuDe;
-
-    @Column(name = "trang_thai")
-    private int trangThai;
 }

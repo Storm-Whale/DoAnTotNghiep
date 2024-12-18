@@ -1,11 +1,8 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
-import jakarta.transaction.Transactional;
-import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +18,7 @@ public interface HoaDonService {
     Optional<HoaDon> detail(Integer id);
 
 
-    void addHoaDon(HoaDon hoaDon);
+    HoaDon addHoaDon(HoaDon hoaDon);
 
     void updateHoaDon(Integer id, HoaDon hoaDon);
 

@@ -19,6 +19,9 @@ public class ChangeNumberOfDetailProduct {
         switch (operation) {
             case "+":
                 sanPhamChiTiet.setSoLuong(soLuongInDetailProduct + soLuong);
+                if (sanPhamChiTiet.getTrangThai() == 0) {
+                    sanPhamChiTiet.setTrangThai(1);
+                }
                 break;
             case "-":
                 if (soLuongInDetailProduct < soLuong) {
