@@ -230,7 +230,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         return hoaDonRepository.findByTrangThai(trangThai); // Gọi phương thức từ repository
     }
     public Page<HoaDon> getAllWithPagination(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("ngayTao").descending());
         return hoaDonRepository.findAll(pageable);
     }
 //

@@ -155,7 +155,7 @@
                 <div class="input-group">
                     <select id="loaiHoaDonFilter" class="form-select form-select-sm" onchange="filterByLoaiHoaDon()">
                         <option value="all" th:selected="${loaiHoaDon == 'all'}">Tất cả</option>
-                        <option value="Online" th:selected="${loaiHoaDon == 'Online'}">Online</option>
+                        <option value="Truc tuyen" th:selected="${loaiHoaDon == 'Truc tuyen'}">Trực tuyến</option>
                         <option value="	Tai quay" th:selected="${loaiHoaDon == 'Tai quay'}">Tại Quầy</option>
                     </select>
                 </div>
@@ -166,10 +166,10 @@
                     <select id="phuongthucFilter" class="form-select form-select-sm" onchange="filterByPhuongThuc()">
                         <option value="all" th:selected="${tenPhuongThuc == 'all'}">Tất cả</option>
                         <option value="Chuy?n kho?n ngân hàng" th:selected="${tenPhuongThuc == 'Chuy?n kho?n ngân hàng'}">Chuyển Khoản</option>
-                        <option value="Tien Mat" th:selected="${tenPhuongThuc == 'Tien Mat'}">Tiền Mặt</option>
+                        <option value="Ti?n m?t" th:selected="${tenPhuongThuc == 'Ti?n m?t'}">Tiền Mặt</option>
 <!--                        <option value="Th? tín d?ng" th:selected="${tenPhuongThuc == 'Th? tín d?ng'}">Thẻ Tín Dụng</option>-->
 <!--                        <option value="Th? ghi n?" th:selected="${tenPhuongThuc == 'Th? ghi n?'}">Thẻ Ghi Nợ</option>-->
-<!--                        <option value="Chuy?n kho?n ngân hàng" th:selected="${tenPhuongThuc == 'Chuy?n kho?n ngân hàng'}">Chuyển Khoản Ngân Hàng</option>-->
+                        <option value="Thanh toán khi nh?n hàng" th:selected="${tenPhuongThuc == 'Thanh toán khi nh?n hàng'}">Thanh toán khi nhận hàng</option>
                     </select>
                 </div>
             </div>
@@ -215,15 +215,14 @@
             <thead>
             <tr>
                 <th>ID</th>
-                                    <th>Tên Người Nhận</th>
-                                    <th>Số Điện Thoại</th>
-                                    <th>Địa Chỉ</th>
-                                    <th>Phương Thức Thanh Toán</th>
-                                    <th>Tổng Tiền</th>
-                                    <th>Ghi Chú</th>
+                <th>Tên Người Nhận</th>
+                <th>Số Điện Thoại</th>
+                <th>Địa Chỉ</th>
+                <th>Phương Thức Thanh Toán</th>
+                <th>Tổng Tiền</th>
+                <th>Ghi Chú</th>
                 <th>Loại Hóa Đơn</th>
                 <th>Trạng Thái</th>
-
                 <th>Chức năng</th>
             </tr>
             </thead>

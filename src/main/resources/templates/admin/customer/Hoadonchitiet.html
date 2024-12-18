@@ -300,15 +300,17 @@
 
                     <!-- Hàng 4 -->
                     <tr>
-                        <td class="text-end"><strong>Địa Chỉ Giao:</strong></td>
+                        <td class="text-end"><strong>Chọn Địa Chỉ:</strong></td>
                         <td>
                             <div class="row">
                                 <div class="col-9">
+
                                     <select class="form-select" aria-label="Default select example" name="diachi">
                                         <option th:each="dc : ${listDiaChi}" th:value="${dc.getId()}" th:text="${dc.getDiaChiChiTiet()}"
                                                 th:selected="${hoaDon.getDiaChi().getId() == dc.getId()}"
                                         ></option>
                                     </select>
+
                                 </div>
                                 <div class="col-1" style="width: 50px; height: 38px">
                                     <button id="addAddressButton" class="btn btn-primary" onclick="showAddAddressForm()" type="button">Them</button>
@@ -317,6 +319,13 @@
                         </td>
                         <td class="text-end"><strong>Tên Khách Hàng:</strong></td>
                         <td><input id="tenKhachHang" type="text" name="tenKhachHang" class="form-control" th:value="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : ''}" /></td>
+                    </tr>
+                    <!-- Hàng 5 -->
+                    <tr>
+                        <td class="text-end"><strong>Địa Chỉ Giao:</strong></td>
+                        <td colspan="3">
+                            <input type="text" id="diaChi" name="diaChi" class="form-control" th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : ''}" />
+                        </td>
                     </tr>
                     </tbody>
                 </table>

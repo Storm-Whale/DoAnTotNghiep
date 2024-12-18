@@ -3,7 +3,17 @@ package nhom6.duancanhan.doantotnghiep.controller;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import nhom6.duancanhan.doantotnghiep.entity.*;
+import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
+import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
+import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
+import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
+import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
+import nhom6.duancanhan.doantotnghiep.entity.PhieuGiamGia;
+import nhom6.duancanhan.doantotnghiep.entity.PhuongThucThanhToan;
+import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
+import nhom6.duancanhan.doantotnghiep.entity.SanPhamGioHang;
+import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
+import nhom6.duancanhan.doantotnghiep.entity.VaiTro;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
 import nhom6.duancanhan.doantotnghiep.repository.*;
 import nhom6.duancanhan.doantotnghiep.service.service.*;
@@ -28,6 +38,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -601,7 +613,6 @@ public class TaiQuayController {
         // Cập nhật khách hàng cho hóa đơn
         if (hoaDon != null || hoaDon.getKhachHang() != null) {
             hoaDon.setKhachHang(khachHang);
-            hoaDon.setTrangThai(1);
             khachHang.setTrangThai(1);
             hoaDonRepository.save(hoaDon);
             redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
@@ -734,11 +745,11 @@ public class TaiQuayController {
         byte[] pdfData = invoidPdfService.generateInvoicePdf(hoaDon);
 
             String fileName = "invoice_" + hoaDon.getId() + ".pdf";
-            Path path = Paths.get("D://WorkPlace//Java//DuAnTotNghiep//DoAnTotNghiep//upload/" + fileName);
+            Path path = Paths.get("D://FALL_2024//DATN//DoAnTotNghiep//upload/" + fileName);
             Files.write(path, pdfData);
 //        D://FALL_2024//DATN//DoAnTotNghiep//upload/
             // Return the file URL to the frontend
-            String fileUrl = "D://WorkPlace//Java//DuAnTotNghiep//DoAnTotNghiep//upload/" + fileName;
+            String fileUrl = "D://FALL_2024//DATN//DoAnTotNghiep//upload/" + fileName;
             model.addAttribute("pdfUrl", fileUrl);
             return "/uploads/" + fileName;
         }
