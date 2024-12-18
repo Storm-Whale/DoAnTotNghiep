@@ -79,6 +79,29 @@
         .mb-3 {
             margin-left: 30px; /* Đẩy cả form sang phải 30px */
         }
+        /* Định dạng chung cho các ô nhập */
+        .input-group .form-select {
+            width: 100%; /* Đảm bảo ô nhập chiếm toàn bộ chiều rộng của container */
+            max-width: 300px; /* Giới hạn chiều rộng tối đa nếu cần */
+            height: 38px; /* Đặt chiều cao cố định */
+            font-size: 14px; /* Đồng nhất kích thước chữ */
+            border-radius: 4px; /* Tạo góc bo tròn nhẹ */
+            border: 1px solid #ccc; /* Đường viền */
+            padding: 0 10px; /* Khoảng cách nội dung bên trong */
+            box-sizing: border-box; /* Đảm bảo padding không làm thay đổi kích thước */
+        }
+
+        /* Khoảng cách giữa các nhóm input */
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        /* Đảm bảo đồng nhất chiều cao và căn chỉnh trong form */
+        .form-label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block; /* Đặt label thành block để căn chỉnh */
+        }
 
     </style>
 
