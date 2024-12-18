@@ -713,7 +713,7 @@ public class HoaDonController {
             @PathVariable("id") Integer id,
             @RequestParam("ghiChu") String ghiChu,
             @RequestParam("soDienThoai") String soDienThoai,
-            @RequestParam("diaChi") String diaChi,
+            @RequestParam("diachi") int diaChi,
             @RequestParam("tenKhachHang") String tenKhachHang, Model model,
             RedirectAttributes redirectAttributes) {
 
@@ -740,8 +740,10 @@ public class HoaDonController {
         if (hoaDon.getDiaChi() == null) {
             hoaDon.setDiaChi(new DiaChi());
         }
-        hoaDon.getDiaChi().setSoDienThoai(soDienThoai);
-        hoaDon.getDiaChi().setDiaChiChiTiet(diaChi);
+        DiaChi diaChi1 = diaChiRepository.findById(diaChi)
+                        .orElseThrow(() -> new DataNotFoundException("Khong tim thay voi id :" + diaChi));
+        diaChi1.setSoDienThoai(soDienThoai);
+        hoaDon.setDiaChi(diaChi1);
 
 //        HoaDon hoaDon = hoaDonService.findById(id);
         model.addAttribute("hoaDon", hoaDon);

@@ -27,7 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:///D:/DoAnTotNghiep/DoAnTotNghiep/upload/");
+                .addResourceLocations("file:///D:/FALL_2024/DATN/DoAnTotNghiep/upload/");
+//                .addResourceLocations("file:///D:/FALL_2024/DATN/DoAnTotNghiep/upload/");
     }
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -39,6 +40,15 @@ public class WebConfig implements WebMvcConfigurer {
                         "/css/**",              // Loại trừ các tài nguyên tĩnh
                         "/js/**",
                         "/images/**"
+                );
+        registry.addInterceptor(authenticationInterceptor)
+                .addPathPatterns("/admin/**")
+                .excludePathPatterns(
+                        "/login/**",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+                        "/access-denied"
                 );
     }
 }

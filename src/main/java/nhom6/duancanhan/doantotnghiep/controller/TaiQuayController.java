@@ -197,7 +197,6 @@ public class TaiQuayController {
         KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
         redirectAttributes.addFlashAttribute("khachHang", khachHang);
         model.addAttribute("khachHangThemNhanh", new KhachHang());
-
         // Thêm vào model
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
                 .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
@@ -269,7 +268,7 @@ public class TaiQuayController {
 //                    .body("Bạn chưa đăng nhập, vui lòng đăng nhập để tạo hóa đơn!");
 //        }
         HoaDon hoaDon = new HoaDon();
-        hoaDon.setTrangThai(1); // Set trạng thái mới tạo
+        hoaDon.setTrangThai(0); // Set trạng thái mới tạo
         hoaDon.setLoaiHoaDon("Tai quay");
         hoaDon.setNguoiTao(nhanVien);
         hoaDonRepository.save(hoaDon); // Lưu vào cơ sở dữ liệu
@@ -414,7 +413,7 @@ public class TaiQuayController {
 
         if (hoaDon.getKhachHang() == null) {
             hoaDon.setKhachHang(khachHang);
-            hoaDon.setTrangThai(1); // Trạng thái hóa đơn có thể thay đổi theo yêu cầu của bạn
+            hoaDon.setTrangThai(0); // Trạng thái hóa đơn có thể thay đổi theo yêu cầu của bạn
             hoaDonRepository.save(hoaDon);
 
             redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
@@ -422,10 +421,11 @@ public class TaiQuayController {
         }
 
 
+
         // Cập nhật khách hàng cho hóa đơn
         if (hoaDon != null || hoaDon.getKhachHang() != null) {
             hoaDon.setKhachHang(khachHang);
-            hoaDon.setTrangThai(1);
+//            hoaDon.setTrangThai(1);
             hoaDonRepository.save(hoaDon);
             redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
             redirectAttributes.addFlashAttribute("khachHang", khachHang);
@@ -642,6 +642,7 @@ public class TaiQuayController {
     }
 
 
+
     //TODO THANH TOAN
     @GetMapping("/thanhtoan")
     @ResponseBody
@@ -744,15 +745,15 @@ public class TaiQuayController {
 
         byte[] pdfData = invoidPdfService.generateInvoicePdf(hoaDon);
 
-        String fileName = "invoice_" + hoaDon.getId() + ".pdf";
-        Path path = Paths.get("D://DoAnTotNghiep//DoAnTotNghiep//upload/" + fileName);
-        Files.write(path, pdfData);
+            String fileName = "invoice_" + hoaDon.getId() + ".pdf";
+            Path path = Paths.get("D://DoAnTotNghiep//DoAnTotNghiep//upload/" + fileName);
+            Files.write(path, pdfData);
 //        D://FALL_2024//DATN//DoAnTotNghiep//upload/
-        // Return the file URL to the frontend
-        String fileUrl = "D://DoAnTotNghiep//DoAnTotNghiep//upload/" + fileName;
-        model.addAttribute("pdfUrl", fileUrl);
-        return "/uploads/" + fileName;
-    }
+            // Return the file URL to the frontend
+            String fileUrl = "D://DoAnTotNghiep//DoAnTotNghiep//upload/" + fileName;
+            model.addAttribute("pdfUrl", fileUrl);
+            return "/uploads/" + fileName;
+        }
 
 
     //TODO: xac nhan don hang

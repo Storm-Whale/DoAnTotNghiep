@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.service;
 
+import jakarta.transaction.Transactional;
 import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
@@ -50,4 +51,5 @@ public interface HoaDonService {
     public Page<HoaDon> getByTrangThaiWithPagination(int trangThai, int pageNo, int pageSize);
 
     Page<HoaDon> findByTrangThai(Integer trangThai, int page, int size);
+
 }

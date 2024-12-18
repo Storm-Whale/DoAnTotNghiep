@@ -152,11 +152,24 @@ public class TaiKhoanController {
     //   TODO : Logout
     @GetMapping("/logout")
     public String logout(HttpSession session, HttpServletResponse response, HttpServletRequest request) {
-        // Xóa session người dùng và trạng thái đăng nhập
-        session.removeAttribute("user");
-        session.removeAttribute("loginStatus");
-        session.invalidate();
+        // Kiểm tra và xóa session nhân viên
+        if (session.getAttribute("nhanvien") != null) {
+            // Xóa session nhân viên
+            session.removeAttribute("nhanvien");
+            session.removeAttribute("loginStatusNhanVien");
 
+            // Chuyển hướng về trang login nhân viên
+            return "redirect:/login/login-client";
+        }
+        // Kiểm tra và xóa session người dùng
+        else if (session.getAttribute("user") != null) {
+            // Xóa session người dùng
+            session.removeAttribute("user");
+            session.removeAttribute("loginStatus");
+
+            // Chuyển hướng về trang chính của client
+            return "redirect:/client";
+        }
         // Xóa tất cả cookie để đảm bảo thông tin phiên được xóa hoàn toàn
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -167,7 +180,7 @@ public class TaiKhoanController {
                 response.addCookie(cookie);
             }
         }
-        // Chuyển hướng về trang chính
+        // Nếu không có session nào, chuyển về trang chính
         return "redirect:/client";
     }
 }

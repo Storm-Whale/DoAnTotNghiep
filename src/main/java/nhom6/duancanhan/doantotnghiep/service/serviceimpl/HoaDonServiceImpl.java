@@ -2,14 +2,17 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 
 import jakarta.transaction.Transactional;
-import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
+import lombok.extern.slf4j.Slf4j;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
+import jakarta.mail.internet.MimeMessage;
+import nhom6.duancanhan.doantotnghiep.repository.ForgotRepository;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 
 //import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
 
 
-import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
@@ -24,21 +27,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class HoaDonServiceImpl implements HoaDonService {
 
     private final HoaDonRepository hoaDonRepository;
 
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
+    private final ForgotRepository forgotRepository;
+    private final JavaMailSender mailSender;
 
-    public HoaDonServiceImpl(HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, SanPhamChiTietRepository sanPhamChiTietRepository) {
+
+    public HoaDonServiceImpl(HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, SanPhamChiTietRepository sanPhamChiTietRepository, ForgotRepository forgotRepository, JavaMailSender mailSender) {
         this.hoaDonRepository = hoaDonRepository;
         this.hoaDonChiTietRepository = hoaDonChiTietRepository;
         this.sanPhamChiTietRepository = sanPhamChiTietRepository;
+        this.forgotRepository = forgotRepository;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -251,5 +261,4 @@ public class HoaDonServiceImpl implements HoaDonService {
             return hoaDonRepository.findAll(pageable);
         }
     }
-
 }

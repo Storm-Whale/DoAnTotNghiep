@@ -223,18 +223,11 @@
             </li>
         </ul>
 
-        <button id="logoutButton" style="background-color: #e74c3c; color: white; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
-            Đăng xuất
-        </button>
-        <script>
-            document.getElementById('logoutButton').addEventListener('click', function() {
-                // Hiển thị hộp thoại xác nhận
-                const confirmLogout = confirm("Bạn có muốn đăng xuất không?");
-                if (confirmLogout) {
-                    // Nếu người dùng xác nhận, chuyển hướng đến trang đăng nhập
-                    window.location.href = "/login/login-client"; // Thay đổi đường dẫn này nếu cần
-                }
-            });
-        </script>
+        <form action="/login/logout">
+            <button id="logoutButton" style="background-color: #e74c3c; color: white; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; width: 185px">
+                Đăng xuất
+            </button>
+        </form>
+
     </nav>
 </header>
