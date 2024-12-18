@@ -290,7 +290,6 @@
 </style>
                     <div th:if="${listDiaChi != null}">
                         <form method="get" th:action="@{/admin/taiquay/detail-dia-chi-hoa-don}">
-                            <label for="floatingSelect">Works with selects</label>
                             <select class="form-select" id="floatingSelect" name="idDiaChi" onchange="this.form.submit()">
                                 <option selected>Chon Dia Chi</option>
                                 <option th:each="dc : ${listDiaChi}" th:value="${dc.getId()}" th:text="${dc.getDiaChiChiTiet()}">One</option>
@@ -387,7 +386,7 @@
                     <div style="display: flex; align-items: center; gap: 20px;" onsubmit="return validateInput()">
                         <form id="searchFormKhachHang" th:action="@{/admin/taiquay/tim-kiem}" method="get"
                               style="display: flex; align-items: center; gap: 10px;">
-                            <input type="text" id="soDienThoai" name="soDienThoai" required
+                            <input type="text" id="soDienThoai" name="soDienThoai"
                                    style="padding: 5px; border-radius: 5px; border: 1px solid #ddd; width: 200px;">
 <!--                            <button type="submit"-->
 <!--                                    style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">-->
@@ -905,14 +904,17 @@
         function checkCustomerAddress() {
             const khachHang = document.getElementById("khachHangId");
             const diaChi = document.getElementById("diaChi");
-            const soDienThoai = document.getElementById("soDienThoai");
+            const soDienThoai = document.getElementById("soDienThoai1");
+            console.log(khachHang)
+            console.log(diaChi)
+            console.log(soDienThoai)
 
 
             // const soDienThoai = document.getElementById("soDienThoai1");
 
             // Nếu có khách hàng nhưng chưa có địa chỉ
             if (khachHang && khachHang.value.trim() !== "" &&
-                (!diaChi || diaChi.value.trim() === "" || !soDienThoai || soDienThoai.value.trim() === "")) {
+                (!diaChi || diaChi.value.trim() === ""|| !soDienThoai || soDienThoai.value.trim() === "")) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Thông báo',

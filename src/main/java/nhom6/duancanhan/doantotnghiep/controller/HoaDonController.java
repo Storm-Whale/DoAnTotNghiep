@@ -2,61 +2,29 @@ package nhom6.duancanhan.doantotnghiep.controller;
 
 
 import jakarta.servlet.http.HttpServletResponse;
-import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
-
 import nhom6.duancanhan.doantotnghiep.entity.*;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
-import nhom6.duancanhan.doantotnghiep.repository.DiaChiRepository;
-import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
-import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
-import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
+import nhom6.duancanhan.doantotnghiep.repository.*;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonChiTietService;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
-import nhom6.duancanhan.doantotnghiep.service.service.SanPhamChiTietService;
 import nhom6.duancanhan.doantotnghiep.util.ChangeNumberOfDetailProduct;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-
-
-import java.io.IOException;
-
-import java.io.IOException;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
-import java.util.List;
-import java.util.Map;
-
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-
 
 @Controller
 @RequestMapping("/admin/hoadon")
@@ -79,6 +47,9 @@ public class HoaDonController {
 
     @Autowired
     private DiaChiRepository diaChiRepository;
+
+    @Autowired
+    private LichSuHoaDonRepository lichSuHoaDonRepository;
 
     private static final int PAGE_SIZE = 5; // Số hóa đơn mỗi trang
 
@@ -239,8 +210,13 @@ public class HoaDonController {
 
             // Cập nhật trạng thái tùy vào giá trị hiện tại của trạng thái
             if (hoaDon.getTrangThai() == 1) {
+                List<HoaDonChiTiet> hdcts = hoaDonChiTietRepository.findByHoaDonId(id);
+                for (HoaDonChiTiet hdct : hdcts) {
+                    int idspct = hdct.getSanPhamChiTiet().getId();
+                    int soluong = hdct.getSoLuong();
+                    changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, soluong, "-");
+                }
                 hoaDon.setTrangThai(2); // Trạng thái chuyển từ 'Chờ Xác Nhận' sang 'Đang Chuẩn Bị Hàng'
-
             } else if (hoaDon.getTrangThai() == 2) {
                 hoaDon.setTrangThai(3); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đang Vận Chuyển'
             } else if (hoaDon.getTrangThai() == 3) {
@@ -251,7 +227,8 @@ public class HoaDonController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Trạng thái không hợp lệ để cập nhật");
             }
 
-            hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            HoaDon hoaDon1 = hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).build());
             return ResponseEntity.ok("Cập nhật trạng thái thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
@@ -270,8 +247,13 @@ public class HoaDonController {
 
             // Cập nhật trạng thái tùy vào giá trị hiện tại của trạng thái
             if (hoaDon.getTrangThai() == 2) {
+                List<HoaDonChiTiet> hdcts = hoaDonChiTietRepository.findByHoaDonId(id);
+                for (HoaDonChiTiet hdct : hdcts) {
+                    int idspct = hdct.getSanPhamChiTiet().getId();
+                    int soluong = hdct.getSoLuong();
+                    changeNumberOfDetailProduct.updateProductDetailQuantity(idspct, soluong, "+");
+                }
                 hoaDon.setTrangThai(1); // Trạng thái chuyển từ 'Chờ Xác Nhận' sang 'Đang Chuẩn Bị Hàng'
-
             } else if (hoaDon.getTrangThai() == 3) {
                 hoaDon.setTrangThai(2); // Trạng thái chuyển từ 'Đang Chuẩn Bị Hàng' sang 'Đang Vận Chuyển'
             } else if (hoaDon.getTrangThai() == 4) {
@@ -282,7 +264,8 @@ public class HoaDonController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Trạng thái không hợp lệ để cập nhật");
             }
 
-            hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            HoaDon hoaDon1 = hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).build());
             return ResponseEntity.ok("Cập nhật trạng thái thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
@@ -306,7 +289,8 @@ public class HoaDonController {
             }
 
 
-            hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            HoaDon hoaDon1 = hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).build());
             return ResponseEntity.ok("Đơn hàng đã được hủy thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
@@ -327,7 +311,8 @@ public class HoaDonController {
             }
 
 
-            hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            HoaDon hoaDon1 = hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
+            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).build());
             return ResponseEntity.ok("Đơn hàng Giao Thất Bại");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
@@ -713,7 +698,7 @@ public class HoaDonController {
             @PathVariable("id") Integer id,
             @RequestParam("ghiChu") String ghiChu,
             @RequestParam("soDienThoai") String soDienThoai,
-            @RequestParam("diaChi") String diaChi,
+            @RequestParam("diachi") int diaChi,
             @RequestParam("tenKhachHang") String tenKhachHang, Model model,
             RedirectAttributes redirectAttributes) {
 
@@ -740,8 +725,10 @@ public class HoaDonController {
         if (hoaDon.getDiaChi() == null) {
             hoaDon.setDiaChi(new DiaChi());
         }
-        hoaDon.getDiaChi().setSoDienThoai(soDienThoai);
-        hoaDon.getDiaChi().setDiaChiChiTiet(diaChi);
+        DiaChi diaChi1 = diaChiRepository.findById(diaChi)
+                        .orElseThrow(() -> new DataNotFoundException("Khong tim thay voi id :" + diaChi));
+        diaChi1.setSoDienThoai(soDienThoai);
+        hoaDon.setDiaChi(diaChi1);
 
 //        HoaDon hoaDon = hoaDonService.findById(id);
         model.addAttribute("hoaDon", hoaDon);

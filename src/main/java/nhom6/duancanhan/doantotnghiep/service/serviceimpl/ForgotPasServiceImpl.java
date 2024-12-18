@@ -4,8 +4,10 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nhom6.duancanhan.doantotnghiep.dto.KhachHangDTO;
 import nhom6.duancanhan.doantotnghiep.dto.TaiKhoanDTO;
+import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.repository.ForgotKHRepository;
 import nhom6.duancanhan.doantotnghiep.repository.ForgotRepository;
@@ -22,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ForgotPasServiceImpl implements ForgotPasswordService {
@@ -203,6 +205,35 @@ public class ForgotPasServiceImpl implements ForgotPasswordService {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void sendHoaDonHT(String email) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            helper.setTo(email);
+            helper.setSubject("Thông báo: Đơn hàng đã được tự động hoàn thành");
+
+            String htmlContent = buildAutoCompletedEmailContent();
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            // Xử lý nếu gửi email thất bại
+            log.error("Lỗi khi gửi email tự động hoàn thành đơn hàng", e);
+        }
+    }
+
+    private String buildAutoCompletedEmailContent() {
+        return "<div style='text-align: center;'>" +
+                "<h2>Thông Báo Tự Động Hoàn Thành Đơn Hàng</h2>" +
+                "<p>Kính chào Quý Khách,</p>" +
+                "<p>Đơn hàng của bạn đã được tự động hoàn thành do quá thời gian xác nhận.</p>" +
+                "<p>Chúng tôi hy vọng bạn hài lòng với sản phẩm và dịch vụ của chúng tôi.</p>" +
+                "<p>Trân trọng,<br>Đội ngũ hỗ trợ Yagi shop</p>" +
+                "</div>";
     }
 }
 

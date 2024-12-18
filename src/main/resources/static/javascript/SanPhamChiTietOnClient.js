@@ -222,6 +222,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     icon: "warning",
                     title: `Bạn chưa chọn màu.`
                 });
+
+                return;
             }
 
             if (id_kich_co == null || isNaN(id_kich_co)) {
@@ -242,6 +244,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     icon: "warning",
                     title: `Bạn chưa chọn kích cỡ.`
                 });
+
+                return;
             }
 
             if (isNaN(so_luong) || so_luong < 1 || so_luong > 9999) {
@@ -389,7 +393,7 @@ function showSuccessAlert() {
     });
     Toast.fire({
         icon: "success",
-        title: "Mua sản phẩm thành công"
+        title: "Thêm sản phẩm thành công"
     });
 }
 

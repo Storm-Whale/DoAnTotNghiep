@@ -50,40 +50,6 @@
     background-color: #e64a19;
 }
 /* CSS Của body */
-
-/* ------------------------------------------- loading spinner -------------------------------------------*/
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Màu xám mờ */
-    display: none; /* Ẩn lớp phủ khi không cần thiết */
-    z-index: 999; /* Đảm bảo lớp phủ nằm trên tất cả các phần tử khác */
-}
-
-.loading-spinner {
-    border: 8px solid #f3f3f3; /* Màu nền */
-    border-top: 8px solid #3498db; /* Màu của vòng chạy */
-    border-radius: 50%; /* Hình tròn */
-    width: 50px; /* Đường kính */
-    height: 50px; /* Đường kính */
-    animation: spin 0.5s linear infinite; /* Hiệu ứng quay liên tục */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000; /* Đảm bảo spinner nằm trên lớp phủ */
-    display: none; /* Ẩn spinner khi không cần thiết */
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-/* ------------------------------------------- loading spinner -------------------------------------------*/
-
 .custom-header .form-control {
     width: 300px;
 }

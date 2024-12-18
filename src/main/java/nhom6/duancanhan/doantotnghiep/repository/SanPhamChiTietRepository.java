@@ -39,7 +39,8 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
             "AND (:tenCoAo IS NULL OR sp.coAo.id = :tenCoAo) " +
             "AND (:kichCo IS NULL OR kc.id = :kichCo) " +
             "AND (:mauSac IS NULL OR ms.id = :mauSac) " +
-            "AND (:trangThai IS NULL OR spct.trangThai = :trangThai)")
+            "AND (:trangThai IS NULL OR spct.trangThai = 1)" +
+            "AND spct.soLuong > 0")
     Page<SanPhamChiTiet> findByCriteria(
             @Param("tenSanPham") String tenSanPham,
             @Param("tenThuongHieu") Integer tenThuongHieu,

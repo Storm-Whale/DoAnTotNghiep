@@ -300,15 +300,17 @@
 
                     <!-- Hàng 4 -->
                     <tr>
-                        <td class="text-end"><strong>Địa Chỉ Giao:</strong></td>
+                        <td class="text-end"><strong>Chọn Địa Chỉ:</strong></td>
                         <td>
                             <div class="row">
                                 <div class="col-9">
+
                                     <select class="form-select" aria-label="Default select example" name="diachi">
                                         <option th:each="dc : ${listDiaChi}" th:value="${dc.getId()}" th:text="${dc.getDiaChiChiTiet()}"
                                                 th:selected="${hoaDon.getDiaChi().getId() == dc.getId()}"
                                         ></option>
                                     </select>
+
                                 </div>
                                 <div class="col-1" style="width: 50px; height: 38px">
                                     <button id="addAddressButton" class="btn btn-primary" onclick="showAddAddressForm()" type="button">Them</button>
@@ -317,6 +319,13 @@
                         </td>
                         <td class="text-end"><strong>Tên Khách Hàng:</strong></td>
                         <td><input id="tenKhachHang" type="text" name="tenKhachHang" class="form-control" th:value="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : ''}" /></td>
+                    </tr>
+                    <!-- Hàng 5 -->
+                    <tr>
+                        <td class="text-end"><strong>Địa Chỉ Giao:</strong></td>
+                        <td colspan="3">
+                            <input type="text" id="diaChi" name="diaChi" class="form-control" th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : ''}" />
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -350,23 +359,14 @@
                     <td th:text="${item.sanPhamChiTiet.mauSac.tenMauSac}"></td>
                     <td th:text="${item.sanPhamChiTiet.kichCo.tenKichCo}"></td>
                     <td>
-                        <button class="btn btn-sm btn-light"
-                                style="margin-right: 3px; background-color: #ffecee"
-                                th:attr="onclick='updateQuantity(' + ${item.id} + ', -1)'">-
-                        </button>
                         <input type="number"
                                class="quantity-input"
                                th:id="'quantity-' + ${item.id}"
                                th:value="${item.soLuong}"
                                min="1"
-                               style="width: 30px; text-align: center; background-color: #ffecee" ;
                                th:data-current-quantity="${item.soLuong}"
                                th:data-stock-quantity="${item.sanPhamChiTiet.soLuong}"
-                               th:onchange="'updateQuantityDirectly(this, ' + ${item.id} + ')'">
-                        <button class="btn btn-sm btn-light"
-                                style="margin-left: 3px; background-color: #ffecee"
-                                th:attr="onclick='updateQuantity(' + ${item.id} + ', 1)'">+
-                        </button>
+                               th:onchange="'updateQuantityDirectly(this, ' + ${item.id} + ')'" readonly>
                     </td>
 
 
@@ -389,7 +389,7 @@
 <div class="add-address-container" id="addAddressContainer">
     <h3 id="title" class="text-center mb-4">Thêm Địa Chỉ Mới</h3>
     <form id="addressForm">
-<!--        <input type="hidden" th:value="${session.user.id}" name="idKhachHang">-->
+        <input type="hidden" th:value="${hoaDon.khachHang.id}" name="idKhachHang">
         <div class="row">
             <div class="form-group col-6">
                 <label for="name">Họ và tên:</label>
@@ -442,7 +442,7 @@
     function updateQuantityDirectly(inputElement, hdctId) {
         // Lấy ID hóa đơn từ URL
         const pathParts = window.location.pathname.split('/');
-        const hoaDonId = pathParts[pathParts.length - 1]; // Giả sử ID hóa đơn là phần cuối cùng của URL
+        const hoaDonId = pathParts[pathParts.length - 2]; // Giả sử ID hóa đơn là phần cuối cùng của URL
         console.log(`Directly updating quantity for ID: ${hdctId}`);
         let newQuantity = parseInt(inputElement.value);
         const currentQuantity = parseInt(inputElement.getAttribute('data-current-quantity'));
@@ -492,7 +492,8 @@
                         // Cập nhật số lượng tồn kho
                         // Redirect về trang chi tiết hóa đơn
                         console.log(`Redirecting to /admin/hoadon/detail/${hoaDonId}`);
-                        window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
+                        window.location.href = `/admin/taiquay/detail/${hoaDonId}`;
+
                     }
                 })
                 .catch(error => {
@@ -503,14 +504,14 @@
                         text: 'Có lỗi xảy ra, vui lòng thử lại.'
                     });
                     inputElement.value = currentQuantity; // Khôi phục lại giá trị cũ
-                    window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
-                });
+                })
+                // .finally(() => window.location.reload());
         }
     }
     function updateQuantity(hdctId, delta) {
         // Lấy ID hóa đơn từ URL
         const pathParts = window.location.pathname.split('/');
-        const hoaDonId = pathParts[pathParts.length - 1]; // Giả sử ID hóa đơn là phần cuối cùng của URL
+        const hoaDonId = pathParts[pathParts.length - 2]; // Giả sử ID hóa đơn là phần cuối cùng của URL
         const quantityInput = document.getElementById(`quantity-${hdctId}`);
 
         let currentQuantity = parseInt(quantityInput.value);
@@ -572,7 +573,7 @@
                     // Cập nhật giá trị hiện tại
                     // Redirect về trang chi tiết hóa đơn
                     console.log(`Redirecting to /admin/hoadon/detail/${hoaDonId}`);
-                    window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
+                    window.location.href = `/admin/taiquay/detail/${hoaDonId}`;
                 }
             }).catch(error => {
             console.error('Error:', error);
@@ -581,9 +582,8 @@
                 title: 'Lỗi',
                 text: 'Có lỗi xảy ra, vui lòng thử lại.'
 
-            });
+            })
             quantityInput.value = currentQuantity; // Khôi phục lại giá trị cũ
-            window.location.href = `/admin/hoadon/detail/${hoaDonId}`;
         });
     }
 

@@ -76,7 +76,7 @@ document.getElementById('select-voucher').addEventListener('click', function () 
         }
 
         // Tính tổng tiền sau khi áp dụng mã giảm giá
-        tongTienSauKhiTruMa = tongTien - tienGiam - tienShip;
+        tongTienSauKhiTruMa = tongTien - tienGiam + tienShip;
 
         // Cập nhật giao diện
         document.getElementById('tongTien').innerHTML = tongTienSauKhiTruMa.toLocaleString('vi-VN') + " đ";
@@ -187,7 +187,7 @@ document.getElementById('addAddressButton').addEventListener('click', function (
     document.getElementById('addressContainer').style.display = 'none';
     document.getElementById('addAddressContainer').style.display = 'block';
 
-    if (khachHang.email != null && khachHang.email !== ''){
+    if (khachHang.email != null && khachHang.email !== '') {
         Swal.fire({
             title: 'Xác nhận cập nhật email?',
             text: "Bạn có chắc chắn muốn cập nhật email này không?",
@@ -341,46 +341,55 @@ function validateAddressForm() {
     }
 
     // Kiểm tra Email
-    const email = emailInput.value.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (
+        (tm === 0 && (khachHang.email === '' || khachHang.email == null)) ||
+        tm === 1 && (khachHang.email !== '' || khachHang.email != null)
+    ) {
+        const email = emailInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (email.trim() === '' || email.startsWith(' ')) {
-        showError(emailInput, 'Email không được để trống hoặc bắt đầu bằng khoảng trắng!');
-        isValid = false;
-    } else if (!emailRegex.test(email)) {
-        showError(emailInput, 'Email không hợp lệ!');
-        isValid = false;
-    } else if (/^\d/.test(email)) {
-        showError(emailInput, 'Email không được bắt đầu bằng số!');
-        isValid = false;
-    } else if (/^[A-Z]/.test(email)) {
-        showError(emailInput, 'Email không được bắt đầu bằng chữ hoa!');
-        isValid = false;
-    } else if (email.length > 100) {
-        showError(emailInput, 'Email không được dài quá 100 ký tự!');
-        isValid = false;
-    } else if (specialCharRegex.test(email)) {
-        // Kiểm tra các ký tự đặc biệt ngoài dấu @ và .
-        const emailParts = email.split('@');
-        if (emailParts.length === 2) {
-            const localPart = emailParts[0];
-            const domainPart = emailParts[1];
-
-            // Kiểm tra phần địa chỉ email trước dấu @
-            if (specialCharRegex.test(localPart)) {
-                showError(emailInput, 'Email không được chứa ký tự đặc biệt ngoài dấu @ và .!');
+        if (email.trim() === '' || email.startsWith(' ')) {
+            showError(emailInput, 'Email không được để trống hoặc bắt đầu bằng khoảng trắng!')
+            isValid = false;
+        } else if (!emailRegex.test(email)) {
+            showError(emailInput, 'Email không hợp lệ!');
+            isValid = false;
+        } else if (/^\d/.test(email)) {
+            showError(emailInput, 'Email không được bắt đầu bằng số!');
+            isValid = false;
+        } else if (/^[A-Z]/.test(email)) {
+            showError(emailInput, 'Email không được bắt đầu bằng chữ hoa!')
+            isValid = false;
+        } else if (email.length > 100) {
+            showError(emailInput, 'Email không được dài quá 100 ký tự!')
+            isValid = false;
+        } else if (tm === 0) {
+            // Trường hợp thêm mới email
+            if (emails.includes(email)) {
+                showError(emailInput, 'Email đã tồn tại!');
                 isValid = false;
             }
+        } else if (tm === 1) {
+            // Trường hợp chỉnh sửa email
+            let count = 0;
+            let check = emails.includes(email);
 
-            // Kiểm tra phần miền email sau dấu @
-            if (specialCharRegex.test(domainPart)) {
-                showError(emailInput, 'Email không được chứa ký tự đặc biệt ngoài dấu @ và .!');
-                isValid = false;
+            for (let i = 0; i < emails.length; i++) {
+                if (emails[i] === email) {
+                    count++;
+                    console.log(count);
+                    // Nếu email trùng và xuất hiện nhiều hơn 1 lần, báo lỗi
+                    if (count === 1 && check) {
+                        showError(emailInput, 'Email đã tồn tại!');
+                        isValid = false;
+                        break;
+                    }
+                }
             }
         }
-    }
 
-    return isValid;
+        return isValid;
+    }
 }
 
 // Hiển thị lỗi
@@ -478,6 +487,12 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // What For : Gửi Data Thanh Toán
+// Trong file JavaScript của bạn
+document.querySelector('form').addEventListener('submit', function (event) {
+    event.preventDefault();
+    guiDataThanhToan();
+});
+
 function guiDataThanhToan() {
     const paymentMethods = document.getElementsByName('paymentMethod');
     let selectedMethod;

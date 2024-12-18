@@ -343,7 +343,7 @@ public class ClientController {
     //  TODO: Check-Out Sản Phẩm Chi Tiết
     @PostMapping(value = "/check-out")
     @ResponseStatus(HttpStatus.OK)
-    private String checkOut(HttpSession session, @RequestParam("productIds") List<Integer> listIDSPGHJson, Model model) {
+    private String checkOut(HttpSession session, @RequestParam(value = "productIds", required = false) List<Integer> listIDSPGHJson, Model model) {
         KhachHang khachHang = (KhachHang) session.getAttribute("user");
         if (khachHang == null) {
             return "redirect:/login/login-client";
@@ -532,7 +532,7 @@ public class ClientController {
                             put("message", "Đặt hàng thành công! Chúng tôi sẽ giao hàng sớm nhất.");
                         }});
             }
-
+            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon).build());
             log.info("Order processed successfully - Order ID: {}", hoaDon.getId());
             return ResponseEntity.ok().build();
 
@@ -545,11 +545,7 @@ public class ClientController {
 
     // TODO : Thêm endpoint xử lý callback từ VNPay
     @GetMapping("/vnpay-payment")
-    public String vnPayCallback(HttpSession session, @RequestParam Map<String, String> queryParams, Model model) {
-        KhachHang khachHang = (KhachHang) session.getAttribute("user");
-        if (khachHang == null) {
-            return "redirect:/login/login-client";
-        }
+    public String vnPayCallback(@RequestParam Map<String, String> queryParams, Model model) {
         try {
             String vnp_ResponseCode = queryParams.get("vnp_ResponseCode");
             String vnp_TxnRef = queryParams.get("vnp_TxnRef"); // Mã đơn hàng

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -19,7 +20,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
             nativeQuery = true)
     List<HoaDon> findHoaDonWithId1AndTop4Newest();
 
-    @Query("SELECT h FROM HoaDon h WHERE h.trangThai = 1")
+    @Query("SELECT h FROM HoaDon h WHERE h.trangThai = 0")
     List<HoaDon> findHoaDonsWithStatusOne();
 
     List<HoaDon> findByKhachHangId(Integer khachHangId);
@@ -81,4 +82,11 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findByTrangThai(int trangThai);
 
     List<HoaDon> findByTrangThaiIs(Integer trangThai);
+    @Query("SELECT h FROM HoaDon h WHERE h.trangThai = 4 AND h.ngaySua < :thirtySecondsAgo")
+    List<HoaDon> findUnconfirmedDeliveredOrders(@Param("thirtySecondsAgo") LocalDateTime thirtySecondsAgo);
+    @Query("SELECT h FROM HoaDon h WHERE h.trangThai = 4 AND h.ngaySua >= :startOfDay AND h.ngaySua < :endOfDay")
+    List<HoaDon> findHoaDonByTrangThaiAndNgayBangHomNay(
+            @Param("startOfDay") LocalDateTime startOfDay,
+            @Param("endOfDay") LocalDateTime endOfDay
+    );
 }

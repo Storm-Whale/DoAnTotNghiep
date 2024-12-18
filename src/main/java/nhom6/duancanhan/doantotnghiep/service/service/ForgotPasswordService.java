@@ -14,4 +14,6 @@ public interface ForgotPasswordService {
     TaiKhoanDTO saveTaiKhoan(TaiKhoanDTO taiKhoan);
 
     void sendHoaDon(String email, int idHoaDon);
+    void sendHoaDonHT(String email);
+
 }

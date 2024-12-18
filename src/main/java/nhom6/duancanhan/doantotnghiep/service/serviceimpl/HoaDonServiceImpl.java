@@ -2,18 +2,13 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 
 import jakarta.transaction.Transactional;
-import nhom6.duancanhan.doantotnghiep.dto.HoaDonDTO;
+import lombok.extern.slf4j.Slf4j;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
-
-
-//import nhom6.duancanhan.doantotnghiep.dto.ProductDetail;
-
-
-import nhom6.duancanhan.doantotnghiep.entity.DiaChi;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
 import nhom6.duancanhan.doantotnghiep.exception.DataNotFoundException;
+import nhom6.duancanhan.doantotnghiep.repository.ForgotRepository;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.repository.SanPhamChiTietRepository;
@@ -22,23 +17,30 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class HoaDonServiceImpl implements HoaDonService {
 
     private final HoaDonRepository hoaDonRepository;
 
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
+    private final ForgotRepository forgotRepository;
+    private final JavaMailSender mailSender;
 
-    public HoaDonServiceImpl(HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, SanPhamChiTietRepository sanPhamChiTietRepository) {
+
+    public HoaDonServiceImpl(HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, SanPhamChiTietRepository sanPhamChiTietRepository, ForgotRepository forgotRepository, JavaMailSender mailSender) {
         this.hoaDonRepository = hoaDonRepository;
         this.hoaDonChiTietRepository = hoaDonChiTietRepository;
         this.sanPhamChiTietRepository = sanPhamChiTietRepository;
+        this.forgotRepository = forgotRepository;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -86,8 +88,8 @@ public class HoaDonServiceImpl implements HoaDonService {
 
 
     @Override
-    public void addHoaDon(HoaDon hoaDon) {
-        hoaDonRepository.save(hoaDon);
+    public HoaDon addHoaDon(HoaDon hoaDon) {
+        return hoaDonRepository.save(hoaDon);
     }
 
     @Override
@@ -228,7 +230,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         return hoaDonRepository.findByTrangThai(trangThai); // Gọi phương thức từ repository
     }
     public Page<HoaDon> getAllWithPagination(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("ngayTao").descending());
         return hoaDonRepository.findAll(pageable);
     }
 //
@@ -251,5 +253,4 @@ public class HoaDonServiceImpl implements HoaDonService {
             return hoaDonRepository.findAll(pageable);
         }
     }
-
 }

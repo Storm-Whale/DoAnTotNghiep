@@ -1,7 +1,6 @@
+var tongslsp = 0;
 document.addEventListener("DOMContentLoaded", function () {
     const productCheckboxes = document.querySelectorAll(".form-check-input:not(#select-all)");
-    const loadingOverlay = document.getElementById("loading-overlay");
-    const loadingSpinner = document.getElementById("loading-spinner");
 
     const selectAllCheckbox = document.getElementById("select-all");
 
@@ -16,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         updateTotalAmountAndCount()
-
     }
 
     document.querySelectorAll('.cart-item').forEach(item => {
@@ -159,12 +157,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const cartItem = deleteButton.closest('.cart-item');
                 const brandCard = cartItem.closest('.card');
 
-                // Hiển thị loading
-                const loadingOverlay = cartItem.querySelector('.loading-overlay');
-                const loadingSpinner = cartItem.querySelector('.loading-spinner');
-                loadingOverlay.style.display = 'block';
-                loadingSpinner.style.display = 'block';
-
                 try {
                     const response = await fetch(`/san-pham-gio-hang/delete-spgh/${idspgh}`, {
                         method: 'POST'
@@ -288,7 +280,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateTotalAmountAndCount() {
         let totalAmount = 0;
         let selectedCount = 0;
+        let totalQuantity = 0;  // New variable to track the total quantity of all selected products
 
+        // Loop through each product checkbox
         productCheckboxes.forEach(checkbox => {
             if (checkbox.checked) {
                 const cartItem = checkbox.closest(".cart-item");
@@ -296,7 +290,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const quantityInput = cartItem.querySelector(".quantity-input");
                 const basePriceInput = cartItem.querySelector(".cart-item-price");
-
                 if (!quantityInput || !basePriceInput) return;
 
                 const quantity = parseInt(quantityInput.value || '0');
@@ -305,21 +298,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 totalAmount += itemTotal;
                 selectedCount++;
+                totalQuantity += quantity;  // Add the quantity of the current product
             }
         });
 
+        // Update the selected count (number of products)
         const selectedCountElement = document.getElementById("selected-count");
-        const totalAmountElement = document.getElementById("total-product");
-
         if (selectedCountElement) {
-            selectedCountElement.textContent = `${selectedCount}`; // Cập nhật số lượng sản phẩm
+            selectedCountElement.textContent = `${selectedCount}`; // Update the number of products selected
         }
 
+        // Update the total amount (sum of all selected product prices)
+        const totalAmountElement = document.getElementById("total-product");
         if (totalAmountElement) {
             totalAmountElement.textContent = new Intl.NumberFormat('vi-VN', {
                 maximumFractionDigits: 0
-            }).format(totalAmount) + ' đ'; // Cập nhật tổng tiền
+            }).format(totalAmount) + ' đ'; // Format the total amount as currency
         }
+        tongslsp = totalQuantity
     }
 });
 
@@ -331,6 +327,11 @@ checkoutButton.addEventListener('click', function() {
 
     if (selectedProducts.length === 0) {
         alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán');
+        return;
+    }
+
+    if (tongslsp > 20) {
+        alert('Vui lòng chỉ chọn tối đa 20 sản phẩm để thanh toán');
         return;
     }
 
