@@ -119,6 +119,9 @@ document.querySelector('form').addEventListener('submit', function (event) {
     const phone = document.getElementById('phone').value.trim();
     const dob = document.getElementById('dob').value;
 
+    // Regex kiểm tra ký tự đặc biệt
+    const specialCharRegex = /[!#$%^&*()+=\[\]{};':"\\|,<>/?]/;
+
     // Kiểm tra Tên
     if (!name || /^\s/.test(name)) {
         isValid = false;
@@ -126,6 +129,9 @@ document.querySelector('form').addEventListener('submit', function (event) {
     } else if (/^\d/.test(name)) {
         isValid = false;
         errorName.textContent = 'Tên không được bắt đầu bằng số.';
+    } else if (specialCharRegex.test(name)) {
+        isValid = false;
+        errorName.textContent = 'Tên không được chứa ký tự đặc biệt.';
     } else if (name.length > 50) {
         isValid = false;
         errorName.textContent = 'Tên không được dài quá 50 ký tự.';
@@ -142,6 +148,9 @@ document.querySelector('form').addEventListener('submit', function (event) {
     } else if (/^[A-Z]/.test(email)) {
         isValid = false;
         errorEmail.textContent = 'Email không được bắt đầu bằng chữ hoa.';
+    } else if (specialCharRegex.test(email)) {
+        isValid = false;
+        errorEmail.textContent = 'Email không được chứa ký tự đặc biệt.';
     } else if (email.length > 100) {
         isValid = false;
         errorEmail.textContent = 'Email không được dài quá 100 ký tự.';
@@ -152,6 +161,9 @@ document.querySelector('form').addEventListener('submit', function (event) {
     if (!phoneRegex.test(phone)) {
         isValid = false;
         errorPhone.textContent = 'Số điện thoại phải bắt đầu bằng số 0 và có độ dài 10-11 ký tự.';
+    } else if (specialCharRegex.test(phone)) {
+        isValid = false;
+        errorPhone.textContent = 'Số điện thoại không được chứa ký tự đặc biệt.';
     }
 
     // Kiểm tra Ngày sinh
@@ -174,6 +186,7 @@ document.querySelector('form').addEventListener('submit', function (event) {
         event.preventDefault();
     }
 });
+
 
 
 

@@ -35,10 +35,7 @@
             </div>
 
             <!-- Cart Icon -->
-            <a th:if="${session.user != null}" th:href="@{/client/gio-hang}" class="me-4">
-                <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
-            </a>
-            <a th:if="${session.user == null}" th:href="@{/login/login-client}" class="me-4">
+            <a th:href="@{/client/gio-hang}" class="me-4">
                 <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
             </a>
             <!-- User Dropdown -->
@@ -169,16 +166,12 @@
                 <input type="hidden" name="productIds">
                 <div class="mt-5">
                     <!-- Nút "Thêm vào giỏ hàng" và "Mua hàng" khi user không null -->
-                    <button th:if="${user != null}" id="add-to-cart-btn" class="btn btn-primary" type="button">
+                    <button id="add-to-cart-btn" class="btn btn-primary" type="button">
                         Thêm vào giỏ hàng
                     </button>
-                    <button th:if="${user != null}" id="buy-now-btn" class="btn btn-primary" type="submit">
+                    <button id="buy-now-btn" class="btn btn-primary" type="submit">
                         Mua hàng
                     </button>
-
-                    <!-- Link đến trang login nếu user là null -->
-                    <a th:unless="${user != null}" th:href="@{/login/login-client}" class="btn btn-primary">Thêm vào giỏ hàng</a>
-                    <a th:unless="${user != null}" th:href="@{/login/login-client}" class="btn btn-primary">Mua hàng</a>
                 </div>
             </form>
         </div>

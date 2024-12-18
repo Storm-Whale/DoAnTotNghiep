@@ -247,9 +247,12 @@ function validateAddressForm() {
     // Reset all error messages
     document.querySelectorAll('.text-danger').forEach(el => el.classList.add('d-none'));
 
-    // Validate name: cannot start with a number
+    // Regex kiểm tra ký tự đặc biệt
+    const specialCharRegex = /[!#$%^&*()+=\[\]{};':"\\|,<>/?]/;
+
+    // Validate name: cannot start with a number, contain special characters, or start with a space
     const name = document.getElementById('name').value.trim();
-    if (name === '' || /^\d/.test(name) || name.length > 20) {
+    if (name === '' || /^\d/.test(name) || name.length > 20 || specialCharRegex.test(name) || name.startsWith(' ')) {
         document.getElementById('nameError').classList.remove('d-none');
         isValid = false;
     }
@@ -262,34 +265,35 @@ function validateAddressForm() {
         isValid = false;
     }
 
-    // Validate city: cannot start with a number
+    // Validate city: cannot start with a number, contain special characters, or start with a space
     const city = document.getElementById('city').value.trim();
-    if (city === '' || /^\d/.test(city) || city.length > 20) {
+    if (city === '' || /^\d/.test(city) || city.length > 20 || specialCharRegex.test(city) || city.startsWith(' ')) {
         document.getElementById('cityError').classList.remove('d-none');
         isValid = false;
     }
 
-    // Validate district: cannot start with a number
+    // Validate district: cannot start with a number, contain special characters, or start with a space
     const district = document.getElementById('district').value.trim();
-    if (district === '' || /^\d/.test(district) || district.length > 20) {
+    if (district === '' || /^\d/.test(district) || district.length > 20 || specialCharRegex.test(district) || district.startsWith(' ')) {
         document.getElementById('districtError').classList.remove('d-none');
         isValid = false;
     }
 
-    // Validate ward: cannot start with a number
+    // Validate ward: cannot start with a number, contain special characters, or start with a space
     const ward = document.getElementById('ward').value.trim();
-    if (ward === '' || /^\d/.test(ward) || ward.length > 20) {
+    if (ward === '' || /^\d/.test(ward) || ward.length > 20 || specialCharRegex.test(ward) || ward.startsWith(' ')) {
         document.getElementById('wardError').classList.remove('d-none');
         isValid = false;
     }
 
-    // Validate detail address: cannot start with a number
+    // Validate detail address: cannot contain special characters or start with a space, max length 200
     const detailAddress = document.getElementById('detailAddress').value.trim();
-    if (detailAddress === '' || detailAddress.length > 200) {
+    if (detailAddress === '' || detailAddress.length > 200 || specialCharRegex.test(detailAddress) || detailAddress.startsWith(' ')) {
         document.getElementById('detailAddressError').classList.remove('d-none');
         isValid = false;
     }
 
     return isValid;
 }
+
 

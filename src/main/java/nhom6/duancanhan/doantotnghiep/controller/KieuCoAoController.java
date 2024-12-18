@@ -79,43 +79,63 @@ public class KieuCoAoController {
     }
 //    @PostMapping("/add")
 //    public String add(@ModelAttribute("kieuCoAo") @Valid KieuCoAo kieuCoAo,
-//                      BindingResult bindingResult, Model model) {
-//        if (kieuCoAo.getTenCoAo() == null || kieuCoAo.getTenCoAo().trim().isEmpty()) {
-//            bindingResult.rejectValue("tenCoAo", "error.kieuCoAo", "Tên kiểu cổ áo không được để trống.");
-//        } else if (kieuCoAo.getTenCoAo().length() > 20) {
-//            bindingResult.rejectValue("tenCoAo", "error.kieuCoAo", "Tên kiểu cổ áo không được vượt quá 20 ký tự.");
-//        }
-//        // Kiểm tra nếu có lỗi validation
+//                      BindingResult bindingResult, RedirectAttributes redirectAttributes,
+//                      Model model) {
 //        if (bindingResult.hasErrors()) {
-//            model.addAttribute("kieuCoAo", kieuCoAo); // Đưa lại đối tượng vào model
-//            model.addAttribute("listKieuCoAo", kieuCoAoService.getAll());
-//            return "/admin/sanpham/KieuCoAo/KieuCoAo";  // Trả về lại form nếu có lỗi
+//            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên kiểu cổ áo!");
+//            if(kieuCoAo.getTenCoAo().length() > 20){
+//                redirectAttributes.addFlashAttribute("error", "Tên kiểu cổ áo không được quá 20 kí tự!");
+//            }
+//            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.kieuCoAo", bindingResult);
+//            redirectAttributes.addFlashAttribute("kieuCoAo", kieuCoAo);
+//            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+//            return "redirect:/admin/kieu-co-ao";
 //        }
+//        // Gọi service để thêm đối tượng vào cơ sở dữ liệu
 //        kieuCoAo.setTrangThai(1);
 //        kieuCoAoService.addKieuCoAo(kieuCoAo);
+//        // Trả về lại danh sách và hiển thị trang hiện tại
 //        return "redirect:/admin/kieu-co-ao";
 //    }
-    @PostMapping("/add")
-    public String add(@ModelAttribute("kieuCoAo") @Valid KieuCoAo kieuCoAo,
-                      BindingResult bindingResult, RedirectAttributes redirectAttributes,
-                      Model model) {
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên kiểu cổ áo!");
-            if(kieuCoAo.getTenCoAo().length() > 20){
-                redirectAttributes.addFlashAttribute("error", "Tên kiểu cổ áo không được quá 20 kí tự!");
+        @PostMapping("/add")
+        public String add(@ModelAttribute("kieuCoAo") @Valid KieuCoAo kieuCoAo,
+                          BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                          Model model) {
+            // Kiểm tra khoảng trắng và tên
+            if (kieuCoAo.getTenCoAo() == null || kieuCoAo.getTenCoAo().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên kiểu cổ áo!");
+                return "redirect:/admin/kieu-co-ao";
             }
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.kieuCoAo", bindingResult);
-            redirectAttributes.addFlashAttribute("kieuCoAo", kieuCoAo);
-            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+            // Loại bỏ khoảng trắng thừa
+            String tenCoAo = kieuCoAo.getTenCoAo().trim();
+            // Kiểm tra độ dài
+            if (tenCoAo.length() > 20) {
+                redirectAttributes.addFlashAttribute("error", "Tên kiểu cổ áo không được quá 20 kí tự!");
+                return "redirect:/admin/kieu-co-ao";
+            }
+            // Kiểm tra không bắt đầu bằng số hoặc ký tự đặc biệt
+            if (!tenCoAo.matches("^[a-zA-Z].*")) {
+                redirectAttributes.addFlashAttribute("error", "Tên kiểu cổ áo phải bắt đầu bằng chữ cái!");
+                return "redirect:/admin/kieu-co-ao";
+            }
+            // Kiểm tra không có khoảng trắng liên tiếp
+            if (tenCoAo.matches(".*\\s{2,}.*")) {
+                redirectAttributes.addFlashAttribute("error", "Tên kiểu cổ áo không được chứa nhiều khoảng trắng liên tiếp!");
+                return "redirect:/admin/kieu-co-ao";
+            }
+            // Kiểm tra trùng lặp (nếu cần)
+            if (kieuCoAoService.existsByTenCoAo(tenCoAo)) {
+                redirectAttributes.addFlashAttribute("error", "Tên kiểu cổ áo đã tồn tại!");
+                return "redirect:/admin/kieu-co-ao";
+            }
+            // Nếu vượt qua tất cả các kiểm tra
+            kieuCoAo.setTenCoAo(tenCoAo); // Đặt lại tên đã trim
+            kieuCoAo.setTrangThai(1);
+            kieuCoAoService.addKieuCoAo(kieuCoAo);
+
+            redirectAttributes.addFlashAttribute("success", "Thêm kiểu cổ áo thành công!");
             return "redirect:/admin/kieu-co-ao";
         }
-        // Gọi service để thêm đối tượng vào cơ sở dữ liệu
-        kieuCoAo.setTrangThai(1);
-        kieuCoAoService.addKieuCoAo(kieuCoAo);
-        // Trả về lại danh sách và hiển thị trang hiện tại
-        return "redirect:/admin/kieu-co-ao";
-        // Trả về danh sách đã được cập nhật
-    }
 
 
     @GetMapping("/edit/{id}")
@@ -183,20 +203,4 @@ public class KieuCoAoController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-
-//    @GetMapping("/search")
-//    public String listKieuCoAo(@RequestParam(value = "search", required = false) String search, Model model) {
-//        List<KieuCoAo> kieuCoAoList;
-//        if (search != null && !search.isEmpty()) {
-//            // Nếu có từ khóa tìm kiếm, gọi phương thức search
-//            kieuCoAoList = kieuCoAoService.searchByTenCoAo(search);
-//            model.addAttribute("search", search);
-//        } else {
-//            // Nếu không có từ khóa tìm kiếm, lấy tất cả kiểu cổ áo
-//            kieuCoAoList = kieuCoAoService.getAll();
-//        }
-//        model.addAttribute("kieuCoAo", new KieuCoAo());
-//        model.addAttribute("kieuCoAoList", kieuCoAoList);
-//        return "/admin/sanpham/KieuCoAo/KieuCoAo"; // Trả về form sửa nếu có lỗi
-//    }
 }

@@ -48,4 +48,6 @@ public interface HoaDonService {
     public List<HoaDon> getByTrangThai(int trangThai);
     public Page<HoaDon> getAllWithPagination(int pageNo, int pageSize);
     public Page<HoaDon> getByTrangThaiWithPagination(int trangThai, int pageNo, int pageSize);
+
+    Page<HoaDon> findByTrangThai(Integer trangThai, int page, int size);
 }

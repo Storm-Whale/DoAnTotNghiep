@@ -18,9 +18,17 @@ public interface ChatLieuService {
 
     void updateChatLieu(Integer id, ChatLieu chatLieu);
 
+    void deleteChatLieu();
+
     void deleteChatLieu(Integer id);
 
     List<String> getAllTenChatLieu();
 
     void updateChatLieuById(Integer id, ChatLieu chatLieu);
+
+
+    List<ChatLieu> getAllChatLieuByTrangThai(int trangThai);
+
+    boolean existsByTenChatLieu(String tenChatLieu);
+
 }

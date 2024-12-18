@@ -1,6 +1,8 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
+import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamChiTietResponse;
+import nhom6.duancanhan.doantotnghiep.entity.KichCo;
 import nhom6.duancanhan.doantotnghiep.entity.MauSac;
 import nhom6.duancanhan.doantotnghiep.entity.SanPhamChiTiet;
 import nhom6.duancanhan.doantotnghiep.service.service.MauSacService;
@@ -11,7 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +69,43 @@ public class MauSacController {
 
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("mauSac") MauSac mauSac, Model model) {
+    public String add(@ModelAttribute("mauSac") @Valid MauSac mauSac,
+                      BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                      Model model) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên màu sắc");
+            String tenMauSac = mauSac.getTenMauSac();
+            if (mauSac.getTenMauSac().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Tên màu sắc không được để trống!");
+                return "redirect:/admin/mausac";
+            }
+
+            // Check leading/trailing whitespaces
+            if (!mauSac.getTenMauSac().trim().equals(mauSac.getTenMauSac())) {
+                bindingResult.rejectValue("tenMauSac", "tenMauSac.whitespace", "Tên màu sắc không được chứa khoảng trắng ở đầu hoặc cuối!");
+                return "redirect:/admin/mausac";
+            }
+            // Check length
+            else if (tenMauSac.length() > 20) {
+                redirectAttributes.addFlashAttribute("error", "Tên màu sắc không được quá 20 kí tự!");
+                return "redirect:/admin/mausac";
+            }
+            // Check for special characters
+            else if (mauSac.getTenMauSac().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+                redirectAttributes.addFlashAttribute("error", "Tên màu sắc không được chứa ký tự đặc biệt!");
+                return "redirect:/admin/mausac";
+            }
+
+            // Check duplicates (implement database logic)
+            else if (mauSacService.existsByTenMauSac(tenMauSac)) {
+                redirectAttributes.addFlashAttribute("error", "Tên màu sắc đã tồn tại!");
+                return "redirect:/admin/mausac";
+            }
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.kichCo", bindingResult);
+            redirectAttributes.addFlashAttribute("mauSac", mauSac);
+            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+            return "redirect:/admin/mausac";
+        }
         mauSac.setTrangThai(1);
         mauSacService.addMauSac(mauSac);
         return "redirect:/admin/mausac";
@@ -82,16 +122,18 @@ public class MauSacController {
     }
 
     @PostMapping("/update/{id}")
-    public String update(@PathVariable("id") Integer id, @ModelAttribute("mauSac") MauSac mauSac) {
+    public String update(@PathVariable("id") Integer id,
+                         @ModelAttribute("mauSac") @Valid MauSac mauSac,
+                         BindingResult bindingResult) {
         Optional<MauSac> existingMauSacOpt = mauSacService.detail(id);
-        if (existingMauSacOpt.isPresent()) {
+        if (bindingResult.hasErrors() || existingMauSacOpt.isEmpty()) {
+            return "/admin/sanpham/MauSac/Update";
+        }
             MauSac existingMauSac = existingMauSacOpt.get();
             mauSac.setNgayTao(existingMauSac.getNgayTao());
             mauSac.setId(existingMauSac.getId());
             mauSacService.updateMauSac(id, mauSac);
             return "redirect:/admin/mausac";
-        }
-        return "redirect:/admin/mausac";
     }
 
     @PostMapping("/updatett/{id}")

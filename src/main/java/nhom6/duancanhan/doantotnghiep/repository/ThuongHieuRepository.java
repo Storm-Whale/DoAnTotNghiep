@@ -14,4 +14,10 @@ public interface ThuongHieuRepository extends JpaRepository<ThuongHieu, Integer>
                 select th.tenThuongHieu from ThuongHieu th
             """)
     List<String> findAllTenThuongHieu();
+
+
+    List<ThuongHieu> findAllByTrangThai(Integer trangThai);
+
+    boolean existsByTenThuongHieu(String tenThuongHieu);
+
 }

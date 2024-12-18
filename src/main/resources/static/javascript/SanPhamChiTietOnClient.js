@@ -244,11 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
 
-            var spctP = JSON.parse(spcts)
-
-            var spctItem = spctP.find(spct => spct.idMauSac === id_mau_sac && spct.idKichCo === id_kich_co);
-
-            if (spctItem.soLuong < so_luong) {
+            if (isNaN(so_luong) || so_luong < 1 || so_luong > 9999) {
                 const Toast = Swal.mixin({
                     toast: true,
                     position: "top-end",
@@ -264,9 +260,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Gọi thông báo
                 Toast.fire({
                     icon: "warning",
-                    title: `Không đủ sản phẩm, hiện tại chỉ còn ${spctItem.soLuong} sản phẩm.`
+                    title: `Số lượng không hợp lệ.`
                 });
-                return
+                return;
             }
 
             fetch(`/client/add_sp_vao_gio_hang/${idSP}`, {
@@ -350,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Kiểm tra số lượng sản phẩm
-        if (isNaN(so_luong) || so_luong < 1) {
+        if (isNaN(so_luong) || so_luong < 1 || so_luong > 9999) {
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -367,31 +363,6 @@ document.addEventListener('DOMContentLoaded', function () {
             Toast.fire({
                 icon: "warning",
                 title: `Số lượng không hợp lệ.`
-            });
-            return;
-        }
-
-        // Kiểm tra số lượng tồn kho
-        const spctP = JSON.parse(spcts); // spcts phải được định nghĩa từ server (ví dụ, qua thẻ script)
-        const spctItem = spctP.find(spct => spct.idMauSac === id_mau_sac && spct.idKichCo === id_kich_co);
-
-        if (!spctItem || spctItem.soLuong < so_luong) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                }
-            });
-
-            // Gọi thông báo
-            Toast.fire({
-                icon: "warning",
-                title: `Không đủ sản phẩm, hiện tại chỉ còn ${spctItem ? spctItem.soLuong : 0} sản phẩm.`
             });
             return;
         }

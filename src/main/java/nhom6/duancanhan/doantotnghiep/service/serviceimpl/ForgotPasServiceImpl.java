@@ -135,6 +135,8 @@ public class ForgotPasServiceImpl implements ForgotPasswordService {
                 .append("</thead>")
                 .append("<tbody>");
 
+
+
         for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
             String productName = hoaDonChiTiet.getSanPhamChiTiet().getSanPham().getTenSanPham();
             String color = hoaDonChiTiet.getSanPhamChiTiet().getMauSac().getTenMauSac();
@@ -153,7 +155,30 @@ public class ForgotPasServiceImpl implements ForgotPasswordService {
                     .append("<td style='border: 1px solid #ddd; padding: 8px;'>₫").append(totalPrice).append("</td>")
                     .append("</tr>");
         }
+        //
+        htmlContent.append("</tbody></table>")
+                // Thêm dòng thông báo mới
+                .append("<p style='font-size: 16px; color: #FF6347; text-align: center; font-style: italic;'>")
+                .append("Nếu bạn đã nhận được hàng thì bỏ ra 3s bấm nút xác nhận giúp chúng mình nhé!")
+                .append("</p>");
+        //
+        String xacNhanUrl = "http://localhost:8080/admin/taiquay/xac-nhan?hoaDonId=" + idHoaDon;
 
+        htmlContent.append("<div style='text-align: center; margin-top: 20px;'>")
+                .append("<a href='").append(xacNhanUrl).append("' ")
+                .append("style='display: inline-block; ")
+                .append("background-color: #4CAF50; ")
+                .append("color: white; ")
+                .append("padding: 14px 25px; ")
+                .append("text-align: center; ")
+                .append("text-decoration: none; ")
+                .append("display: inline-block; ")
+                .append("border-radius: 5px; ")
+                .append("font-weight: bold;'>")
+                .append("Xác Nhận Đã Nhận Hàng")
+                .append("</a>")
+                .append("</div>");
+        //
         htmlContent.append("</tbody></table>")
                 .append("<p style='font-size: 18px; font-weight: bold; color: #000;'>Tổng cộng: <strong style='color: #007BFF;'>₫")
                 .append(totalBillPrice)
@@ -161,7 +186,6 @@ public class ForgotPasServiceImpl implements ForgotPasswordService {
                 .append("<p style='font-size: 16px; color: #555;'>Nếu bạn có bất kỳ câu hỏi nào về đơn hàng, vui lòng liên hệ với chúng tôi.</p>")
                 .append("<p style='font-size: 16px; color: #555;'>Trân trọng,<br><em>Đội ngũ hỗ trợ của Yagi Shop</em></p>")
                 .append("</div>");
-
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -174,8 +198,7 @@ public class ForgotPasServiceImpl implements ForgotPasswordService {
 
             helper.setTo(email);
             helper.setSubject("Thông tin hoá đơn từ Yagi Shop");
-            helper.setText(htmlContent.toString(), true);
-
+            helper.setText(htmlContent.toString(), true);// true cho biết rằng văn bản là HTML
             mailSender.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();

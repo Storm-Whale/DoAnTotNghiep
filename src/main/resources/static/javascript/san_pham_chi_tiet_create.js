@@ -131,6 +131,8 @@ function validateForm() {
         // Validate Giá (Price)
         const giaInput = detail.querySelector('.gia-input');
         const giaWarning = detail.querySelector('.gia-warning');
+        const maxGia = 999999999.99;
+
         if (!giaInput.value || giaInput.value < 0) {
             giaWarning.style.display = "block";
             giaWarning.textContent = "Giá phải lớn hơn 0!";
@@ -138,6 +140,10 @@ function validateForm() {
         } else if (giaInput.value.startsWith(" ")) {
             giaWarning.style.display = "block";
             giaWarning.textContent = "Giá không được bắt đầu bằng dấu cách!";
+            isValid = false;
+        } else if (parseFloat(giaInput.value) > maxGia) {
+            giaWarning.style.display = "block";
+            giaWarning.textContent = `Giá không được vượt quá ${maxGia}!`;
             isValid = false;
         } else {
             giaWarning.style.display = "none";
@@ -153,6 +159,8 @@ function validateForm() {
             kichCoWarning.style.display = "none";
         }
 
+        const maxSoLuong = 9999;
+
         // Validate Số lượng (Quantity)
         const soLuongInput = detail.querySelector('.soLuong-input');
         const soLuongWarning = detail.querySelector('.soLuong-warning');
@@ -164,7 +172,12 @@ function validateForm() {
             soLuongWarning.style.display = "block";
             soLuongWarning.textContent = "Số lượng không được bắt đầu bằng dấu cách!";
             isValid = false;
-        } else {
+        } else if (soLuongInput.value > maxSoLuong) {
+            soLuongWarning.style.display = "block";
+            soLuongWarning.textContent = `Số lượng không được vượt quá ${maxSoLuong}!`;
+            isValid = false;
+        }
+        else {
             soLuongWarning.style.display = "none";
         }
 

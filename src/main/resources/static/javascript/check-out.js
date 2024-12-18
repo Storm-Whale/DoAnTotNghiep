@@ -102,7 +102,7 @@ document.getElementById('restPGG').addEventListener('click', function () {
 const thongTinDiaChi = document.getElementById('thongTinDiaChi');
 let selectedDiaChiID = null;
 if (listDiaChi.length > 0) {
-    const { id, tenKhachHang, soDienThoai, diaChiChiTiet } = listDiaChi[0];
+    const {id, tenKhachHang, soDienThoai, diaChiChiTiet} = listDiaChi[0];
     selectedDiaChiID = id
     thongTinDiaChi.innerHTML = `
         <input id="diaChi" type="hidden" value="${id}">
@@ -154,7 +154,7 @@ document.querySelector('.confirm').addEventListener('click', () => {
     const selectedDiaChi = listDiaChi.find(diachi => diachi.id === parseInt(selectedDiaChiID));
 
     if (selectedDiaChi) {
-        const { id, tenKhachHang, soDienThoai, diaChiChiTiet } = selectedDiaChi;
+        const {id, tenKhachHang, soDienThoai, diaChiChiTiet} = selectedDiaChi;
         thongTinDiaChi.innerHTML = `
             <input id="diaChi" type="hidden" name="selectedAddress" value="${id}">
             Họ và tên: ${tenKhachHang}<br>
@@ -181,9 +181,35 @@ document.querySelectorAll('.cancel, .confirm').forEach(button => {
 });
 
 // * Hiển thị form thêm địa chỉ mới
+var tm
 document.getElementById('addAddressButton').addEventListener('click', function () {
+    tm = 0
     document.getElementById('addressContainer').style.display = 'none';
     document.getElementById('addAddressContainer').style.display = 'block';
+
+    if (khachHang.email != null && khachHang.email !== ''){
+        Swal.fire({
+            title: 'Xác nhận cập nhật email?',
+            text: "Bạn có chắc chắn muốn cập nhật email này không?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Có',
+            cancelButtonText: 'Không'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('blockEmail').style.display = 'block';
+            } else {
+                document.getElementById('blockEmail').style.display = 'none';
+            }
+        });
+    }
+
+    if (khachHang.email == null || khachHang.email === '') {
+        document.getElementById('blockEmail').style.display = 'block';
+    }
+
     const form = document.getElementById('addressForm')
     form.reset()
 
@@ -238,20 +264,33 @@ function validateAddressForm() {
     const districtInput = document.getElementById('district');
     const wardInput = document.getElementById('ward');
     const detailAddressInput = document.getElementById('detailAddress');
+    const emailInput = document.getElementById('email');
 
     // Reset lỗi trước khi kiểm tra
     resetErrorMessages();
+
+    // Regex kiểm tra ký tự đặc biệt không hợp lệ
+    const specialCharRegex = /[!#$%^&*()+=\[\]{};':"\\|,<>/?]/;
 
     // Kiểm tra Họ và Tên
     if (nameInput.value.trim() === '' || nameInput.value.startsWith(' ')) {
         showError(nameInput, 'Họ và tên không được để trống hoặc bắt đầu bằng khoảng trắng!');
         isValid = false;
+    } else if (specialCharRegex.test(nameInput.value)) {
+        showError(nameInput, 'Họ và tên không được chứa ký tự đặc biệt!');
+        isValid = false;
+    } else if (nameInput.value.length > 50) {
+        showError(nameInput, 'Họ và tên dài quá 50 kí tự!');
+        isValid = false;
     }
 
     // Kiểm tra Số điện thoại
-    const phoneRegex = /^[0-9]{10,11}$/;
+    const phoneRegex = /^0[0-9]{9,10}$/;
     if (!phoneRegex.test(phoneInput.value.trim()) || phoneInput.value.trim() === '' || phoneInput.value.startsWith(' ')) {
         showError(phoneInput, 'Số điện thoại không hợp lệ! Phải chứa 10-11 chữ số.');
+        isValid = false;
+    } else if (specialCharRegex.test(phoneInput.value)) {
+        showError(phoneInput, 'Số điện thoại không được chứa ký tự đặc biệt!');
         isValid = false;
     }
 
@@ -259,11 +298,23 @@ function validateAddressForm() {
     if (cityInput.value.trim() === '' || cityInput.value.startsWith(' ')) {
         showError(cityInput, 'Thành phố không được để trống hoặc bắt đầu bằng khoảng trắng!');
         isValid = false;
+    } else if (specialCharRegex.test(cityInput.value)) {
+        showError(cityInput, 'Thành phố không được chứa ký tự đặc biệt!');
+        isValid = false;
+    } else if (cityInput.value.length > 50) {
+        showError(cityInput, 'Tên thành phố không dài quá 50 kí tự!');
+        isValid = false;
     }
 
     // Kiểm tra Quận/Huyện
     if (districtInput.value.trim() === '' || districtInput.value.startsWith(' ')) {
         showError(districtInput, 'Quận/Huyện không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    } else if (specialCharRegex.test(districtInput.value)) {
+        showError(districtInput, 'Quận/Huyện không được chứa ký tự đặc biệt!');
+        isValid = false;
+    } else if (districtInput.value.length > 50) {
+        showError(districtInput, 'Tên quận/huyên không dài quá 50 kí tự!');
         isValid = false;
     }
 
@@ -271,12 +322,62 @@ function validateAddressForm() {
     if (wardInput.value.trim() === '' || wardInput.value.startsWith(' ')) {
         showError(wardInput, 'Xã/Phường không được để trống hoặc bắt đầu bằng khoảng trắng!');
         isValid = false;
+    } else if (specialCharRegex.test(wardInput.value)) {
+        showError(wardInput, 'Xã/Phường không được chứa ký tự đặc biệt!');
+        isValid = false;
+    } else if (wardInput.value.length > 50) {
+        showError(wardInput, "Tên xã/phường không được dài quá 50 kí tự!")
     }
 
     // Kiểm tra Địa chỉ cụ thể
     if (detailAddressInput.value.trim() === '' || detailAddressInput.value.startsWith(' ')) {
         showError(detailAddressInput, 'Địa chỉ cụ thể không được để trống hoặc bắt đầu bằng khoảng trắng!');
         isValid = false;
+    } else if (specialCharRegex.test(detailAddressInput.value)) {
+        showError(detailAddressInput, 'Địa chỉ cụ thể không được chứa ký tự đặc biệt!');
+        isValid = false;
+    } else if (detailAddressInput.value.length > 200) {
+        showError(detailAddressInput, "Địa chỉ cụ thể không được dài quá 200 kí tự!")
+    }
+
+    // Kiểm tra Email
+    const email = emailInput.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email.trim() === '' || email.startsWith(' ')) {
+        showError(emailInput, 'Email không được để trống hoặc bắt đầu bằng khoảng trắng!');
+        isValid = false;
+    } else if (!emailRegex.test(email)) {
+        showError(emailInput, 'Email không hợp lệ!');
+        isValid = false;
+    } else if (/^\d/.test(email)) {
+        showError(emailInput, 'Email không được bắt đầu bằng số!');
+        isValid = false;
+    } else if (/^[A-Z]/.test(email)) {
+        showError(emailInput, 'Email không được bắt đầu bằng chữ hoa!');
+        isValid = false;
+    } else if (email.length > 100) {
+        showError(emailInput, 'Email không được dài quá 100 ký tự!');
+        isValid = false;
+    } else if (specialCharRegex.test(email)) {
+        // Kiểm tra các ký tự đặc biệt ngoài dấu @ và .
+        const emailParts = email.split('@');
+        if (emailParts.length === 2) {
+            const localPart = emailParts[0];
+            const domainPart = emailParts[1];
+
+            // Kiểm tra phần địa chỉ email trước dấu @
+            if (specialCharRegex.test(localPart)) {
+                showError(emailInput, 'Email không được chứa ký tự đặc biệt ngoài dấu @ và .!');
+                isValid = false;
+            }
+
+            // Kiểm tra phần miền email sau dấu @
+            if (specialCharRegex.test(domainPart)) {
+                showError(emailInput, 'Email không được chứa ký tự đặc biệt ngoài dấu @ và .!');
+                isValid = false;
+            }
+        }
     }
 
     return isValid;
@@ -303,6 +404,8 @@ function resetErrorMessages() {
 
 // * Hàm hiển thị form cập nhật và lưu idDiaChi
 function showUpdateForm(idDiaChi) {
+    tm = 1
+
     document.getElementById('addressContainer').style.display = 'none';
     document.getElementById('addAddressContainer').style.display = 'block';
 
@@ -310,10 +413,18 @@ function showUpdateForm(idDiaChi) {
     const form = document.getElementById('addressForm');
     form.setAttribute('data-id-dia-chi', idDiaChi);
 
+    if (khachHang.email != null || khachHang.email !== '') {
+        document.getElementById('blockEmail').style.display = 'block';
+        document.getElementById('email').value = khachHang.email;
+    }
+
     // Đổi nút lưu thành nút cập nhật
     const saveButton = document.getElementById('saveAddressButton');
     saveButton.textContent = 'Cập nhật';
     saveButton.onclick = updateAddress;
+
+    const titleSSInput = document.getElementById('titleSS');
+    saveButton.textContent = 'Cập nhật Điạ Chỉ';
 
     // Điền thông tin hiện tại vào form
     const diaChi = listDiaChi.find(d => d.id === idDiaChi);
@@ -356,7 +467,7 @@ async function updateAddress() {
 }
 
 // Kiểm tra và trigger click khi trang load xong
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Kiểm tra flag trong localStorage
     if (localStorage.getItem('shouldTriggerShow') === 'true') {
         // Xóa flag
@@ -396,6 +507,8 @@ function guiDataThanhToan() {
     if (tongTienSauKhiTruMa == null) {
         tongTienSauKhiTruMa = tongTien - tienShip;
     }
+
+    console.log(maPGG)
 
     const formData = new FormData();
     formData.append('listIDSPGH', JSON.stringify(listIDSPGH));

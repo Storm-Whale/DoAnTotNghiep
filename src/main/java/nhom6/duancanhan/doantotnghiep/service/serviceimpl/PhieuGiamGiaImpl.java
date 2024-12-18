@@ -1,5 +1,6 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaResponse;
 import nhom6.duancanhan.doantotnghiep.entity.PhieuGiamGia;
@@ -34,6 +35,11 @@ public class PhieuGiamGiaImpl implements PhieuGiamGiaService {
     public Page<PhieuGiamGia> findByCriteria(String keyword, Date ngayBatDau, Date ngayKetThuc,
                                         Integer kieuGiamGia, Integer trangThai, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo , pageSize);
+        // Nếu trạng thái là 2 (tạm dừng), xử lý riêng
+        if (trangThai != null && trangThai == 2) {
+            return phieuGiamGiaRepository.findByTrangThaiTemporaryStopped(keyword, ngayBatDau,
+                    ngayKetThuc, kieuGiamGia, pageable);
+        }
         return phieuGiamGiaRepository.findByCriteria(keyword, ngayBatDau, ngayKetThuc,
                 kieuGiamGia, trangThai, pageable);
     }
@@ -105,6 +111,11 @@ public class PhieuGiamGiaImpl implements PhieuGiamGiaService {
                         .toList()
                 ,"Lỗi khi lấy thông tin phiếu giảm giá từ cơ sở dữ liệu"
         );
+    }
+    @Override
+    public PhieuGiamGia findById(Integer id) {
+        return phieuGiamGiaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy phiếu giảm giá với ID: " + id));
     }
     //auto generate ma
     @Override

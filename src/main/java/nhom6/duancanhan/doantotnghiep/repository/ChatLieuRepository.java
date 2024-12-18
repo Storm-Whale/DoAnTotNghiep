@@ -12,4 +12,10 @@ public interface ChatLieuRepository extends JpaRepository<ChatLieu, Integer> {
             select cl.tenChatLieu from ChatLieu cl
         """)
     List<String> findAllTenChatLieu();
+
+
+    List<ChatLieu> findAllByTrangThai(Integer trangThai);
+
+    boolean existsByTenChatLieu(String tenChatLieu);
+
 }

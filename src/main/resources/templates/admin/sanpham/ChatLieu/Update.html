@@ -33,7 +33,7 @@
                 </div>
                 <div class="card-body">
 
-                    <form th:action="@{'/admin/chatlieu/update/' + ${chatLieu.id}}" method="post" class="d-inline-block">
+                    <form th:object="${chatLieu}"th:action="@{'/admin/chatlieu/update/' + ${chatLieu.id}}" method="post" class="d-inline-block">
 
                         <input type="hidden" name="_method" value="put">
                         <div class="mb-3">
@@ -44,6 +44,9 @@
                             <label  class="form-label">Tên Chất Liệu:</label>
                             <input type="text" class="form-control" id="tenChatLieu" name="tenChatLieu"
                                    th:value="${chatLieu.tenChatLieu}" required>
+                            <div th:if="${#fields.hasErrors('tenChatLieu')}" class="text-danger">
+                                <span th:errors="*{tenChatLieu}"></span>
+                            </div>
                         </div>
 
                         <div class="mb-3">

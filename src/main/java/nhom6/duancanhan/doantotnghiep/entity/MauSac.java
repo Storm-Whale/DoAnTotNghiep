@@ -1,6 +1,9 @@
 package nhom6.duancanhan.doantotnghiep.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
@@ -18,7 +21,11 @@ public class MauSac extends BaseEntity{
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "ten_mau_sac")
+    @NotBlank(message = "Tên màu sắc không được để trống!")
+    @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Tên màu sắc không được chứa ký tự đặc biệt!")
+    @Pattern(regexp = "^[^\\s].*[^\\s]$", message = "Tên màu sắc không được chứa khoảng trắng ở đầu hoặc cuối!")
+    @Size(max = 19, message = "Name must be 20 characters")
+    @Column(name = "ten_mau_sac",unique = true)
     private String tenMauSac;
 
     @Column(name = "trang_thai")

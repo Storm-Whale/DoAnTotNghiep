@@ -43,8 +43,16 @@ function themNhanh() {
         return false;
     }
 
-    if (tenValue.length < 3) {
-        errorTen.textContent = 'Tên phải có ít nhất 3 ký tự!';
+    if (tenValue.length < 3 || tenValue.length > 50) {
+        errorTen.textContent = 'Tên phải có ít nhất 3 ký tự và có độ đài ít hơn 50 kí tự!';
+        errorTen.style.display = 'block';
+        tenInput.focus();
+        return false;
+    }
+
+    const specialCharRegex = /[^a-zA-Z0-9\s]/;
+    if (specialCharRegex.test(tenValue)) {
+        errorTen.textContent = 'Tên không được chứa ký tự đặc biệt!';
         errorTen.style.display = 'block';
         tenInput.focus();
         return false;

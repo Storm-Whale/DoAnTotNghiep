@@ -53,9 +53,12 @@
     </form>
 
 
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
         <a th:href="@{/admin/nhanvien/view_add}">
-            <button class="btn btn-light" style="margin-bottom: 20px"><i class="bi bi-plus-circle-fill"></i>Thêm Nhân Viên</button>
+            <button class="btn btn-light"><i class="bi bi-plus-circle-fill"></i> Thêm Nhân Viên</button>
         </a>
+        <button type="button" class="btn btn-dark" onclick="window.location.href='/admin/khachhang/'">Làm Mới</button>
+    </div>
 
     <table class="table table-bordered table-hover text-center">
         <thead class="table-dark">

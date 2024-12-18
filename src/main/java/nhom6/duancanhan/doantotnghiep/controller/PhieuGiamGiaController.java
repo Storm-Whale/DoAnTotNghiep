@@ -1,9 +1,11 @@
 package nhom6.duancanhan.doantotnghiep.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.dto.PhieuGiamGiaHoaDonDTO;
 import nhom6.duancanhan.doantotnghiep.entity.PhieuGiamGia;
+import nhom6.duancanhan.doantotnghiep.entity.TrangThaiPhieuGiamGia;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
 import nhom6.duancanhan.doantotnghiep.service.service.PhieuGiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -36,89 +39,190 @@ public class PhieuGiamGiaController {
         this.hoaDonService = hoaDonService;
     }
 
-    @GetMapping("/index")
-    public String getAll(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size,
-            @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "ngayBatDau", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayBatDau,
-            @RequestParam(value = "ngayKetThuc", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayKetThuc,
-            @RequestParam(value = "kieuGiamGia", required = false) Integer kieuGiamGia,
-            @RequestParam(value = "trangThai", required = false) Integer trangThai,
-            Model model) {
-        // Lấy ngày hiện tại (đặt về đầu ngày)
-        Calendar calToday = Calendar.getInstance();
-        calToday.set(Calendar.HOUR_OF_DAY, 0);
-        calToday.set(Calendar.MINUTE, 0);
-        calToday.set(Calendar.SECOND, 0);
-        calToday.set(Calendar.MILLISECOND, 0);
-        Date today = calToday.getTime();
-        //
-        Page<PhieuGiamGia> pageFind = phieuGiamGiaService.findByCriteria(keyword, ngayBatDau,
-                ngayKetThuc, kieuGiamGia, trangThai, page, size);
-        Pageable pageable = PageRequest.of(page, size);
-        List<PhieuGiamGia> listPGG = pageFind.getContent();
-        // Duyệt và cập nhật trạng thái
-        for (PhieuGiamGia phieuGiamGia : listPGG) {
-            boolean needUpdate = false;
-            // Kiểm tra và cập nhật trạng thái dựa trên số lượng
-            if (phieuGiamGia.getSoLuong() == 0) {
-                phieuGiamGia.setTrangThai(0); // Inactive
-                needUpdate = true;
-            } else if (phieuGiamGia.getNgayBatDau() != null && phieuGiamGia.getNgayKetThuc() != null) {
-                // Đặt lại giờ cho ngày bắt đầu và kết thúc về đầu ngày để so sánh chính xác
-                Calendar calNgayBatDau = Calendar.getInstance();
-                calNgayBatDau.setTime(phieuGiamGia.getNgayBatDau());
-                calNgayBatDau.set(Calendar.HOUR_OF_DAY, 0);
-                calNgayBatDau.set(Calendar.MINUTE, 0);
-                calNgayBatDau.set(Calendar.SECOND, 0);
-                calNgayBatDau.set(Calendar.MILLISECOND, 0);
-                //
-                Calendar calNgayKetThuc = Calendar.getInstance();
-                calNgayKetThuc.setTime(phieuGiamGia.getNgayKetThuc());
-                calNgayKetThuc.set(Calendar.HOUR_OF_DAY, 23);
-                calNgayKetThuc.set(Calendar.MINUTE, 59);
-                calNgayKetThuc.set(Calendar.SECOND, 59);
-                calNgayKetThuc.set(Calendar.MILLISECOND, 999);
-                // Kiểm tra và set trạng thái
-                int newTrangThai;
-                if (today.compareTo(calNgayBatDau.getTime()) >= 0 &&
-                        today.compareTo(calNgayKetThuc.getTime()) <= 0) {
-                    // Nếu ngày hiện tại nằm trong khoảng từ ngày bắt đầu đến ngày kết thúc
-                    newTrangThai = 1; // Active
-                } else if (today.compareTo(calNgayBatDau.getTime()) < 0) {
-                    // Nếu ngày hiện tại chưa đến ngày bắt đầu
-                    newTrangThai = 0; // Inactive
-                } else {
-                    // Nếu đã qua ngày kết thúc
-                    newTrangThai = 0; // Inactive
+//    @GetMapping("/index")
+//    public String getAll(
+//            @RequestParam(value = "page", defaultValue = "0") int page,
+//            @RequestParam(value = "size", defaultValue = "5") int size,
+//            @RequestParam(value = "keyword", required = false) String keyword,
+//            @RequestParam(value = "ngayBatDau", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayBatDau,
+//            @RequestParam(value = "ngayKetThuc", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayKetThuc,
+//            @RequestParam(value = "kieuGiamGia", required = false) Integer kieuGiamGia,
+//            @RequestParam(value = "trangThai", required = false) Integer trangThai,
+//            Model model) {
+//        // Lấy ngày hiện tại (đặt về đầu ngày)
+//        Calendar calToday = Calendar.getInstance();
+//        calToday.set(Calendar.HOUR_OF_DAY, 0);
+//        calToday.set(Calendar.MINUTE, 0);
+//        calToday.set(Calendar.SECOND, 0);
+//        calToday.set(Calendar.MILLISECOND, 0);
+//        Date today = calToday.getTime();
+//        //
+//        Page<PhieuGiamGia> pageFind = phieuGiamGiaService.findByCriteria(keyword, ngayBatDau,
+//                ngayKetThuc, kieuGiamGia, trangThai, page, size);
+//        Pageable pageable = PageRequest.of(page, size);
+//        List<PhieuGiamGia> listPGG = pageFind.getContent();
+//        // Duyệt và cập nhật trạng thái
+//        for (PhieuGiamGia phieuGiamGia : listPGG) {
+//            boolean needUpdate = false;
+//            // Kiểm tra và cập nhật trạng thái dựa trên số lượng
+//            if (phieuGiamGia.getSoLuong() == 0) {
+//                phieuGiamGia.setTrangThai(0); // Inactive
+//                needUpdate = true;
+//            } else if (phieuGiamGia.getNgayBatDau() != null && phieuGiamGia.getNgayKetThuc() != null) {
+//                // Đặt lại giờ cho ngày bắt đầu và kết thúc về đầu ngày để so sánh chính xác
+//                Calendar calNgayBatDau = Calendar.getInstance();
+//                calNgayBatDau.setTime(phieuGiamGia.getNgayBatDau());
+//                calNgayBatDau.set(Calendar.HOUR_OF_DAY, 0);
+//                calNgayBatDau.set(Calendar.MINUTE, 0);
+//                calNgayBatDau.set(Calendar.SECOND, 0);
+//                calNgayBatDau.set(Calendar.MILLISECOND, 0);
+//                //
+//                Calendar calNgayKetThuc = Calendar.getInstance();
+//                calNgayKetThuc.setTime(phieuGiamGia.getNgayKetThuc());
+//                calNgayKetThuc.set(Calendar.HOUR_OF_DAY, 23);
+//                calNgayKetThuc.set(Calendar.MINUTE, 59);
+//                calNgayKetThuc.set(Calendar.SECOND, 59);
+//                calNgayKetThuc.set(Calendar.MILLISECOND, 999);
+//                // Kiểm tra và set trạng thái
+//                int newTrangThai;
+//                if (today.compareTo(calNgayBatDau.getTime()) >= 0 &&
+//                        today.compareTo(calNgayKetThuc.getTime()) <= 0) {
+//                    // Nếu ngày hiện tại nằm trong khoảng từ ngày bắt đầu đến ngày kết thúc
+//                    newTrangThai = 1; // Active
+//                } else if (today.compareTo(calNgayBatDau.getTime()) < 0) {
+//                    // Nếu ngày hiện tại chưa đến ngày bắt đầu
+//                    newTrangThai = 0; // Inactive
+//                } else {
+//                    // Nếu đã qua ngày kết thúc
+//                    newTrangThai = 0; // Inactive
+//                }
+//                // Cập nhật trạng thái nếu khác trạng thái hiện tại
+//                if (phieuGiamGia.getTrangThai() != newTrangThai) {
+//                    phieuGiamGia.setTrangThai(newTrangThai);
+//                    needUpdate = true;
+//                }
+//            }
+//            // Lưu trạng thái mới vào database nếu có thay đổi
+//            if (needUpdate) {
+//                phieuGiamGiaService.update(phieuGiamGia.getId(), phieuGiamGia);
+//            }
+//        }
+//        model.addAttribute("listPGG", listPGG);
+//        model.addAttribute("currentPage", page);
+//        model.addAttribute("size", size);
+//        model.addAttribute("totalPages", pageFind.getTotalPages());
+//        model.addAttribute("totalItems", pageFind.getTotalElements());
+//
+//        // Thêm các tham số tìm kiếm vào model để hiển thị lại trên trang
+//        model.addAttribute("keyword", keyword);
+//        model.addAttribute("ngayBatDau", ngayBatDau);
+//        model.addAttribute("ngayKetThuc", ngayKetThuc);
+//        model.addAttribute("kieuGiamGia", kieuGiamGia);
+//        model.addAttribute("trangThai", trangThai);
+//
+//        return "/admin/PhieuGiamGia/PhieuGiamGia";
+//    }
+        @GetMapping("/index")
+        public String getAll(
+                @RequestParam(value = "page", defaultValue = "0") int page,
+                @RequestParam(value = "size", defaultValue = "5") int size,
+                @RequestParam(value = "keyword", required = false) String keyword,
+                @RequestParam(value = "ngayBatDau", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayBatDau,
+                @RequestParam(value = "ngayKetThuc", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayKetThuc,
+                @RequestParam(value = "kieuGiamGia", required = false) Integer kieuGiamGia,
+                @RequestParam(value = "trangThai", required = false) Integer trangThai,
+                Model model) {
+            // Lấy ngày hiện tại (đặt về đầu ngày)
+            Calendar calToday = Calendar.getInstance();
+            calToday.set(Calendar.HOUR_OF_DAY, 0);
+            calToday.set(Calendar.MINUTE, 0);
+            calToday.set(Calendar.SECOND, 0);
+            calToday.set(Calendar.MILLISECOND, 0);
+            Date today = calToday.getTime();
+            // Nếu trạng thái là 2 (tạm dừng), không cần cập nhật trạng thái
+            if (trangThai != null && trangThai == 2) {
+                Page<PhieuGiamGia> pageFind = phieuGiamGiaService.findByCriteria(keyword, ngayBatDau,
+                        ngayKetThuc, kieuGiamGia, trangThai, page, size);
+                model.addAttribute("listPGG", pageFind.getContent());
+                model.addAttribute("currentPage", page);
+                model.addAttribute("size", size);
+                model.addAttribute("totalPages", pageFind.getTotalPages());
+                model.addAttribute("totalItems", pageFind.getTotalElements());
+                // Thêm các tham số tìm kiếm vào model để hiển thị lại trên trang
+                model.addAttribute("keyword", keyword);
+                model.addAttribute("ngayBatDau", ngayBatDau);
+                model.addAttribute("ngayKetThuc", ngayKetThuc);
+                model.addAttribute("kieuGiamGia", kieuGiamGia);
+                model.addAttribute("trangThai", trangThai);
+                return "/admin/PhieuGiamGia/PhieuGiamGia";
+            }
+            // Lấy danh sách phiếu giảm giá
+            Page<PhieuGiamGia> pageFind = phieuGiamGiaService.findByCriteria(keyword, ngayBatDau,
+                    ngayKetThuc, kieuGiamGia, trangThai, page, size);
+            List<PhieuGiamGia> listPGG = pageFind.getContent();
+            // Duyệt và cập nhật trạng thái
+            for (PhieuGiamGia phieuGiamGia : listPGG) {
+                // Bỏ qua các phiếu đang ở trạng thái tạm dừng
+                if (phieuGiamGia.getTrangThai() == 2) {
+                    continue;
                 }
-                // Cập nhật trạng thái nếu khác trạng thái hiện tại
-                if (phieuGiamGia.getTrangThai() != newTrangThai) {
-                    phieuGiamGia.setTrangThai(newTrangThai);
+                boolean needUpdate = false;
+                // Kiểm tra và cập nhật trạng thái dựa trên số lượng
+                if (phieuGiamGia.getSoLuong() == 0) {
+                    phieuGiamGia.setTrangThai(0); // Inactive
                     needUpdate = true;
+                } else if (phieuGiamGia.getNgayBatDau() != null && phieuGiamGia.getNgayKetThuc() != null) {
+                    // Đặt lại giờ cho ngày bắt đầu và kết thúc về đầu ngày để so sánh chính xác
+                    Calendar calNgayBatDau = Calendar.getInstance();
+                    calNgayBatDau.setTime(phieuGiamGia.getNgayBatDau());
+                    calNgayBatDau.set(Calendar.HOUR_OF_DAY, 0);
+                    calNgayBatDau.set(Calendar.MINUTE, 0);
+                    calNgayBatDau.set(Calendar.SECOND, 0);
+                    calNgayBatDau.set(Calendar.MILLISECOND, 0);
+
+                    Calendar calNgayKetThuc = Calendar.getInstance();
+                    calNgayKetThuc.setTime(phieuGiamGia.getNgayKetThuc());
+                    calNgayKetThuc.set(Calendar.HOUR_OF_DAY, 23);
+                    calNgayKetThuc.set(Calendar.MINUTE, 59);
+                    calNgayKetThuc.set(Calendar.SECOND, 59);
+                    calNgayKetThuc.set(Calendar.MILLISECOND, 999);
+                    // Kiểm tra và set trạng thái
+                    int newTrangThai;
+                    if (today.compareTo(calNgayBatDau.getTime()) >= 0 &&
+                            today.compareTo(calNgayKetThuc.getTime()) <= 0) {
+                        // Nếu ngày hiện tại nằm trong khoảng từ ngày bắt đầu đến ngày kết thúc
+                        newTrangThai = 1; // Active
+                    } else if (today.compareTo(calNgayBatDau.getTime()) < 0) {
+                        // Nếu ngày hiện tại chưa đến ngày bắt đầu
+                        newTrangThai = 0; // Inactive
+                    } else {
+                        // Nếu đã qua ngày kết thúc
+                        newTrangThai = 0; // Inactive
+                    }
+                    // Cập nhật trạng thái nếu khác trạng thái hiện tại
+                    if (phieuGiamGia.getTrangThai() != newTrangThai) {
+                        phieuGiamGia.setTrangThai(newTrangThai);
+                        needUpdate = true;
+                    }
+                }
+                // Lưu trạng thái mới vào database nếu có thay đổi
+                if (needUpdate) {
+                    phieuGiamGiaService.update(phieuGiamGia.getId(), phieuGiamGia);
                 }
             }
-            // Lưu trạng thái mới vào database nếu có thay đổi
-            if (needUpdate) {
-                phieuGiamGiaService.update(phieuGiamGia.getId(), phieuGiamGia);
-            }
+            model.addAttribute("listPGG", listPGG);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("size", size);
+            model.addAttribute("totalPages", pageFind.getTotalPages());
+            model.addAttribute("totalItems", pageFind.getTotalElements());
+            // Thêm các tham số tìm kiếm vào model để hiển thị lại trên trang
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("ngayBatDau", ngayBatDau);
+            model.addAttribute("ngayKetThuc", ngayKetThuc);
+            model.addAttribute("kieuGiamGia", kieuGiamGia);
+            model.addAttribute("trangThai", trangThai);
+            return "/admin/PhieuGiamGia/PhieuGiamGia";
         }
-        model.addAttribute("listPGG", listPGG);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("size", size);
-        model.addAttribute("totalPages", pageFind.getTotalPages());
-        model.addAttribute("totalItems", pageFind.getTotalElements());
-
-        // Thêm các tham số tìm kiếm vào model để hiển thị lại trên trang
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("ngayBatDau", ngayBatDau);
-        model.addAttribute("ngayKetThuc", ngayKetThuc);
-        model.addAttribute("kieuGiamGia", kieuGiamGia);
-        model.addAttribute("trangThai", trangThai);
-
-        return "/admin/PhieuGiamGia/PhieuGiamGia";
-    }
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") Integer id, Model model) {
@@ -425,5 +529,31 @@ public class PhieuGiamGiaController {
         }
         phieuGiamGiaService.create(phieuGiamGia);
         return "redirect:/admin/phieu-giam-gia/index";
+    }
+
+    @PostMapping("/tam-dung/{id}")
+    public String tamDungPhieuGiamGia(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            // Sử dụng findById đã được định nghĩa
+            PhieuGiamGia phieuGiamGia = phieuGiamGiaService.findById(id);
+            // Các logic xử lý tạm dừng
+            if (phieuGiamGia.getTrangThai() == 2) {
+                // Khôi phục về trạng thái inactive
+                phieuGiamGia.setTrangThai(0);
+                redirectAttributes.addFlashAttribute("successMessage", "Đã kích hoạt lại phiếu giảm giá");
+            } else {
+                // Chuyển sang trạng thái tạm dừng
+                phieuGiamGia.setTrangThai(2);
+                redirectAttributes.addFlashAttribute("successMessage", "Đã tạm dừng phiếu giảm giá");
+            }
+            phieuGiamGiaService.update(id, phieuGiamGia);
+            return "redirect:/admin/phieu-giam-gia/index";
+        } catch (EntityNotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/admin/phieu-giam-gia/index";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi thực hiện thao tác");
+            return "redirect:/admin/phieu-giam-gia/index";
+        }
     }
 }

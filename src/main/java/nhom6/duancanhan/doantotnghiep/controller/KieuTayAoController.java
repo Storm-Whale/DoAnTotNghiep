@@ -78,24 +78,62 @@ public class KieuTayAoController {
         return "redirect:/admin/kieu-tay-ao";
     }
 
-    @PostMapping("/add")
-    public String add(@ModelAttribute("kieuTayAo") @Valid KieuTayAo kieuTayAo,
-                      BindingResult bindingResult, RedirectAttributes redirectAttributes
-                      ) {
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên kiểu tay áo!");
-            if(kieuTayAo.getTenTayAo().length() > 20){
-                redirectAttributes.addFlashAttribute("error", "Tên kiểu tay áo không được quá 20 kí tự!");
+//    @PostMapping("/add")
+//    public String add(@ModelAttribute("kieuTayAo") @Valid KieuTayAo kieuTayAo,
+//                      BindingResult bindingResult, RedirectAttributes redirectAttributes
+//                      ) {
+//        if (bindingResult.hasErrors()) {
+//            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên kiểu tay áo!");
+//            if(kieuTayAo.getTenTayAo().length() > 20){
+//                redirectAttributes.addFlashAttribute("error", "Tên kiểu tay áo không được quá 20 kí tự!");
+//            }
+//            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.kieuCoAo", bindingResult);
+//            redirectAttributes.addFlashAttribute("kieuTayAo", kieuTayAo);
+//            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+//            return "redirect:/admin/kieu-tay-ao";
+//        }
+//        kieuTayAo.setTrangThai(1);
+//        kieuTayAoService.addKieuTayAo(kieuTayAo);
+//        return "redirect:/admin/kieu-tay-ao";
+//    }
+        @PostMapping("/add")
+        public String add(@ModelAttribute("kieuTayAo") @Valid KieuTayAo kieuTayAo,
+                          BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+            // Kiểm tra khoảng trắng và tên
+            if (kieuTayAo.getTenTayAo() == null || kieuTayAo.getTenTayAo().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên kiểu tay áo!");
+                return "redirect:/admin/kieu-tay-ao";
             }
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.kieuCoAo", bindingResult);
-            redirectAttributes.addFlashAttribute("kieuTayAo", kieuTayAo);
-            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+            // Loại bỏ khoảng trắng thừa
+            String tenTayAo = kieuTayAo.getTenTayAo().trim();
+            // Kiểm tra độ dài
+            if (tenTayAo.length() > 20) {
+                redirectAttributes.addFlashAttribute("error", "Tên kiểu tay áo không được quá 20 kí tự!");
+                return "redirect:/admin/kieu-tay-ao";
+            }
+            // Kiểm tra không bắt đầu bằng số hoặc ký tự đặc biệt
+            if (!tenTayAo.matches("^[a-zA-Z].*")) {
+                redirectAttributes.addFlashAttribute("error", "Tên kiểu tay áo phải bắt đầu bằng chữ cái!");
+                return "redirect:/admin/kieu-tay-ao";
+            }
+            // Kiểm tra không có khoảng trắng liên tiếp
+            if (tenTayAo.matches(".*\\s{2,}.*")) {
+                redirectAttributes.addFlashAttribute("error", "Tên kiểu tay áo không được chứa nhiều khoảng trắng liên tiếp!");
+                return "redirect:/admin/kieu-tay-ao";
+            }
+            // Kiểm tra trùng lặp (nếu cần)
+            if (kieuTayAoService.existsByTenTayAo(tenTayAo)) {
+                redirectAttributes.addFlashAttribute("error", "Tên kiểu tay áo đã tồn tại!");
+                return "redirect:/admin/kieu-tay-ao";
+            }
+            // Nếu vượt qua tất cả các kiểm tra
+            kieuTayAo.setTenTayAo(tenTayAo); // Đặt lại tên đã trim
+            kieuTayAo.setTrangThai(1);
+            kieuTayAoService.addKieuTayAo(kieuTayAo);
+
+            redirectAttributes.addFlashAttribute("success", "Thêm kiểu tay áo thành công!");
             return "redirect:/admin/kieu-tay-ao";
         }
-        kieuTayAo.setTrangThai(1);
-        kieuTayAoService.addKieuTayAo(kieuTayAo);
-        return "redirect:/admin/kieu-tay-ao";
-    }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, Model model) {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -296,25 +296,27 @@
 
                             <label for="diaChi">Địa chỉ:</label>
                             <input type="text" id="diaChi" name="diaChi" th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.diaChiChiTiet : ''}" />
+<!--                            <div class="error-message" th:if="${errorDiaChi}" th:text="${errorDiaChi}"></div>-->
 
                             <label for="soDienThoai1">Số điện thoại:</label>
                             <input type="text" id="soDienThoai1" name="soDienThoai"
                                    th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.soDienThoai : ''}" />
-
-
+<!--                            <div class="error-message" th:if="${errorSoDienThoai}" th:text="${errorSoDienThoai}"></div>-->
 
                             <label for="tenNguoiNhan">Tên người nhận:</label>
                             <input type="text" id="tenNguoiNhan" name="tenNguoiNhan" th:value="${hoaDon.diaChi != null ? hoaDon.diaChi.tenKhachHang : ''}" />
+<!--                            <div class="error-message" th:if="${errorTenNguoiNhan}" th:text="${errorTenNguoiNhan}"></div>-->
 
                             <label for="ghiChu">Ghi chú:</label>
                             <input type="text" id="ghiChu" name="ghiChu" th:value="${hoaDon.ghiChu}">
+<!--                            <div class="error-message" th:if="${errorGhiChu}" th:text="${errorGhiChu}"></div>-->
 
                             <button type="submit" style="margin-top: 15px">Cập nhật</button>
                         </form>
                     </div>
 
-                    <script>
 
+                    <script>
                     // validate dia chỉ  332
                         function validateForm() {
                             const diaChi = document.getElementById("diaChi").value.trim();
@@ -330,18 +332,18 @@
                                     Swal.fire({
                                         icon: 'warning',
                                         title: 'Thông báo',
-                                        text: 'Vui lòng nhập đầy đủ: Địa chỉ, Số điện thoại, và Tên người nhận!',
+                                        text: 'Vui lòng nhập đầy đủ: Địa chỉ, Số điện thoại và Tên người nhận!',
                                         confirmButtonText: 'OK'
                                     });
                                     return false;
                                 }
                             } else {
                                 // Trường hợp đã có khách hàng: Cho phép bỏ trống số điện thoại
-                                if (!diaChi || !tenNguoiNhan) {
+                                if (!diaChi || !tenNguoiNhan || !soDienThoai) {
                                     Swal.fire({
                                         icon: 'warning',
                                         title: 'Thông báo',
-                                        text: 'Vui lòng nhập đầy đủ: Địa chỉ và Tên người nhận!',
+                                        text: 'Vui lòng nhập đầy đủ: Địa chỉ, Số điện thoại và Tên người nhận!',
                                         confirmButtonText: 'OK'
                                     });
                                     return false;
@@ -349,11 +351,11 @@
                             }
 
                             // Kiểm tra số điện thoại hợp lệ nếu có nhập
-                            if (soDienThoai && !/^\d{10,15}$/.test(soDienThoai)) {
+                            if (soDienThoai && !/^\d{10}$/.test(soDienThoai)) {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Số điện thoại không hợp lệ!',
-                                    text: 'Vui lòng nhập số từ 10 đến 15 ký tự.',
+                                    text: 'SDT phải là 10 số.',
                                     confirmButtonText: 'OK'
                                 });
                                 return false;
@@ -371,17 +373,47 @@
                     <p style="margin-top: 7px;margin-bottom: 7px;"><b><i class="bi bi-diamond-fill fs3">Thông tin thanh
                         toán</i></b></p>
 
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <form th:action="@{/admin/taiquay/tim-kiem}" method="get"
+
+
+                    <div style="display: flex; align-items: center; gap: 20px;" onsubmit="return validateInput()">
+                        <form id="searchFormKhachHang" th:action="@{/admin/taiquay/tim-kiem}" method="get"
                               style="display: flex; align-items: center; gap: 10px;">
                             <input type="text" id="soDienThoai" name="soDienThoai" required
                                    style="padding: 5px; border-radius: 5px; border: 1px solid #ddd; width: 200px;">
+<!--                            <button type="submit"-->
+<!--                                    style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">-->
+<!--                                Tìm kiếm-->
+<!--                            </button>-->
                             <button type="submit"
-                                    style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">
-                                Tìm kiếm KH
+                                    style="background-color: #2c3e50; color: white; margin-bottom: 12px; padding: 8px 12px;
+                                    border: none; border-radius: 5px; cursor: pointer; white-space: nowrap; line-height: 1;">
+                                Tìm kiếm
                             </button>
 
                         </form>
+
+                        <script>
+                            function validateInput() {
+                                const inputField = document.getElementById('soDienThoai');
+                                const inputValue = inputField.value.trim();
+
+                                if (inputValue.length > 50) {
+                                    alert('Vui lòng nhập tối đa 50 ký tự.');
+                                    return false;
+                                }
+                                inputField.value = inputValue;
+
+                                const phoneRegex = /^\d{10}$/;
+                                if (!phoneRegex.test(inputValue)) {
+                                    alert('Số điện thoại phải là 10 chữ số.');
+                                    return false;
+                                }
+
+                                return true; // Cho phép form được gửi
+                            }
+                        </script>
+
+
 
                         <style>
                             .error-message {
@@ -402,6 +434,7 @@
                                 const toggleAddress = document.getElementById('toggleAddress');
                                 const addressForm = document.getElementById('addressForm');
                                 const khachHang = document.getElementById("khachHangId");
+
                                 const diaChi = document.getElementById("diaChi");
 
                                 // Kiểm tra và hiển thị form địa chỉ nếu có khách hàng
@@ -459,14 +492,11 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <form id="formGiamGia" th:action="@{/admin/taiquay/kiemtrama}" method="post"
-                              class="discount-form">
-                            <span style="font-size: 14px; margin-top: 10px;">Phiếu giảm giá </span>
-                            <input type="text" id="maPhieuGiamGia"
-                                   name="maPhieuGiamGia"
-                                   th:value="${maPhieuGiamGia}" readonly/>
-                        </form>
+                    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                        <span style="font-size: 14px; margin-top: 10px; white-space: nowrap;">Phiếu giảm giá:</span>
+                        <span th:text="${maPhieuGiamGia}" id="maPhieuGiamGia"
+                              name="maPhieuGiamGia" th:value="${maPhieuGiamGia}"
+                              style="font-size: 14px; margin-top: 10px; color: #2c3e50; background-color: #f0f0f0; padding: 5px 10px; border-radius: 5px; margin-left: 10px;"></span>
                     </div>
 
                     <p style="font-size: 14px; margin-top: 10px;">Tiền Tạm Tính:
@@ -487,10 +517,10 @@
                     <form action="/admin/taiquay/thanhtoan" method="get" id="paymentForm" target="pdfWindow"
                           class="thanhtoan">
                         <div >
-                            <label style="font-size: 14px;margin-top: 10px;">Khách cần
+                            <label style="font-size: 14px;">Khách cần
                                 trả:</label>
                             <b><span id="tongTien" style="font-size: 14px;"
-                                     th:text="${tongTienSauGiam == null || tongTienSauGiam == 0  ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') + ' đ' : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span></b>
+                                     th:text="${tongTienSauGiam == null || tongTienSauGiam == 0  ? #numbers.formatDecimal(tongTien, 1, 'COMMA', 0, 'POINT') + ' đ' : #numbers.formatDecimal(tongTienSauGiam, 1, 'COMMA', 0, 'POINT')} + ' đ'">0</span></b>
                             <input type="hidden" name="tongTien"
                                    th:value="${#numbers.formatDecimal((tongTienSauGiam == null ? tongTien : (tongTien != null ? tongTien : 0)), 1, 'COMMA', 0, 'POINT') + ' đ'}"/>
                         </div>
@@ -499,7 +529,7 @@
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/big.js/6.0.3/big.min.js"></script>
                             <label>Số tiền khách đưa:</label>
                             <input type="number" id="soTienKhachDua" name="soTienKhachDua"
-                                   style="width: 200px;height: 20px" step="0.01"
+                                   style="width: 200px;height: 25px"
                                    oninput="tinhTienThua()"/>
                         </div>
                         <div class="change">
@@ -508,7 +538,7 @@
                         </div>
 
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <label style="font-size: 13px; margin-right: 10px;margin-top: 10px;">Phương
+                            <label style="font-size: 14px; margin-right: 10px;margin-top: 10px;">Phương
                                 thức:</label>
 
                             <div class="form-check" style="display: flex; align-items: center;">
@@ -864,6 +894,7 @@
         function checkCustomerAddress() {
             const khachHang = document.getElementById("khachHangId");
             const diaChi = document.getElementById("diaChi");
+            // const soDienThoai = document.getElementById("soDienThoai1");
 
             // Nếu có khách hàng nhưng chưa có địa chỉ
             if (khachHang && khachHang.value.trim() !== "" &&
@@ -948,33 +979,34 @@
             const formData = new FormData(paymentForm);
             formData.append("themKhachHang", themKhachHang);
 
-            fetch(paymentForm.action + "?" + new URLSearchParams(formData), {
-                method: "GET",
-            })
-                .then((response) => response.text())
-                .then((pdfUrl) => {
-                    if (pdfUrl) {
-                        Swal.fire({
-                            title: 'Thanh toán',
-                            text: "Bạn có muốn xác nhận hóa đơn này?",
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Xác Nhận',
-                            cancelButtonText: 'Hủy',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Thanh toán',
+                text: "Bạn có muốn xác nhận hóa đơn này?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xác Nhận',
+                cancelButtonText: 'Hủy',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Chỉ thực hiện thanh toán khi bấm Xác Nhận
+                    fetch(paymentForm.action + "?" + new URLSearchParams(formData), {
+                        method: "GET",
+                    })
+                        .then((response) => response.text())
+                        .then((pdfUrl) => {
+                            if (pdfUrl) {
                                 Swal.fire({
                                     title: 'Xác nhận thanh toán hóa đơn thành công!',
                                     html: `
-                                <div>
-                                    <p>Hóa đơn đã được lưu</p>
-                                    <a href="#" id="invoiceDownloadLink" style="color: blue; text-decoration: underline;">
-                                        Xem hóa đơn
-                                    </a>
-                                </div>
-                            `,
+                            <div>
+                                <p>Hóa đơn đã được lưu</p>
+                                <a href="#" id="invoiceDownloadLink" style="color: blue; text-decoration: underline;">
+                                    Xem hóa đơn
+                                </a>
+                            </div>
+                        `,
                                     icon: 'success',
                                     didRender: () => {
                                         const downloadLink = document.getElementById('invoiceDownloadLink');
@@ -988,29 +1020,30 @@
                                     }
                                 });
                             } else {
-                                window.location.href = "/admin/taiquay";
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi',
+                                    text: 'Không thể tạo file PDF!',
+                                }).then(() => {
+                                    window.location.href = "/admin/taiquay";
+                                });
                             }
+                        })
+                        .catch((error) => {
+                            console.error("Lỗi khi xử lý thanh toán:", error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi',
+                                text: 'Đã xảy ra lỗi trong quá trình thanh toán!',
+                            }).then(() => {
+                                window.location.href = "/admin/taiquay";
+                            });
                         });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Lỗi',
-                            text: 'Không thể tạo file PDF!',
-                        }).then(() => {
-                            window.location.href = "/admin/taiquay";
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error("Lỗi khi xử lý thanh toán:", error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lỗi',
-                        text: 'Đã xảy ra lỗi trong quá trình thanh toán!',
-                    }).then(() => {
-                        window.location.href = "/admin/taiquay";
-                    });
-                });
+                } else {
+                    // Nếu bấm Hủy, quay về trang danh sách hóa đơn
+                    window.location.href = "/admin/taiquay";
+                }
+            });
         }
 
         // Sự kiện click nút thanh toán
@@ -1272,4 +1305,31 @@
         });
     });
 </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Thêm SweetAlert2 -->
+
+<script>
+    // Giả sử bạn có một biến toàn cục để kiểm tra trạng thái hóa đơn
+    let isInvoiceSelected = false; // Thay đổi giá trị này khi hóa đơn được chọn
+
+    document.getElementById('searchFormKhachHang').addEventListener('submit', function(event) {
+        const currentUrl = window.location.href;
+        if (currentUrl === "http://localhost:8080/admin/taiquay" && !isInvoiceSelected) {
+            event.preventDefault(); // Ngăn không cho gửi biểu mẫu
+            Swal.fire({
+                icon: 'warning',
+                title: 'Chọn hóa đơn trước',
+                text: 'Vui lòng chọn hóa đơn trước khi tìm kiếm khách hàng.',
+                confirmButtonText: 'OK'
+            });
+            return; // Không cho phép tìm kiếm khách hàng
+        }
+    });
+
+    // Hàm này sẽ được gọi khi hóa đơn được chọn
+    function selectInvoice() {
+        isInvoiceSelected = true; // Đánh dấu rằng hóa đơn đã được chọn
+    }
+</script>
+
 </html>

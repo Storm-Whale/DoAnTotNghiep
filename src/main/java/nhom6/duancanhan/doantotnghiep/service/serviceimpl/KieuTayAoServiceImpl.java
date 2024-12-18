@@ -52,16 +52,21 @@ public class KieuTayAoServiceImpl implements KieuTayAoService {
     }
 
     @Override
-    public void deleteKieuTayAo(Integer id) {
-        kieuTayAoRepository.deleteById(id);
-    }
-
-    @Override
     public List<String> getAllKieuTayAo() {
         return DatabaseOperationHandler.handleDatabaseOperation(
                 () -> kieuTayAoRepository.findAllTenKieuTayAo()
                 , "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu"
         );
+    }
+
+    @Override
+    public List<KieuTayAo> getAllKieuTayAoByKieuTayAo(int trangThai) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() ->
+                        kieuTayAoRepository.findAllByTrangThai(trangThai)
+                , "Lỗi khi lấy dữ liêu từ cơ sở dữ liệu");
+    }
+    public boolean existsByTenTayAo(String tenTayAo) {
+        return kieuTayAoRepository.existsByTenTayAo(tenTayAo);
     }
 
     @Override

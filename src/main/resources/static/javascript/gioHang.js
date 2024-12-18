@@ -5,6 +5,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const selectAllCheckbox = document.getElementById("select-all");
 
+    // Nếu addedProductId không null, đánh dấu checkbox tương ứng
+    if (addedProductId) {
+        const checkboxes = document.querySelectorAll('.product-checkbox');
+        checkboxes.forEach(checkbox => {
+            const productId = checkbox.getAttribute('data-product-id');
+            if (productId === addedProductId.toString()) {
+                checkbox.checked = true; // Đánh dấu checkbox
+            }
+        });
+
+        updateTotalAmountAndCount()
+
+    }
+
     document.querySelectorAll('.cart-item').forEach(item => {
         const btnMinus = item.querySelector('.btn-minus');
         const btnPlus = item.querySelector('.btn-plus');

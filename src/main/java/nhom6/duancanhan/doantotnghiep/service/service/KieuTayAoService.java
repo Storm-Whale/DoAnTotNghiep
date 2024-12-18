@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface KieuTayAoService {
+
     List<KieuTayAo> getAll();
 
     Page<KieuTayAo> phanTrang(int pageNo, int pageSize);
@@ -20,8 +21,6 @@ public interface KieuTayAoService {
 
     void updateKieuTayAoById(Integer id, KieuTayAo kieuTayAo);
 
-    void deleteKieuTayAo(Integer id);
-
     List<KieuTayAo> getKieuTayAoByTrangThai(int trangThai);
 
     List<KieuTayAo> getKieuTayAoByTen(String tenTayAo);
@@ -29,5 +28,12 @@ public interface KieuTayAoService {
     Page<KieuTayAo> phanTrangTheoTrangThai(int trangThai, int pageNo, int pageSize);
 
     Page<KieuTayAo> phanTrangTheoTen(String tenTayAo, int pageNo, int pageSize);
+
     List<String> getAllKieuTayAo();
+
+
+    List<KieuTayAo> getAllKieuTayAoByKieuTayAo(int trangThai);
+
+    boolean existsByTenTayAo(String tenTayAo);
+
 }

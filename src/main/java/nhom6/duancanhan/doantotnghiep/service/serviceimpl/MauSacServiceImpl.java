@@ -3,6 +3,7 @@ package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 import nhom6.duancanhan.doantotnghiep.entity.MauSac;
 import nhom6.duancanhan.doantotnghiep.repository.MauSacRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.MauSacService;
+import nhom6.duancanhan.doantotnghiep.util.DatabaseOperationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 @Service
 public class MauSacServiceImpl implements MauSacService {
+
     @Autowired
     private MauSacRepository mauSacRepository;
 
@@ -45,5 +47,17 @@ public class MauSacServiceImpl implements MauSacService {
     @Override
     public void updateMauSacById(Integer id, MauSac mauSac) {
         mauSacRepository.save(mauSac);
+    }
+
+    @Override
+    public boolean existsByTenMauSac(String tenMauSac) {
+        return mauSacRepository.existsByTenMauSac(tenMauSac);
+    }
+
+    @Override
+    public List<MauSac> getMauSacByTrangThai(int trangThai) {
+        return DatabaseOperationHandler.handleDatabaseOperation(() ->
+                        mauSacRepository.findAllByTrangThai(trangThai)
+                , "Lỗi khi lấy dữ liêu từ cơ sở dữ liệu");
     }
 }
