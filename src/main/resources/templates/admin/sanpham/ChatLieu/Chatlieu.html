@@ -56,7 +56,7 @@
         <tr th:each="chatLieu : ${listCL}">
             <td th:text="${chatLieu.id}"></td>
             <td th:text="${chatLieu.tenChatLieu}"></td>
-            <td th:text="${chatLieu.trangThai == 0 ? 'Hoạt động' : 'Ngừng hoạt động'}"></td>
+            <td th:text="${chatLieu.trangThai == 1 ? 'Hoạt động' : 'Ngừng hoạt động'}"></td>
             <td th:text="${chatLieu.ngayTao}"></td>
             <td>
                 <form class="d-inline-block">

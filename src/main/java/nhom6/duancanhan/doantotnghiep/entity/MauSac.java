@@ -22,10 +22,10 @@ public class MauSac extends BaseEntity{
     private Integer id;
 
     @NotBlank(message = "Tên màu sắc không được để trống!")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Tên màu sắc không được chứa ký tự đặc biệt!")
-    @Pattern(regexp = "^[^\\s].*[^\\s]$", message = "Tên màu sắc không được chứa khoảng trắng ở đầu hoặc cuối!")
+//    @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Tên màu sắc không được chứa ký tự đặc biệt!")
+//    @Pattern(regexp = "^[^\\s].*[^\\s]$", message = "Tên màu sắc không được chứa khoảng trắng ở đầu hoặc cuối!")
     @Size(max = 19, message = "Name must be 20 characters")
-    @Column(name = "ten_mau_sac",unique = true)
+    @Column(name = "ten_mau_sac")
     private String tenMauSac;
 
     @Column(name = "trang_thai")

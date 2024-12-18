@@ -29,10 +29,10 @@ public class ThuongHieu extends BaseEntity{
     private Integer id;
 
     @NotBlank(message = "Tên thương hiệu không được để trống!")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Tên thương hiệu không được chứa ký tự đặc biệt!")
-    @Pattern(regexp = "^[^\\s].*[^\\s]$", message = "Tên thương hiệu không được chứa khoảng trắng ở đầu hoặc cuối!")
+//    @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Tên thương hiệu không được chứa ký tự đặc biệt!")
+//    @Pattern(regexp = "^[^\\s].*[^\\s]$", message = "Tên thương hiệu không được chứa khoảng trắng ở đầu hoặc cuối!")
     @Size(max = 19, message = "Name must be 20 characters")
-    @Column(name = "ten_thuong_hieu",unique = true)
+    @Column(name = "ten_thuong_hieu")
     private String tenThuongHieu;
 
     @Column(name = "trang_thai")

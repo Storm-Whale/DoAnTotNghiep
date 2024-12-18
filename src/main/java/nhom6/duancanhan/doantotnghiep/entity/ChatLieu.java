@@ -26,10 +26,10 @@ public class ChatLieu extends BaseEntity{
     private Integer id;
 
     @NotBlank(message = "Tên chất liệu không được để trống!")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Tên chất liệu không được chứa ký tự đặc biệt!")
-    @Pattern(regexp = "^[^\\s].*[^\\s]$", message = "Tên chất liệu không được chứa khoảng trắng ở đầu hoặc cuối!")
+//    @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Tên chất liệu không được chứa ký tự đặc biệt!")
+//    @Pattern(regexp = "^[^\\s].*[^\\s]$", message = "Tên chất liệu không được chứa khoảng trắng ở đầu hoặc cuối!")
     @Size(max = 19, message = "Name must be 20 characters")
-    @Column(name = "ten_chat_lieu",unique = true)
+    @Column(name = "ten_chat_lieu")
     private String tenChatLieu;
 
     @Column(name = "trang_thai")

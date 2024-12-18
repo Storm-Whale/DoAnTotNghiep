@@ -3,6 +3,7 @@ package nhom6.duancanhan.doantotnghiep.controller;
 import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.dto.SanPhamResponse;
 import nhom6.duancanhan.doantotnghiep.entity.ChatLieu;
+import nhom6.duancanhan.doantotnghiep.entity.KichCo;
 import nhom6.duancanhan.doantotnghiep.entity.MauSac;
 import nhom6.duancanhan.doantotnghiep.entity.ThuongHieu;
 import nhom6.duancanhan.doantotnghiep.service.service.ChatLieuService;
@@ -35,14 +36,19 @@ public class ChatLieuController {
     }
 
     @GetMapping("")
-    public String getAll(Model model) {
+    public String getAll(@RequestParam(value = "tenChatLieu", required = false, defaultValue = "") String tenChatLieu,
+                         @RequestParam(value = "trangThai", required = false) Integer trangThai,
+                         Model model) {
+        int defaultPageNo = 1;
         int defaultPageSize = 5;
-        return phanTrang(1, defaultPageSize, model);
+        return phanTrang(defaultPageNo, defaultPageSize, tenChatLieu, trangThai, model);
     }
 
     @GetMapping("/{pageNo}")
     public String phanTrang(@PathVariable(value = "pageNo") int pageNo,
                             @RequestParam(value = "size", required = false, defaultValue = "5") int pageSize,
+                            @RequestParam(value = "tenChatLieu", required = false, defaultValue = "") String tenChatLieu,
+                            @RequestParam(value = "trangThai", required = false, defaultValue = "-1") Integer trangThai,
                             Model model) {
         Page<ChatLieu> page = chatLieuService.phanTrang(pageNo, pageSize);
         List<ChatLieu> listCL = page.getContent();
@@ -52,6 +58,8 @@ public class ChatLieuController {
         model.addAttribute("size", pageSize);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("tenChatLieu", tenChatLieu);
+        model.addAttribute("trangThai", trangThai);
         return "/admin/sanpham/ChatLieu/Chatlieu";
     }
     @GetMapping("/detail/{id}")
@@ -70,42 +78,107 @@ public class ChatLieuController {
     public String add(@ModelAttribute("chatLieu") @Valid ChatLieu chatLieu,
                       BindingResult bindingResult, RedirectAttributes redirectAttributes,
                       Model model) {
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên chất liệu");
-            String tenChatLieu = chatLieu.getTenChatLieu();
-            if (chatLieu.getTenChatLieu().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được để trống!");
-                return "redirect:/admin/chatlieu";
-            }
-
-            // Check leading/trailing whitespaces
-            if (!chatLieu.getTenChatLieu().trim().equals(chatLieu.getTenChatLieu())) {
-                bindingResult.rejectValue("tenChatLieu", "tenChatLieu.whitespace", "Tên chất liệu không được chứa khoảng trắng ở đầu hoặc cuối!");
-            }
-            // Check length
-            else if (tenChatLieu.length() > 20) {
-                redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được quá 20 kí tự!");
-                return "redirect:/admin/chatlieu";
-            }
-            // Check for special characters
-            else if (chatLieu.getTenChatLieu().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
-                redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được chứa ký tự đặc biệt!");
-                return "redirect:/admin/chatlieu";
-            }
-
-            // Check duplicates (implement database logic)
-            else if (chatLieuService.existsByTenChatLieu(tenChatLieu)) {
-                redirectAttributes.addFlashAttribute("error", "Tên chất liệu đã tồn tại!");
-                return "redirect:/admin/chatlieu";
-            }
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.chatLieu", bindingResult);
-            redirectAttributes.addFlashAttribute("chatLieu", chatLieu);
-            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+        if (chatLieu.getTenChatLieu() == null || chatLieu.getTenChatLieu().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên chất liệu!");
             return "redirect:/admin/chatlieu";
         }
+        // Loại bỏ khoảng trắng thừa
+        String tenChatLieu = chatLieu.getTenChatLieu().trim();
+        // Kiểm tra độ dài
+        if (tenChatLieu.length() > 20) {
+            redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được quá 20 kí tự!");
+            return "redirect:/admin/chatlieu";
+        }
+        // Kiểm tra không bắt đầu bằng số hoặc ký tự đặc biệt
+        if (!tenChatLieu.matches("^[a-zA-Z].*")) {
+            redirectAttributes.addFlashAttribute("error", "Tên chất liệu phải bắt đầu bằng chữ cái!");
+            return "redirect:/admin/chatlieu";
+        }
+        // Kiểm tra không có khoảng trắng liên tiếp
+        if (tenChatLieu.matches(".*\\s{2,}.*")) {
+            redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được chứa nhiều khoảng trắng liên tiếp!");
+            return "redirect:/admin/chatlieu";
+        }
+        // Kiểm tra trùng lặp (nếu cần)
+        if (chatLieuService.existsByTenChatLieu(tenChatLieu)) {
+            redirectAttributes.addFlashAttribute("error", "Tên kchất liệu đã tồn tại!");
+            return "redirect:/admin/chatlieu";
+        }
+        // Nếu vượt qua tất cả các kiểm tra
+        chatLieu.setTenChatLieu(tenChatLieu); // Đặt lại tên đã trim
         chatLieu.setTrangThai(1);
         chatLieuService.addChatLieu(chatLieu);
+
+        redirectAttributes.addFlashAttribute("success", "Thêm chất liệu thành công!");
         return "redirect:/admin/chatlieu";
+//        if (chatLieu.getTenChatLieu() == null || chatLieu.getTenChatLieu().trim().isEmpty()) {
+//            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên chất liệu!");
+//            return "redirect:/admin/chatlieu";
+//        }
+//        // Loại bỏ khoảng trắng thừa
+//        String tenChatLieu = chatLieu.getTenChatLieu().trim();
+//        // Kiểm tra độ dài
+//        if (tenChatLieu.length() > 20) {
+//            redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được quá 20 kí tự!");
+//            return "redirect:/admin/chatlieu";
+//        }
+//        // Kiểm tra không bắt đầu bằng số hoặc ký tự đặc biệt
+//        if (!tenChatLieu.matches("^[a-zA-Z].*")) {
+//            redirectAttributes.addFlashAttribute("error", "Tên chất liệu phải bắt đầu bằng chữ cái!");
+//            return "redirect:/admin/chatlieu";
+//        }
+//        // Kiểm tra không có khoảng trắng liên tiếp
+//        if (tenChatLieu.matches(".*\\s{2,}.*")) {
+//            redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được chứa nhiều khoảng trắng liên tiếp!");
+//            return "redirect:/admin/chatlieu";
+//        }
+//        // Kiểm tra trùng lặp (nếu cầnChatLieu(tenChatLieu)) {
+//            redirectAttributes.addFlashAttribute("error", "Tên chất liệu đã tồn tại!");
+//        return "redirect:/admin/chatlieu";
+//        }
+//        // Nếu vượt qua tất cả các kiểm tra
+//        chatLieu.setTenChatLieu(tenChatLieu); // Đặt lại tên đã trim
+//        chatLieu.setTrangThai(1);
+//        chatLieuService.addChatLieu(chatLieu);
+//
+//        redirectAttributes.addFlashAttribute("success", "Thêm chất liệu thành công!");
+//        return "redirect:/admin/chatlieu";
+//        if (bindingResult.hasErrors()) {
+//            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên chất liệu");
+//            String tenChatLieu = chatLieu.getTenChatLieu();
+//            if (chatLieu.getTenChatLieu().isEmpty()) {
+//                redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được để trống!");
+//                return "redirect:/admin/chatlieu";
+//            }
+//
+//            // Check leading/trailing whitespaces
+//            if (!chatLieu.getTenChatLieu().trim().equals(chatLieu.getTenChatLieu())) {
+//                bindingResult.rejectValue("tenChatLieu", "tenChatLieu.whitespace", "Tên chất liệu không được chứa khoảng trắng ở đầu hoặc cuối!");
+//            }
+//            // Check length
+//            else if (tenChatLieu.length() > 20) {
+//                redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được quá 20 kí tự!");
+//                return "redirect:/admin/chatlieu";
+//            }
+//            // Check for special characters
+//            else if (chatLieu.getTenChatLieu().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+//                redirectAttributes.addFlashAttribute("error", "Tên chất liệu không được chứa ký tự đặc biệt!");
+//                return "redirect:/admin/chatlieu";
+//            }
+//
+//            // Check duplicates (implement database logic)
+//            else if (chatLieuService.existsByTenChatLieu(tenChatLieu)) {
+//                redirectAttributes.addFlashAttribute("error", "Tên chất liệu đã tồn tại!");
+//                return "redirect:/admin/chatlieu";
+//            }
+//            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.chatLieu", bindingResult);
+//            redirectAttributes.addFlashAttribute("chatLieu", chatLieu);
+//            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+//            return "redirect:/admin/chatlieu";
+//        }
+//        chatLieu.setTrangThai(1);
+//        chatLieuService.addChatLieu(chatLieu);
+//        return "redirect:/admin/chatlieu";
     }
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, Model model) {
@@ -137,7 +210,7 @@ public class ChatLieuController {
         Optional<ChatLieu> optionalChatLieu = chatLieuService.detail(id);
         if (optionalChatLieu.isPresent()) {
             ChatLieu chatLieu = optionalChatLieu.get();
-            chatLieu.setTrangThai(1);
+            chatLieu.setTrangThai(0);
             chatLieuService.updateChatLieuById(id, chatLieu);
         }
         return "redirect:/admin/chatlieu";

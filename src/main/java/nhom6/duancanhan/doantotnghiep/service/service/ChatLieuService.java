@@ -2,6 +2,7 @@ package nhom6.duancanhan.doantotnghiep.service.service;
 
 
 import nhom6.duancanhan.doantotnghiep.entity.ChatLieu;
+import nhom6.duancanhan.doantotnghiep.entity.KichCo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -31,4 +32,9 @@ public interface ChatLieuService {
 
     boolean existsByTenChatLieu(String tenChatLieu);
 
+    Page<KichCo> timKiemVaPhanTrang(String tenChatLieu, Integer trangThai, int pageNo, int pageSize);
+
+    Page<KichCo> phanTrangTheoTrangThai(Integer trangThai, int pageNo, int pageSize);
+
+    Page<KichCo> phanTrangTheoTen(String tenChatLieu, int pageNo, int pageSize);
 }

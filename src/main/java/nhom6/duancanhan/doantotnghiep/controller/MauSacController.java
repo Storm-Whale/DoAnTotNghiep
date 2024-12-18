@@ -72,43 +72,77 @@ public class MauSacController {
     public String add(@ModelAttribute("mauSac") @Valid MauSac mauSac,
                       BindingResult bindingResult, RedirectAttributes redirectAttributes,
                       Model model) {
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên màu sắc");
-            String tenMauSac = mauSac.getTenMauSac();
-            if (mauSac.getTenMauSac().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Tên màu sắc không được để trống!");
-                return "redirect:/admin/mausac";
-            }
-
-            // Check leading/trailing whitespaces
-            if (!mauSac.getTenMauSac().trim().equals(mauSac.getTenMauSac())) {
-                bindingResult.rejectValue("tenMauSac", "tenMauSac.whitespace", "Tên màu sắc không được chứa khoảng trắng ở đầu hoặc cuối!");
-                return "redirect:/admin/mausac";
-            }
-            // Check length
-            else if (tenMauSac.length() > 20) {
-                redirectAttributes.addFlashAttribute("error", "Tên màu sắc không được quá 20 kí tự!");
-                return "redirect:/admin/mausac";
-            }
-            // Check for special characters
-            else if (mauSac.getTenMauSac().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
-                redirectAttributes.addFlashAttribute("error", "Tên màu sắc không được chứa ký tự đặc biệt!");
-                return "redirect:/admin/mausac";
-            }
-
-            // Check duplicates (implement database logic)
-            else if (mauSacService.existsByTenMauSac(tenMauSac)) {
-                redirectAttributes.addFlashAttribute("error", "Tên màu sắc đã tồn tại!");
-                return "redirect:/admin/mausac";
-            }
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.kichCo", bindingResult);
-            redirectAttributes.addFlashAttribute("mauSac", mauSac);
-            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+        // Kiểm tra khoảng trắng và tên
+        if (mauSac.getTenMauSac() == null || mauSac.getTenMauSac().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên màu sắc!");
             return "redirect:/admin/mausac";
         }
+        // Loại bỏ khoảng trắng thừa
+        String tenMauSac = mauSac.getTenMauSac().trim();
+        // Kiểm tra độ dài
+        if (tenMauSac.length() > 20) {
+            redirectAttributes.addFlashAttribute("error", "Tên màu sắc không được quá 20 kí tự!");
+            return "redirect:/admin/mausac";
+        }
+        // Kiểm tra không bắt đầu bằng số hoặc ký tự đặc biệt
+        if (!tenMauSac.matches("^[a-zA-Z].*")) {
+            redirectAttributes.addFlashAttribute("error", "Tên màu sắc phải bắt đầu bằng chữ cái!");
+            return "redirect:/admin/mausac";
+        }
+        // Kiểm tra không có khoảng trắng liên tiếp
+        if (tenMauSac.matches(".*\\s{2,}.*")) {
+            redirectAttributes.addFlashAttribute("error", "Tên màu sắc không được chứa nhiều khoảng trắng liên tiếp!");
+            return "redirect:/admin/mausac";
+        }
+        // Kiểm tra trùng lặp (nếu cần)
+        if (mauSacService.existsByTenMauSac(tenMauSac)) {
+            redirectAttributes.addFlashAttribute("error", "Tên màu sắc đã tồn tại!");
+            return "redirect:/admin/mausac";
+        }
+        // Nếu vượt qua tất cả các kiểm tra
+        mauSac.setTenMauSac(tenMauSac); // Đặt lại tên đã trim
         mauSac.setTrangThai(1);
         mauSacService.addMauSac(mauSac);
+
+        redirectAttributes.addFlashAttribute("success", "Thêm màu sắc thành công!");
         return "redirect:/admin/mausac";
+//        if (bindingResult.hasErrors()) {
+//            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên màu sắc");
+//            String tenMauSac = mauSac.getTenMauSac();
+//            if (mauSac.getTenMauSac().isEmpty()) {
+//                redirectAttributes.addFlashAttribute("error", "Tên màu sắc không được để trống!");
+//                return "redirect:/admin/mausac";
+//            }
+//
+//            // Check leading/trailing whitespaces
+//            if (!mauSac.getTenMauSac().trim().equals(mauSac.getTenMauSac())) {
+//                bindingResult.rejectValue("tenMauSac", "tenMauSac.whitespace", "Tên màu sắc không được chứa khoảng trắng ở đầu hoặc cuối!");
+//                return "redirect:/admin/mausac";
+//            }
+//            // Check length
+//            else if (tenMauSac.length() > 20) {
+//                redirectAttributes.addFlashAttribute("error", "Tên màu sắc không được quá 20 kí tự!");
+//                return "redirect:/admin/mausac";
+//            }
+//            // Check for special characters
+//            else if (mauSac.getTenMauSac().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+//                redirectAttributes.addFlashAttribute("error", "Tên màu sắc không được chứa ký tự đặc biệt!");
+//                return "redirect:/admin/mausac";
+//            }
+//
+//            // Check duplicates (implement database logic)
+//            else if (mauSacService.existsByTenMauSac(tenMauSac)) {
+//                redirectAttributes.addFlashAttribute("error", "Tên màu sắc đã tồn tại!");
+//                return "redirect:/admin/mausac";
+//            }
+//            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.kichCo", bindingResult);
+//            redirectAttributes.addFlashAttribute("mauSac", mauSac);
+//            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+//            return "redirect:/admin/mausac";
+//        }
+//        mauSac.setTrangThai(1);
+//        mauSacService.addMauSac(mauSac);
+//        return "redirect:/admin/mausac";
     }
 
     @GetMapping("/edit/{id}")
@@ -141,7 +175,7 @@ public class MauSacController {
         Optional<MauSac> optionalMauSac = mauSacService.detail(id);
         if (optionalMauSac.isPresent()) {
             MauSac mauSac = optionalMauSac.get();
-            mauSac.setTrangThai(1);
+            mauSac.setTrangThai(0);
             mauSacService.updateMauSacById(id, mauSac);
         }
         return "redirect:/admin/mausac";

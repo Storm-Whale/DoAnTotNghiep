@@ -71,43 +71,77 @@ public class ThuongHieuController {
     public String add(@ModelAttribute("thuongHieu") @Valid ThuongHieu thuongHieu,
                       BindingResult bindingResult, RedirectAttributes redirectAttributes,
                       Model model){
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên thương hiệu");
-            String tenThuongHieu = thuongHieu.getTenThuongHieu();
-            if (thuongHieu.getTenThuongHieu().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu không được để trống!");
-                return "redirect:/admin/thuong-hieu";
-            }
-
-            // Check leading/trailing whitespaces
-            if (!thuongHieu.getTenThuongHieu().trim().equals(thuongHieu.getTenThuongHieu())) {
-                bindingResult.rejectValue("tenThuongHieu", "tenThuongHieu.whitespace", "Tên thương hiệu không được chứa khoảng trắng ở đầu hoặc cuối!");
-                return "redirect:/admin/thuong-hieu";
-            }
-            // Check length
-            else if (tenThuongHieu.length() > 20) {
-                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu không được quá 20 kí tự!");
-                return "redirect:/admin/thuong-hieu";
-            }
-            // Check for special characters
-            else if (thuongHieu.getTenThuongHieu().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
-                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu không được chứa ký tự đặc biệt!");
-                return "redirect:/admin/thuong-hieu";
-            }
-
-            // Check duplicates (implement database logic)
-            else if (thuongHieuService.existsByTenThuongHieu(tenThuongHieu)) {
-                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu đã tồn tại!");
-                return "redirect:/admin/thuong-hieu";
-            }
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.thuongHieu", bindingResult);
-            redirectAttributes.addFlashAttribute("thuongHieu", thuongHieu);
-            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+        // Kiểm tra khoảng trắng và tên
+        if (thuongHieu.getTenThuongHieu() == null || thuongHieu.getTenThuongHieu().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên thương hiệu!");
             return "redirect:/admin/thuong-hieu";
         }
+        // Loại bỏ khoảng trắng thừa
+        String tenThuongHieu = thuongHieu.getTenThuongHieu().trim();
+        // Kiểm tra độ dài
+        if (tenThuongHieu.length() > 20) {
+            redirectAttributes.addFlashAttribute("error", "Tên thương hiệu không được quá 20 kí tự!");
+            return "redirect:/admin/thuong-hieu";
+        }
+        // Kiểm tra không bắt đầu bằng số hoặc ký tự đặc biệt
+        if (!tenThuongHieu.matches("^[a-zA-Z].*")) {
+            redirectAttributes.addFlashAttribute("error", "Tên thương hiệu phải bắt đầu bằng chữ cái!");
+            return "redirect:/admin/thuong-hieu";
+        }
+        // Kiểm tra không có khoảng trắng liên tiếp
+        if (tenThuongHieu.matches(".*\\s{2,}.*")) {
+            redirectAttributes.addFlashAttribute("error", "Tên thương hiệu không được chứa nhiều khoảng trắng liên tiếp!");
+            return "redirect:/admin/thuong-hieu";
+        }
+        // Kiểm tra trùng lặp (nếu cần)
+        if (thuongHieuService.existsByTenThuongHieu(tenThuongHieu)) {
+            redirectAttributes.addFlashAttribute("error", "Tên thương hiệu đã tồn tại!");
+            return "redirect:/admin/thuong-hieu";
+        }
+        // Nếu vượt qua tất cả các kiểm tra
+        thuongHieu.setTenThuongHieu(tenThuongHieu); // Đặt lại tên đã trim
         thuongHieu.setTrangThai(1);
         thuongHieuService.addThuongHieu(thuongHieu);
+
+        redirectAttributes.addFlashAttribute("success", "Thêm thương hiệu thành công!");
         return "redirect:/admin/thuong-hieu";
+//        if (bindingResult.hasErrors()) {
+//            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên thương hiệu");
+//            String tenThuongHieu = thuongHieu.getTenThuongHieu();
+//            if (thuongHieu.getTenThuongHieu().isEmpty()) {
+//                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu không được để trống!");
+//                return "redirect:/admin/thuong-hieu";
+//            }
+//
+//            // Check leading/trailing whitespaces
+//            if (!thuongHieu.getTenThuongHieu().trim().equals(thuongHieu.getTenThuongHieu())) {
+//                bindingResult.rejectValue("tenThuongHieu", "tenThuongHieu.whitespace", "Tên thương hiệu không được chứa khoảng trắng ở đầu hoặc cuối!");
+//                return "redirect:/admin/thuong-hieu";
+//            }
+//            // Check length
+//            else if (tenThuongHieu.length() > 20) {
+//                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu không được quá 20 kí tự!");
+//                return "redirect:/admin/thuong-hieu";
+//            }
+//            // Check for special characters
+//            else if (thuongHieu.getTenThuongHieu().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+//                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu không được chứa ký tự đặc biệt!");
+//                return "redirect:/admin/thuong-hieu";
+//            }
+//
+//            // Check duplicates (implement database logic)
+//            else if (thuongHieuService.existsByTenThuongHieu(tenThuongHieu)) {
+//                redirectAttributes.addFlashAttribute("error", "Tên thương hiệu đã tồn tại!");
+//                return "redirect:/admin/thuong-hieu";
+//            }
+//            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.thuongHieu", bindingResult);
+//            redirectAttributes.addFlashAttribute("thuongHieu", thuongHieu);
+//            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+//            return "redirect:/admin/thuong-hieu";
+//        }
+//        thuongHieu.setTrangThai(1);
+//        thuongHieuService.addThuongHieu(thuongHieu);
+//        return "redirect:/admin/thuong-hieu";
     }
 
     @GetMapping("/edit/{id}")
@@ -141,7 +175,7 @@ public class ThuongHieuController {
         Optional<ThuongHieu> optionalThuongHieu = thuongHieuService.detail(id);
         if (optionalThuongHieu.isPresent()) {
             ThuongHieu thuongHieu = optionalThuongHieu.get();
-            thuongHieu.setTrangThai(1);
+            thuongHieu.setTrangThai(0);
             thuongHieuService.updateThuongHieuById(id, thuongHieu);
         }
         return "redirect:/admin/thuong-hieu";

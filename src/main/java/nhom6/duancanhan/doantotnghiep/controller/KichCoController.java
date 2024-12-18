@@ -89,43 +89,77 @@ public class KichCoController {
     public String add(@ModelAttribute("kichCo") @Valid KichCo kichCo,
                       BindingResult bindingResult, RedirectAttributes redirectAttributes,
                       Model model) {
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên kích cỡ");
-            String tenKichCo = kichCo.getTenKichCo();
-            if (kichCo.getTenKichCo().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Tên kích cỡ không được để trống!");
-                return "redirect:/admin/kichco";
-            }
-
-            // Check leading/trailing whitespaces
-            if (!kichCo.getTenKichCo().trim().equals(kichCo.getTenKichCo())) {
-                bindingResult.rejectValue("tenKichCo", "tenKichCo.whitespace", "Tên kích cỡ không được chứa khoảng trắng ở đầu hoặc cuối!");
-                return "redirect:/admin/kichco";
-            }
-            // Check length
-            else if (tenKichCo.length() > 20) {
-                redirectAttributes.addFlashAttribute("error", "Tên kích cỡ không được quá 20 kí tự!");
-                return "redirect:/admin/kichco";
-            }
-            // Check for special characters
-            else if (kichCo.getTenKichCo().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
-                redirectAttributes.addFlashAttribute("error", "Tên kích cỡ không được chứa ký tự đặc biệt!");
-                return "redirect:/admin/kichco";
-            }
-
-            // Check duplicates (implement database logic)
-            else if (kichCoService.existsByTenKichCo(tenKichCo)) {
-                redirectAttributes.addFlashAttribute("error", "Tên kích cỡ đã tồn tại!");
-                return "redirect:/admin/kichco";
-            }
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.kichCo", bindingResult);
-            redirectAttributes.addFlashAttribute("kichCo", kichCo);
-            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+        // Kiểm tra khoảng trắng và tên
+        if (kichCo.getTenKichCo() == null || kichCo.getTenKichCo().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên kích cỡ!");
             return "redirect:/admin/kichco";
         }
+        // Loại bỏ khoảng trắng thừa
+        String tenKichCo = kichCo.getTenKichCo().trim();
+        // Kiểm tra độ dài
+        if (tenKichCo.length() > 20) {
+            redirectAttributes.addFlashAttribute("error", "Tên kích cỡ không được quá 20 kí tự!");
+            return "redirect:/admin/kichco";
+        }
+        // Kiểm tra không bắt đầu bằng số hoặc ký tự đặc biệt
+        if (!tenKichCo.matches("^[a-zA-Z].*")) {
+            redirectAttributes.addFlashAttribute("error", "Tên kích cỡ phải bắt đầu bằng chữ cái!");
+            return "redirect:/admin/kichco";
+        }
+        // Kiểm tra không có khoảng trắng liên tiếp
+        if (tenKichCo.matches(".*\\s{2,}.*")) {
+            redirectAttributes.addFlashAttribute("error", "Tên kích cỡ không được chứa nhiều khoảng trắng liên tiếp!");
+            return "redirect:/admin/kichco";
+        }
+        // Kiểm tra trùng lặp (nếu cần)
+        if (kichCoService.existsByTenKichCo(tenKichCo)) {
+            redirectAttributes.addFlashAttribute("error", "Tên kích cỡ đã tồn tại!");
+            return "redirect:/admin/kichco";
+        }
+        // Nếu vượt qua tất cả các kiểm tra
+        kichCo.setTenKichCo(tenKichCo); // Đặt lại tên đã trim
         kichCo.setTrangThai(1);
         kichCoService.addKichCo(kichCo);
+
+        redirectAttributes.addFlashAttribute("success", "Thêm kích cỡ thành công!");
         return "redirect:/admin/kichco";
+//        if (bindingResult.hasErrors()) {
+//            redirectAttributes.addFlashAttribute("error", "Vui lòng nhập tên kích cỡ");
+//            String tenKichCo = kichCo.getTenKichCo();
+//            if (kichCo.getTenKichCo().isEmpty()) {
+//                redirectAttributes.addFlashAttribute("error", "Tên kích cỡ không được để trống!");
+//                return "redirect:/admin/kichco";
+//            }
+//
+//            // Check leading/trailing whitespaces
+//            if (!kichCo.getTenKichCo().trim().equals(kichCo.getTenKichCo())) {
+//                bindingResult.rejectValue("tenKichCo", "tenKichCo.whitespace", "Tên kích cỡ không được chứa khoảng trắng ở đầu hoặc cuối!");
+//                return "redirect:/admin/kichco";
+//            }
+//            // Check length
+//            else if (tenKichCo.length() > 20) {
+//                redirectAttributes.addFlashAttribute("error", "Tên kích cỡ không được quá 20 kí tự!");
+//                return "redirect:/admin/kichco";
+//            }
+//            // Check for special characters
+//            else if (kichCo.getTenKichCo().matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+//                redirectAttributes.addFlashAttribute("error", "Tên kích cỡ không được chứa ký tự đặc biệt!");
+//                return "redirect:/admin/kichco";
+//            }
+//
+//            // Check duplicates (implement database logic)
+//            else if (kichCoService.existsByTenKichCo(tenKichCo)) {
+//                redirectAttributes.addFlashAttribute("error", "Tên kích cỡ đã tồn tại!");
+//                return "redirect:/admin/kichco";
+//            }
+//            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.kichCo", bindingResult);
+//            redirectAttributes.addFlashAttribute("kichCo", kichCo);
+//            // Nếu có lỗi validation, trả lại form với thông báo lỗi
+//            return "redirect:/admin/kichco";
+//        }
+//        kichCo.setTrangThai(1);
+//        kichCoService.addKichCo(kichCo);
+//        return "redirect:/admin/kichco";
     }
 
     @GetMapping("/edit/{id}")
@@ -157,7 +191,7 @@ public class KichCoController {
         Optional<KichCo> optionalKichCo = kichCoService.detail(id);
         if (optionalKichCo.isPresent()) {
             KichCo kichCo = optionalKichCo.get();
-            kichCo.setTrangThai(1);
+            kichCo.setTrangThai(0);
             kichCoService.updateKichCoById(id, kichCo);
         }
         return "redirect:/admin/kichco";

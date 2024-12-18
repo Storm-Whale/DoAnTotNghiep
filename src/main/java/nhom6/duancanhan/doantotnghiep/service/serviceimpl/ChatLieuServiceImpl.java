@@ -1,6 +1,7 @@
 package nhom6.duancanhan.doantotnghiep.service.serviceimpl;
 
 import nhom6.duancanhan.doantotnghiep.entity.ChatLieu;
+import nhom6.duancanhan.doantotnghiep.entity.KichCo;
 import nhom6.duancanhan.doantotnghiep.repository.ChatLieuRepository;
 
 import nhom6.duancanhan.doantotnghiep.service.service.ChatLieuService;
@@ -77,6 +78,21 @@ public class ChatLieuServiceImpl implements ChatLieuService {
 
     public boolean existsByTenChatLieu(String tenChatLieu) {
         return chatLieuRepository.existsByTenChatLieu(tenChatLieu);
+    }
+
+    @Override
+    public Page<KichCo> timKiemVaPhanTrang(String tenChatLieu, Integer trangThai, int pageNo, int pageSize) {
+        return null;
+    }
+
+    @Override
+    public Page<KichCo> phanTrangTheoTrangThai(Integer trangThai, int pageNo, int pageSize) {
+        return null;
+    }
+
+    @Override
+    public Page<KichCo> phanTrangTheoTen(String tenChatLieu, int pageNo, int pageSize) {
+        return null;
     }
 
 }

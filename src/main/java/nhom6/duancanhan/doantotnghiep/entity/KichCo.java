@@ -22,10 +22,10 @@ public class KichCo extends BaseEntity{
     private Integer id;
 
     @NotBlank(message = "Tên kích cỡ không được để trống!")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Tên kích cỡ không được chứa ký tự đặc biệt!")
-    @Pattern(regexp = "^[^\\s].*[^\\s]$", message = "Tên kích cỡ không được chứa khoảng trắng ở đầu hoặc cuối!")
+//    @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Tên kích cỡ không được chứa ký tự đặc biệt!")
+//    @Pattern(regexp = "^[^\\s].*[^\\s]$", message = "Tên kích cỡ không được chứa khoảng trắng ở đầu hoặc cuối!")
     @Size(max = 19, message = "Name must be 20 characters")
-    @Column(name = "ten_kich_co",unique = true)
+    @Column(name = "ten_kich_co")
     private String tenKichCo;
 
     @Column(name = "trang_thai")
