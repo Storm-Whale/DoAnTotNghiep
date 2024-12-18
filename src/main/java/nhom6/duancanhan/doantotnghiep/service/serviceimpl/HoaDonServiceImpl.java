@@ -48,7 +48,10 @@ public class HoaDonServiceImpl implements HoaDonService {
     public Page<HoaDon> phanTrang(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize); // Bắt đầu từ trang 0
         return hoaDonRepository.findAll(pageable);
-    }
+
+}
+
+
 
 
 //    @Override
@@ -228,9 +231,14 @@ public class HoaDonServiceImpl implements HoaDonService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return hoaDonRepository.findAll(pageable);
     }
+//
+//    public Page<HoaDon> getByTrangThaiWithPagination(int trangThai, int pageNo, int pageSize) {
+//        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+//        return hoaDonRepository.findByTrangThai(trangThai, pageable);
+//    }
 
     public Page<HoaDon> getByTrangThaiWithPagination(int trangThai, int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Order.desc("ngayTao")));
         return hoaDonRepository.findByTrangThai(trangThai, pageable);
     }
 

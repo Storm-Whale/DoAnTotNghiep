@@ -70,7 +70,6 @@ public class HoaDonChiTietServiceImpl implements HoaDonChiTietService {
         return hoaDonChiTietRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Không tìm thấy hoá đơn với id : " + id));
     }
 @Override
-
 public List<HoaDonChiTiet> findAllByHoaDonId(Integer hoaDonId) {
     return hoaDonChiTietRepository.findAllByHoaDonId(hoaDonId);
 }
