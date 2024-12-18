@@ -18,11 +18,9 @@ import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -34,7 +32,7 @@ public class InvoidPdfService {
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
         //
-        String fontPath = "D:/FALL_2024/DATN/DoAnTotNghiep/src/main/resources/times.ttf";
+        String fontPath = "D:/WorkPlace/Java/DuAnTotNghiep/DoAnTotNghiep/src/main/resources/times.ttf";
         // Thay bằng đường dẫn tới file font hỗ trợ Unicode (VD: Times New Roman)
 //      String fontPath = "D:/FALL_2024/DATN/DoAnTotNghiep/src/main/resources/times.ttf"; // Thay bằng đường dẫn tới file font hỗ trợ Unicode (VD: Times New Roman)
         PdfFont font = PdfFontFactory.createFont(fontPath, PdfEncodings.IDENTITY_H);
