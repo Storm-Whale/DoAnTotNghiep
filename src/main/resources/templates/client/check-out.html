@@ -40,10 +40,7 @@
             </div>
 
             <!-- Cart Icon -->
-            <a th:if="${session.user != null}" th:href="@{/client/gio-hang}" class="me-4">
-                <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
-            </a>
-            <a th:if="${session.user == null}" th:href="@{/login/login-client}" class="me-4">
+            <a th:href="@{/client/gio-hang}" class="me-4">
                 <img th:src="@{/giohang.png}" alt="Cart Icon" width="40" height="40" class="rounded">
             </a>
             <!-- User Dropdown -->
@@ -58,6 +55,7 @@
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
                         <li><a class="dropdown-item" th:href="@{/client/showInfoCustomer}">Tài Khoản Của Tôi</a></li>
+                        <li><a class="dropdown-item" th:href="@{/client/showInfoBill}">Hoá đơn của tôi</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -190,7 +188,7 @@
                         <tr>
                             <th scope="row" class="fw-bold">Tổng tiền</th>
                             <td id="tongTien" class="fw-bold"
-                                th:text="${#numbers.formatDecimal(tongTien - phiShip, 0, 'COMMA', 0, 'POINT')} + ' đ'"
+                                th:text="${#numbers.formatDecimal(tongTien + phiShip, 0, 'COMMA', 0, 'POINT')} + ' đ'"
                                 style="color: orangered">
                             </td>
                         </tr>
@@ -231,15 +229,15 @@
                 <div>
                     <div class="row">
                         <div class="col-auto p-2"><strong>Mã Voucher: Chưa có mã giảm giá</strong></div>
-                        <div class="col">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Mã Shopee Voucher"
-                                       aria-label="Mã Shopee Voucher">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button">ÁP DỤNG</button>
-                                </div>
-                            </div>
-                        </div>
+<!--                        <div class="col">-->
+<!--                            <div class="input-group">-->
+<!--                                <input type="text" class="form-control" placeholder="Mã Shopee Voucher"-->
+<!--                                       aria-label="Mã Shopee Voucher">-->
+<!--                                <div class="input-group-append">-->
+<!--                                    <button class="btn btn-outline-secondary" type="button">ÁP DỤNG</button>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
                     <div class="container mt-4">
 

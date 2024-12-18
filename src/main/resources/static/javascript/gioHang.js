@@ -2,6 +2,9 @@ var tongslsp = 0;
 document.addEventListener("DOMContentLoaded", function () {
     const productCheckboxes = document.querySelectorAll(".form-check-input:not(#select-all)");
 
+    const loadingOverlay = document.getElementById("loading-overlay");
+    const loadingSpinner = document.getElementById("loading-spinner");
+
     const selectAllCheckbox = document.getElementById("select-all");
 
     // Nếu addedProductId không null, đánh dấu checkbox tương ứng
@@ -300,6 +303,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 selectedCount++;
                 totalQuantity += quantity;  // Add the quantity of the current product
             }
+            tongslsp = totalQuantity
         });
 
         // Update the selected count (number of products)
@@ -315,7 +319,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 maximumFractionDigits: 0
             }).format(totalAmount) + ' đ'; // Format the total amount as currency
         }
-        tongslsp = totalQuantity
+        console.log(tongslsp)
     }
 });
 
@@ -330,6 +334,7 @@ checkoutButton.addEventListener('click', function() {
         return;
     }
 
+    console.log(tongslsp)
     if (tongslsp > 20) {
         alert('Vui lòng chỉ chọn tối đa 20 sản phẩm để thanh toán');
         return;

@@ -145,13 +145,14 @@ function renderCustomerList(customers) {
 
     // Render từng khách hàng
     sortedCustomers.forEach(customer => {
-        const listItem = document.createElement('li');
-        listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+        if (customer.ten !== '' && customer.ten != null) {
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
 
-        // Format ngày
-        const formattedDate = `${customer.ngayTao[2]}/${customer.ngayTao[1]}/${customer.ngayTao[0]}`;
+            // Format ngày
+            const formattedDate = `${customer.ngayTao[2]}/${customer.ngayTao[1]}/${customer.ngayTao[0]}`;
 
-        listItem.innerHTML = `
+            listItem.innerHTML = `
             <div>
                 <strong>${customer.ten || 'Khách hàng'}</strong>
                 <small class="d-block text-muted">${customer.email || 'Không có email'}</small>
@@ -159,7 +160,8 @@ function renderCustomerList(customers) {
             <span class="badge bg-primary rounded-pill">${formattedDate}</span>
         `;
 
-        customerListEl.appendChild(listItem);
+            customerListEl.appendChild(listItem);
+        }
     });
 }
 

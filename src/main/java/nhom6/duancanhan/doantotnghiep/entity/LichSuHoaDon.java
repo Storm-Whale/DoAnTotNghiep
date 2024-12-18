@@ -20,4 +20,7 @@ public class LichSuHoaDon extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "id_hoa_don")
     private HoaDon hoaDon;
+
+    @Column(name = "trang_thai")
+    private int trangThai;
 }

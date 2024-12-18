@@ -295,7 +295,7 @@ public class ClientController {
                         (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new // Giữ nguyên thứ tự chèn sau khi sắp xếp
                 ));
-        
+
         model.addAttribute("user", khachHang);
         model.addAttribute("listIDSPGH", listIDSPGH);
         model.addAttribute("thuongHieuSPGHListHashMap", sortedMap);
@@ -379,15 +379,13 @@ public class ClientController {
 
         List<DiaChi> diaChiList = diaChiService.getDiaChiByIdKhachHang(khachHang.getId(), 1);
         List<PhieuGiamGiaResponse> phieuGiamGiaResponseList = phieuGiamGiaService.getPGGByTrangThai(1);
-        if (!phieuGiamGiaResponseList.isEmpty()) {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.registerModule(new JavaTimeModule());
-                model.addAttribute("diaChiList", objectMapper.writeValueAsString(diaChiList));
-                model.addAttribute("phieugiamgia", objectMapper.writeValueAsString(phieuGiamGiaResponseList));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            model.addAttribute("diaChiList", objectMapper.writeValueAsString(diaChiList));
+            model.addAttribute("phieugiamgia", objectMapper.writeValueAsString(phieuGiamGiaResponseList));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         List<String> emails = khachHangRepository.findAllEmails();
@@ -532,7 +530,7 @@ public class ClientController {
                             put("message", "Đặt hàng thành công! Chúng tôi sẽ giao hàng sớm nhất.");
                         }});
             }
-            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon).build());
+            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon).trangThai(hoaDon.getTrangThai()).build());
             log.info("Order processed successfully - Order ID: {}", hoaDon.getId());
             return ResponseEntity.ok().build();
 
@@ -608,9 +606,9 @@ public class ClientController {
 
         // Kiểm tra `type` để lấy danh sách hóa đơn phù hợp
         if (type != null) {
-            hoaDons = hoaDonRepository.findHoaDonByKhachHangIdAndTrangThai(khachHang.getId(), type, pageable);
+            hoaDons = hoaDonRepository.findHoaDonByKhachHangIdAndTrangThaiOrderByIdDesc(khachHang.getId(), type, pageable);
         } else {
-            hoaDons = hoaDonRepository.findHoaDonByKhachHangId(khachHang.getId(), pageable);
+            hoaDons = hoaDonRepository.findHoaDonByKhachHangIdOrderByIdDesc(khachHang.getId(), pageable);
         }
 
         // Số trang hiện tại và tổng số trang
@@ -634,8 +632,8 @@ public class ClientController {
     }
 
     //    TODO : Thông Tin Chi Tiết Hóa Đơn
-    @GetMapping(value = "/showDetailInfoBill/idHD/{idHD}/loai/{loai}")
-    private String showDetailInfoBill(HttpSession session, Model model, @PathVariable(name = "idHD") Integer idHD, @PathVariable(name = "loai") Integer loai) {
+    @GetMapping(value = "/showDetailInfoBill/idHD/{idHD}")
+    private String showDetailInfoBill(HttpSession session, Model model, @PathVariable(name = "idHD") Integer idHD) {
         KhachHang khachHang = (KhachHang) session.getAttribute("user");
         if (khachHang == null) {
             return "redirect:/login/login-client";
@@ -664,11 +662,13 @@ public class ClientController {
             }
         }
 
+        log.info("Tong Tien : {}", tongTien);
+
         model.addAttribute("tienShip", BigDecimal.valueOf(10000));
         model.addAttribute("tienGG", tienGG == null ? BigDecimal.ZERO : tienGG);
         model.addAttribute("tongTien", tongTien);
 
-        if (loai == 6) {
+        if (hoaDon.getTrangThai() == 5 || hoaDon.getTrangThai() == 7) {
             model.addAttribute("hd", hoaDon);
             return "/client/customer/ThongTinHoaDonHuy";
         } else {

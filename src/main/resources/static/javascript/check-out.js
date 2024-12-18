@@ -77,6 +77,7 @@ document.getElementById('select-voucher').addEventListener('click', function () 
 
         // Tính tổng tiền sau khi áp dụng mã giảm giá
         tongTienSauKhiTruMa = tongTien - tienGiam + tienShip;
+        console.log(tongTienSauKhiTruMa);
 
         // Cập nhật giao diện
         document.getElementById('tongTien').innerHTML = tongTienSauKhiTruMa.toLocaleString('vi-VN') + " đ";
@@ -520,7 +521,7 @@ function guiDataThanhToan() {
     }
 
     if (tongTienSauKhiTruMa == null) {
-        tongTienSauKhiTruMa = tongTien - tienShip;
+        tongTienSauKhiTruMa = tongTien + tienShip;
     }
 
     console.log(maPGG)

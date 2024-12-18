@@ -228,7 +228,7 @@ public class HoaDonController {
             }
 
             HoaDon hoaDon1 = hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
-            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).build());
+            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).trangThai(hoaDon1.getTrangThai()).build());
             return ResponseEntity.ok("Cập nhật trạng thái thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
@@ -265,7 +265,7 @@ public class HoaDonController {
             }
 
             HoaDon hoaDon1 = hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
-            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).build());
+            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).trangThai(hoaDon1.getTrangThai()).build());
             return ResponseEntity.ok("Cập nhật trạng thái thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
@@ -290,7 +290,7 @@ public class HoaDonController {
 
 
             HoaDon hoaDon1 = hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
-            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).build());
+            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).trangThai(hoaDon1.getTrangThai()).build());
             return ResponseEntity.ok("Đơn hàng đã được hủy thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");
@@ -312,7 +312,7 @@ public class HoaDonController {
 
 
             HoaDon hoaDon1 = hoaDonService.addHoaDon(hoaDon); // Lưu lại vào cơ sở dữ liệu
-            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).build());
+            lichSuHoaDonRepository.save(LichSuHoaDon.builder().hoaDon(hoaDon1).trangThai(hoaDon1.getTrangThai()).build());
             return ResponseEntity.ok("Đơn hàng Giao Thất Bại");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi");

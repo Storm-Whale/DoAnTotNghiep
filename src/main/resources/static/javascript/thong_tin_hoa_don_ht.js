@@ -92,11 +92,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const statusLabels = {
         1: 'Đơn Hàng Đã Đặt',
         2: 'Xác Nhận Thanh Toán',
-        4: 'Đang Giao Hàng',
-        5: 'Hoàn Thành Đơn Hàng'
+        3: 'Đang Giao Hàng',
+        6: 'Hoàn Thành Đơn Hàng'
     };
 
-    const statusOrder = [1, 2, 4, 5];
+    const statusOrder = [1, 2, 3, 6];
 
     lshd.forEach(order => {
         const orderStatus = order.trangThai; // Trạng thái đơn hàng

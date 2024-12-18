@@ -1,18 +1,22 @@
 const trangThaiLabels = {
     1: 'Chờ xác nhận',
     2: 'Đơn hàng đã xác nhận',
-    4: 'Giao hàng',
-    5: 'Đơn hàng hoàn thành',
-    6: 'Đơn hàng bị huỷ'
+    3: 'Giao hàng',
+    4: 'Giao hàng thành công',
+    5: 'Giao hàng thất bại',
+    6: 'Đơn hàng hoàn thành',
+    7: 'Đơn hàng bị huỷ'
 };
 
 // Define status mapping for cards
 const statusElementIds = {
     1: 'statusPending',     // Chờ xác nhận
     2: 'statusConfirmed',   // Đã xác nhận
-    4: 'statusDelivered',   // Giao hàng
-    5: 'statusCompleted',   // Hoàn thành
-    6: 'statusCanceled'     // Đã huỷ
+    3: 'statusDelivered',   // Giao hàng
+    4: 'ghtc',
+    5: 'ghtb',
+    6: 'statusCompleted',   // Hoàn thành
+    7: 'statusCanceled'     // Đã huỷ
 };
 
 // Khởi tạo biểu đồ

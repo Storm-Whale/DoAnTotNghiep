@@ -40,14 +40,17 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     List<PhieuGiamGiaHoaDonDTO> findHoaDonByPhieuGiamGia(@Param("phieuGiamGiaId") Integer phieuGiamGiaId);
 
     Page<HoaDon> findByKhachHang_IdAndTrangThai(Integer khachHangId, Integer trangThai, Pageable pageable);
+
     Page<HoaDon> findByKhachHang_Id(Integer khachHangId, Pageable pageable);
 
     Page<HoaDon> findByNguoiTao_Id(Integer nguoiTaoId, Pageable pageable);
 
-    Page<HoaDon> findHoaDonByKhachHangId(Integer khachHangId, Pageable pageable);
+    // Lấy danh sách hóa đơn theo khách hàng và sắp xếp giảm dần theo ngày sửa
+    Page<HoaDon> findHoaDonByKhachHangIdOrderByIdDesc(Integer khachHangId, Pageable pageable);
 
+    // Lấy danh sách hóa đơn theo khách hàng và trạng thái, sắp xếp giảm dần theo ngày sửa
+    Page<HoaDon> findHoaDonByKhachHangIdAndTrangThaiOrderByIdDesc(Integer khachHangId, int trangThai, Pageable pageable);
 
-    Page<HoaDon> findHoaDonByKhachHangIdAndTrangThai(Integer khachHangId, int trangThai, Pageable pageable);
 
     @Query("SELECT hd FROM HoaDon hd JOIN hd.diaChi dc JOIN hd.phuongThucThanhToan ptt WHERE " +
             "(hd.tenNguoiNhan LIKE %:keyword% OR hd.sdt LIKE %:keyword% OR hd.emailNguoiNhan LIKE %:keyword% OR " +
@@ -82,8 +85,10 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findByTrangThai(int trangThai);
 
     List<HoaDon> findByTrangThaiIs(Integer trangThai);
+
     @Query("SELECT h FROM HoaDon h WHERE h.trangThai = 4 AND h.ngaySua < :thirtySecondsAgo")
     List<HoaDon> findUnconfirmedDeliveredOrders(@Param("thirtySecondsAgo") LocalDateTime thirtySecondsAgo);
+
     @Query("SELECT h FROM HoaDon h WHERE h.trangThai = 4 AND h.ngaySua >= :startOfDay AND h.ngaySua < :endOfDay")
     List<HoaDon> findHoaDonByTrangThaiAndNgayBangHomNay(
             @Param("startOfDay") LocalDateTime startOfDay,
