@@ -159,63 +159,63 @@
             </div>
 
 
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/hoadon" th:classappend="${activeTab == 'all' ? 'active' : ''}">Danh Sách Hóa Đơn</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/hoadon/tai-quay" th:classappend="${activeTab == 'tai-quay' ? 'active' : ''}">Chờ Xác Nhận</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/hoadon/online" th:classappend="${activeTab == 'online' ? 'active' : ''}">Xác Nhận Đơn Hàng</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/hoadon/prepare" th:classappend="${activeTab == 'prepare' ? 'active' : ''}">Giao Hàng</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/hoadon/shipping" th:classappend="${activeTab == 'shipping' ? 'active' : ''}">Giao Hàng Thành Công</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/hoadon/delivered" th:classappend="${activeTab == 'delivered' ? 'active' : ''}">Giao Hàng Thất Bại</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/hoadon/pass" th:classappend="${activeTab == 'pass' ? 'active' : ''}">Hoàn Thành Đơn Hàng</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/hoadon/fall" th:classappend="${activeTab == 'fall' ? 'active' : ''}">Đã Hủy</a>
-                </li>
-            </ul>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/hoadon" th:classappend="${activeTab == 'all' ? 'active' : ''}">Danh Sách Hóa Đơn</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/hoadon/tai-quay" th:classappend="${activeTab == 'tai-quay' ? 'active' : ''}">Chờ Xác Nhận</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/hoadon/online" th:classappend="${activeTab == 'online' ? 'active' : ''}">Xác Nhận Đơn Hàng</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/hoadon/prepare" th:classappend="${activeTab == 'prepare' ? 'active' : ''}">Giao Hàng</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/hoadon/shipping" th:classappend="${activeTab == 'shipping' ? 'active' : ''}">Giao Hàng Thành Công</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/hoadon/delivered" th:classappend="${activeTab == 'delivered' ? 'active' : ''}">Giao Hàng Thất Bại</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/hoadon/pass" th:classappend="${activeTab == 'pass' ? 'active' : ''}">Hoàn Thành Đơn Hàng</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/hoadon/fall" th:classappend="${activeTab == 'fall' ? 'active' : ''}">Đã Hủy</a>
+        </li>
+    </ul>
 
 
-            <div class="table-responsive mt-3">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên Người Nhận</th>
-                        <th>Số Điện Thoại</th>
-                        <th>Địa Chỉ</th>
-                        <th>Phương Thức Thanh Toán</th>
-                        <th>Tổng Tiền</th>
-                        <th>Ghi Chú</th>
-                        <th>Loại Hóa Đơn</th>
-                        <th>Trạng Thái</th>
+    <div class="table-responsive mt-3">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                                    <th>Tên Người Nhận</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Địa Chỉ</th>
+                                    <th>Phương Thức Thanh Toán</th>
+                                    <th>Tổng Tiền</th>
+                                    <th>Ghi Chú</th>
+                <th>Loại Hóa Đơn</th>
+                <th>Trạng Thái</th>
 
-                        <th>Chức năng</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="hoaDon : ${listHD}">
-                        <td th:text="${hoaDon.id}"></td>
-                        <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>
-                        <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.soDienThoai}"></td>
-                        <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>
-                        <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : ''}"></td>
-                        <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
-                        <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : ''}"></td>
-                        <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>
+                <th>Chức năng</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="hoaDon : ${listHD}">
+                <td th:text="${hoaDon.id}"></td>
+                <td th:text="${hoaDon.khachHang != null ? hoaDon.khachHang.ten : 'Khách Lẻ'}"></td>
+                <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.soDienThoai}"></td>
+                <td th:text="${hoaDon.diaChi == null ? '' : hoaDon.diaChi.diaChiChiTiet}"></td>
+                <td th:text="${hoaDon.phuongThucThanhToan != null ? hoaDon.phuongThucThanhToan.tenPhuongThuc : ''}"></td>
+                <td th:text="${#numbers.formatDecimal(hoaDon.tongTien, 1, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                <td th:text="${hoaDon.ghiChu != null ? hoaDon.ghiChu : ''}"></td>
+                <td th:text="${hoaDon.loaiHoaDon != null ? hoaDon.loaiHoaDon : ''}"></td>
 
-                        <td th:text="${ hoaDon.trangThai == 1 ? 'Chờ Xác Nhận' :
+                <td th:text="${ hoaDon.trangThai == 1 ? 'Chờ Xác Nhận' :
                 hoaDon.trangThai == 2 ? 'Xác Nhận Đơn Hàng' :
                   hoaDon.trangThai == 3 ? 'Giao Hàng' :
                   hoaDon.trangThai == 4 ? 'Giao Hàng Thành Công' :
@@ -224,7 +224,7 @@
                   hoaDon.trangThai == 7 ? 'Đã Hủy' : 'Chưa Thanh Toán'}"></td>
 
 
-<<<<<<< HEAD
+
 
 
                 <td>
@@ -380,134 +380,6 @@
     </div>
 
     </div>
-=======
-
-
-                        <td>
-                            <!--                    <div class="d-flex justify-content-start align-items-center">-->
-                            <!--                        <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary btn-sm mr-2">-->
-                            <!--                            <i class="bi bi-eye"></i> &lt;!&ndash; Icon Chi Tiết &ndash;&gt;-->
-                            <!--                        </a>-->
-
-                            <!--                        &lt;!&ndash;                        <div class="mb-3" th:if="${activeTab == 'all'}">&ndash;&gt;-->
-                            <!--&lt;!&ndash;                            <button class="btn btn-success btn-sm" th:onclick="|exportHoaDonById(${hoaDon.id})|">&ndash;&gt;-->
-                            <!--&lt;!&ndash;                                <i class="fas fa-file-excel"></i> Xuất EX&ndash;&gt;-->
-                            <!--&lt;!&ndash;                            </button>&ndash;&gt;-->
-                            <!--&lt;!&ndash;                        </div>&ndash;&gt;-->
-                            <!--                    </div>-->
-                            <div class="mb-3" th:if="${activeTab == 'online'}">
-                                <a class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-check-circle"></i> <!-- Icon Xác Nhận -->
-                                </a>
-                                <a type="button" class="btn btn-outline-danger" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-x-circle"></i> <!-- Icon Hủy Đơn -->
-                                </a>
-                                <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-arrow-left"></i> <!-- Icon Trở Lại -->
-                                </a>
-                                <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary btn-sm mr-2">
-                                    <i class="bi bi-eye fs-5"></i> <!-- Sử dụng fs-4 để tăng kích thước -->
-                                </a>
-
-                            </div>
-                            <div class="mb-3" th:if="${activeTab == 'all'}">
-                                <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary btn-sm mr-2">
-                                    <i class="bi bi-eye fs-5"></i> <!-- Sử dụng fs-4 để tăng kích thước -->
-                                </a>
-
-                            </div>
-
-                            <div class="mb-3" th:if="${activeTab == 'delivered'}">
-                                <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary btn-sm mr-2">
-                                    <i class="bi bi-eye fs-5"></i> <!-- Sử dụng fs-4 để tăng kích thước -->
-                                </a>
-                                <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-arrow-left"></i> <!-- Icon Trở Lại -->
-                                </a>
-                            </div>
-                            <div class="mb-3" th:if="${activeTab == 'pass'}">
-                                <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary btn-sm mr-2">
-                                    <i class="bi bi-eye fs-5"></i> <!-- Sử dụng fs-4 để tăng kích thước -->
-                                </a>
-
-                                <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-arrow-left"></i> <!-- Icon Trở Lại -->
-                                </a>
-                            </div>
-                            <div class="mb-3" th:if="${activeTab == 'fall'}">
-                                <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary btn-sm mr-2">
-                                    <i class="bi bi-eye fs-5"></i> <!-- Sử dụng fs-4 để tăng kích thước -->
-                                </a>
-
-                                <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-arrow-left"></i> <!-- Icon Trở Lại -->
-                                </a>
-                            </div>
-                            <div class="mb-3" th:if="${activeTab == 'tai-quay'}">
-                                <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary btn-sm mr-2">
-                                    <i class="bi bi-eye fs-5"></i> <!-- Sử dụng fs-4 để tăng kích thước -->
-                                </a>
-                                <a class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-check-circle"></i> <!-- Icon Xác Nhận -->
-                                </a>
-                                <a type="button" class="btn btn-outline-danger" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-x-circle"></i> <!-- Icon Hủy Đơn -->
-                                </a>
-                            </div>
-                            <div class="mb-3" th:if="${activeTab == 'prepare'}">
-                                <a th:href="@{/admin/hoadon/detail/{id}(id=${hoaDon.id})}" class="btn btn-outline-primary btn-sm mr-2">
-                                    <i class="bi bi-eye fs-5"></i> <!-- Sử dụng fs-4 để tăng kích thước -->
-                                </a>
-                                <a class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-check-circle"></i> <!-- Icon Xác Nhận -->
-                                </a>
-                                <!--                        <a type="button" class="btn btn-outline-danger" th:attr="data-id=${hoaDon.id}">-->
-                                <!--                            Hủy Đơn-->
-                                <!--                        </a>-->
-                                <a type="button" class="btn btn-outline-warning" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-exclamation-triangle"></i> <!-- Icon Giao Hàng Thất Bại -->
-                                </a>
-
-                                <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-arrow-left"></i> <!-- Icon Trở Lại -->
-                                </a>
-                            </div>
-
-                            <div class="mb-3" th:if="${activeTab == 'shipping'}">
-                                <a class="btn btn-outline-success" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-check-circle"></i> <!-- Icon Xác Nhận -->
-                                </a>
-                                <a class="btn btn-outline-info" th:attr="data-id=${hoaDon.id}">
-                                    <i class="bi bi-arrow-left"></i> <!-- Icon Trở Lại -->
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div>
-                    <ul class="pagination justify-content-center">
-                        <!-- Nút "First" dẫn đến trang đầu tiên -->
-                        <li class="page-item" th:class="${currentPage == 1} ? 'disabled' : ''">
-                            <a class="page-link" th:href="@{/admin/hoadon(pageNo=1, tab=${activeTab})}">First</a>
-                        </li>
-
-                        <!-- Các trang trung gian -->
-                        <li th:each="i : ${#numbers.sequence(1, totalPages)}" class="page-item" th:class="${i == currentPage} ? 'active' : ''">
-                            <a class="page-link" th:href="@{/admin/hoadon(pageNo=${i}, tab=${activeTab})}" th:text="${i}"></a>
-                        </li>
-
-                        <!-- Nút "Last" dẫn đến trang cuối cùng -->
-                        <li class="page-item" th:class="${currentPage == totalPages} ? 'disabled' : ''">
-                            <a class="page-link" th:href="@{/admin/hoadon(pageNo=${totalPages}, tab=${activeTab})}">Last</a>
-                        </li>
-                    </ul>
-
-                </div>
-            </div>
-
-        </div>
->>>>>>> 5c5e56f3ed9510232551d3b50ac66ad552fa1123
 </section>
 <script>
 

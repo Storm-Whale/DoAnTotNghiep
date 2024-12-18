@@ -389,7 +389,7 @@
 <div class="add-address-container" id="addAddressContainer">
     <h3 id="title" class="text-center mb-4">Thêm Địa Chỉ Mới</h3>
     <form id="addressForm">
-        <input type="hidden" th:value="${hoaDon.getKhachHang().getId()}" name="idKhachHang">
+<!--        <input type="hidden" th:value="${session.user.id}" name="idKhachHang">-->
         <div class="row">
             <div class="form-group col-6">
                 <label for="name">Họ và tên:</label>
@@ -518,6 +518,25 @@
         // Kiểm tra số lượng tồn kho trước khi thay đổi
         const stockQuantity = parseInt(quantityInput.getAttribute('data-stock-quantity')); // Lấy số lượng tồn kho
 
+        // if (newQuantity < 1) {
+        //     Swal.fire({
+        //         title: 'Xóa Sản Phẩm',
+        //         text: 'Bạn có muốn xóa sản phẩm này khỏi giỏ hàng không?',
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonText: 'Có, xóa ngay!',
+        //         cancelButtonText: 'Hủy'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             // Gọi API xóa sản phẩm
+        //             window.location.href = `/admin/taiquay/xoa-sanpham-hdct/${hdctId}`;
+        //         }
+        //     });
+        //     return;
+        // }
+        //kiem tra sl ton kho
         if (newQuantity > stockQuantity) {
             Swal.fire({
                 icon: 'error',
