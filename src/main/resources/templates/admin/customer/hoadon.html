@@ -116,72 +116,74 @@
         <div class="col-md-6">
             <h2>Danh Sách Hóa Đơn</h2>
         </div>
-        <div class="col-md-6">
-            <br>
-
-            <form th:action="@{/admin/hoadon/search}" method="get" class="d-flex">
-                <input type="text" class="form-control me-2" placeholder="Tìm kiếm..." name="keyword" id="keyword"  />
-                <button type="submit" class="btn btn-link p-0">
-                    <img src="https://img.icons8.com/win8/200/228BE6/google-web-search.png" alt="Search" style="width: 40px; height: 40px; border-radius: 8px;" />
-                </button>
-            </form>
-        </div>
     </div>
 
     <div class="tab-content" id="myTabContent">
-
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <div class="mb-3">
-                <label for="trangThaiFilter" class="form-label">Lọc theo Trạng Thái:</label>
-                <div class="input-group">
-                    <select id="trangThaiFilter" class="form-select form-select-sm" onchange="filterByStatus()">
-                        <option value="all" th:selected="${status == 'all'}">Tất cả</option>
-                        <option value="1" th:selected="${status == '1'}">Chờ Xác Nhận</option>
-                        <option value="2" th:selected="${status == '2'}">Xác Nhận Đơn Hàng</option>
-                        <option value="3" th:selected="${status == '3'}">Giao Hàng</option>
-                        <option value="4" th:selected="${status == '4'}">Giao Hàng Thành Công</option>
-                        <option value="5" th:selected="${status == '5'}">Giao Hàng Thất Bại</option>
-                        <option value="6" th:selected="${status == '6'}">Hoàn Thành Đơn Hàng</option>
-                        <option value="7" th:selected="${status == '7'}">Hủy</option>
-                    </select>
-
-
-
+            <div class="row mb-3">
+                <div class="col-4">
+                    <label for="trangThaiFilter" class="form-label">Lọc theo Trạng Thái:</label>
+                    <div class="input-group">
+                        <select id="trangThaiFilter" class="form-select form-select-sm" onchange="filterByStatus()">
+                            <option value="all" th:selected="${status == 'all'}">Tất cả</option>
+                            <option value="1" th:selected="${status == '1'}">Chờ Xác Nhận</option>
+                            <option value="2" th:selected="${status == '2'}">Xác Nhận Đơn Hàng</option>
+                            <option value="3" th:selected="${status == '3'}">Giao Hàng</option>
+                            <option value="4" th:selected="${status == '4'}">Giao Hàng Thành Công</option>
+                            <option value="5" th:selected="${status == '5'}">Giao Hàng Thất Bại</option>
+                            <option value="6" th:selected="${status == '6'}">Hoàn Thành Đơn Hàng</option>
+                            <option value="7" th:selected="${status == '7'}">Hủy</option>
+                        </select>
+                    </div>
                 </div>
 
+                <div class="col-4">
+                    <label for="loaiHoaDonFilter" class="form-label">Lọc theo Loại Hóa Đơn:</label>
+                    <div class="input-group">
+                        <select id="loaiHoaDonFilter" class="form-select form-select-sm" onchange="filterByLoaiHoaDon()">
+                            <option value="all" th:selected="${loaiHoaDon == 'all'}">Tất cả</option>
+                            <option value="Truc tuyen" th:selected="${loaiHoaDon == 'Truc tuyen'}">Trực tuyến</option>
+                            <option value="	Tai quay" th:selected="${loaiHoaDon == 'Tai quay'}">Tại Quầy</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <label for="phuongthucFilter" class="form-label">Lọc theo Phương Thức:</label>
+                    <div class="input-group">
+                        <select id="phuongthucFilter" class="form-select form-select-sm" onchange="filterByPhuongThuc()">
+                            <option value="all" th:selected="${tenPhuongThuc == 'all'}">Tất cả</option>
+                            <option value="Chuy?n kho?n ngân hàng" th:selected="${tenPhuongThuc == 'Chuy?n kho?n ngân hàng'}">Chuyển Khoản</option>
+                            <option value="Ti?n m?t" th:selected="${tenPhuongThuc == 'Ti?n m?t'}">Tiền Mặt</option>
+                            <!--                        <option value="Th? tín d?ng" th:selected="${tenPhuongThuc == 'Th? tín d?ng'}">Thẻ Tín Dụng</option>-->
+                            <!--                        <option value="Th? ghi n?" th:selected="${tenPhuongThuc == 'Th? ghi n?'}">Thẻ Ghi Nợ</option>-->
+                            <option value="Thanh toán khi nh?n hàng" th:selected="${tenPhuongThuc == 'Thanh toán khi nh?n hàng'}">Thanh toán khi nhận hàng</option>
+                        </select>
+                    </div>
+                </div>
             </div>
+
+
+
+
+
+
             <div class="col-md-6 mb-3">
-                <label for="loaiHoaDonFilter" class="form-label">Lọc theo Loại Hóa Đơn:</label>
-                <div class="input-group">
-                    <select id="loaiHoaDonFilter" class="form-select form-select-sm" onchange="filterByLoaiHoaDon()">
-                        <option value="all" th:selected="${loaiHoaDon == 'all'}">Tất cả</option>
-                        <option value="Truc tuyen" th:selected="${loaiHoaDon == 'Truc tuyen'}">Trực tuyến</option>
-                        <option value="	Tai quay" th:selected="${loaiHoaDon == 'Tai quay'}">Tại Quầy</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="phuongthucFilter" class="form-label">Lọc theo Phương Thức:</label>
-                <div class="input-group">
-                    <select id="phuongthucFilter" class="form-select form-select-sm" onchange="filterByPhuongThuc()">
-                        <option value="all" th:selected="${tenPhuongThuc == 'all'}">Tất cả</option>
-                        <option value="Chuy?n kho?n ngân hàng" th:selected="${tenPhuongThuc == 'Chuy?n kho?n ngân hàng'}">Chuyển Khoản</option>
-                        <option value="Ti?n m?t" th:selected="${tenPhuongThuc == 'Ti?n m?t'}">Tiền Mặt</option>
-<!--                        <option value="Th? tín d?ng" th:selected="${tenPhuongThuc == 'Th? tín d?ng'}">Thẻ Tín Dụng</option>-->
-<!--                        <option value="Th? ghi n?" th:selected="${tenPhuongThuc == 'Th? ghi n?'}">Thẻ Ghi Nợ</option>-->
-                        <option value="Thanh toán khi nh?n hàng" th:selected="${tenPhuongThuc == 'Thanh toán khi nh?n hàng'}">Thanh toán khi nhận hàng</option>
-                    </select>
-                </div>
-            </div>
+                <br>
 
+                <form th:action="@{/admin/hoadon/search}" method="get" class="d-flex">
+                    <input type="text" class="form-control me-2" placeholder="Tìm kiếm..." name="keyword" id="keyword"  />
+                    <button type="submit" class="btn btn-link p-0">
+                        <img src="https://img.icons8.com/win8/200/228BE6/google-web-search.png" alt="Search" style="width: 40px; height: 40px; border-radius: 8px;" />
+                    </button>
+                </form>
+            </div>
 
             <div class="mb-3">
                 <button id="btnExportHoaDon" class="btn btn-success" onclick="exportHoaDon()">
                     <i class="fas fa-file-excel"></i> Xuất Hóa Đơn
                 </button>
             </div>
-
-
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
             <a class="nav-link" href="/admin/hoadon" th:classappend="${activeTab == 'all' ? 'active' : ''}">Danh Sách Hóa Đơn</a>

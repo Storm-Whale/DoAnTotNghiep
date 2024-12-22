@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @ToString
 @Table(name = "khach_hang")
 public class KhachHang extends BaseEntity{
@@ -23,6 +24,7 @@ public class KhachHang extends BaseEntity{
 
 
     @Column(name = "ngay_sinh")
+    @Temporal(TemporalType.DATE)
     private LocalDate ngaySinh;
 
 

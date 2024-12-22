@@ -207,7 +207,7 @@ public class ClientController {
 
         KhachHang khachHang = (KhachHang) session.getAttribute("user");
         if (khachHang == null) {
-            khachHang = khachHangRepository.save(new KhachHang());
+            khachHang = khachHangRepository.save(KhachHang.builder().anhUrl("u.png").trangThai(1).build());
             session.setAttribute("user", khachHang);
         }
 
@@ -315,7 +315,7 @@ public class ClientController {
         try {
             KhachHang khachHang = (KhachHang) session.getAttribute("user");
             if (khachHang == null) {
-                khachHang = khachHangRepository.save(new KhachHang());
+                khachHang = khachHangRepository.save(KhachHang.builder().anhUrl("u.png").trangThai(1).build());
                 session.setAttribute("user", khachHang);
             }
 

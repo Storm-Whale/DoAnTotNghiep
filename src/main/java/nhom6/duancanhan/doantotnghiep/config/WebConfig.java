@@ -26,8 +26,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
-//                .addResourceLocations("file:///D:/WorkPlace/Java/DuAnTotNghiep/DoAnTotNghiep/upload/");
-                .addResourceLocations("file:///D:/FALL_2024/DATN/DoAnTotNghiep/upload/");
+                .addResourceLocations("file:///D:/WorkPlace/Java/DuAnTotNghiep/DoAnTotNghiep/upload/");
+//                .addResourceLocations("file:///D:/FALL_2024/DATN/DoAnTotNghiep/upload/");
     }
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

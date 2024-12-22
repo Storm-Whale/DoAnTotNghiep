@@ -94,4 +94,9 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
             @Param("startOfDay") LocalDateTime startOfDay,
             @Param("endOfDay") LocalDateTime endOfDay
     );
+
+    @Query("SELECT h FROM HoaDon h WHERE h.trangThai = 4 AND h.ngaySua < :threeDaysAgo")
+    List<HoaDon> findHoaDonByTrangThaiAndNgayBeHonNgayHomNay3Ngay(
+            @Param("threeDaysAgo") LocalDateTime threeDaysAgo
+    );
 }
