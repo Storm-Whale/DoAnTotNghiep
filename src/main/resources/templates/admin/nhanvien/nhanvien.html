@@ -92,7 +92,7 @@
           th:text="${nv.trangThai == 1 ? 'Hoạt động' : 'Không hoạt động'}"></span>
             </td>
             <td>
-                <a th:href="@{/admin/nhanvien/delete/{id}(id=${nv.id})}"><button class="btn btn-light" onclick="return confirm('Bạn có chắc chắn muốn xóa?');"><i class="bi bi-trash-fill fs3"></i></button></a>
+                <a th:href="@{/admin/nhanvien/toggleStatus/{id}(id=${nv.id})}"><button class="btn btn-light" onclick="return confirm('Bạn có muốn đổi trạng thái khoong?');"><i class="bi bi-trash-fill fs3"></i></button></a>
                 <a th:href="@{/admin/nhanvien/view_update/{id}(id=${nv.id})}"><button class="btn btn-light"><i class="bi bi-pencil-square fs3"></i></button></a>
                 <a th:href="@{/admin/nhanvien/hoa-don/{id}(id=${nv.id})}" class="btn btn-primary">Xem hóa đơn</a>
             </td>
@@ -111,12 +111,17 @@
 
     <nav>
         <ul class="pagination">
-            <!-- Nút Previous -->
+            <!-- Nút First -->
             <li th:classappend="${currentPage == 0} ? 'disabled'">
                 <a th:href="${currentPage > 0}
-                         ? @{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage - 1}, size=${size})}
+                         ? @{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=0, size=${size})}
                          : '#'"
-                   class="page-link">Previous</a>
+                   class="page-link">First</a>
+            </li>
+
+            <!-- Dấu ... nếu còn trang phía trước -->
+            <li th:if="${showDotsBefore}">
+                <span class="page-link">...</span>
             </li>
 
             <!-- Các số trang -->
@@ -125,15 +130,21 @@
                    th:text="${pageNum + 1}" class="page-link"></a>
             </li>
 
-            <!-- Nút Next -->
+            <!-- Dấu ... nếu còn trang phía sau -->
+            <li th:if="${showDotsAfter}">
+                <span class="page-link">...</span>
+            </li>
+
+            <!-- Nút Last -->
             <li th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
                 <a th:href="${currentPage < totalPages - 1}
-                         ? @{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${currentPage + 1}, size=${size})}
+                         ? @{/admin/nhanvien(keyword=${keyword}, trangThai=${trangThai}, page=${totalPages - 1}, size=${size})}
                          : '#'"
-                   class="page-link">Next</a>
+                   class="page-link">Last</a>
             </li>
         </ul>
     </nav>
+
 
     <!--</section>-->
 </section>

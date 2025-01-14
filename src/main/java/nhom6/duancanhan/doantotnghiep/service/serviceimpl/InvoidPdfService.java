@@ -22,6 +22,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 @Service
@@ -32,9 +35,11 @@ public class InvoidPdfService {
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
         //
-        String fontPath = "D:/WorkPlace/Java/DuAnTotNghiep/DoAnTotNghiep/src/main/resources/times.ttf";
+//        String fontPath = "D:/WorkPlace/Java/DuAnTotNghiep/DoAnTotNghiep/src/main/resources/times.ttf";
         // Thay bằng đường dẫn tới file font hỗ trợ Unicode (VD: Times New Roman)
-//      String fontPath = "D:/FALL_2024/DATN/DoAnTotNghiep/src/main/resources/times.ttf"; // Thay bằng đường dẫn tới file font hỗ trợ Unicode (VD: Times New Roman)
+      String fontPath = "D:/DoAnTotNghiep/DoAnTotNghiep/src/main/resources/times.ttf";
+
+      // Thay bằng đường dẫn tới file font hỗ trợ Unicode (VD: Times New Roman)
 //      String fontPath = "D:/FALL_2024/DATN/DoAnTotNghiep/src/main/resources/times.ttf"; // Thay bằng đường dẫn tới file font hỗ trợ Unicode (VD: Times New Roman)
         PdfFont font = PdfFontFactory.createFont(fontPath, PdfEncodings.IDENTITY_H);
         document.setFont(font);
@@ -53,7 +58,13 @@ public class InvoidPdfService {
         document.add(new Paragraph("HÓA ĐƠN BÁN HÀNG")
                 .setBold().setFontSize(18).setTextAlignment(TextAlignment.CENTER));
         document.add(new Paragraph("Mã Hóa Đơn: HD" + hoaDon.getId()).setBold());
-        document.add(new Paragraph("Ngày Lập: " + hoaDon.getNgaySua()).setBold());
+        LocalDateTime ngaySua = hoaDon.getNgaySua(); // Lấy ngày sửa
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"); // Định dạng ngày giờ
+
+        String formattedDate = ngaySua.format(formatter); // Định dạng ngày giờ
+
+// Thêm vào tài liệu
+        document.add(new Paragraph("Ngày Lập: " + formattedDate).setBold());
         String tenKhachHang = "Khách lẻ";
         String soDienThoai = "";
         if (hoaDon.getKhachHang() != null) {
@@ -64,34 +75,53 @@ public class InvoidPdfService {
         document.add(new Paragraph("Khách hàng: " + tenKhachHang).setBold());
         document.add(new Paragraph("Số Điện Thoại: " + soDienThoai).setBold());
         document.add(new Paragraph("Nhân viên: " + hoaDon.getNguoiTao().getTen()).setBold());
-
         document.add(new Paragraph("DANH SÁCH SẢN PHẨM MUA HÀNG")
                 .setBold().setFontSize(16).setTextAlignment(TextAlignment.CENTER));
 
-        float[] columnWidths = {1, 4, 2, 3}; // Tỉ lệ chiều rộng các cột: STT, Tên SP, Số Lượng, Đơn Giá
+        float[] columnWidths = {1, 3, 2, 2, 2, 2, 3, 3}; // Tỉ lệ chiều rộng các cột
         Table table = new Table(UnitValue.createPercentArray(columnWidths));
         table.setWidth(UnitValue.createPercentValue(100)); // Đặt độ rộng bảng chiếm 100% chiều ngang PDF
         table.setTextAlignment(TextAlignment.CENTER); // Căn giữa nội dung trong bảng
         table.setHorizontalAlignment(HorizontalAlignment.CENTER); // Căn giữa bảng trong tài liệu
 
-        // Thêm bảng sản phẩm
-//        Table table = new Table(4);
+// Thêm bảng sản phẩm
         table.addHeaderCell(new Cell().add(new Paragraph("STT").setFont(font).setBold()));
         table.addHeaderCell(new Cell().add(new Paragraph("Tên Sản Phẩm").setFont(font).setBold()));
+        table.addHeaderCell(new Cell().add(new Paragraph("Màu Sắc").setFont(font).setBold()));
+        table.addHeaderCell(new Cell().add(new Paragraph("Kích Cỡ").setFont(font).setBold()));
+        table.addHeaderCell(new Cell().add(new Paragraph("Chất Liệu").setFont(font).setBold()));
         table.addHeaderCell(new Cell().add(new Paragraph("Số Lượng").setFont(font).setBold()));
         table.addHeaderCell(new Cell().add(new Paragraph("Đơn Giá").setFont(font).setBold()));
+        table.addHeaderCell(new Cell().add(new Paragraph("Tổng Tiền").setFont(font).setBold()));
 
         int index = 1;
+        BigDecimal tongTien = BigDecimal.ZERO ;
         for (HoaDonChiTiet chiTiet : hoaDon.getHoaDonChiTietList()) {
+            tongTien = tongTien.add(chiTiet.tongTien());
             table.addCell(new Cell().add(new Paragraph(String.valueOf(index++)).setFont(font)));
-            table.addCell(new Cell().add(new Paragraph(chiTiet.getTenSanPham()).setFont(font)));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(chiTiet.getSoLuong())).setFont(font)));
-            table.addCell(new Cell().add(new Paragraph(formatCurrency(chiTiet.tongTien())).setFont(font)));
+            table.addCell(new Cell().add(new Paragraph(chiTiet.getTenSanPham()).setFont(font)).setMinWidth(50)); // Đặt chiều rộng tối thiểu
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(chiTiet.getSanPhamChiTiet().getMauSac().getTenMauSac())).setFont(font)).setMinWidth(30));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(chiTiet.getSanPhamChiTiet().getKichCo().getTenKichCo())).setFont(font)).setMinWidth(30));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(chiTiet.getSanPhamChiTiet().getSanPham().getChatLieu().getTenChatLieu())).setFont(font)).setMinWidth(30));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(chiTiet.getSoLuong())).setFont(font)).setMinWidth(30));
+            table.addCell(new Cell().add(new Paragraph(formatCurrency(chiTiet.getSanPhamChiTiet().getGia())).setFont(font)).setMinWidth(30));
+            table.addCell(new Cell().add(new Paragraph(formatCurrency(chiTiet.tongTien())).setFont(font)).setMinWidth(50));
+
+
         }
-        // Tổng tiền
+// Tổng tiền từ hóa đơn
+        BigDecimal hoaDonTongTien = hoaDon.getTongTien();
+
+// Tính số tiền giảm giá
+        BigDecimal soTienGiamGia = tongTien.subtract(hoaDonTongTien);
+// Tổng tiền
         document.add(table);
 //        document.add(new Paragraph("\nTỔNG TIỀN: " + hoaDon.getTongTien()).setBold());
-        document.add(new Paragraph("\nTỔNG TIỀN: " + formatCurrency(hoaDon.getTongTien())).setFont(font).setBold());
+        document.add(new Paragraph("\nTỔNG TIỀN : " + formatCurrency(tongTien)).setFont(font).setBold());
+
+        document.add(new Paragraph("\n SỐ TIỀN GIẢM GIÁ: " + formatCurrency(soTienGiamGia)).setFont(font).setBold());
+
+        document.add(new Paragraph("\nTỔNG TIỀN KHÁCH TRẢ: " + formatCurrency(hoaDon.getTongTien())).setFont(font).setBold());
 
         document.add(new Paragraph("****** Cảm ơn quý khách! ******")
                 .setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));

@@ -32,4 +32,7 @@ public interface KhachHangService {
      boolean isSoDienThoaiExist(String soDienThoai);
      boolean isEmailExist(String soDienThoai);
 
+
+
+
 }

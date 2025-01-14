@@ -167,6 +167,7 @@
                             <thead class="table-light">
                             <tr>
                                 <th scope="col">STT</th>
+                                <th scope="col">IMG</th>
                                 <th scope="col">Sản Phẩm</th>
                                 <th scope="col">SL</th>
                                 <th scope="col">Đơn Giá</th>
@@ -177,7 +178,33 @@
                             <tbody id="cartTable1">
                             <tr th:each="hdct,stt : ${listHDCT}">
                                 <td th:text="${stt.index + 1}"></td>
-                                <td th:text="${hdct.sanPhamChiTiet.sanPham.tenSanPham}"></td>
+
+                                <td>
+                                    <img th:src="@{/{filename}(filename=${hdct.sanPhamChiTiet.sanPham.anhUrl})}" alt="Hình ảnh khách hàng" height="60px" style="border-radius: 50%;"/>
+
+                                </td>
+<!--                                <td th:text="${hdct.sanPhamChiTiet.sanPham.anhUrl}"></td>-->
+                                <td class="product-info">
+                                    <strong th:text="${hdct.sanPhamChiTiet.sanPham.tenSanPham}"></strong><br>
+                                    <span class="size-label">Size:</span> <span th:text="${hdct.sanPhamChiTiet.kichCo.tenKichCo}"></span><br>
+                                    <span class="color-label">Màu Sắc:</span> <span th:text="${hdct.sanPhamChiTiet.mauSac.tenMauSac}"></span>
+                                </td>
+                                <style>
+                                    .product-info {
+                                        text-align: left; /* Căn trái */
+                                        padding: 10px; /* Thêm khoảng cách */
+                                    }
+
+                                    .product-info strong {
+                                        font-size: 1em; /* Kích thước chữ lớn hơn cho tên sản phẩm */
+                                    }
+
+                                    .size-label, .color-label {
+                                        text-align: left;
+                                        font-size: 0.7em; /* Kích thước chữ nhỏ hơn cho kích cỡ và màu sắc */
+                                        color: #555; /* Màu sắc nhạt hơn cho nhãn */
+                                    }
+                                </style>
                                 <td>
                                     <button class="btn btn-sm btn-light"
                                             style="margin-right: 3px; background-color: #ffecee"
@@ -333,7 +360,16 @@
 
                             // Kiểm tra nếu đã có khách hàng (sử dụng hidden input để kiểm tra trạng thái)
                             const khachHangId = document.getElementById("khachHangId1")?.value;
-
+                            // Kiểm tra độ dài của các trường
+                            if (diaChi.length > 100 || tenNguoiNhan.length > 100 || soDienThoai.length > 100) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Thông báo',
+                                    text: 'Các trường nhập không được vượt quá 100 ký tự!',
+                                    confirmButtonText: 'OK'
+                                });
+                                return false;
+                            }
                             if (!khachHangId) {
                                 // Trường hợp khách lẻ: Không được để trống trường nào
                                 if (!diaChi || !soDienThoai || !tenNguoiNhan) {
@@ -388,10 +424,6 @@
                               style="display: flex; align-items: center; gap: 10px;">
                             <input type="text" id="soDienThoai" name="soDienThoai"
                                    style="padding: 5px; border-radius: 5px; border: 1px solid #ddd; width: 200px;">
-<!--                            <button type="submit"-->
-<!--                                    style="background-color: #2c3e50; color: white;margin-bottom: 5px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer;">-->
-<!--                                Tìm kiếm-->
-<!--                            </button>-->
                             <button type="submit"
                                     style="background-color: #2c3e50; color: white; margin-bottom: 12px; padding: 8px 12px;
                                     border: none; border-radius: 5px; cursor: pointer; white-space: nowrap; line-height: 1;">
@@ -399,6 +431,39 @@
                             </button>
 
                         </form>
+<!--                        <script>-->
+<!--                            document.getElementById('searchFormKhachHang').onsubmit = function() {-->
+<!--                                var soDienThoaiInput = document.getElementById('soDienThoai').value;-->
+<!--                                if (soDienThoaiInput.charAt(0) !== '0') {-->
+<!--                                    // Nếu số điện thoại không bắt đầu bằng 0, thêm 0 vào đầu-->
+<!--                                    document.getElementById('soDienThoai').value = '0' + soDienThoaiInput;-->
+<!--                                }-->
+<!--                            };-->
+<!--                        </script>-->
+                        <!-- Kiểm tra xem có thông báo nào không -->
+                        <!-- Kiểm tra xem có thông báo nào không -->
+                        <div th:if="${confirmChange}" class="alert alert-warning">
+                            <script>
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Bạn có muốn thay đổi khách hàng không?',
+                                    text: 'Số điện thoại: ' + '[[${soDienThoai}]]',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'OK',
+                                    cancelButtonText: 'Hủy'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Nếu người dùng đồng ý, điều hướng tới URL để xử lý
+                                        document.getElementById('soDienThoai').value = '[[${soDienThoai}]]'; // Điền số điện thoại vào input
+                                        window.location.href = '/admin/taiquay/tim-kiem?soDienThoai=[[${soDienThoai}]]&confirm=true';
+                                    } else {
+                                        // Nếu người dùng nhấn Hủy, chỉ tắt thông báo
+                                        Swal.close(); // Tắt thông báo
+                                    }
+                                });
+
+                            </script>
+                        </div>
 
                         <script>
                             function validateInput() {
@@ -423,14 +488,14 @@
 
 
 
-                        <style>
-                            .error-message {
-                                height: 30px;
-                                color: red;
-                                margin-top: 5px; /* Khoảng cách từ button đến thông báo lỗi */
-                                font-weight: bold; /* Đậm chữ thông báo lỗi */
-                            }
-                        </style>
+<!--                        <style>-->
+<!--                            .error-message {-->
+<!--                                height: 30px;-->
+<!--                                color: red;-->
+<!--                                margin-top: 5px; /* Khoảng cách từ button đến thông báo lỗi */-->
+<!--                                font-weight: bold; /* Đậm chữ thông báo lỗi */-->
+<!--                            }-->
+<!--                        </style>-->
                         <div>
                             <label class="switch">
                                 <input type="checkbox" id="toggleAddress"/>
@@ -472,16 +537,99 @@
                             });
                         </script>
                         <div id="themnhanhkhachhang" class="dialogmodal">
-                        <div class="modal__center">
-                            <div class="thongBao">
-                            <p>Hiện không có số điện thoại này! Bạn có muốn thêm mới không?</p>
-                            <a href="/admin/taiquay/themnhanhkhachhang"><button>Có</button></a>
-                            <a href=""><button>Không</button></a>
-                            <a href="#" class="modal__close">&times;</a>
+                            <div class="modal__center1">
+                                <div class="thongBao1">
+                                    <div class="icon-warning">
+                                        <img src="https://cdn-icons-png.flaticon.com/512/179/179386.png" alt="warning icon" />
+                                    </div>
+                                    <h2>Bạn có muốn thêm khách hàng mới không?</h2>
+                                    <div class="modal__actions1">
+                                        <a href="/admin/taiquay/themnhanhkhachhang">
+                                            <button class="btn btn-confirm">OK</button>
+                                        </a>
+<!--                                        <button class="btn btn-cancel modal__close1">Hủy</button>-->
+                                        <a th:href="@{${idHoaDon != null ? '/admin/taiquay/detail/' + idHoaDon : '/admin/taiquay'}}"
+                                           class="btn btn-cancel modal__close1"><button>Huỷ</button></a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        </div>
                     </div>
+                    <style>
+                        /* Toàn bộ dialog modal */
+
+                        .modal__center1 {
+                            background: #fff;
+                            border-radius: 10px;
+                            width: 400px;
+                            padding: 20px;
+                            text-align: center;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                        }
+
+                        .thongBao1 {
+                            position: relative;
+                        }
+
+                        .icon-warning img {
+                            width: 60px;
+                            height: 60px;
+                            margin-bottom: 15px;
+                        }
+
+                        h2 {
+                            font-size: 20px;
+                            font-weight: 600;
+                            margin-bottom: 10px;
+                            color: #333;
+                        }
+
+                        p {
+                            font-size: 16px;
+                            color: #555;
+                            margin-bottom: 20px;
+                        }
+
+                        .modal__actions1 {
+                            display: flex;
+                            justify-content: center;
+                            gap: 15px;
+                        }
+
+                        .btn {
+                            padding: 5px 10px;
+                            border: none;
+                            border-radius: 5px;
+                            font-size: 16px;
+                            cursor: pointer;
+                            transition: background-color 0.3s ease;
+                        }
+
+                        .btn-confirm {
+                            background-color: #6c63ff;
+                            color: #fff;
+                        }
+
+                        .btn-confirm:hover {
+                            background-color: #584ef3;
+                        }
+
+                        /* Nút đóng (nếu cần thêm) */
+                        .modal__close1 {
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
+                            font-size: 20px;
+                            color: #aaa;
+                            text-decoration: none;
+                            cursor: pointer;
+                        }
+
+                        .modal__close1:hover {
+                            color: #000;
+                        }
+
+                    </style>
                     <div class="error-message" th:if="${errorMessage}" style="color: red;">
                         <p th:text="${errorMessage}"></p>
                     </div>

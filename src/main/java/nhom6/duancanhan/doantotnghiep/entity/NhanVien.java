@@ -42,7 +42,7 @@ public class NhanVien {
     @Column(name = "ten")
     @NotBlank(message = "Tên không trống")
     @Size(max = 50, message = "Ten không được vượt quá 50 ký tự")
-    private String ten;
+    private String  ten;
 
     @Column(name = "ngay_sinh")
     @NotNull(message = "Ngày sinh không trống")
@@ -82,8 +82,6 @@ public class NhanVien {
 
     @Column(name = "trang_thai")
     @NotNull(message = "Trạng thái không trống")
-    @Min(value = 0, message = "Invalid gender value")
-    @Max(value = 1, message = "Invalid gender value")
     private Integer trangThai;
 
     @Column(name= "ngay_tao")

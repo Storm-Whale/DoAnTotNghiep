@@ -2,6 +2,7 @@ package nhom6.duancanhan.doantotnghiep.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class KhachHang extends BaseEntity{
 
 
     @Column(name = "ngay_sinh")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private LocalDate ngaySinh;
 

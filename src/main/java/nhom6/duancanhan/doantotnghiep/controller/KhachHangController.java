@@ -110,6 +110,10 @@ public class KhachHangController {
             pageNumbers.add(i);
         }
 
+        // Xác định có hiển thị dấu ... ở trước và sau không
+        boolean showDotsBefore = startPage > 0;
+        boolean showDotsAfter = endPage < totalPages - 1;
+
         // Đẩy dữ liệu ra model
         model.addAttribute("khachHang", new KhachHang());
         model.addAttribute("listKH", listKH);
@@ -118,9 +122,12 @@ public class KhachHangController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageNumbers", pageNumbers);
+        model.addAttribute("showDotsBefore", showDotsBefore);
+        model.addAttribute("showDotsAfter", showDotsAfter);
 
         return "/admin/customer/khachhang";
     }
+
 
 
     @GetMapping("/detail/{id}")
@@ -288,8 +295,6 @@ public class KhachHangController {
         TaiKhoan taiKhoan = existingKhachHang.getTaiKhoan();
         if (taiKhoan == null) {
             taiKhoan = new TaiKhoan();
-            taiKhoan.setTenDangNhap(khachHang.getSoDienThoai());
-            taiKhoan.setMatKhau(khachHang.getSoDienThoai());
             taiKhoan.setTrangThai(1);
             VaiTro vaiTro = vaiTroService.findById(3);
             if (vaiTro != null) {
@@ -344,9 +349,23 @@ public class KhachHangController {
     }
 
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer id) {
-        khachHangService.deleteKhachHang(id);
+    @GetMapping("/toggleStatus/{id}")
+    public String toggleStatus(@PathVariable("id") Integer id) {
+        // Lấy thông tin khách hàng theo ID
+        KhachHang khachHang = khachHangService.findById(id);
+
+        if (khachHang != null) {
+            // Chuyển đổi trạng thái
+            if (khachHang.getTrangThai() == 1) {
+                khachHang.setTrangThai(2); // Chuyển từ 1 sang 2
+            } else if (khachHang.getTrangThai() == 2) {
+                khachHang.setTrangThai(1); // Chuyển từ 2 sang 1
+            }
+
+            // Lưu lại thay đổi
+            khachHangService.saveKhachHang(khachHang);
+        }
+
         return "redirect:/admin/khachhang";
     }
 

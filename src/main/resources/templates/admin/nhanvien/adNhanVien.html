@@ -91,7 +91,7 @@
       <div class="col-sm-6">
         <div class="form-group">
           <label class="form-label">Ảnh Đại Diện</label>
-          <input type="file" th:field="*{anhUrlFile}" class="form-control" />
+          <input type="file" th:field="*{anhUrlFile}" class="form-control" onchange="previewImage(event)"/>
           <span th:if="${#fields.hasErrors('anhUrl')}" th:errors="*{anhUrl}" style="color: red; margin-top: 6px"/>
           <div class="preview-image">
             <img th:if="${nhanVien.anhUrl}" th:src="@{'/' + ${nhanVien.anhUrl}}" alt="Ảnh Nhân Viên" />
@@ -171,4 +171,26 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/javascript/admin.js}"></script>
+<script>
+  function previewImage(event) {
+    const fileInput = event.target;
+    const previewImg = document.getElementById('previewImg');
+
+    // Kiểm tra xem file có tồn tại và là hình ảnh không
+    if (fileInput.files && fileInput.files[0]) {
+      const file = fileInput.files[0];
+      if (file.type.startsWith('image/')) {
+        // Hiển thị ảnh xem trước
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          previewImg.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert("Vui lòng chọn tệp hình ảnh hợp lệ!");
+        fileInput.value = ""; // Reset file input nếu không hợp lệ
+      }
+    }
+  }
+</script>
 </html>

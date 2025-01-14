@@ -3,10 +3,12 @@ package nhom6.duancanhan.doantotnghiep.controller;
 
 import jakarta.validation.Valid;
 import nhom6.duancanhan.doantotnghiep.entity.HoaDon;
+import nhom6.duancanhan.doantotnghiep.entity.HoaDonChiTiet;
 import nhom6.duancanhan.doantotnghiep.entity.KhachHang;
 import nhom6.duancanhan.doantotnghiep.entity.NhanVien;
 import nhom6.duancanhan.doantotnghiep.entity.TaiKhoan;
 import nhom6.duancanhan.doantotnghiep.entity.VaiTro;
+import nhom6.duancanhan.doantotnghiep.repository.HoaDonChiTietRepository;
 import nhom6.duancanhan.doantotnghiep.repository.HoaDonRepository;
 import nhom6.duancanhan.doantotnghiep.repository.TaiKhoanRepository;
 import nhom6.duancanhan.doantotnghiep.service.service.HoaDonService;
@@ -34,7 +36,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,7 +70,6 @@ public class NhanVienController {
             @RequestParam(value = "size", defaultValue = "5") int size,
             Model model
     ) {
-        // Xử lý keyword và loại bỏ khoảng trắng
         if (keyword != null) {
             keyword = keyword.trim();
             if (keyword.isEmpty()) {
@@ -97,6 +100,11 @@ public class NhanVienController {
             pageNumbers.add(i);
         }
 
+        // Xác định có hiển thị dấu ... ở trước và sau không
+        boolean showDotsBefore = startPage > 0;
+        boolean showDotsAfter = endPage < totalPages - 1;
+
+
         // Đẩy dữ liệu ra model
         model.addAttribute("nhanVien", new NhanVien());
         model.addAttribute("listNV", listNV);
@@ -105,6 +113,8 @@ public class NhanVienController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("pageNumbers", pageNumbers);
+        model.addAttribute("showDotsBefore", showDotsBefore);
+        model.addAttribute("showDotsAfter", showDotsAfter);
 
         return "/admin/nhanvien/nhanvien";
     }
@@ -154,11 +164,15 @@ public class NhanVienController {
         return "/admin/nhanvien/nhan-vien-hoa-don"; // Tên file Thymeleaf để hiển thị danh sách hóa đơn
     }
 
-
+    @Autowired
+    HoaDonChiTietRepository hoaDonChiTietRepository;
     @GetMapping("/{id}")
     public String xemChiTietHoaDon(@PathVariable("id") Integer idHoaDon, Model model) {
         HoaDon hoaDon = hoaDonService.findById(idHoaDon);
+        List<HoaDonChiTiet> danhSachSanPham = hoaDonChiTietRepository.findByHoaDon_Id(idHoaDon);
         model.addAttribute("hoaDon", hoaDon);
+        model.addAttribute("danhSachSanPham", danhSachSanPham);
+
         return "/admin/nhanvien/nhan-vien-chitietsp"; // Chỉ đến file Thymeleaf
     }
 
@@ -192,7 +206,7 @@ public class NhanVienController {
             taiKhoan.setVaiTro(vaiTro);
         } else {
             model.addAttribute("error", "Vai trò không tồn tại.");
-            return "/admin/customer/adKhachHang";
+            return "/admin/nhanvien/updateKhachHang";
         }
         taiKhoanService.addTaiKhoan(taiKhoan);
         nhanVien.setTaiKhoan(taiKhoan);
@@ -246,7 +260,7 @@ public class NhanVienController {
             // Kiểm tra file ảnh hợp lệ
             String contentType = anhUrlFile.getContentType();
             if (!contentType.startsWith("image/")) {
-                result.rejectValue("anhUrl", "error.khachHang", "Tệp tải lên không phải là hình ảnh.");
+                result.rejectValue("anhUrl", "error.nhanvien", "Tệp tải lên không phải là hình ảnh.");
             } else {
                 try {
                     // Tạo tên file duy nhất bằng UUID
@@ -288,6 +302,25 @@ public class NhanVienController {
         return "/admin/nhanvien/updatenhanvien";
     }
 
+    @GetMapping("/toggleStatus/{id}")
+    public String toggleStatus(@PathVariable("id") Integer id) {
+        // Lấy thông tin khách hàng theo ID
+        NhanVien nhanVien = nhanVienService.findById(id);
+
+        if (nhanVien != null) {
+            // Chuyển đổi trạng thái
+            if (nhanVien.getTrangThai() == 1) {
+                nhanVien.setTrangThai(2); // Chuyển từ 1 sang 2
+            } else if (nhanVien.getTrangThai() == 2) {
+                nhanVien.setTrangThai(1); // Chuyển từ 2 sang 1
+            }
+
+            // Lưu lại thay đổi
+            nhanVienService.addNhanVien(nhanVien);
+        }
+        return "redirect:/admin/nhanvien";
+    }
+
     @Autowired
     TaiKhoanRepository taiKhoanRepository;
 
@@ -313,7 +346,7 @@ public class NhanVienController {
                 taiKhoan.setVaiTro(vaiTro);
             } else {
                 model.addAttribute("error", "Vai trò không tồn tại.");
-                return "/admin/customer/updateKhachHang";
+                return "/admin/nhanvien/updatenhanvien";
             }
             taiKhoanService.addTaiKhoan(taiKhoan);
         } else {
@@ -345,12 +378,6 @@ public class NhanVienController {
         nhanVien.setTrangThai(1);
 
         nhanVienService.updateNhanVien(nhanVien);
-        return "redirect:/admin/nhanvien";
-    }
-
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer id) {
-        nhanVienService.deleteNhanVien(id);
         return "redirect:/admin/nhanvien";
     }
 

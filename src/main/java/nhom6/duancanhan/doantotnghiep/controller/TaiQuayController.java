@@ -28,6 +28,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -367,26 +369,41 @@ public class TaiQuayController {
 
     // TODO : timkiemkhachhang
     @GetMapping("tim-kiem")
-    public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = false) String soDienThoai, HttpSession session
+    public String timKiemKhachHang(@RequestParam(name = "soDienThoai", required = false) String soDienThoai,
+                                           @RequestParam(name = "confirm", required = false, defaultValue = "false") boolean confirm
+
             , RedirectAttributes redirectAttributes, Model model) {
 
 
         HoaDon hoaDon = hoaDonRepository.findById(idHoaDon)
                 .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại với ID: " + idHoaDon));
 
-        boolean hasProducts = hoaDon.getHoaDonChiTietList() != null && !hoaDon.getHoaDonChiTietList().isEmpty();
 
         // Tìm khách hàng theo số điện thoại
         KhachHang khachHang = khachHangService.findBySoDienThoaiKhachHang(soDienThoai);
 
         // Nếu hóa đơn đã có sản phẩm, không cho phép thêm khách hàng mới
-        if (hasProducts) {
-            if (hoaDon.getKhachHang() != null) {
-                // Nếu đã có khách hàng, hiển thị thông báo
-                redirectAttributes.addFlashAttribute("errorMessage", "Đã có khách hàng trong hóa đơn");
-                return "redirect:/admin/taiquay/detail/" + idHoaDon; // Quay lại trang chi tiết hóa đơn
+        // Nếu hóa đơn đã có sản phẩm
+        boolean hasProducts = hoaDon.getHoaDonChiTietList() != null && !hoaDon.getHoaDonChiTietList().isEmpty();
+
+        if (khachHang != null) {
+            if (!confirm) {
+                // Nếu khách hàng đã tồn tại và chưa xác nhận, hiển thị thông báo xác nhận
+                redirectAttributes.addFlashAttribute("confirmChange", true);
+                redirectAttributes.addFlashAttribute("soDienThoai", soDienThoai);
+                return "redirect:/admin/taiquay/detail/" + idHoaDon;
             }
+
+            // Nếu đã xác nhận, cập nhật khách hàng vào hóa đơn
+            hoaDon.setKhachHang(khachHang);
+            hoaDonRepository.save(hoaDon);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã cập nhật khách hàng vào hóa đơn.");
+            return "redirect:/admin/taiquay/detail/" + idHoaDon;
         }
+
+
+        // Nếu không tìm thấy khách hàng, thêm thông báo xác nhận
+
 
         if (khachHang == null) {
             // Tạo đối tượng khách hàng mới với số điện thoại đã nhập
@@ -403,7 +420,6 @@ public class TaiQuayController {
             hoaDon.setKhachHang(khachHang);
             hoaDon.setTrangThai(0); // Trạng thái hóa đơn có thể thay đổi theo yêu cầu của bạn
             hoaDonRepository.save(hoaDon);
-
             redirectAttributes.addFlashAttribute("hoaDon", hoaDon);
             redirectAttributes.addFlashAttribute("khachHang", khachHang);
         }
@@ -540,21 +556,14 @@ public class TaiQuayController {
 
         String email = khachHang.getEmail();
 
-        // Kiểm tra email không phải là chuỗi rỗng
         if (email != null && !email.isEmpty()) {
-            // Kiểm tra email bắt đầu bằng chữ thường
-//            if (!Character.isLowerCase(email.charAt(0))) {
-//                result.rejectValue("email", "error.khachHang", "Email phải bắt đầu bằng chữ thường.");
-//            }
-
-            // Kiểm tra email đã tồn tại
             if (khachHangService.isEmailExist(email)) {
-                result.rejectValue("email", "error.khachHangThemNhanh", "Email đã tồn tại.");
+                result.rejectValue("email", "error.khachHang", "Email đã tồn tại.");
             }
         }
 // SoDienThoai
         if (khachHangService.isSoDienThoaiExist(khachHang.getSoDienThoai())) {
-            result.rejectValue("soDienThoai", "error.khachHangThemNhanh", "Số điện thoại đã tồn tại.");
+            result.rejectValue("soDienThoai", "error.khachHang", "Số điện thoại đã tồn tại.");
         }
 
         if (result.hasErrors()) {
@@ -733,11 +742,11 @@ public class TaiQuayController {
         byte[] pdfData = invoidPdfService.generateInvoicePdf(hoaDon);
 
             String fileName = "invoice_" + hoaDon.getId() + ".pdf";
-            Path path = Paths.get("D://WorkPlace//Java//DuAnTotNghiep//DoAnTotNghiep//upload/" + fileName);
+            Path path = Paths.get("D://DoAnTotNghiep//DoAnTotNghiep//upload/" + fileName);
             Files.write(path, pdfData);
 //        D://FALL_2024//DATN//DoAnTotNghiep//upload/
             // Return the file URL to the frontend
-            String fileUrl = "D://WorkPlace//Java//DuAnTotNghiep//DoAnTotNghiep//upload/" + fileName;
+            String fileUrl = "D://DoAnTotNghiep//DoAnTotNghiep//upload/" + fileName;
             model.addAttribute("pdfUrl", fileUrl);
             return "/uploads/" + fileName;
         }

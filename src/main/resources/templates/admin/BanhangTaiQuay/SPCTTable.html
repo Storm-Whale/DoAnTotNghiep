@@ -4,6 +4,7 @@
         <thead>
         <tr>
             <th>STT</th>
+            <th>IMG</th>
             <th>Tên sản phẩm</th>
             <th>Kích cỡ</th>
             <th>Màu sắc</th>
@@ -13,13 +14,16 @@
             <th>Kiểu cổ aó</th>
             <th>Giá</th>
             <th>Số lượng</th>
-
             <th>Thao tác</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="spct : ${ListSPCT}">
             <td th:text="${spct.id}"></td>
+            <td>
+                <img th:src="@{/{filename}(filename=${spct.sanPham.anhUrl})}" alt="Hình ảnh khách hàng" height="60px" style="border-radius: 50%;"/>
+
+            </td>
             <td th:text="${spct.sanPham.tenSanPham}"></td>
             <td th:text="${spct.kichCo.tenKichCo}"></td>
             <td th:text="${spct.mauSac.tenMauSac}"></td>

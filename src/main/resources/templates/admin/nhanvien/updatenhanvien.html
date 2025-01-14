@@ -7,90 +7,98 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
     <style>
-        /* Định dạng container của form */
         .form-container {
-            max-width: 800px;
-            margin: 20px auto;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            justify-content: space-between;
             padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
             background-color: #f9f9f9;
+            border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Định dạng hàng và cột */
-        .row {
+        /* Phần ảnh và input file */
+        .image-section {
+            flex: 1;
+            text-align: center;
+        }
+
+        .image-section img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Phần thông tin khách hàng */
+        .info-section {
+            flex: 2;
+        }
+
+        .info-section .row {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
         }
 
-        .col-sm-6 {
-            flex: 1 1 48%; /* Hai cột cân bằng */
+        .info-section .col-sm-6 {
+            flex: 1 1 calc(50% - 10px);
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Định dạng label */
-        .form-label {
-            display: block;
+        .info-section label {
             font-weight: bold;
             margin-bottom: 5px;
+            color: #555;
         }
 
-        /* Định dạng input và select */
-        .form-control {
-            width: 100%;
+        .info-section input,
+        .info-section .form-check-input {
             padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            border-radius: 5px;
+            box-sizing: border-box;
         }
 
-        .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        .info-section .form-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* Định dạng radio buttons */
-        .form-check-label {
-            margin-left: 5px;
+        .info-section .form-check-label {
+            margin: 0;
+            color: #333;
         }
 
-        .form-check-input {
-            margin-right: 5px;
+        .info-section button {
+            padding: 10px 20px;
+            background-color: #d9534f;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            align-self: flex-start;
         }
 
-        /* Định dạng thông báo lỗi */
+        .info-section button:hover {
+            background-color: #c9302c;
+        }
+
+        /* Định dạng lỗi */
         .error-message {
             color: red;
-            font-size: 0.9em;
+            font-size: 12px;
             margin-top: 5px;
         }
 
-        /* Định dạng nút submit */
-        .btn-danger {
-            background-color: #dc3545;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
 
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-
-        /* Định dạng ảnh đại diện */
-        .form-group img {
-            display: block;
-            margin-top: 10px;
-            width: 100px; /* Chiều rộng cố định */
-            height: auto; /* Duy trì tỉ lệ */
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            object-fit: cover;
-        }
     </style>
 </head>
 <body class="container-fluid">
@@ -101,15 +109,8 @@
 <section class="page-content">
     <h3 style="margin-top: 10px; margin-bottom: 10px; text-align: center">Cập Nhập Nhân Viên</h3>
     <form class="form-container" id="khachHangForm" th:action="@{/admin/nhanvien/update}" th:object="${nhanVien}" enctype="multipart/form-data" method="post">
-        <div class="row">
-            <!-- ID -->
-            <div class="col-sm-6">
-                <label for="id" class="form-label">ID</label>
-                <input type="text" class="form-control" id="id" name="id" placeholder="Nhập ID" th:field="*{id}" readonly>
-                <span class="error-message" id="idError"></span>
-            </div>
+        <div class="image-section">
 
-            <!-- Ảnh Đại Diện -->
             <div class="col-sm-6">
                 <label for="anhUrlFile" class="form-label">Ảnh Đại Diện</label>
                 <input type="file" id="anhUrlFile" th:field="*{anhUrlFile}"  class="form-control" onchange="previewImage(event)" />
@@ -117,6 +118,16 @@
                         id="previewImg"
                         th:src="${nhanVien.anhUrl != null && !nhanVien.anhUrl.isEmpty() ? '/' + nhanVien.anhUrl : 'file:D:/DoAnTotNghiep/DoAnTotNghiep/upload/u.png'}"
                         alt="Ảnh nhanVien" style="width: 200px; height: auto;"/>
+            </div>
+        </div>
+        <div class="info-section">
+        <div class="row">
+            <!-- ID -->
+            <!-- Ảnh Đại Diện -->
+            <div class="col-sm-6">
+                <label for="id" class="form-label">ID</label>
+                <input type="text" class="form-control" id="id" name="id" placeholder="Nhập ID" th:field="*{id}" readonly>
+                <span class="error-message" id="idError"></span>
             </div>
 
             <!-- Tên -->
@@ -164,6 +175,7 @@
             <div class="col-sm-12">
                 <button type="submit" style="margin-top: 20px;" class="btn btn-danger">Submit</button>
             </div>
+        </div>
         </div>
     </form>    <a href="/admin/nhanvien"><button style="width: 100px; margin-left: 10px; text-align: center" class="btn btn-danger">Back</button></a>
 
